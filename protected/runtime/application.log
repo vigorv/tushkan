@@ -1,0 +1,1761 @@
+2011/12/06 10:08:21 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('site/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/site/admin
+2011/12/06 10:11:01 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "index".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/index.php?admin
+2011/12/06 10:12:20 [error] [exception.CException] exception 'CException' with message 'IndexController cannot find the requested view "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\IndexController.php(32): CController->render('index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): IndexController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/index.php?admin
+2011/12/06 10:13:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:15:51 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:15:52 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:15:52 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:15:52 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:15:52 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:15:53 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:16:08 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('index')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('index')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin/index')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:20:19 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:20:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "admin".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('admin')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/index/admin
+2011/12/06 10:20:37 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin/index
+2011/12/06 10:22:03 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin/index
+2011/12/06 10:22:12 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:21 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:48 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:49 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:49 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:50 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:50 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:50 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:22:50 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'The system is unable to find the requested action "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:23:21 [error] [exception.CException] exception 'CException' with message 'AdminController cannot find the requested view "admin/index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('admin/index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(9): CController->render('admin/index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/index.php/admin
+2011/12/06 10:35:27 [error] [exception.CException] exception 'CException' with message 'AdminController cannot find the requested view "/index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('/index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(9): CController->render('/index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/index.php/admin
+2011/12/07 05:27:10 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "site/page/view/about".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('site/page/view/...')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/index.php/site/page/view/about
+2011/12/07 05:27:17 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "site/index".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('site/index')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/index.php/site/index
+2011/12/07 05:34:31 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "site/index".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('site/index')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/index.php/site/index
+2011/12/07 05:34:39 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "site/index".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('site/index')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/index.php/site/index
+2011/12/07 05:56:04 [error] [php] Undefined variable: left (D:\vano\home\tushkan\www\protected\views\layouts\admin.php:13)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(781): AdminController->renderFile()
+#1 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(9): AdminController->render()
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\views\layouts\admin.php (13)
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (9)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 05:57:11 [error] [exception.CException] exception 'CException' with message 'Property "AdminController.left" is not defined.' in D:\vano\home\tushkan\www\framework\base\CComponent.php:174
+Stack trace:
+#0 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(9): CComponent->__set('left', 'left column con...')
+#1 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#2 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#5 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin')
+#7 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#8 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#9 {main} REQUEST_URI=/index.php/admin
+2011/12/07 07:51:20 [error] [php] Missing argument 2 for YiiBase::t(), called in D:\vano\home\tushkan\www\protected\controllers\AdminController.php on line 11 and defined (D:\vano\home\tushkan\www\framework\YiiBase.php:571)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#1 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#2 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#3 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#4 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#5 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#6 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:04:41 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:12 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:15 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:16 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:16 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:16 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:16 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:17 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:34 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:35 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:35 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:06:35 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:07:37 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:07:38 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:07:38 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:07:38 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:07:39 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:07:39 [error] [php] YiiBase::include(ru.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 unknown(0): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(99): ReflectionClass->__construct()
+#2 D:\vano\home\tushkan\www\framework\i18n\CPhpMessageSource.php(116): CPhpMessageSource->getMessageFile()
+#3 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(102): CPhpMessageSource->loadMessages()
+#4 D:\vano\home\tushkan\www\framework\i18n\CMessageSource.php(84): CPhpMessageSource->translateMessage()
+#5 D:\vano\home\tushkan\www\framework\YiiBase.php(578): CPhpMessageSource->translate()
+#6 D:\vano\home\tushkan\www\protected\controllers\AdminController.php(11): t()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): AdminController->actionIndex()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:08:15 [error] [php] Missing argument 2 for YiiBase::t(), called in D:\vano\home\tushkan\www\protected\controllers\AdminController.php on line 11 and defined (D:\vano\home\tushkan\www\framework\YiiBase.php:571)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#1 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#2 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#3 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#4 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#5 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#6 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:09:54 [error] [php] Missing argument 2 for YiiBase::t(), called in D:\vano\home\tushkan\www\protected\controllers\AdminController.php on line 11 and defined (D:\vano\home\tushkan\www\framework\YiiBase.php:571)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#1 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#2 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#3 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#4 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#5 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#6 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:10:26 [error] [php] Missing argument 2 for YiiBase::t(), called in D:\vano\home\tushkan\www\protected\controllers\AdminController.php on line 11 and defined (D:\vano\home\tushkan\www\framework\YiiBase.php:571)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#1 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#2 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#3 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#4 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#5 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#6 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 08:10:27 [error] [php] Missing argument 2 for YiiBase::t(), called in D:\vano\home\tushkan\www\protected\controllers\AdminController.php on line 11 and defined (D:\vano\home\tushkan\www\framework\YiiBase.php:571)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#1 D:\vano\home\tushkan\www\framework\web\CController.php(278): AdminController->runAction()
+#2 D:\vano\home\tushkan\www\framework\web\CController.php(257): AdminController->runActionWithFilters()
+#3 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): AdminController->run()
+#4 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#5 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#6 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/index.php/admin
+in D:\vano\home\tushkan\www\protected\controllers\AdminController.php (11)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 09:51:26 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Системе не удалось найти запрашиваемое действие "films".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('films')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('films')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('admin/films')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/index.php/admin/films
+2011/12/07 10:00:34 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:01:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:01:35 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:06:45 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:07:06 [error] [php] Illegal offset type (D:\vano\home\tushkan\www\protected\controllers\FilmsController.php:19)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(278): FilmsController->runAction()
+#1 D:\vano\home\tushkan\www\framework\web\CController.php(257): FilmsController->runActionWithFilters()
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): FilmsController->run()
+#3 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#4 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#5 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/films/admin
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (19)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 10:07:06 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:07:24 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:08:56 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:26:29 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 10:26:29 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:27:44 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 10:27:44 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:27:45 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 10:27:45 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:27:46 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 10:27:46 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 10:27:46 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 10:27:46 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:44 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:44 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:46 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:46 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:46 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:46 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:46 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:47 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:47 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:47 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:47 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:47 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:48 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:48 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:48 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:48 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:10:48 [error] [exception.CDbException] exception 'CDbException' with message 'CDbConnection не удалось открыть соединение с базой данных: could not find driver' in D:\vano\home\tushkan\www\framework\db\CDbConnection.php:364
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive(true)
+#2 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#3 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CModule->getComponent('db')
+#4 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CModule->__get('db')
+#5 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#10 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#11 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#12 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#13 {main} REQUEST_URI=/films/admin
+2011/12/07 11:10:49 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:42:22 [error] [php] YiiBase::include(PDO.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(404): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(356): CDbConnection->createPdoInstance()
+#2 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#3 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive()
+#4 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#5 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CWebApplication->getComponent()
+#6 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CWebApplication->__get()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): FilmsController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): FilmsController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): FilmsController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/films/admin
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (22)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 11:42:22 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 11:58:02 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:01:31 [error] [exception.CException] exception 'CException' with message 'Контроллер IndexController не может найти представление "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\IndexController.php(32): CController->render('index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): IndexController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/
+2011/12/07 12:01:31 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:01:34 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:01:50 [error] [php] YiiBase::include(PDO.php) [<a href='function.YiiBase-include'>function.YiiBase-include</a>]: failed to open stream: No such file or directory (D:\vano\home\tushkan\www\framework\YiiBase.php:421)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(404): spl_autoload_call()
+#1 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(356): CDbConnection->createPdoInstance()
+#2 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(313): CDbConnection->open()
+#3 D:\vano\home\tushkan\www\framework\db\CDbConnection.php(291): CDbConnection->setActive()
+#4 D:\vano\home\tushkan\www\framework\base\CModule.php(372): CDbConnection->init()
+#5 D:\vano\home\tushkan\www\framework\base\CModule.php(86): CWebApplication->getComponent()
+#6 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(22): CWebApplication->__get()
+#7 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#8 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#9 D:\vano\home\tushkan\www\framework\web\CController.php(278): FilmsController->runAction()
+#10 D:\vano\home\tushkan\www\framework\web\CController.php(257): FilmsController->runActionWithFilters()
+#11 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): FilmsController->run()
+#12 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#13 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#14 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/films/admin
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (22)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/07 12:07:26 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:07:27 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:07:28 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:07:28 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:13 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:14 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:14 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:14 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:15 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:15 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:15 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/07 12:19:16 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 07:25:57 [error] [exception.CException] exception 'CException' with message 'Контроллер IndexController не может найти представление "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\IndexController.php(32): CController->render('index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): IndexController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/
+2011/12/08 07:26:21 [error] [system.db.CDbCommand] Не удалось выполнить CDbCommand::fetch(): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'tushkan.films' doesn't exist. Выполнявшийся SQL-запрос: SELECT *
+FROM `films`.
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (25)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/08 07:26:21 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand не удалось исполнить SQL-запрос: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'tushkan.films' doesn't exist. The SQL statement executed was: SELECT *
+FROM `films`' in D:\vano\home\tushkan\www\framework\db\CDbCommand.php:516
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbCommand.php(393): CDbCommand->queryInternal('fetch', Array, Array)
+#1 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(25): CDbCommand->queryRow()
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/films/admin
+2011/12/08 07:28:56 [error] [system.db.CDbCommand] Не удалось выполнить CDbCommand::fetch(): SQLSTATE[42S02]: Base table or view not found: 1146 Table 'tushkan.{films}' doesn't exist. Выполнявшийся SQL-запрос: SELECT *
+FROM `{films}`.
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (25)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/08 07:28:56 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand не удалось исполнить SQL-запрос: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'tushkan.{films}' doesn't exist. The SQL statement executed was: SELECT *
+FROM `{films}`' in D:\vano\home\tushkan\www\framework\db\CDbCommand.php:516
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbCommand.php(393): CDbCommand->queryInternal('fetch', Array, Array)
+#1 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(25): CDbCommand->queryRow()
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/films/admin
+2011/12/08 07:28:56 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 07:31:29 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 07:32:48 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 07:33:38 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 07:33:52 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 08:47:00 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 08:48:55 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 08:49:09 [error] [exception.CException] exception 'CException' with message 'В классе CDbCommand и его поведениях не найден метод или замыкание с именем "joinLeft".' in D:\vano\home\tushkan\www\framework\base\CComponent.php:269
+Stack trace:
+#0 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(26): CComponent->__call('joinLeft', Array)
+#1 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(26): CDbCommand->joinLeft('{{film_pictures...', 'p.film_id=f.id ...')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/films/admin
+2011/12/08 08:49:09 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 08:49:40 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 08:51:08 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:03:21 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:11:31 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:26:58 [error] [exception.CException] exception 'CException' with message 'Контроллер IndexController не может найти представление "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\IndexController.php(32): CController->render('index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): IndexController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/
+2011/12/08 09:27:40 [error] [exception.CException] exception 'CException' with message 'Контроллер IndexController не может найти представление "index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\IndexController.php(32): CController->render('index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): IndexController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/index.php
+2011/12/08 09:29:02 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:29:44 [error] [exception.CException] exception 'CException' with message 'Контроллер IndexController не может найти представление "login".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('login', Array, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\IndexController.php(90): CController->render('login', Array)
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): IndexController->actionLogin()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('login')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/login')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/index/login
+2011/12/08 09:29:50 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Запрашиваемый шаблон вида "about" не найден.' in D:\vano\home\tushkan\www\framework\web\actions\CViewAction.php:110
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\actions\CViewAction.php(121): CViewAction->resolveView('about')
+#1 D:\vano\home\tushkan\www\framework\web\actions\CAction.php(72): CViewAction->run()
+#2 D:\vano\home\tushkan\www\framework\web\CController.php(300): CAction->runWithParams(Array)
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CViewAction))
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CViewAction), Array)
+#5 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('page')
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('index/page/view...')
+#7 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#8 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#9 {main} REQUEST_URI=/index/page/view/about
+2011/12/08 09:31:30 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:31:30 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:31:31 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:31:31 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:34:21 [error] [exception.CException] exception 'CException' with message 'Контроллер IndexController не может найти представление "//index".' in D:\vano\home\tushkan\www\framework\web\CController.php:875
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(779): CController->renderPartial('//index', NULL, true)
+#1 D:\vano\home\tushkan\www\protected\controllers\IndexController.php(30): CController->render('//index')
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): IndexController->actionIndex()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/
+2011/12/08 09:34:21 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:37:09 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/08 09:38:58 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 03:59:31 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:30:11 [error] [system.db.CDbCommand] Не удалось выполнить CDbCommand::fetchAll(): SQLSTATE[42S22]: Column not found: 1054 Unknown column 'd.description' in 'field list'. Выполнявшийся SQL-запрос: SELECT `f`.`id`, `f`.`y`, `f`.`title`, `d`.`description`, `p`.`filename`
+FROM `dm_films` `f`
+LEFT JOIN `dm_film_pictures` `p` ON p.film_id=f.id AND p.tp="smallposter"
+GROUP BY `f`.`id`.
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (28)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/09 05:30:11 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand не удалось исполнить SQL-запрос: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'd.description' in 'field list'. The SQL statement executed was: SELECT `f`.`id`, `f`.`y`, `f`.`title`, `d`.`description`, `p`.`filename`
+FROM `dm_films` `f`
+LEFT JOIN `dm_film_pictures` `p` ON p.film_id=f.id AND p.tp="smallposter"
+GROUP BY `f`.`id`' in D:\vano\home\tushkan\www\framework\db\CDbCommand.php:516
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbCommand.php(374): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(28): CDbCommand->queryAll()
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/films/admin
+2011/12/09 05:30:11 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:30:39 [error] [php] Undefined index:  posterURL (D:\vano\home\tushkan\www\protected\views\films\admin.php:8)
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(866): FilmsController->renderFile()
+#1 D:\vano\home\tushkan\www\framework\web\CController.php(779): FilmsController->renderPartial()
+#2 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(31): FilmsController->render()
+#3 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams()
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(278): FilmsController->runAction()
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(257): FilmsController->runActionWithFilters()
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): FilmsController->run()
+#8 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController()
+#9 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#10 D:\vano\home\tushkan\www\index.php(13): CWebApplication->run()
+REQUEST_URI=/films/admin
+in D:\vano\home\tushkan\www\protected\views\films\admin.php (8)
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (31)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/09 05:30:39 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:31:12 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:31:48 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:31:52 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:34:21 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:35:07 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:35:59 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:36:11 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:38:57 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 05:39:17 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 08:00:02 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Системе не удалось найти запрашиваемое действие "view".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('view')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('view')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/view/1')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/films/view/1
+2011/12/09 08:00:16 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Системе не удалось найти запрашиваемое действие "view".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('view')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('view')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/view/1')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/films/view/1
+2011/12/09 08:00:25 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 08:16:09 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 08:25:00 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Системе не удалось найти запрашиваемое действие "<_a>".' in D:\vano\home\tushkan\www\framework\web\CController.php:477
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CController.php(262): CController->missingAction('<_a>')
+#1 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('<_a>')
+#2 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/<_a>')
+#3 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#4 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#5 {main} REQUEST_URI=/films/edit/1
+2011/12/09 08:25:00 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 08:25:17 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 08:30:18 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 08:31:44 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:21:53 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:22:10 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:22:28 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:22:47 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:23:40 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:25:45 [error] [system.db.CDbCommand] Не удалось выполнить CDbCommand::fetchAll(): SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') AS country f.id, f.y, f.title, p.filename, GROUP_CONCAT(c.title, 
+FROM `dm_fil' at line 1. Выполнявшийся SQL-запрос: SELECT ) AS country f.id, f.y, f.title, p.filename, GROUP_CONCAT(c.title, 
+FROM `dm_films` `f`
+JOIN `dm_countries_films` `cf` ON cf.film_id=f.id
+JOIN `dm_countries` `c` ON cf.country_id=c.id
+LEFT JOIN `dm_film_pictures` `p` ON p.film_id=f.id AND p.tp="smallposter"
+GROUP BY `f`.`id`.
+in D:\vano\home\tushkan\www\protected\controllers\FilmsController.php (29)
+in D:\vano\home\tushkan\www\index.php (13)
+2011/12/09 09:25:45 [error] [exception.CDbException] exception 'CDbException' with message 'CDbCommand не удалось исполнить SQL-запрос: SQLSTATE[42000]: Syntax error or access violation: 1064 You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ') AS country f.id, f.y, f.title, p.filename, GROUP_CONCAT(c.title, 
+FROM `dm_fil' at line 1. The SQL statement executed was: SELECT ) AS country f.id, f.y, f.title, p.filename, GROUP_CONCAT(c.title, 
+FROM `dm_films` `f`
+JOIN `dm_countries_films` `cf` ON cf.film_id=f.id
+JOIN `dm_countries` `c` ON cf.country_id=c.id
+LEFT JOIN `dm_film_pictures` `p` ON p.film_id=f.id AND p.tp="smallposter"
+GROUP BY `f`.`id`' in D:\vano\home\tushkan\www\framework\db\CDbCommand.php:516
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\db\CDbCommand.php(374): CDbCommand->queryInternal('fetchAll', Array, Array)
+#1 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(29): CDbCommand->queryAll()
+#2 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(50): FilmsController->actionAdmin()
+#3 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#4 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#6 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('admin')
+#7 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/admin')
+#8 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#9 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#10 {main} REQUEST_URI=/films/admin
+2011/12/09 09:25:46 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:27:42 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:27:53 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:29:11 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:29:19 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:35:37 [error] [exception.CException] exception 'CException' with message 'В классе CDbConnection и его поведениях не найден метод или замыкание с именем "bindParam".' in D:\vano\home\tushkan\www\framework\base\CComponent.php:269
+Stack trace:
+#0 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(53): CComponent->__call('bindParam', Array)
+#1 D:\vano\home\tushkan\www\protected\controllers\FilmsController.php(53): CDbConnection->bindParam(':id', '2', 1)
+#2 [internal function]: FilmsController->actionEdit('2')
+#3 D:\vano\home\tushkan\www\framework\web\actions\CAction.php(104): ReflectionMethod->invokeArgs(Object(FilmsController), Array)
+#4 D:\vano\home\tushkan\www\framework\web\actions\CInlineAction.php(48): CAction->runWithParamsInternal(Object(FilmsController), Object(ReflectionMethod), Array)
+#5 D:\vano\home\tushkan\www\framework\web\CController.php(300): CInlineAction->runWithParams(Array)
+#6 D:\vano\home\tushkan\www\framework\web\CController.php(278): CController->runAction(Object(CInlineAction))
+#7 D:\vano\home\tushkan\www\framework\web\CController.php(257): CController->runActionWithFilters(Object(CInlineAction), Array)
+#8 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(277): CController->run('edit')
+#9 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('films/edit')
+#10 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#11 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#12 {main} REQUEST_URI=/films/edit/2
+2011/12/09 09:35:37 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:37:49 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:38:14 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:41:53 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 09:43:10 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico

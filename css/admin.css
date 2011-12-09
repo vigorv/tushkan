@@ -1,0 +1,3 @@
+.container, .container div { border: 1px solid black; }
+#adminleft { float: left; width:20%; }
+#admincontent { float: right; width:79%; }

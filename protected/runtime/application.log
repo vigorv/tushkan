@@ -1759,3 +1759,21 @@ Stack trace:
 #1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
 #2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
 #3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 11:12:39 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/09 11:12:52 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico
+2011/12/12 03:06:02 [error] [exception.CHttpException.404] exception 'CHttpException' with message 'Unable to resolve the request "favicon.ico".' in D:\vano\home\tushkan\www\framework\web\CWebApplication.php:281
+Stack trace:
+#0 D:\vano\home\tushkan\www\framework\web\CWebApplication.php(136): CWebApplication->runController('favicon.ico')
+#1 D:\vano\home\tushkan\www\framework\base\CApplication.php(158): CWebApplication->processRequest()
+#2 D:\vano\home\tushkan\www\index.php(13): CApplication->run()
+#3 {main} REQUEST_URI=/favicon.ico

@@ -3,7 +3,8 @@
 	{
 		foreach ($films as $f)
 		{
-			echo '<div class="shortfilm"><a href="edit/' . $f['id'] . '">';
+			$href = Yii::app()->createUrl('/films/edit/' . $f['id']);
+			echo '<div class="shortfilm"><a href="' . $href . '">';
 			if (!empty($f['filename']))
 				$poster = Yii::app()->params['tushkan']['postersURL'] . '/smallposter/' . $f['filename'];
 			else

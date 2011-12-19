@@ -4,9 +4,20 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="language" content="ru" />
 
-	<!-- blueprint CSS framework -->
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/admin.css" />
+    <!--[if lt IE 8]><link rel="stylesheet" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" type="text/css" media="screen, projection"><![endif]-->
+
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/admin.css" />
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/form.css" />
 	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/tushkan.css" />
+
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui/css/pepper-grinder/jquery-ui-1.8.16.custom.css" />
+
+	<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui/js/jquery-1.6.2.min.js"></script>
+	<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery-ui/js/jquery-ui-1.8.16.custom.min.js"></script>
 </head>
 <body>
 <?php
@@ -23,7 +34,18 @@
 			<li><a href="<?php echo $this->createUrl('films/admin');?>">Films</a></li>
 		</ul>
 	</div>
-	<div id="admincontent">
+			<div id="admincontent">
+		<?php if(Yii::app()->user->hasFlash('success')):?>
+		<div class="flash-notice">
+		<?php echo Yii::app()->user->getFlash('success')?>
+		</div>
+		<?php endif?>
+		<?php if(Yii::app()->user->hasFlash('error')):?>
+		<div class="flash-error">
+		<?php echo Yii::app()->user->getFlash('error')?>
+		</div>
+		<?php endif?>
+
 		<?php echo $content; ?>
 	</div>
 </div>

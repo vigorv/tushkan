@@ -7,8 +7,12 @@ class Controller extends CController
 
 	public $breadcrumbs=array();
 
+	public $identity = null;
+
 	public function __construct()
 	{
 		Yii::app()->setLanguage('ru');
+		$this->identity = new UserIdentity('', '');
+		$this->identity->authenticate();
 	}
 }

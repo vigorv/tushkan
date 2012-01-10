@@ -13,10 +13,10 @@ class FilmsController extends Controller
 
 	public function actionAdmin()
 	{
-		$this->layout = '//layouts/admin';
+		$this->layout = '/layouts/admin';
 		$this->breadcrumbs = array(
 			Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
-			Yii::t('common', 'Administrate films'),
+			Yii::t('films', 'Administrate films'),
 		);
 
 		$films = Yii::app()->db->createCommand()
@@ -37,10 +37,10 @@ class FilmsController extends Controller
 	 */
 	public function actionEdit($id = 0)
 	{
-		$this->layout = '//layouts/admin';
+		$this->layout = '/layouts/admin';
 		$this->breadcrumbs = array(
 			Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
-			Yii::t('common', 'Administrate films') => array($this->createUrl('films/admin')),
+			Yii::t('films', 'Administrate films') => array($this->createUrl('films/admin')),
 			Yii::t('common', 'Edit'),
 		);
 
@@ -56,7 +56,7 @@ class FilmsController extends Controller
 
     	$cmd->bindParam(':id', $id, PDO::PARAM_INT);
     	$film = $cmd->queryAll();
-
+print_r($_GET);
 
 		$this->render('/films/edit', array('film' => $film));
 	}
@@ -67,10 +67,10 @@ class FilmsController extends Controller
 	 */
 	public function actionForm()
 	{
-		$this->layout = '//layouts/admin';
+		$this->layout = '/layouts/admin';
 		$this->breadcrumbs = array(
 			Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
-			Yii::t('common', 'Administrate films') => array($this->createUrl('films/admin')),
+			Yii::t('films', 'Administrate films') => array($this->createUrl('films/admin')),
 			Yii::t('films', 'Add Film'),
 		);
 

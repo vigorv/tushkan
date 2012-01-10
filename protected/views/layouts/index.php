@@ -29,10 +29,11 @@
 		<?php $this->widget('zii.widgets.CMenu',array(
 			'items'=>array(
 				array('label'=>'Home', 'url'=>array('/')),
-				array('label'=>'About', 'url'=>array('/index/page', 'view'=>'about')),
-				array('label'=>'Contact', 'url'=>array('/index/contact')),
-				array('label'=>'Login', 'url'=>array('/index/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>'Logout ('.Yii::app()->user->name.')', 'url'=>array('/index/logout'), 'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>Yii::t('common', 'Registration'), 'url'=>array('/register'), 'visible'=>Yii::app()->user->isGuest),
+				array('label'=>Yii::t('common', 'Login'), 'url'=>array('/register/login'), 'visible'=>Yii::app()->user->isGuest),
+				array('label'=>Yii::t('common', 'Logout') . ' ('.Yii::app()->user->name.')',
+					'url'=>array('/register/logout'), 'visible'=>!Yii::app()->user->isGuest
+				),
 				array('label'=> Yii::t('common', 'Admin index'), 'url'=>array('/admin'))
 			),
 		)); ?>
@@ -43,10 +44,21 @@
 		)); ?><!-- breadcrumbs -->
 	<?php endif?>
 
+	<?php if(Yii::app()->user->hasFlash('success')):?>
+	<div class="flash-notice">
+	<?php echo Yii::app()->user->getFlash('success')?>
+	</div>
+	<?php endif?>
+	<?php if(Yii::app()->user->hasFlash('error')):?>
+	<div class="flash-error">
+	<?php echo Yii::app()->user->getFlash('error')?>
+	</div>
+	<?php endif?>
+
 	<?php echo $content; ?>
 
 	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> Tushkan TV<br/>
+		Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>
 		All Rights Reserved.<br/>
 		<?php //echo Yii::powered(); ?>
 	</div><!-- footer -->

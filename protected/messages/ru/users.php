@@ -15,6 +15,8 @@ return array (
   'User restored'		=> 'Пользователь восстановлен',
   'Email exists'		=> 'Пользователь с таким Email уже существует',
   'Administrate users'	=> 'Администрирование пользователей',
+  'Account balance'		=> 'Баланс счета',
+  'Fill up balance'		=> 'Пополнить баланс',
 
   'Email could not be empty'	=> 'Поле Email не может быть пустым',
   'Unable to register user'		=> 'Невозможно зарегистрировать пользователя',

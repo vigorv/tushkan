@@ -9,6 +9,15 @@ class Controller extends CController
 
 	public $identity = null;
 
+	public function filters()
+	{
+		return array(
+            array(
+                'application.filters.AccessFilter',
+            ),
+        );
+	}
+
 	public function __construct()
 	{
 		Yii::app()->setLanguage('ru');

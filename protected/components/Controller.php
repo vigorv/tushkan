@@ -7,6 +7,14 @@ class Controller extends CController {
     public $breadcrumbs = array();
     public $identity = null;
 
+    public function filters() {
+        return array(
+            array(
+                'application.filters.AccessFilter',
+            ),
+        );
+    }
+
     public function init() {
         parent::init();
         $app = Yii::app();

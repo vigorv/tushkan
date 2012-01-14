@@ -198,7 +198,9 @@ class PaysController extends Controller
  				$requestInfo = $_POST;
  			else
  				$requestInfo = array();
-			$resultMsg = $this->Paysystem->ok($requestInfo);
+			$msg = $this->Paysystem->ok($requestInfo);
+			if (!empty($msg))
+				$resultMsg = $msg;
 		}
 		$this->out($resultMsg);
 	}
@@ -217,8 +219,10 @@ class PaysController extends Controller
  				$requestInfo = $_POST;
  			else
  				$requestInfo = array();
-			$resultMsg = $this->Paysystem->fail($requestInfo);
-		}
+			$msg = $this->Paysystem->fail($requestInfo);
+			if (!empty($msg))
+				$resultMsg = $msg;
+	}
 		$this->out($resultMsg);
 	}
 

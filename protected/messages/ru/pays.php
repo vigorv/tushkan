@@ -1,9 +1,9 @@
 <?php
 return array(
-  'оплатить'			=> 'pay',
-  'Платеж'				=> 'Payment',
+	'pay'  			=> 'оплатить',
+	'Payment'		=> 'Платеж',
 
-  'Ошибка инициализации оплаты'		=> 'Payment initialisation error',
-  'Платеж выполнен успешно'			=> 'Payment processed successfully',
-  'Платеж не выполнен'				=> 'Payment failed',
+	'Payment initialisation error'	=> 'Ошибка инициализации оплаты',
+  	'Payment processed successfully'=> 'Платеж выполнен успешно',
+	'Payment failed'				=> 'Платеж не выполнен',
 );

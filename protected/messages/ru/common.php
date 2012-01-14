@@ -13,4 +13,7 @@ return array (
   'Logout' => 'Выход',
   'Are you sure?' => 'Вы уверены?',
   'Сonfirmation' => 'Подтверждение',
+
+  'Access denied. Authentication required.'		=> 'Отказано в доступе. Tребуется аутентификация.',
+
 );

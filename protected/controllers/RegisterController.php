@@ -14,11 +14,11 @@ class RegisterController extends Controller {
     }
 
     public function actionConfirm($hash = '') {
-        
+
     }
 
     public function actionForget() {
-        
+
     }
 
     public function actionIndex() {
@@ -30,7 +30,7 @@ class RegisterController extends Controller {
         if (isset($_POST['RegisterForm'])) {
             $model->attributes = $_POST['RegisterForm'];
             if ($model->validate()) {
-                $users = new users();
+                $users = new CUser();
                 $attrs = $model->getAttributes();
                 unset($attrs['verifyCode']);
                 $attrs['salt'] = substr(md5(time()), 0, 5); //СОЛЬ ГЕНЕРИРУЕМ ПРИ ДОБАВЛЕНИИ

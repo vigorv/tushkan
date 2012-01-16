@@ -62,7 +62,9 @@
                 </div>
             <?php endif ?>
 
-            <?php echo $content; ?>
+			<div id="content">
+			<?php echo $content; ?>
+			</div>
 
             <div id="footer">
                 Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>
@@ -71,49 +73,6 @@
             </div><!-- footer -->
 
         </div><!-- page -->
-
-	<div id="mainmenu">
-		<?php $this->widget('zii.widgets.CMenu',array(
-			'items'=>array(
-				array('label'=>'Home', 'url'=>array('/')),
-				array('label'=>Yii::t('common', 'Registration'), 'url'=>array('/register'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>Yii::t('users', 'Fill up balance'), 'url'=>array('/pays'), 'visible'=>!Yii::app()->user->isGuest),
-				array('label'=>Yii::t('common', 'Login'), 'url'=>array('/register/login'), 'visible'=>Yii::app()->user->isGuest),
-				array('label'=>Yii::t('common', 'Logout') . ' ('.Yii::app()->user->name.')',
-					'url'=>array('/register/logout'), 'visible'=>!Yii::app()->user->isGuest
-				),
-				array('label'=> Yii::t('common', 'Admin index'), 'url'=>array('/admin'), 'visible'=>(Yii::app()->user->getState('dmUserPower') >= _IS_MODERATOR_))
-			),
-		)); ?>
-	</div><!-- mainmenu -->
-	<?php if(isset($this->breadcrumbs)):?>
-		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
-			'links'=>$this->breadcrumbs,
-		)); ?><!-- breadcrumbs -->
-	<?php endif?>
-
-	<?php if(Yii::app()->user->hasFlash('success')):?>
-	<div class="flash-notice">
-	<?php echo Yii::app()->user->getFlash('success')?>
-	</div>
-	<?php endif?>
-	<?php if(Yii::app()->user->hasFlash('error')):?>
-	<div class="flash-error">
-	<?php echo Yii::app()->user->getFlash('error')?>
-	</div>
-	<?php endif?>
-
-	<div id="content">
-	<?php echo $content; ?>
-	</div>
-
-	<div id="footer">
-		Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>
-		All Rights Reserved.<br/>
-		<?php //echo Yii::powered(); ?>
-	</div><!-- footer -->
-
-</div><!-- page -->
 
 </body>
 </html>

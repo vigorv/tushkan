@@ -27,7 +27,7 @@ class UsersController extends Controller {
 
         $users = CUser::model()
                 ->findAll($criteria);
-        
+
         $this->render('admin', array('users' => $users, 'pages' => $pages));
     }
 
@@ -55,7 +55,7 @@ class UsersController extends Controller {
             $userForm->attributes = $_POST['UserForm'];
 
             if ($userForm->validate()) {
-                $users = new users();
+                $users = new CUser();
                 $attrs = $userForm->getAttributes();
                 $attrs['salt'] = substr(md5(time()), 0, 5); //СОЛЬ ГЕНЕРИРУЕМ ПРИ ДОБАВЛЕНИИ
                 $attrs['created'] = date('Y-m-d H:i:s');
@@ -109,7 +109,7 @@ class UsersController extends Controller {
             $userForm->attributes = $_POST['UserForm'];
             $attrs = $userForm->getAttributes();
             if ($userForm->validate()) {
-                $users = new users();
+                $users = new CUser;
                 foreach ($attrs as $k => $v) {
                     if (empty($v)) {
                         $attrs[$k] = $info[$k];

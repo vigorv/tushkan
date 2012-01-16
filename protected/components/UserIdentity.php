@@ -152,7 +152,7 @@ class UserIdentity extends CUserIdentity
 	{
 		$id = $userInfo['id'];
 		$ip = $this->getUserIp();
-		$users = new users();
+		$users = new CUser();
 		$userRecord = $users->findByPk($id);
 		$userInfo['lastvisit'] = date('Y-m-d H:i:s', time());
 		$hash = $this->createHash($userInfo);

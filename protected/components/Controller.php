@@ -31,11 +31,11 @@ class Controller extends CController {
 
     public function beforeAction($action) {
         if (Yii::app()->request->isAjaxRequest) {
-//    $this->renderPartial('_ajaxContent', $data);
+            //    $this->renderPartial('_ajaxContent', $data);
             $this->layout = 'ajax';
         } else {
-//$this->layout='index';
-// $this->render('index', $data);
+            //$this->layout='index';
+            // $this->render('index', $data);
         }
         return true;
     }

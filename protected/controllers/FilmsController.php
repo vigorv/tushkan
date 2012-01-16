@@ -1,124 +1,127 @@
 <?php
 
-class FilmsController extends Controller
-{
+class FilmsController extends Controller {
 
-	public function actionIndex()
-	{
-		$this->breadcrumbs = array(
-			Yii::t('common', 'Admin index'),
-		);
-		$this->render('/films/index');
-	}
+    public function actionIndex() {
+        $this->breadcrumbs = array(
+            Yii::t('common', 'Admin index'),
+        );
+        $this->render('index');
+    }
 
-	public function actionAdmin()
-	{
-		$this->layout = '/layouts/admin';
-		$this->breadcrumbs = array(
-			Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
-			Yii::t('films', 'Administrate films'),
-		);
+    public function actionAdmin() {
+        $this->layout = '/layouts/admin';
+        $this->breadcrumbs = array(
+            Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
+            Yii::t('films', 'Administrate films'),
+        );
 
-		$films = Yii::app()->db->createCommand()
-			->select('f.id, f.y, f.title, p.filename, GROUP_CONCAT(DISTINCT c.title SEPARATOR ", ") AS country')
-    		->from('{{films}} f')
-    		->join('{{countries_films}} cf', 'cf.film_id=f.id')
-    		->join('{{countries}} c', 'cf.country_id=c.id')
-    		->leftJoin('{{film_pictures}} p', 'p.film_id=f.id AND p.tp="smallposter"')
-    		->group('f.id')
-    		->queryAll();
+        /*  $films = Yii::app()->db->createCommand()
+          ->select('f.id, f.y, f.title, p.filename, GROUP_CONCAT(DISTINCT c.title SEPARATOR ", ") AS country')
+          ->from('{{films}} f')
+          ->join('{{countries_films}} cf', 'cf.film_id=f.id')
+          ->join('{{countries}} c', 'cf.country_id=c.id')
+          ->leftJoin('{{film_pictures}} p', 'p.film_id=f.id AND p.tp="smallposter"')
+          ->group('f.id')
+          ->queryAll();
+         */
+        $criteria = new CDbCriteria();
+        $count = CFilm::model()->count($criteria);
+        $pages = new CPagination($count);
+        $pages->pageSize = 10;
+        $pages->applyLimit($criteria);
+        $criteria->select = ' f.id, f.y,f.title,p.filename ,GROUP_CONCAT(DISTINCT c.title SEPARATOR ", ") AS country';
+        $criteria->join = 'LEFT JOIN {{countries_films}} as cf  ON cf.film_id=f.id
+             LEFT JOIN {{countries}} as c on cf.country_id=c.id
+             LEFT JOIN {{film_pictures}} as p on p.film_id = f.id AND p.tp ="smallposter"
+             ';
+        $criteria->group = 'f.id';
 
-		$this->render('/films/admin', array('films' => $films));
-	}
+        $films = CFilm::model()
+                ->findAll($criteria);
 
-	/**
-	 * действие инлайн редактирования
-	 *
-	 */
-	public function actionEdit($id = 0)
-	{
-		$this->layout = '/layouts/admin';
-		$this->breadcrumbs = array(
-			Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
-			Yii::t('films', 'Administrate films') => array($this->createUrl('films/admin')),
-			Yii::t('common', 'Edit'),
-		);
+        $this->render('admin', array('films' => $films, 'pages' => $pages));
+    }
 
-		$cmd = Yii::app()->db->createCommand()
-			->select('f.id, f.y, f.title, d.description, p.filename, GROUP_CONCAT(DISTINCT c.title SEPARATOR ", ") AS country')
-    		->from('{{films}} f')
-    		->join('{{film_descriptions}} d', 'd.film_id=f.id')
-    		->join('{{countries_films}} cf', 'cf.film_id=f.id')
-    		->join('{{countries}} c', 'cf.country_id=c.id')
-    		->leftJoin('{{film_pictures}} p', 'p.film_id=f.id AND p.tp="smallposter"')
-    		->where('f.id=:id')
-    		->group('f.id');
+    /**
+     * действие инлайн редактирования
+     *
+     */
+    public function actionEdit($id = 0) {
+        $this->layout = '/layouts/admin';
+        $this->breadcrumbs = array(
+            Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
+            Yii::t('films', 'Administrate films') => array($this->createUrl('films/admin')),
+            Yii::t('common', 'Edit'),
+        );
 
-    	$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-    	$film = $cmd->queryAll();
-print_r($_GET);
+        $cmd = Yii::app()->db->createCommand()
+                ->select('f.id, f.y, f.title, d.description, p.filename, GROUP_CONCAT(DISTINCT c.title SEPARATOR ", ") AS country')
+                ->from('{{films}} f')
+                ->join('{{film_descriptions}} d', 'd.film_id=f.id')
+                ->join('{{countries_films}} cf', 'cf.film_id=f.id')
+                ->join('{{countries}} c', 'cf.country_id=c.id')
+                ->leftJoin('{{film_pictures}} p', 'p.film_id=f.id AND p.tp="smallposter"')
+                ->where('f.id=:id')
+                ->group('f.id');
 
-		$this->render('/films/edit', array('film' => $film));
-	}
+        $cmd->bindParam(':id', $id, PDO::PARAM_INT);
+        $film = $cmd->queryAll();
+        print_r($_GET);
 
-	/**
-	 * действие формы добавления
-	 *
-	 */
-	public function actionForm()
-	{
-		$this->layout = '/layouts/admin';
-		$this->breadcrumbs = array(
-			Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
-			Yii::t('films', 'Administrate films') => array($this->createUrl('films/admin')),
-			Yii::t('films', 'Add Film'),
-		);
+        $this->render('/films/edit', array('film' => $film));
+    }
 
-		$cLst = Yii::app()->db->createCommand()
-			->select('id, title')
-			->from('{{countries}}')
-			->queryAll();
+    /**
+     * действие формы добавления
+     *
+     */
+    public function actionForm() {
+        $this->layout = '/layouts/admin';
+        $this->breadcrumbs = array(
+            Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
+            Yii::t('films', 'Administrate films') => array($this->createUrl('films/admin')),
+            Yii::t('films', 'Add Film'),
+        );
 
-		$countries = $chkCountries = array();
+        $cLst = Yii::app()->db->createCommand()
+                ->select('id, title')
+                ->from('{{countries}}')
+                ->queryAll();
 
-		$filmForm = new FilmForm();
-		if(isset($_POST['FilmForm']))
-		{
-		    $filmForm->attributes = $_POST['FilmForm'];
+        $countries = $chkCountries = array();
 
-		    if($filmForm->validate())
-		    {
-		        //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
-		        $films = new films();
-				$attrs = $filmForm->getAttributes();
-				foreach ($attrs as $k => $v)
-				{
-		        	$films->{$k} = $v;
-				}
-				$films->created = date('Y-m-d H:i:s');
-				$films->modified = date('Y-m-d H:i:s');
-		        $films->save();
-				Yii::app()->user->setFlash('success', Yii::t('films', 'Film Saved'));
-				//$this->redirect('/films/admin');
-		    }
+        $filmForm = new FilmForm();
+        if (isset($_POST['FilmForm'])) {
+            $filmForm->attributes = $_POST['FilmForm'];
 
-		    if (!empty($_POST['FilmForm']['countries']))
-		    {
-				$chkCountries = $_POST['FilmForm']['countries'];
-			}
-			$countries = array();
-	    	foreach ($cLst as $country)
-	    	{
-	    		$countries[$country['id']] = $country['title'];
-	    	}
-		}
-		else
-		{
-	    	foreach ($cLst as $country)
-	    	{
-	    		$countries[$country['id']] = $country['title'];
-	    	}
-		}
-		$this->render('/films/form', array('model' => $filmForm, 'countries' => $countries, 'chkCountries' => $chkCountries));
-	}
+            if ($filmForm->validate()) {
+                //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
+                $films = new films();
+                $attrs = $filmForm->getAttributes();
+                foreach ($attrs as $k => $v) {
+                    $films->{$k} = $v;
+                }
+                $films->created = date('Y-m-d H:i:s');
+                $films->modified = date('Y-m-d H:i:s');
+                $films->save();
+                Yii::app()->user->setFlash('success', Yii::t('films', 'Film Saved'));
+                //$this->redirect('/films/admin');
+            }
+
+            if (!empty($_POST['FilmForm']['countries'])) {
+                $chkCountries = $_POST['FilmForm']['countries'];
+            }
+            $countries = array();
+            foreach ($cLst as $country) {
+                $countries[$country['id']] = $country['title'];
+            }
+        } else {
+            foreach ($cLst as $country) {
+                $countries[$country['id']] = $country['title'];
+            }
+        }
+        $this->render('/films/form', array('model' => $filmForm, 'countries' => $countries, 'chkCountries' => $chkCountries));
+    }
+
 }

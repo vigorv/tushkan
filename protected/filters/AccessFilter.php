@@ -29,17 +29,42 @@ class AccessFilter extends CFilter
 	    	}
     	}
 
+    	$access = true;
 		switch (get_class($filterChain->controller))
 		{
+			case "FilmController":
+			case "AdminController":
+				$access = ($userPower >= _IS_MODERATOR_);
+			break;
+
+			case "UserController":
+				$access = ($userPower >= _IS_ADMIN_);
+			break;
+
 			case "PaysController":
 				if (Yii::app()->user->isGuest && ($filterChain->action->id == 'index'))
 				{
-					Yii::app()->user->setFlash('error', Yii::t('common', 'Access denied. Authentication required'));
-					$filterChain->controller->redirect('/register/login');
+					$access = false;
 				}
 			break;
 		}
-        return true; // false — для случая, когда действие не должно быть выполнено
+		if (!$access)
+		{
+			Yii::app()->user->setFlash('error', Yii::t('common', 'Access denied. Authentication required'));
+
+			if (Yii::app()->user->isGuest)
+			{
+				//$filterChain->controller->redirect('/register/login');
+				Yii::app()->user->setReturnUrl(Yii::app()->request->getUrl());
+				Yii::app()->request->redirect('/register/login');
+			}
+			else
+			{
+				//$filterChain->controller->redirect('/register/login');
+				Yii::app()->request->redirect('/');
+			}
+		}
+        return $access; // false — для случая, когда действие не должно быть выполнено
     }
 
     protected function postFilter($filterChain)

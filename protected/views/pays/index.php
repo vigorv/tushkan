@@ -16,8 +16,8 @@
 	<script type="text/javascript">
 		function diamondPay()
 		{
-			$.post("/pays/payment/1", { user_id: "2", summa: "100.5" , operation_id: "1" }, function(data){
-				alert(data);
+			$.post("/pays/payment/1", { user_id: "<?php echo Yii::app()->user->getId();?>", summa: "100.5" , operation_id: "1" }, function(data){
+				//alert(data);
 				if (data == '_PS_PAYED_')
 					location.href = '/pays/ok/1';
 				else

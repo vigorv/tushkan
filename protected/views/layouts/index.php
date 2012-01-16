@@ -61,7 +61,9 @@
 	</div>
 	<?php endif?>
 
+	<div id="content">
 	<?php echo $content; ?>
+	</div>
 
 	<div id="footer">
 		Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>

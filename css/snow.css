@@ -1,0 +1,50 @@
+/* 
+    Document   : snow
+    Created on : 15.01.2012, 18:55:25
+    Author     : snowing
+    Description:
+        Purpose of the stylesheet follows.
+*/
+#folders{
+    float:left;margin:1%; width:10%;
+}
+#files{
+    float:left;margin:1%; width:86%;
+}
+#file_list{
+    list-style:none;float:left;
+}
+#file_list li{
+    float:left; margin:10px 0 0 30px;  
+    width:45px;
+    text-align:center;
+}    
+
+#file_list li img{
+    width:45px;
+    height:50px;
+    border: 1px solid white;
+}
+#file_list li.selected img{        
+    border: 1px solid blue;        
+}
+#file_list li.elem  img{
+    border: 1px inset gray;
+}
+#file_list{
+    max-height:400px;
+    overflow:auto;
+}
+#FileList .options{
+    list-style: none; 
+}
+
+#FileList .options li{ 
+    float:left; margin:5px 0 0 5px;
+}
+.fleft{
+    float:left;
+}
+.fright{
+    float:right;    
+}

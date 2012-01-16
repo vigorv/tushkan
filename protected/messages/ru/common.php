@@ -13,6 +13,10 @@ return array (
   'Logout' => 'Выход',
   'Are you sure?' => 'Вы уверены?',
   'Сonfirmation' => 'Подтверждение',
+  'Title' => 'Название',
+  'Active' => 'Видимость',
+  'Class' => 'Модуль',
+  'Srt' => 'Сортировка',
 
   'Access denied. Authentication required.'		=> 'Отказано в доступе. Tребуется аутентификация.',
 

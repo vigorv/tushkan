@@ -24,15 +24,15 @@ class CFiletypes {
                 break;
             case 'AA1':
                 foreach ($array as $file) {
-                    echo '<li><img width="100px" height="150px"/><br/>';
-                    echo $file['name'];
+                    echo '<li fname="'.$file['filename'].'><img width="100px" height="150px"/><br/>';
+                    echo '<span>' . $file['name'] . '</span>';
                     echo '</li>';
                 }
                 break;
             case 'FL1':
                 foreach ($array as $file) {
                     echo '<li><img /><br/>';
-                    echo $file['name'];
+                    echo '<span>' . $file['name'] . '</span>';
                     echo '</li>';
                 }
                 break;

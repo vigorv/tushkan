@@ -47,6 +47,7 @@ class FilesController extends Controller {
 
     public function actionRemove() {
         echo "remove";
+        var_dump($_POST);
     }
 
     public function actionIndex() {

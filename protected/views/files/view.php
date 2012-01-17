@@ -2,22 +2,22 @@
     <div class="P_section_1 fleft">My Files</div>
     <div class="P_section_2_0 fleft">
         <ul class="options fleft">
-            <li><a href ="/files/new"><img/>New</a></li>
+            <li><a href ="#"><img/>New</a></li>
             <li><a href="/files/add"><img />Add</a></li>
         </ul>
         <ul class="options fright">
-            <li><img width="25px" height="25px"/>Delete</li>
+            <li><a id="item_del" href="#"><img/>Delete</a></li>
         </ul>
     </div>
-<div class="clearfix"></div>
+    <div class="clearfix"></div>
 </div>
-
 
 <?php
 for ($i = 1; $i < 1000; $i++) {
     $files[] = array('name' => 'test');
 }
 ?>
+<div id="result"></div>
 <?php if (!empty($files)): ?>
     <div id="FileList">
         <div id="folders">
@@ -53,34 +53,69 @@ for ($i = 1; $i < 1000; $i++) {
         new_e=null;
         switch(e.keyCode){            
             case 39: //right
+                e.preventDefault()
                 var new_e = elem.next('li');
                 break;
             case 37:// left
+                e.preventDefault()
                 var new_e = elem.prev('li');
                 break;
             case 38://up
+                e.preventDefault()
                 var line_count=parseInt($(this).width() / 75)-1;
                 var new_e = elem.prevAll("li:eq("+line_count+")");
                 break;
-            case 40://down                
+            case 40://down         
+                e.preventDefault()
                 var line_count=parseInt($(this).width() / 75)-1;
                 var new_e = elem.nextAll("li:eq("+line_count+")");    
                 break;
             case 35://end
+                e.preventDefault()
                 var new_e =  $("#file_list li").last();
                 break;
             case 36://home
+                e.preventDefault()
                 var new_e =  $("#file_list li").first();
+                break;
+            case 32://space
+                e.preventDefault();
+                if ($(elem).hasClass('selected')){
+                    $(elem).removeClass('selected');
+                } else {
+                    $(elem).addClass('selected');
+                }
                 break;
             default:
         }
-        if  (new_e && new_e.length){
-            elem.removeClass('elem');
-            new_e.addClass('elem');
+        if  (new_e && new_e.length){            
+            if(!($(new_e).hasClass('elem'))){
+                elem.removeClass('elem');
+                new_e.addClass('elem');
+                //$(this).scrollTop(new_e.position().top);
+            }
         }
     }
 );
     $("#file_list li:first ").addClass('elem');
+    
+    $('#item_del').click(function(e){
+        var postText = "";
+        $('#file_list li.selected').each(function(){
+            //postText += $( this ).attr( "name" ) +',';
+            postText += $( this ).text() +',';
+        });
+        $.ajax( { 
+            url: "/files/remove",
+            type: "POST",
+            data: "postText=" + postText,
+            success: function( response ) {
+                // request has finished at this point.
+                $("#result").html(response);
+            }
+        } );
+    });
+    
     
     
 </script>  

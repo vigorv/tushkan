@@ -2,8 +2,8 @@
     <div class="P_section_1 fleft">My Files</div>
     <div class="P_section_2_0 fleft">
         <ul class="options fleft">
-            <li><img width="25px" height="25px"/>New</li>
-            <li><img width="25px" height="25px"/>Add</li>
+            <li><a href ="/files/new"><img/>New</a></li>
+            <li><a href="/files/add"><img />Add</a></li>
         </ul>
         <ul class="options fright">
             <li><img width="25px" height="25px"/>Delete</li>

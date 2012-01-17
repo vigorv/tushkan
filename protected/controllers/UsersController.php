@@ -187,7 +187,7 @@ class UsersController extends Controller {
     /**
      * используем этот callback для генерирования строки обратной навигации
      *
-     * @return ищщдуфт
+     * @return boolean
      */
     protected function beforeRender($view) {
         $controllerRoot = array(Yii::t('users', 'Administrate users'));

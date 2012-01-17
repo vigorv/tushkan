@@ -33,6 +33,7 @@
                 <ul>Administrator resources
                     <li><a href="<?php echo $this->createUrl('users/admin'); ?>">Users</a></li>
                     <li>Groups</li>
+                    <li><a href="<?php echo $this->createUrl('paysystems/admin'); ?>">Paysystems</a></li>
                     <li><a href="<?php echo $this->createUrl('films/admin'); ?>">Films</a></li>
                 </ul>
             </div>

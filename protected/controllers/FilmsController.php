@@ -36,6 +36,7 @@ class FilmsController extends Controller {
              LEFT JOIN {{film_pictures}} as p on p.film_id = f.id AND p.tp ="smallposter"
              ';
         $criteria->group = 'f.id';
+        
 
         $films = CFilm::model()
                 ->findAll($criteria);

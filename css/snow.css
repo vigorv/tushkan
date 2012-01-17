@@ -48,3 +48,26 @@
 .fright{
     float:right;    
 }
+#Universe{
+    padding:10px;
+}
+.block_content{
+    margin:10px;   
+}
+
+.listview_a li {
+    list-style: none;
+    display:inline-block;      
+    width:100px;
+    white-space: normal;
+    vertical-align: top;
+    margin:3px 0 0 3px;        
+    text-align: center;
+}
+.listview_a{
+    height:auto;
+    max-height:300px;
+    overflow:auto;
+    padding:0;
+    white-space: nowrap;
+}

@@ -17,7 +17,7 @@ class CFiletypes {
                         $poster = Yii::app()->params['tushkan']['postersURL'] . '/smallposter/' . $file['filename'];
                     else
                         $poster = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
-                    echo '<li><img src=' . $poster.='><br/>';
+                    echo '<li id="v'.$file['id'].'"><img src=' . $poster.='><br/>';
                     echo '<span>' . $file['title'] . '</span>';
                     echo '</li>';
                 }

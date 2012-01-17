@@ -11,8 +11,23 @@
         ?>
     </head>
     <body>
-        <div  id="header" class="Panel_H" > 
-            <b>Menu</b>
+        <div id="header">
+            <?php echo CHtml::encode(Yii::app()->name); ?>
+            <?php
+            $this->widget('zii.widgets.CMenu', array(
+                'id' => 'top_menu',
+                'items' => array(
+                    array('label' => 'Home', 'url' => array('/')),
+                    array('label' => Yii::t('common', 'Registration'), 'url' => array('/register'), 'visible' => Yii::app()->user->isGuest),
+                    array('label' => Yii::t('users', 'Fill up balance'), 'url' => array('/pays'), 'visible' => !Yii::app()->user->isGuest),
+                    array('label' => Yii::t('common', 'Login'), 'url' => array('/register/login'), 'visible' => Yii::app()->user->isGuest),
+                    array('label' => Yii::t('common', 'Logout') . ' (' . Yii::app()->user->name . ')',
+                        'url' => array('/register/logout'), 'visible' => !Yii::app()->user->isGuest
+                    ),
+                    array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => (Yii::app()->user->getState('dmUserPower') >= _IS_MODERATOR_))
+                ),
+            ));
+            ?>
         </div>
         <div id="container" style="background-color:#FFF6BF">
 

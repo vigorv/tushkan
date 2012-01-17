@@ -17,8 +17,81 @@ class RegisterController extends Controller {
 
     }
 
-    public function actionForget() {
+    public function actionForget($hash = '') {
+    	$subAction = ''; $info = array();
+        $model = new RegisterForm();
+        $model->setScenario('forget');
+		if (!empty($_POST))
+		{
+			$subAction = 'post';
+            $model->attributes = $_POST['RegisterForm'];
+            if ($model->validate('forget')) {
+            	$attrs = $model->getAttributes();
+				$model->email = $attrs['email'];
+            	$cmd = Yii::app()->db->createCommand()
+            		->select('*')
+            		->from('{{users}}')
+            		->where('email = :email');
+            	$cmd->bindParam(':email', $model->email, PDO::PARAM_STR);
+            	$userInfo = $cmd->queryRow();
+            	if (!empty($userInfo))
+            	{
+					//ОТПРАВКА ПИСЬМА СО ССЫЛКОЙ НА СМЕНУ ПАРОЛЯ
+					$headers="From: " . Yii::app()->params['adminEmail'] . "\r\nReply-To: " . $model->email;
+					$hashLink = Yii::app()->params['tushkan']['siteURL'] . '/register/forget/' . $userInfo['sess_id'];
+					$body = "Здравствуйте, {$userInfo['name']}!\n\n
+					Если вы забыли ваш пароль, перейдите по следующей ссылке:\n\n
+					{$hashLink}\n\n
+					Если вы не запрашивали восстановление пароля, просто удалите это письмо.\n\n
+					С уважением, администрация ресурса " . Yii::app()->name;
 
+					//mail($model->email, Yii::t('users', 'Forget password?'), $body, $headers);
+
+					$info['body'] = $body;
+            	}
+            }
+            else
+            {
+            	$subAction = '';
+            	$model->clearErrors();
+				$model->addError('email', Yii::t('users', 'Invalid Email'));
+            }
+		}
+		if (!empty($hash))
+		{
+			$subAction = 'newpassword';
+        	$cmd = Yii::app()->db->createCommand()
+        		->select('*')
+        		->from('{{users}}')
+        		->where('sess_id = :sess_id');
+        	$cmd->bindParam(':sess_id', $hash, PDO::PARAM_STR);
+        	$userInfo = $cmd->queryRow();
+
+        	if (empty($userInfo))
+        	{
+				$info['error'] = 1;
+        	}
+        	else
+        	{
+        		$newPassword = strtolower(substr(md5(time() . $userInfo['name']), 0, 5));
+
+				//ОТПРАВКА ПИСЬМА СО ССЫЛКОЙ НА СМЕНУ ПАРОЛЯ
+				$headers="From: " . Yii::app()->params['adminEmail'] . "\r\nReply-To: " . $model->email;
+				$body = "Здравствуйте, {$userInfo['name']}!\n\n
+				Ваш новый пароль:\n\n
+				{$newPassword}\n\n
+				С уважением, администрация ресурса " . Yii::app()->name;
+
+				$this->identity->password = $newPassword;
+				$newPassword = $this->identity->transformPassword($userInfo);
+		        $sql = 'UPDATE {{users}} SET pwd="' . $newPassword . '" WHERE id = ' . $userInfo['id'];
+		        $cmd = Yii::app()->db->createCommand($sql)->query();
+
+				//mail($model->email, Yii::t('users', 'Forget password?'), $body, $headers);
+				$info['body'] = $body;
+        	}
+		}
+        $this->render('forget', array('model' => $model, 'subAction' => $subAction, 'info' => $info));
     }
 
     public function actionIndex() {

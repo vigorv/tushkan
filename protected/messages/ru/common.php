@@ -17,6 +17,8 @@ return array (
   'Active' => 'Видимость',
   'Class' => 'Модуль',
   'Srt' => 'Сортировка',
+  'Fields with' => 'Поля, отмеченные знаком',
+  'are required' => ', обязательны для заполнения',
 
   'Access denied. Authentication required.'		=> 'Отказано в доступе. Tребуется аутентификация.',
 

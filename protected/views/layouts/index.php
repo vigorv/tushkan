@@ -32,7 +32,7 @@
                 <?php
                 $this->widget('zii.widgets.CMenu', array(
                     'items' => array(
-                        array('label' => 'Home', 'url' => array('/')),
+                        array('label' => 'Home', 'url' => array(' /')),
                         array('label' => Yii::t('common', 'Registration'), 'url' => array('/register'), 'visible' => Yii::app()->user->isGuest),
                         array('label' => Yii::t('users', 'Fill up balance'), 'url' => array('/pays'), 'visible' => !Yii::app()->user->isGuest),
                         array('label' => Yii::t('common', 'Login'), 'url' => array('/register/login'), 'visible' => Yii::app()->user->isGuest),

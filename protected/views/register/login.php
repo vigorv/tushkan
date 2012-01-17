@@ -13,17 +13,17 @@ $this->pageTitle=Yii::app()->name . ' - ' . Yii::t('common', 'Login');
 	),
 )); ?>
 
-	<p class="note">Fields with <span class="required">*</span> are required.</p>
+	<p class="note"><?php echo Yii::t('common', 'Fields with'); ?> <span class="required">*</span> <?php echo Yii::t('common', 'are required'); ?>.</p>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'username'); ?>
-		<?php echo $form->textField($model,'username'); ?>
+		<?php echo $form->textField($model,'username', array('class' => 'text ui-widget-content ui-corner-all')) ?>
 		<?php echo $form->error($model,'username'); ?>
 	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'password'); ?>
-		<?php echo $form->passwordField($model,'password'); ?>
+		<?php echo $form->passwordField($model,'password', array('class' => 'text ui-widget-content ui-corner-all')) ?>
 		<?php echo $form->error($model,'password'); ?>
 	</div>
 
@@ -39,3 +39,4 @@ $this->pageTitle=Yii::app()->name . ' - ' . Yii::t('common', 'Login');
 
 <?php $this->endWidget(); ?>
 </div><!-- form -->
+	<p class="note"><a href="/register/forget"><?php echo Yii::t('users', 'Forget password?'); ?></a>.</p>

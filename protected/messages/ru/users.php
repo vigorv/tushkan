@@ -17,6 +17,8 @@ return array (
   'Administrate users'	=> 'Администрирование пользователей',
   'Account balance'		=> 'Баланс счета',
   'Fill up balance'		=> 'Пополнить баланс',
+  'Forget password?'	=> 'Забыли пароль?',
+  'Change your password'=> 'Смените ваш пароль',
 
   'Email could not be empty'	=> 'Поле Email не может быть пустым',
   'Unable to register user'		=> 'Невозможно зарегистрировать пользователя',

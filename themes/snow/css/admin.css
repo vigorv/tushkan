@@ -45,13 +45,6 @@ html,body{
 .fleft{ float:left;}
 .fright{ float:right;}
 
-#Universe{
-    padding:10px;
-}
-.block_content{
-    margin:10px;   
-}
-
 .Panel_V{
     float:left;
     height:100%;
@@ -68,10 +61,6 @@ html,body{
 }
 .P_section_2{
     width:83%;
-    padding: 1% 1%;
-}
-.P_section_2_0{
-    width:80%;
     padding: 1% 1%;
 }
 
@@ -156,14 +145,12 @@ span.required{color:red}
     max-height:400px;
     overflow:auto;
 }
-.options{
+#FileList .options{
     list-style: none; 
-    margin:0;
-    padding:0;
 }
 
- .options li{ 
-    float:left; margin:0 0 0 10px;
+#FileList .options li{ 
+    float:left; margin:5px 0 0 5px;
 }
 
 /* Top_menu */
@@ -175,84 +162,5 @@ span.required{color:red}
     list-style: none;
 }
 #top_menu li a,#top_menu li a:visited{
-    color:white;
-}
-
-.listview_a li {
-    list-style: none;
-    display:inline-block;      
-    width:100px;
-    white-space: normal;
-    vertical-align: top;
-    margin:3px 6px 0 3px;        
-    text-align: center;
-}
-
-.listview_a li.selected img{
-    border:1px solid #0066A4;
-}
-
-.listview_a li img{
-    margin:5px;
-    width:90px;
-    height:120px;
-    border:1px solid white;
-}
-.listview_a li.selected span{
-    background-color: #0066A4;
-    color:white;
-}
-.listview_a li span{
-    padding:3px;
-    display:block;
-}
-
-.listview_a{
-    height:auto;
-    max-height:300px;
-    overflow:auto;
-    padding:0;
-    margin:5px 0;
-    white-space: nowrap;
-    background-color:white;
-    color:black;
-    
-}
-
- div.action_bar{
-    background-color: #333;
-    padding:5px 2%;
-    font-size:1.5em;
-}
-div.action_bar a,div.action_bar a:visited{
-    color:white;
-}
-
-
-.good_title{
-    padding:10px;
-    font-size: 1.5em;
-    background-color: #333;
-    font-weight: bold;
-    color:white;
-}
-
-#goods_ext{
-    text-align: center;
-}
-#goods_ext input[type=text]{
-    padding:2px 1%;    
-    font-size:1.3em;
-}
-#goods_ext input{
-    padding-top:2px;
-    padding-bottom:2px;
-    font-size:1.3em;
-    margin-left:1%;
-}
-
-#goods_content{
-    border:1px solid black;
-    
     color:white;
 }

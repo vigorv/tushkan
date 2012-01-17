@@ -19,6 +19,12 @@ class GoodsController extends Controller {
         $goods = array(array('name' => 'Films', 'itemtype' => 'V1', 'items' => $films));
         $this->render('view', array('goods' => $goods));
     }
+    
+    public function actionAdd(){
+        if(!empty($_POST)){
+            var_dump($_POST);
+        }
+    }
 
     public function actionAdmin() {
         $this->render('admin');

@@ -52,6 +52,9 @@ class FilesController extends Controller {
     public function actionIndex() {
         $this->render('view');
     }
+    public function actionDonothing(){
+        echo '{success:true}';
+    }
 
 }
 

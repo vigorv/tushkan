@@ -8,13 +8,9 @@
         <?php echo $form->textField($model, 'title') ?>
     </div>
 
-    <div class="row">
-        <?php echo $form->label($model, 'y'); ?>
-        <?php
-        	$yLst = range(date('Y'), 1900, -1);
-        	$yLst = array_combine($yLst, $yLst);
-        	echo $form->dropdownlist($model, 'y', $yLst);
-        ?>
+        <div class="row">
+        <?php echo $form->label($model, 'ip'); ?>
+        <?php echo $form->textField($model, 'ip') ?>
     </div>
 
     <div class="row">
@@ -27,15 +23,8 @@
         <?php echo $form->textField($model, 'active') ?>
     </div>
 
-    <?php echo $form->label($model, 'countries'); ?>
-    <div class="row stolb">
-    <?php
-    	echo CHtml::checkBoxList('FilmForm[countries]', $chkCountries, $countries);
-    ?>
-    </div>
-
     <div class="row submit">
-        <?php echo CHtml::submitButton(Yii::t('films', 'Add Film')); ?>
+        <?php echo CHtml::submitButton(Yii::t('fileserver', 'Add Fileserver')); ?>
     </div>
 
 <?php $this->endWidget(); ?>

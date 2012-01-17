@@ -1,27 +1,13 @@
-<style>
-    #Universe{
-        padding:10px;
-    }
-    .block_content{
-     margin:10px;   
-    }
-    
-</style>
-<div id="Universe">
- <h3>Add</h3>
-<input type="text" name="search" value="" placeholder="Search for something..."/>
-<div class="resourse_link">
-    <strong>Add by link</strong>
-    <form>
-        <input type="text" name="external_link" value="" />
-        <input type="submit" value="add"/>
+<div style="  padding:1%;     background-color: #09f">
+    <form id="goods_ext"  methos="GET" action="/universe/ext">
+        <input type="text" name="goods_add" value="" placeholder="Insert link, or search something" style="width:80%"/>
+        <input type="submit"  value="GO" style="width:8%;"/>
     </form>
-        
 </div>
-
+<div id="goods_ext_result">
+</div>
 <div id="goods_content">
 
-</div>
 </div>
 <script langauge="javascript">
     $('#goods_content').load('/goods/index');

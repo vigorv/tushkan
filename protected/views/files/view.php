@@ -1,34 +1,43 @@
-<style>
-
-</style>
-
-<h2>Мои Файлы</h2>
-<div id="FileList">  
-    <div id="folders">
-        <?php
-      echo   $this->widget(
-                'CTreeView', array('url' => array('/files/AjaxFoldersList'))
-        );
-        for ($i = 1; $i < 1000; $i++) {
-            $files[] = array('name' => 'test');
-        }
-        ?>
-    </div>
-    <div id="files" style="">
+<div class="good_title">   
+    <div class="P_section_1 fleft">My Files</div>
+    <div class="P_section_2_0 fleft">
         <ul class="options fleft">
-            <li><img width="25px" height="25px"/>Создать</li>
+            <li><a href ="/files/new"><img/>New</a></li>
+            <li><a href="/files/add"><img />Add</a></li>
         </ul>
         <ul class="options fright">
-            <li><img width="25px" height="25px"/>Корзина</li>
-        </ul>
-        <ul id="file_list" tabindex="1" >
-            <?
-            CFiletypes::ParsePrint($files, 'FL1');
-            ?>
+            <li><img width="25px" height="25px"/>Delete</li>
         </ul>
     </div>
-</div>
 <div class="clearfix"></div>
+</div>
+
+
+<?php
+for ($i = 1; $i < 1000; $i++) {
+    $files[] = array('name' => 'test');
+}
+?>
+<?php if (!empty($files)): ?>
+    <div id="FileList">
+        <div id="folders">
+            <?php
+            echo $this->widget('CTreeView', array(
+                'id' => 'folder_tree',
+                'url' => array('/files/AjaxFoldersList'))
+            );
+            ?>
+        </div>
+        <div id="files" style="fleft">
+            <ul id="file_list" tabindex="1" >
+                <?
+                CFiletypes::ParsePrint($files, 'FL1');
+                ?>
+            </ul>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+<?php endif; ?>
 
 <script type="text/javascript">
     

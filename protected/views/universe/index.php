@@ -1,11 +1,4 @@
-<style>
-    #Universe{
-        padding:10px;
-    }
-    .block_content{
-     margin:10px;   
-    }
-</style>
+
 <div id="Universe">
     <h1>Universe</h1>
     <div id="Universe_options">
@@ -32,8 +25,8 @@
     </div>
 </div>
 <script langauge="javascript">
-    $('#user_content').load('user/view');
-    $('#device_content').load('devices/view');
-    $('#section_content').load('sections/view')
+    //$('#user_content').load('users/view');
+  //$('#device_content').load('devices/view');
+    //$('#section_content').load('sections/view')
     $('#section_files').load('files')
 </script>

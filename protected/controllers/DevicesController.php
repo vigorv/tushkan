@@ -8,6 +8,7 @@ class DevicesController extends Controller {
     }
 
     public function actionAdd() {
+        
         $this->render('add');
     }
 

@@ -7,11 +7,11 @@
 
         <?php
         
-        Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/css/main.css');
+        Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/css/admin.css');
         Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/css/style.css');
         Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/css/jquery.tablesorter.pager.css');
         Yii::app()->getClientScript()->registerCoreScript('jquery');
-        Yii::app()->getClientScript()->registerScriptFile(Yii::app()->theme->baseUrl.'/js/main.js');
+        Yii::app()->getClientScript()->registerScriptFile(Yii::app()->theme->baseUrl.'/js/admin.js');
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jquery.tablesorter.min.js');
         ?>
 

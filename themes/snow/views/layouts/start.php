@@ -6,15 +6,30 @@
         <?php
         Yii::app()->getClientScript()->registerCoreScript('jquery');
         Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl . '/css/main.css');
+        Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery-ui/js/jquery-ui-1.8.16.custom.min.js");
+        Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery-ui/css/pepper-grinder/jquery-ui-1.8.16.custom.css");
         ?>
     </head>
     <body>
-        <div  id="header" class="Panel_H" > 
-            <b>Menu</b>
+        <div id="header">
+            <?php echo CHtml::encode(Yii::app()->name); ?>
+            <?php
+            $this->widget('zii.widgets.CMenu', array(
+                'id' => 'top_menu',
+                'items' => array(
+                    array('label' => 'Home', 'url' => array('/')),
+                    array('label' => Yii::t('common', 'Registration'), 'url' => array('/register'), 'visible' => Yii::app()->user->isGuest),
+                    array('label' => Yii::t('users', 'Fill up balance'), 'url' => array('/pays'), 'visible' => !Yii::app()->user->isGuest),
+                    array('label' => Yii::t('common', 'Login'), 'url' => array('/register/login'), 'visible' => Yii::app()->user->isGuest),
+                    array('label' => Yii::t('common', 'Logout') . ' (' . Yii::app()->user->name . ')',
+                        'url' => array('/register/logout'), 'visible' => !Yii::app()->user->isGuest
+                    ),
+                    array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => (Yii::app()->user->getState('dmUserPower') >= _IS_MODERATOR_))
+                ),
+            ));
+            ?>
         </div>
         <div id="container" style="background-color:#FFF6BF">
-
-
 
 
             <?php if (Yii::app()->user->hasFlash('success')): ?>
@@ -27,7 +42,6 @@
                     <?php echo Yii::app()->user->getFlash('error') ?>
                 </div>
             <?php endif ?>
-
             <?php echo $content; ?>
         </div>
         <div id="footer" class="Panel_H">

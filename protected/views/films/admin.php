@@ -1,5 +1,6 @@
 <div>
-<a href="<?php echo $this->createUrl('films/form');?>"><?php echo Yii::t('films', 'Add Film');?></a>
+<a href="<?php echo $this->createUrl('/films/form');?>"><?php echo Yii::t('films', 'Add Film');?></a>
+<a href="<?php echo $this->createUrl('/films');?>"><?php echo Yii::t('films', 'Upload FilmList');?></a>
 </div>
 <?php
 	if (!empty($films))

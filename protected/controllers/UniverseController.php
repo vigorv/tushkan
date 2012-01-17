@@ -18,11 +18,20 @@ class UniverseController extends Controller {
 
     public function actionIndex() {
         //if (!Yii::app()->user->isGuest) {
-            $this->render('index');        
+        $this->render('index');
     }
 
     public function actionAdd($step=1) {
         $step = (int) $step;
+        $this->render('steps');
+    }
+
+    public function actionExt() {
+        if(isset($_GET['goods_add'])){
+            
+            
+        }
+        
         $this->render('steps');
     }
 

@@ -95,6 +95,7 @@ class RegisterController extends Controller {
     }
 
     public function actionIndex() {
+        $this->layout='start';
         $this->breadcrumbs = array(
             Yii::t('common', 'Registration')
         );

@@ -16,7 +16,7 @@ class UniverseController extends Controller {
         }
     }
 
-    public function actionInxdex() {
+    public function actionIndex() {
         //if (!Yii::app()->user->isGuest) {
         $this->render('index');
     }

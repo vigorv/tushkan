@@ -16,13 +16,13 @@ $this->pageTitle=Yii::app()->name . ' - ' . Yii::t('common', 'Login');
 	<p class="note"><?php echo Yii::t('common', 'Fields with'); ?> <span class="required">*</span> <?php echo Yii::t('common', 'are required'); ?>.</p>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'username'); ?>
-		<?php echo $form->textField($model,'username', array('class' => 'text ui-widget-content ui-corner-all')) ?>
-		<?php echo $form->error($model,'username'); ?>
+		<?php echo $form->labelEx($model,'email'); ?>
+		<?php echo $form->textField($model,'email', array('class' => 'text ui-widget-content ui-corner-all')) ?>
+		<?php echo $form->error($model,'email'); ?>
 	</div>
 
 	<div class="row">
-		<?php echo $form->labelEx($model,'password'); ?>
+		<?php echo $form->labelEx($model,'password', array('label' => Yii::t('users', 'password'))); ?>
 		<?php echo $form->passwordField($model,'password', array('class' => 'text ui-widget-content ui-corner-all')) ?>
 		<?php echo $form->error($model,'password'); ?>
 	</div>

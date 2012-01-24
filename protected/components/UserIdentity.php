@@ -9,6 +9,7 @@
  */
 class UserIdentity extends CUserIdentity
 {
+	public $email;
 	public $rememberMe = 0;
 	/**
 	 * @return boolean whether authentication succeeds.
@@ -24,17 +25,17 @@ class UserIdentity extends CUserIdentity
 			ПЫТАЕМСЯ АВТОРИЗОВАТЬСЯ ПО КУКИ
 			ИЛИ ЧЕРЕЗ ФОРМУ АВТОРИЗАЦИИ (и БД)
 			*/
-			if (!empty($this->username))
+			if (!empty($this->email))
 			{
 				$cmd = Yii::app()->db->createCommand()
 					->select('*')
 					->from('{{users}}')
-					->where('name = :name')
+					->where('email = :email')
 					->limit(1);
-				$cmd->bindParam(':name', $this->username, PDO::PARAM_STR);
+				$cmd->bindParam(':email', $this->email, PDO::PARAM_STR);
 				$userInfo = $cmd->queryRow();
 
-				if (($userInfo['name'] == $this->username) && ($userInfo['pwd'] == $this->transformPassword($userInfo)))
+				if (($userInfo['email'] == $this->email) && ($userInfo['pwd'] == $this->transformPassword($userInfo)))
 				{
 					$this->errorCode = self::ERROR_NONE;
 					$this->saveAuthInfo($userInfo);

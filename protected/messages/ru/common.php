@@ -19,6 +19,7 @@ return array (
   'Srt' => 'Сортировка',
   'Fields with' => 'Поля, отмеченные знаком',
   'are required' => ', обязательны для заполнения',
+  'Products' => 'Товары, витрины',
 
   'Access denied. Authentication required.'		=> 'Отказано в доступе. Tребуется аутентификация.',
 

@@ -242,7 +242,7 @@ class OrdersController extends Controller
 					$cmd = Yii::app()->db->createCommand($sql);
 					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 					$cmd->query();
-					$sql = 'UPDATE {{orders}} SET icnt=icnt+1 WHERE id=' . $itemInfo['order_id'];
+					$sql = 'UPDATE {{orders}} SET icnt=icnt+1 WHERE id=' . $info['oid'];
 					Yii::app()->db->createCommand($sql)->query();
 				}
 			}

@@ -17,22 +17,38 @@ class CFiletypes {
                         $poster = Yii::app()->params['tushkan']['postersURL'] . '/smallposter/' . $file['filename'];
                     else
                         $poster = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
-                    echo '<li id="v'.$file['id'].'"><img src=' . $poster.='><br/>';
+                    echo '<li id="v' . $file['id'] . '"><img src=' . $poster.='><br/>';
                     echo '<span>' . $file['title'] . '</span>';
                     echo '</li>';
                 }
                 break;
             case 'AA1':
                 foreach ($array as $file) {
-                    echo '<li fname="'.$file['filename'].'><img width="100px" height="150px"/><br/>';
+                    echo '<li fname="' . $file['filename'] . '><img width="100px" height="150px"/><br/>';
                     echo '<span>' . $file['name'] . '</span>';
                     echo '</li>';
                 }
                 break;
             case 'FL1':
                 foreach ($array as $file) {
-                    echo '<li><img /><br/>';
-                    echo '<span>' . $file['name'] . '</span>';
+                    $img_path = '/images/files/';
+                    //var_dump($file);
+                    $ads='';
+                    if ($file['is_dir']) {
+                        $img = 'folder.png';
+                        $ads = 'dir=1';
+                    } else {
+                        $ftype = pathinfo($file['title'], PATHINFO_EXTENSION);
+                        switch ($ftype) {
+                            case 'txt':
+                                $img = '64x64/mimetypes/txt.png';
+                                break;
+                            default:
+                                $img = '64x64/mimetypes/unknown.png';
+                        }
+                    }
+                    echo '<li fid="' . $file['id'] . '" '.$ads.' ><img src="' . $img_path . $img . '" /><br/>';
+                    echo '<span>' . $file['title'] . '</span>';
                     echo '</li>';
                 }
                 break;

@@ -3,14 +3,12 @@
 /**
  * 
  */
-class CDevices extends CActiveRecord {
+class CFilelocations extends CActiveRecord {
     /**
      * @property $id
-     * @property $guid
-     * @property  $lastactive
-     * @property $user_id
-     * @property $dtype
-     * @property $title
+     * @property $addr
+     * @property $desc
+     * @property  $active
      */
 
     /**
@@ -23,7 +21,7 @@ class CDevices extends CActiveRecord {
     }
 
     public function tableName() {
-        return '{{devices}}';
+        return '{{filelocations}}';
     }
 
 }

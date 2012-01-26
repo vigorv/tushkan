@@ -6,13 +6,16 @@
 class CServers extends CActiveRecord {
 
     /**
-     * @property $id
-     * @property $ip
-     * @property $zone_id    
-     * @property $active
+     *
+     * @param string $className
+     * @return CActiveRecord
      */
+    public static function model($className = __CLASS__) {
+        return parent::model($className);
+    }
+
     public function tableName() {
-        return '{{servers}}';
+        return '{{fileservers}}';
     }
     
 

@@ -5,7 +5,8 @@ return array(
 	'Payment'		=> 'Платеж',
 	'amount'		=> 'сумма',
 	'Amount'		=> 'Сумма',
-	'rur'		=> 'руб.',
+	'Paysystems'	=> 'Платежные системы',
+	'rur'			=> 'руб.',
 
 	'Payment initialisation error'	=> 'Ошибка инициализации оплаты',
   	'Payment processed successfully'=> 'Платеж выполнен успешно',

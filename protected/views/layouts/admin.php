@@ -30,11 +30,14 @@
         ?>
         <div class="container">
             <div id="adminleft">
-                <ul>Administrator resources
-                    <li><a href="<?php echo $this->createUrl('users/admin'); ?>">Users</a></li>
+                <ul><?php echo Yii::t('common', 'Administrator resources');?>
+                    <li><a href="<?php echo $this->createUrl('users/admin'); ?>"><?php echo Yii::t('users', 'Users');?></a></li>
                     <li>Groups</li>
-                    <li><a href="<?php echo $this->createUrl('paysystems/admin'); ?>">Paysystems</a></li>
-                    <li><a href="<?php echo $this->createUrl('films/admin'); ?>">Films</a></li>
+                    <li><a href="<?php echo $this->createUrl('paysystems/admin'); ?>"><?php echo Yii::t('pays', 'Paysystems');?></a></li>
+                    <li><a href="<?php echo $this->createUrl('types/admin'); ?>"><?php echo Yii::t('types', 'Types of products');?></a></li>
+                    <li><a href="<?php echo $this->createUrl('params/admin'); ?>"><?php echo Yii::t('params', 'Type params');?></a></li>
+                    <li><a href="<?php echo $this->createUrl('products/admin'); ?>"><?php echo Yii::t('common', 'Products');?></a></li>
+                    <li><a href="<?php echo $this->createUrl('pages/admin'); ?>"><?php echo Yii::t('common', 'Pages');?></a></li>
                 </ul>
             </div>
             <div id="admincontent">

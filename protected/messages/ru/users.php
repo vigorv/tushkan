@@ -18,6 +18,7 @@ return array (
   'Account balance'		=> 'Баланс счета',
   'Fill up balance'		=> 'Пополнить баланс',
   'Forget password?'	=> 'Забыли пароль?',
+  'Users'				=> 'Пользователи',
   'Change your password'=> 'Смените ваш пароль',
 
   'Email could not be empty'	=> 'Поле Email не может быть пустым',

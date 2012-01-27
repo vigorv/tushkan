@@ -32,7 +32,14 @@ class AccessFilter extends CFilter
     	$access = true;
 		switch (get_class($filterChain->controller))
 		{
-			case "FilmController":
+			case "PagesController":
+			case "ProductController":
+				if (($filterChain->action->id == 'admin') || ($filterChain->action->id == 'edit') || ($filterChain->action->id == 'form'))
+					$access = ($userPower >= _IS_MODERATOR_);
+			break;
+
+			case "ParamsController":
+			case "TypesController":
 			case "AdminController":
 				$access = ($userPower >= _IS_MODERATOR_);
 			break;

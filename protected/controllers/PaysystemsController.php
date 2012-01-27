@@ -128,7 +128,9 @@ class PaysystemsController extends Controller {
      *
      * @return ищщдуфт
      */
-    protected function beforeRender($view) {
+    public function beforeRender($view) {
+    	parent::beforeRender($view);
+
         $controllerRoot = array(Yii::t('pays', 'Administrate paysystems'));
         if (!empty($this->_crumbs)) {
             $controllerRoot = array(Yii::t('pays', 'Administrate paysystems') => $this->createUrl('paysystems/admin'));

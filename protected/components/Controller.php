@@ -7,6 +7,8 @@ class Controller extends CController {
     public $breadcrumbs = array();
     public $identity = null;
 
+    public $active = 0;//СОДЕРЖИМОЕ ПОЛЯ active ТЕКУЩЕГО ОБЪЕКТА
+
     public function filters() {
         return array(
             array(
@@ -39,5 +41,19 @@ class Controller extends CController {
         }
         return true;
     }
+
+	public function beforeRender ($view)
+	{
+       	$userPower = Yii::app()->user->getState('dmUserPower');
+		if (!empty($this->active))
+		{
+			if ($userPower < $this->active)
+			{
+				$this->redirect('access_denied');
+				return false;
+			}
+		}
+		return true;
+	}
 
 }

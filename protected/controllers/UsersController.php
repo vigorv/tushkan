@@ -189,7 +189,9 @@ class UsersController extends Controller {
      *
      * @return boolean
      */
-    protected function beforeRender($view) {
+    public function beforeRender($view) {
+    	parent::beforeRender($view);
+
         $controllerRoot = array(Yii::t('users', 'Administrate users'));
         if (!empty($this->_crumbs)) {
             $controllerRoot = array(Yii::t('users', 'Administrate users') => $this->createUrl('users/admin'));

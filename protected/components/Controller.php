@@ -49,8 +49,8 @@ class Controller extends CController {
 		{
 			if ($userPower < $this->active)
 			{
-				$this->redirect('access_denied');
-				return false;
+				//Yii::app()->request->redirect('access_denied');
+				//return false;
 			}
 		}
 		return true;

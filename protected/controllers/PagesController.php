@@ -5,7 +5,7 @@
  */
 class PagesController extends Controller {
 
-	public function actionIndex($id)
+	public function actionIndex($id = 0)
 	{
         $cmd = Yii::app()->db->createCommand()
                 ->select('*')

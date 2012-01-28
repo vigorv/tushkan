@@ -12,7 +12,7 @@ html,body{
     padding:1% 5% 1% 10%;
     margin:0;
     overflow: visible;
-    
+
 }
 .clearfix{clear: both;  content: ".";  display: block;  height: 0;  visibility: hidden;}
 #container:after{
@@ -125,48 +125,6 @@ html,body{
 }
 span.required{color:red}
 .errorMessage{color:red}
-/* Files */
-#folders{
-    float:left;margin:1%; width:10%;
-}
-#files{
-    float:left;margin:1%; width:86%;
-}
-#file_list{
-    list-style:none;float:left;
-     margin:0;
-     padding:0;
-}
-#file_list li{
-    float:left; margin:10px 0 0 30px;  
-    width:45px;
-    text-align:center;
-}    
-
-#file_list li img{
-    width:45px;
-    height:50px;
-    border: 1px solid white;
-}
-#file_list li.selected img{        
-    border: 1px solid blue;        
-}
-#file_list li.elem  span{
-    border: 1px dotted gray;
-}
-#file_list{
-    max-height:400px;
-    overflow:auto;
-}
-.options{
-    list-style: none; 
-    margin:0;
-    padding:0;
-}
-
- .options li{ 
-    float:left; margin:0 0 0 10px;
-}
 
 /* Top_menu */
 #top_menu{
@@ -218,10 +176,10 @@ span.required{color:red}
     white-space: nowrap;
     background-color:white;
     color:black;
-    
+
 }
 
- div.action_bar{
+div.action_bar{
     background-color: #333;
     padding:5px 2%;
     font-size:1.5em;
@@ -232,11 +190,8 @@ div.action_bar a,div.action_bar a:visited{
 
 
 .good_title{
-    padding:10px;
     font-size: 1.5em;
-    background-color: #333;
     font-weight: bold;
-    color:white;
 }
 
 #goods_ext{
@@ -255,6 +210,90 @@ div.action_bar a,div.action_bar a:visited{
 
 #goods_content{
     border:1px solid black;
-    
     color:white;
 }
+
+#file_manager{
+    border:1px solid black;
+
+}
+
+#file_left_panel{
+    float:left;
+    width:20%;
+    min-height:400px;
+    padding:0 1% 0 0;   
+    border:1px solid black;
+}
+
+#folder_tree{       
+    padding:0 0 0 35px;
+    margin:5px 0px;
+    min-height:300px;
+}
+#folder_tree ul{
+    padding: 0 0 0 10px;
+}
+#folder_tree li{
+    margin:0;
+    padding:0;
+    list-style-type:square;
+}
+
+#folder_tree li.expandable{
+    list-style-image: url('/css/images/folder-closed.gif');
+}
+
+#folder_tree li.collapsable{
+    list-style-image: url('/css/images/folder.gif');
+}
+
+#file_right_panel{
+    float:left;
+    width:78%;
+    max-height:400px;
+   
+    margin:0;
+    
+}
+#file_option{
+    float:left;
+    border:1px solid black;
+    width:100%; 
+   max-height:30px;
+    padding-left:10px;
+    background-color:#CCC;
+
+}
+
+#file_list{
+    list-style-type: none;
+    padding:0; 
+    width:100%;
+    max-height:350px;
+    overflow: -moz-scrollbars-vertical;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    float:left;
+}
+#file_list li{
+    float:left;
+     margin:10px 0 0 30px;  
+    width:60px;
+    height:100px;
+    overflow:hidden;
+    text-align:center;
+}    
+
+#file_list li img{
+    width:45px;
+    height:50px;
+    border: 1px solid white;
+}
+#file_list li.selected img{        
+    border: 1px solid blue;        
+}
+#file_list li.elem  span{
+    border: 1px dotted gray;
+}
+

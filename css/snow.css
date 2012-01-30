@@ -6,7 +6,8 @@
         Purpose of the stylesheet follows.
 */
 #folders{
-    float:left;margin:1%; width:10%;
+   margin:1%; width:10%;
+   float:left;
 }
 #files{
     float:left;margin:1%; width:86%;

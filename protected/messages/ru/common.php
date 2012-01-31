@@ -1,5 +1,6 @@
 <?php
 return array (
+  'Home'					=> 'Главная',
   'Admin index'				=> 'Админка',
   'action'					=> 'действие',
   'edit'					=> 'редактирование',
@@ -9,6 +10,7 @@ return array (
   'Edit'					=> 'Редактировать',
   'Save'					=> 'Сохранить',
   'Register'				=> 'Зарегистрировать',
+  'User'					=> 'Пользователь',
   'Registration'			=> 'Регистрация',
   'Login'					=> 'Вход',
   'Logout'					=> 'Выход',
@@ -23,9 +25,47 @@ return array (
   'Fields with' 			=> 'Поля, отмеченные знаком',
   'are required' 			=> ', обязательны для заполнения',
   'Products' 				=> 'Товары, витрины',
+  'Tariffs' 				=> 'Тарифы',
   'Pages' 					=> 'Текстовые страницы',
+  'Feedback'				=> 'Обратная связь',
+  'Subject'					=> 'Тема',
+  'Body'					=> 'Текст',
+  'Verification Code'		=> 'Проверочный код',
+  'Submit'					=> 'Отправить',
+  'Please wait...'			=> 'Пожалуйста, подождите...',
+  'Error'					=> 'Ошибка',
+  'About'					=> 'О нас',
+  'FAQ'						=> 'ЧАВО',
+
+  'day'						=> 'день',
+  'days'					=> 'дней',
+  'daya'					=> 'дня',
+
+  'month'					=> 'месяц',
+  'months'					=> 'месяцев',
+  'montha'					=> 'месяца',
+
+  'year'					=> 'год',
+  'years'					=> 'лет',
+  'yeara'					=> 'года',
+
+  'minute'					=> 'минута',
+  'minutes'					=> 'минут',
+  'minutea'					=> 'минуты',
+
+  'second'					=> 'секунда',
+  'seconds'					=> 'секунд',
+  'seconda'					=> 'секунды',
+
+  'hour'					=> 'час',
+  'hours'					=> 'часов',
+  'houra'					=> 'часа',
+
   'Administrator resources'	=> 'Ресурсы администратора',
 
-  'Access denied. Authentication required.'		=> 'Отказано в доступе. Tребуется аутентификация.',
+  'Request cannot be processed'	=> 'Запрос не может быть выполнен',
+
+  'Access denied. Authentication required'			=> 'Отказано в доступе. Tребуется аутентификация.',
+  'Letters of verify code are not case-sensitive.'	=> 'Символы проверочного кода не чувствительны к регистру.',
 
 );

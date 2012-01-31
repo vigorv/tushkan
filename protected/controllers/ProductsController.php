@@ -121,7 +121,7 @@ class ProductsController extends Controller
 						}
 						else
 						{
-							if (strtotime($r['start']) + $r['period'] - time() <= 0)
+							if (strtotime($r['start']) + Utils::parsePeriod($r['period'], $r['start']) - time() <= 0)
 							{
 								$isOwned = false;
 								//СРОК АРЕНДЫ ИСТЕК

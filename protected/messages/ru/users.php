@@ -20,7 +20,18 @@ return array (
   'Forget password?'	=> 'Забыли пароль?',
   'Users'				=> 'Пользователи',
   'Change your password'=> 'Смените ваш пароль',
+  'Invalid email'		=> 'Неверный email',
+  'Old password'		=> 'Старый пароль',
+  'New password'		=> 'Новый пароль',
 
+  'Invalid old password'		=> 'Неверный старый пароль',
+  'Username not specified'		=> 'Имя не указано',
   'Email could not be empty'	=> 'Поле Email не может быть пустым',
   'Unable to register user'		=> 'Невозможно зарегистрировать пользователя',
+  'The tariff is not available'	=> 'Тариф недоступен',
+  'Choose another tariff'		=> 'Выберите другой тариф',
+
+  'Request for change of tariff approved'	=> 'Заявка на изменение тарифа принята',
+  'Request for change of tariff canceled'	=> 'Заявка на изменение тарифа отменена',
+  'Thank you for contacting us. We will respond to you as soon as possible.'	=> 'Благодарим за обращение. Мы свяжемся с вами в ближайшее время.',
 );

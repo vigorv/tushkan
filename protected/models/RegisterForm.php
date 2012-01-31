@@ -13,7 +13,7 @@ class RegisterForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('name', 'required'),
+			array('name', 'safe'),
 		    array('name', 'length', 'min' => 3),
 			array('email', 'required'),
 			array('email', 'email'),

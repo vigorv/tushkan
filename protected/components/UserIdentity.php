@@ -179,6 +179,8 @@ class UserIdentity extends CUserIdentity
 
 		$userRecord->saveAttributes(array('sess_id' => $hash, 'lastvisit' => $userInfo['lastvisit']));
 
+		if (empty($userInfo['name']))
+			$userInfo['name'] = Yii::t('common', 'User');
 		Yii::app()->user->setName($userInfo['name']);
 		Yii::app()->user->setId($userInfo['id']);
 	}

@@ -20,9 +20,10 @@ class UserForm extends CFormModel
 	public function rules()
 	{
 		return array(
-			array('name', 'required'),
+			array('name', 'safe'),
 		    array('name', 'length', 'min' => 3),
 			array('email', 'email'),
+			array('email', 'required'),
 			array('pwd', 'required'),
 			array('group_id', 'required'),
 			array('active', 'numerical'),

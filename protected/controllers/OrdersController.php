@@ -110,7 +110,7 @@ class OrdersController extends Controller
 		if (!empty($_POST['rid']))
 		{
 			$cmd = Yii::app()->db->createCommand()
-				->select('id, period, price')
+				->select('id, price')
 				->from('{{rents}}')
 				->where('id = :id');
 			$cmd->bindParam(':id', $_POST['rid'], PDO::PARAM_INT);
@@ -126,7 +126,7 @@ class OrdersController extends Controller
 			{
 				if ($info['rent_id'] <> $price['id'])
 				{
-				//ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ СТАТУС "АРЕНДА" (СБРАСЫВАЕМ ПОЛЕ period)
+				//ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ СТАТУС "АРЕНДА" (СБРАСЫВАЕМ ПОЛЕ price_id)
 					$sql = 'UPDATE {{order_items}} SET price_id=0, rent_id=' . $price['id'] . ', price=' . $price['price'] . ' WHERE id=' . $info['oiid'];
 					Yii::app()->db->createCommand($sql)->query();
 				}
@@ -180,7 +180,7 @@ class OrdersController extends Controller
 		if (!empty($_POST['rid']))
 		{
 			$cmd = Yii::app()->db->createCommand()
-				->select('id, period, price')
+				->select('id, price')
 				->from('{{rents}}')
 				->where('id = :id');
 			$cmd->bindParam(':id', $_POST['rid'], PDO::PARAM_INT);

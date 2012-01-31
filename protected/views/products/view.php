@@ -16,8 +16,8 @@ if(!empty($info))
 
 		if (!empty($variant['period']))//ЗНАЧИТ ПРИСУТСТВУЕТ В ТЕКУЩЕЙ АРЕНДЕ
 		{
-			$inOrder = true;
-			if (empty($variant['start']) || (!empty($variant['start']) && ($variant['start'] + $variant['period'] < time())))
+			$inOrder = true; $start = strtotime($variant['start']);
+			if (empty($start) || (!empty($start) && ($start + Utils::parsePeriod($variant['period'], $variant['start']) < time())))
 			{
 				$isRented = true;
 			}
@@ -108,11 +108,11 @@ if(!empty($info))
 		$actionOnline = '<a href="/products/online/' . $variant['pvid'] . '">смотреть</a>';
 		if (!empty($variant['period']))
 		{
-			$actionOnline .= ' арендовано на ' . $variant['period'] . ' сек.';
+			$actionOnline .= ' арендовано на ' . Utils::spellPeriod($variant['period']);
 		}
 		if (strtotime($variant['start']) > 0)
 		{
-			$actionOnline .= ' до окончания аренды ' . (strtotime($variant['start']) + $variant['period'] - time()) . ' сек.';
+			$actionOnline .= ' до окончания аренды ' . Utils::timeFormat((strtotime($variant['start']) + Utils::parsePeriod($variant['period'], $variant['start']) - time()));
 		}
 
 		$actionDownload = '<a href="#" onclick="return doDownload(' . $variant['pvid'] . ')">скачать</a>';

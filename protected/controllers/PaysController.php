@@ -346,7 +346,7 @@ class PaysController extends Controller
 			$modified = date('Y-m-d H:i:s');
 			$hash = $this->createPaymentHash(array('user_id' => $payInfo['user_id'], 'date' => $modified, 'summa' => $balanceInfo['balance'] - $payInfo['summa']));
 			$sql = 'UPDATE {{balance}} SET balance = balance - ' . $payInfo['summa'] . ', hash = "' . $hash . '" WHERE user_id = ' . $balanceInfo['user_id'];
-			Yii::app()->db->createCommand($sql)->query();
+			Yii::app()->db->createCommand($sql)->execute();
 
 			//ФИКСИРУЕМ СПИСАНИЕ
 			$hash = $this->createPaymentHash(array('user_id' => $payInfo['user_id'], 'date' => $modified, 'summa' => $payInfo['summa']));
@@ -356,7 +356,7 @@ class PaysController extends Controller
 				VALUES
 					(null, ' . $payInfo['user_id'] . ', "' . $modified . '", ' . $payInfo['operation_id'] . ', ' . $payInfo['order_id'] . ', ' . $payInfo['summa'] . ', "' . $hash . '")
 			';
-			Yii::app()->db->createCommand($sql)->query();
+			Yii::app()->db->createCommand($sql)->execute();
 
 			//И ВОЗВРАЩАЕМ ОТВЕТ ОБ УСПЕХЕ
 			$answerInfo['result_id'] = _PS_PAYED_;
@@ -399,14 +399,14 @@ class PaysController extends Controller
 
 				if (!empty($i['price_id']))
 				{
-					$period = 0;//ТОВАР КУПЛЕН
+					$period = '';//ТОВАР КУПЛЕН
 				}
 
 				$sql = '
 					INSERT INTO {{actual_rents}}
 						(id, variant_id, start, period, user_id)
 					VALUES
-						(null, ' . $i['variant_id'] . ', 0, ' . $period . ', ' . $payInfo['user_id'] . ')
+						(null, ' . $i['variant_id'] . ', 0, "' . $period . '", ' . $payInfo['user_id'] . ')
 				';
 				Yii::app()->db->createCommand($sql)->query();
 			}

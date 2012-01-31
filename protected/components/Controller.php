@@ -1,4 +1,5 @@
 <?php
+Yii::import('ext.classes.Utils');
 
 class Controller extends CController {
 

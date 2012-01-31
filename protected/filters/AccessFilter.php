@@ -39,6 +39,15 @@ class AccessFilter extends CFilter
 					$access = ($userPower >= _IS_MODERATOR_);
 			break;
 
+			case "RegisterController":
+				if (($filterChain->action->id == 'logout')
+					|| ($filterChain->action->id == 'profile')
+					|| ($filterChain->action->id == 'personal')
+					|| ($filterChain->action->id == 'tariff')
+				)
+					$access = ($userPower >= _IS_USER_);
+			break;
+
 			case "ParamsController":
 			case "TypesController":
 			case "AdminController":

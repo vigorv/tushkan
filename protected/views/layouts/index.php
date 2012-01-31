@@ -33,9 +33,13 @@
                 <?php
                 $this->widget('zii.widgets.CMenu', array(
                     'items' => array(
-                        array('label' => 'Home', 'url' => array(' /')),
+                        array('label' => Yii::t('common', 'Home'), 'url' => array(' /')),
+                        array('label' => Yii::t('common', 'Tariffs'), 'url' => array('/register/tariffs')),
+                        array('label' => Yii::t('common', 'About'), 'url' => array('/pages/1')),
+                        array('label' => Yii::t('common', 'FAQ'), 'url' => array('/pages/2')),
                         array('label' => Yii::t('common', 'Registration'), 'url' => array('/register'), 'visible' => Yii::app()->user->isGuest),
                         array('label' => Yii::t('pays', 'Account'), 'url' => array('/pays'), 'visible' => !Yii::app()->user->isGuest),
+                        array('label' => Yii::t('common', 'Profile'), 'url' => array('/register/profile'), 'visible' => !Yii::app()->user->isGuest),
                         array('label' => Yii::t('common', 'Products'),
                             'url' => array('/products'), 'visible' => !Yii::app()->user->isGuest
                         ),
@@ -46,6 +50,7 @@
                         array('label' => Yii::t('common', 'Logout') . ' (' . Yii::app()->user->name . ')',
                             'url' => array('/register/logout'), 'visible' => !Yii::app()->user->isGuest
                         ),
+                        array('label' => Yii::t('common', 'Feedback'), 'url' => array('/register/feedback', 'visible' => true)),
                         array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => (Yii::app()->user->getState('dmUserPower') >= _IS_MODERATOR_))
                     ),
                 ));

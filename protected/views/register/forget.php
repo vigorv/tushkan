@@ -22,7 +22,7 @@ default:
 <?php echo $form->errorSummary($model); ?>
 
     <div class="row">
-        <?php echo $form->label($model, 'email', array('required' => 1)); ?>
+        <?php echo $form->labelEx($model, 'email'); ?>
         <?php echo $form->textField($model, 'email', array('class' => 'text ui-widget-content ui-corner-all')); ?>
     </div>
 

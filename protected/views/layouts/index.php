@@ -23,8 +23,7 @@
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.hotkeys.js');
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.cookie.js');
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jstree/jquery.jstree.js');
-        ?>
-        ?>
+        ?>        
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
     </head>
     <body>

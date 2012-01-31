@@ -12,7 +12,7 @@
         Yii::app()->getClientScript()->registerCssFile(Yii::app()->theme->baseUrl.'/css/jquery.tablesorter.pager.css');
         Yii::app()->getClientScript()->registerCoreScript('jquery');
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->theme->baseUrl.'/js/admin.js');
-        Yii::app()->getClientScript()->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jquery.tablesorter.min.js');
+        Yii::app()->getClientScript()->registerScriptFile(Yii::app()->theme->baseUrl.'/js/jquery.tablesorter.min.js');   
         ?>
 
 
@@ -39,8 +39,9 @@ $this->widget('zii.widgets.CMenu', array(
         array('label' => 'Users', 'url' => array('/users/admin')),
         array('label' => 'Films', 'url' => array('/films/admin')),
         array('label' => 'Partners', 'url' => array('/partners/admin')),
-        array('label' => 'PaySystems', 'url' => array('/pay/admin')),
+        array('label' => 'PaySystems', 'url' => array('/paysystems/admin')),
         array('label' => 'FileServers', 'url' => array('/fileservers/admin')),
+        array('label' => 'Zones', 'url' => array('/zones/admin')),
     ),
     'htmlOptions' => array('class' => 'ItemList_v_1'),
         )

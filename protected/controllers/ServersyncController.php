@@ -19,10 +19,10 @@ class ServersyncController extends Controller {
             $id = (int) $user_id;
             $sid = CUser::model()->findByPk($user_id)->getAttribute('sess_id');
             echo $sid;
-            if (count($sid)) {
-                $kpt = md5($id . $sid[0]['sess_id'] . "I am robot");
-                echo $kpt;
-            }
+            //if (count($sid)) {
+//                $kpt = md5($id . $sid[0]['sess_id'] . "I am robot");
+//                echo $kpt;
+//            }
         }
         exit();
     }
@@ -75,14 +75,15 @@ class ServersyncController extends Controller {
             $files->title = $new_title;
             $files->pid = $input['pid'];
             $files->fsize = $input['fsize'];
-            $files->user_id = $user_id;
-            $files->fname = $input['save'];
+            $files->user_id = $user_id;            
             $files->save();
             $fileloc = new CFilelocations();
             $fileloc->id = $files->id;
             $fileloc->server_id=$server->id;
             $fileloc->user_id = $user_id;
             $fileloc->fsize = $files->fsize;
+            $fileloc->fname =$input['save'];
+            //$fileloc->folder = (int) $input['folder'];
             $fileloc->save();
             echo "OK";
             exit();

@@ -1,54 +1,112 @@
+<?php Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/fileuploader.js"); ?>
+<?php Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/css/fileuploader.css"); ?>
+
 <div class="good_title">   
-    <div class="P_section_1 fleft">My Files</div>
-    <div class="P_section_2_0 fleft">
-        <ul class="options fleft">
-            <li><a href ="#"><img/>New</a></li>
-            <li><a href="/files/add"><img />Add</a></li>
-        </ul>
-        <ul class="options fright">
-            <li><a id="item_del" href="#"><img/>Delete</a></li>
+    <div class="P_section_1 fleft">My   Files</div>
+    <div class="clearfix"></div>
+</div>
+<div id="result"></div>
+<div id="file_manager">
+    <div id="file_left_panel">
+        <?php
+        $this->widget('CFileTreeExt', array(
+            'id' => 'folder_tree',
+            'url' => array('/files/AjaxFoldersList'))
+        );
+        ?>
+        <div id="file_uploader">		
+            <noscript><p>Please enable JavaScript to use file uploader.</p></noscript>         
+        </div>
+    </div>
+    <div id="file_right_panel">
+        <div  id="file_option">
+            <a href="#" id="CreateDir">Create Directory</a>
+            <a href="#"  id="downloadButton"><img />Download</a>
+            <a href="#"  id="deleteButton"><img />Delete</a>
+            <a href="#" id="AddtoCollection"><img />Add to Collection</a>
+
+        </div>
+        <ul id="file_list" tabindex="1" >
+            <?php if (!empty($filelist)): ?>
+                <?php CFiletypes::ParsePrint($filelist, 'FL1'); ?>
+            <?php endif; ?>
         </ul>
     </div>
     <div class="clearfix"></div>
 </div>
 
-<?php
-for ($i = 1; $i < 1000; $i++) {
-    $files[] = array('name' => 'test');
-}
-?>
-<div id="result"></div>
-<?php if (!empty($files)): ?>
-    <div id="FileList">
-        <div id="folders">
-            <?php
-            echo $this->widget('CTreeView', array(
-                'id' => 'folder_tree',
-                'url' => array('/files/AjaxFoldersList'))
-            );
-            ?>
-        </div>
-        <div id="files" style="fleft">
-            <ul id="file_list" tabindex="1" >
-                <?
-                CFiletypes::ParsePrint($files, 'FL1');
-                ?>
-            </ul>
-        </div>
-    </div>
-    <div class="clearfix"></div>
-<?php endif; ?>
 
-<script type="text/javascript">
+<script type="text/javascript">  
+    var uploader = new qq.FileUploader({
+        element: document.getElementById('file_uploader'),
+        action: 'http://<?= $upload_server; ?>/files/upload',
+        params:{
+            kpt:'<?= $kpt; ?>',
+            user_id:'<?= $user_id; ?>',
+            pid: 0
+        },
+        onComplete:function(id, fileName, responseJSON){
+            flist=$('#file_list');
+            flist.load('/files/fopen?id='+flist.attr('fid'));              
+        },
+        debug: false
+    });           
+    $('#downloadButton').click(function(e){
+        var elem = $('#file_list').find('li.selected');
+        fid = elem.attr('fid');
+        dir = elem.attr('dir');
+        if (fid>0){
+            if (dir==undefined){
+                window.location=('http://mycloud.local/files/download?fid='+fid);
+            } else alert("Can't download directory via browser");
+        } else alert('Nothing selected');
+    });
+    $('#deleteButton').click(function(e){
+        var elem = $('#file_list').find('li.selected');
+        fid = elem.attr('fid');
+        dir = elem.attr('dir');
+        if (fid>0){
+            if (dir==undefined){
+                $.post('/files/remove',{id:fid},function(data){
+                    if (data=='OK'){
+                        elem.remove();
+                    } 
+                });  
+            } else {
+                $.post('/files/remove',{id:fid},function(data){
+                    if (data=='OK'){
+                        elem.remove();
+                        $("#folder_tree").update();
+                    } 
+                });
+            }
+        } else alert('Nothing selected');
+    });
     
-    $("#file_list li").click(function(e){
+    $('#CreateDir').click(function(e){
+        var elem = $('#file_list')
+        fid=elem.attr('fid');
+        if (fid!=undefined) {
+            window.location=('http://mycloud.local/files/create?fid='+fid);
+        } else alert("unknown place to CreateDIr");
+    });
+    
+    $('#AddtoCollection').click(function(e){
+        var elem = $('#file_list').find('li.selected');
+        fid=elem.attr('fid');
+        if (fid!=undefined) {
+            window.location=('http://mycloud.local/files/types?fid='+fid);
+        } else alert("No items Selected");
+    });
+           
+    $(document).delegate("#file_list li","click",function(e){
         if ($(this).hasClass('selected')){
             $(this).removeClass('selected');
         } else {
             $(this).addClass('selected');
         }
     });
-    $("#file_list").keydown(function(e){
+    $(document).delegate("#file_list",'keydown',function(e){
         var elem=$(".elem",this);
         new_e=null;
         switch(e.keyCode){            
@@ -116,82 +174,24 @@ for ($i = 1; $i < 1000; $i++) {
         } );
     });
     
+    $('#file_list').load('/files/fopen?id=0');              
+    $('#file_list').attr('fid',0);
+    
+    $("#folder_tree").bind("click", function(event) {
+        if ($(event.target).is("span")) {
+            var pid = $(event.target).parent('li').attr('id');
+            $('#file_list').attr('fid',pid);
+            $('#file_list').load('/files/fopen?id='+pid);              
+            
+            uploader.setParams(
+            {
+                kpt:'<?= $kpt; ?>',
+                user_id:'<?= $user_id; ?>',
+                pid:pid
+            })
+            return false;
+        }
+    });  
     
     
 </script>  
-<?php
-/*
-  <script type="text/javascript">
-  $(function() {
-  var items = $("#file_list li"),
-  title = $("title").text() || document.title;
-
-  //make images draggable
-  items.draggable({
-  //create draggable helper
-  helper: function() {
-  return $("<div>").attr("id", "helper").html("<span>" + title + "</span><img id='thumb' src='" + $(this).attr("src") + "'>").appendTo("body");
-  },
-  cursor: "pointer",
-  cursorAt: { left: -10, top: 20 },
-  zIndex: 99999,
-  //show overlay and targets
-  start: function() {
-  $("<div>").attr("id", "overlay").css("opacity", 0.7).appendTo("body");
-  $("#tip").remove();
-  $(this).unbind("mouseenter");
-  $("#targets").css("left", ($("body").width() / 2) - $("#targets").width() / 2).slideDown();
-  },
-  //remove targets and overlay
-  stop: function() {
-  $("#targets").slideUp();
-  $(".share", "#targets").remove();
-  $("#overlay").remove();
-  $(this).bind("mouseenter", createTip);
-  }
-  });
-
-  //make targets droppable
-  $("#targets li").droppable({
-  tolerance: "pointer",
-  //show info when over target
-  over: function() {
-  $(".share", "#targets").remove();
-  $("<span>").addClass("share").text("Share on " + $(this).attr("id")).addClass("active").appendTo($(this)).fadeIn();
-  },
-  drop: function() {
-  var id = $(this).attr("id"),
-  currentUrl = window.location.href,
-  baseUrl = $(this).find("a").attr("href");
-
-  if (id.indexOf("twitter") != -1) {
-  window.location.href = baseUrl + "/home?status=" + title + ": " + currentUrl;
-  } else if (id.indexOf("delicious") != -1) {
-  window.location.href = baseUrl + "/save?url=" + currentUrl + "&title=" + title;
-  } else if (id.indexOf("facebook") != -1) {
-  window.location.href = baseUrl + "/sharer.php?u=" + currentUrl + "&t=" + title;
-  }
-  }
-  });
-
-  var createTip = function(e) {
-  //create tool tip if it doesn't exist
-  ($("#tip").length === 0) ? $("<div>").html("<span>Drag this image to share the page<\/span><span class='arrow'><\/span>").attr("id", "tip").css({ left:e.pageX + 30, top:e.pageY - 16 }).appendTo("body").fadeIn(2000) : null;
-  };
-
-  items.bind("mouseenter", createTip);
-
-  items.mousemove(function(e) {
-
-  //move tooltip
-  $("#tip").css({ left:e.pageX + 30, top:e.pageY - 16 });
-  });
-
-  items.mouseleave(function() {
-
-  //remove tooltip
-  $("#tip").remove();
-  });
-  });
-  </script> */
-?>

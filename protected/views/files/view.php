@@ -39,7 +39,7 @@
 <script type="text/javascript">  
     var uploader = new qq.FileUploader({
         element: document.getElementById('file_uploader'),
-        action: 'http://<?= $server; ?>/files/donothing',
+        action: 'http://<?= $upload_server; ?>/files/upload',
         params:{
             kpt:'<?= $kpt; ?>',
             user_id:'<?= $user_id; ?>',

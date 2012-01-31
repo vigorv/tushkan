@@ -37,16 +37,35 @@ class FilesController extends Controller {
         echo "OK";
     }
 
+    public function FRemove($id, $file=null) {
+        if ($file == null)
+            $file = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
+        if ($file == null)
+            die("unknown file");
+        if ($file->is_dir) {
+            $filelist = CUserfiles::model()->findAllByAttributes(array('user_id' => $this->user_id, 'pid' => $file->id));
+            foreach ($filelist as $file) {
+                $this->fremove($id, $file);
+            }
+        }
+
+        $files = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $file->id));
+        foreach ($files as $fileloc) {
+            // CServers::model()->sendComand('delete', $files->server_id, array('fname' => $files->fname, 'folder' => $files->folder))
+            $fileloc->delete();
+            //echo "deleted location\n";
+        }
+        if ($file <> null) {
+            $file->delete();
+        }
+        //   echo "deleted meta\n";
+        return true;
+    }
+
     /**
      *
      * @param type $id 
      */
-    public function FRemove($id) {
-//TO DO:delete all files
-        CUserfiles::model()->deleteByPk(array('user_id' => $this->user_id, 'id' => $id));
-        echo "OK";
-    }
-
     public function actionFOpen($id=0) {
         if ($id > 0)
             $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
@@ -67,9 +86,12 @@ class FilesController extends Controller {
     }
 
     public function actionAdd() {
+        $UPLOAD_SERVER = 2;
         $user_id = Yii::app()->user->id;
         $sid = CUser::model()->findByPk($user_id)->getAttribute('sess_id');
-        $this->render('add', array('user_id' => $user_id, 'sid' => $sid));
+        $kpt = md5($user_id . $sid . "I am robot");
+        $up_server = $this->GetServer($UPLOAD_SERVER);
+        $this->render('add', array('user_id' => $user_id, 'kpt' => $kpt,'upload_server'=>$up_server));
     }
 
     public function actionAjaxFoldersList() {
@@ -101,16 +123,9 @@ class FilesController extends Controller {
         exit();
     }
 
-    public function actionRemove() {
-        echo "remove";
-        var_dump($_POST);
-    }
-
     private function GetServer($stype) {
-
         //$zone = CZones::model()->F
         $zone = 0;
-
         $server = CServers::model()->findByAttributes(array('zone_id' => $zone, 'stype' => $stype));
         if ($server['alias'] == '')
             return $server['ip'];
@@ -122,8 +137,8 @@ class FilesController extends Controller {
         $UPLOAD_SERVER = 2;
         $sid = CUser::model()->findByPk($this->user_id)->getAttribute('sess_id');
         $kpt = md5($this->user_id . $sid . "I am robot");
-        $server = $this->GetServer($UPLOAD_SERVER);
-        $this->render('view', array('user_id' => $this->user_id, 'sid' => $sid, 'kpt' => $kpt,'server'=>$server));
+        $up_server = $this->GetServer($UPLOAD_SERVER);
+        $this->render('view', array('user_id' => $this->user_id, 'kpt' => $kpt, 'upload_server' => $up_server));
     }
 
     public function actionDownload() {
@@ -137,6 +152,38 @@ class FilesController extends Controller {
             echo "It's not aviable to download folder via browser for this moment";
         }
         exit();
+    }
+
+    public function actionCreate($fid=0) {
+        $model = new FilesCreateForm();
+        if (isset($_POST['FilesCreateForm'])) {
+// collects user input data
+            $model->attributes = $_POST['FilesCreateForm'];
+// validates user input and redirect to previous page if validated
+            echo "Validating";
+            if ($model->validate()) {
+                $files = new CUserfiles();
+                $files->attributes = $model->attributes;
+                echo "OK. Let's Create";
+            }
+        }
+// displays the login form        
+        $this->render('create', array('model' => $model, 'pid' => (int) $fid));
+    }
+
+    public function actionTypes($fid) {
+        $this->renders('types');
+    }
+
+    public function actionRemove() {
+        //TO DO:delete all files
+        if (!isset($_POST['id']))
+            die("what?");
+        $id = (int) $_POST['id'];
+        if ($id < 1)
+            die("unknown file");
+        $this->fremove($id);
+        echo "OK";
     }
 
 }

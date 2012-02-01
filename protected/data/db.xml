@@ -258,12 +258,12 @@
 </SETTINGS>
 <METADATA>
 <REGIONS>
-<REGION ID="1298" RegionName="\214\229\237\251" XPos="860" YPos="1020" Width="460" Height="400" RegionColor="1" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="39" />
-<REGION ID="1154" RegionName="\210\238\226\224\240\251, \226\232\242\240\232\237\251" XPos="20" YPos="480" Width="560" Height="940" RegionColor="0" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="24" />
-<REGION ID="1126" RegionName="Orders" XPos="860" YPos="480" Width="460" Height="520" RegionColor="4" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="19" />
-<REGION ID="1125" RegionName="Pay system" XPos="860" YPos="20" Width="460" Height="440" RegionColor="3" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="18" />
-<REGION ID="1065" RegionName="Dictionaries" XPos="600" YPos="20" Width="240" Height="1400" RegionColor="2" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="\226\241\229\226\238\231\236\238\230\237\251\229 \241\235\238\226\224\240\232" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="12" />
 <REGION ID="1000" RegionName="User and Auth tables area" XPos="20" YPos="20" Width="560" Height="440" RegionColor="0" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="\227\240\243\239\239\224 \242\224\225\235\232\246 \228\224\237\237\251\245 \238 \239\238\235\252\231\238\226\224\242\229\235\255\245 \232 \224\243\242\229\237\242\232\244\232\234\224\246\232\232" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="2" />
+<REGION ID="1065" RegionName="Dictionaries" XPos="600" YPos="20" Width="240" Height="1400" RegionColor="2" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="\226\241\229\226\238\231\236\238\230\237\251\229 \241\235\238\226\224\240\232" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="12" />
+<REGION ID="1125" RegionName="Pay system" XPos="860" YPos="20" Width="460" Height="440" RegionColor="3" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="18" />
+<REGION ID="1126" RegionName="Orders" XPos="860" YPos="480" Width="460" Height="520" RegionColor="4" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="19" />
+<REGION ID="1154" RegionName="\210\238\226\224\240\251, \226\232\242\240\232\237\251" XPos="20" YPos="480" Width="560" Height="940" RegionColor="0" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="24" />
+<REGION ID="1298" RegionName="\214\229\237\251" XPos="860" YPos="1020" Width="460" Height="400" RegionColor="1" TablePrefix="0" TableType="0" OverwriteTablePrefix="0" OverwriteTableType="0" Comments="" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="39" />
 </REGIONS>
 <TABLES>
 <TABLE ID="1003" Tablename="dm_users" PrevTableName="Table_02" XPos="40" YPos="40" TableType="0" TablePrefix="0" nmTable="0" Temporary="0" UseStandardInserts="0" StandardInserts="\n" TableOptions="DelayKeyTblUpdates=0\nPackKeys=0\nRowChecksum=0\nRowFormat=0\nUseRaid=0\nRaidType=0\n" Comments="" Collapsed="0" IsLinkedObject="0" IDLinkedModel="-1" Obj_id_Linked="-1" OrderPos="3" >
@@ -1498,6 +1498,12 @@
 </OPTIONSELECTED>
 </COLUMN>
 <COLUMN ID="1550" ColName="state" PrevColName="" Pos="4" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="\243\240\238\226\229\237\252 \225\235\238\234\232\240\238\226\234\232 (0-readonly 1-full \232\242\228)">
+<OPTIONSELECTED>
+<OPTIONSELECT Value="1" />
+<OPTIONSELECT Value="0" />
+</OPTIONSELECTED>
+</COLUMN>
+<COLUMN ID="1556" ColName="reason" PrevColName="" Pos="5" idDatatype="5" DatatypeParams="" Width="-1" Prec="-1" PrimaryKey="0" NotNull="0" AutoInc="0" IsForeignKey="0" DefaultValue="" Comments="\239\240\232\247\232\237\224 \225\235\238\234\232\240\238\226\234\232">
 <OPTIONSELECTED>
 <OPTIONSELECT Value="1" />
 <OPTIONSELECT Value="0" />

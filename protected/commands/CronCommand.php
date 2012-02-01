@@ -2,6 +2,7 @@
 Yii::import('application.controllers.PaysController');
 Yii::import('ext.classes.Utils');
 Yii::import('application.components.Controller');
+
 /**
  * класс консольных команд
  *
@@ -15,6 +16,8 @@ class CronCommand extends CConsoleCommand
 {
 	public function actionAbonentfee()
 	{
+		$utils = new Utils();
+
 		$tariffs = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{tariffs}}')
@@ -26,11 +29,12 @@ class CronCommand extends CConsoleCommand
 		}
 
 		$subscribes = Yii::app()->db->createCommand()
-			->select('us.id AS usid, us.user_id, us.tariff_id, us.operation_id, us.period, us.paid_by, t.id AS tid, t.price AS tprice, tu.switch_to, b.balance')
+			->select('us.id AS usid, us.user_id, us.tariff_id, us.operation_id, us.period, us.paid_by, t.id AS tid, t.price AS tprice, tu.switch_to, b.balance, t.is_option')
 			->from('{{user_subscribes}} us')
 			->join('{{tariffs_users}} tu', 'tu.tariff_id=us.tariff_id AND tu.user_id=us.user_id')
 			->join('{{tariffs}} t', 't.id=tu.tariff_id')
-			->join('{{balance}} b', 'b.user_id=us.user_id')
+			->leftJoin('{{balance}} b', 'b.user_id=us.user_id')
+			->order('t.is_option ASC')
 			->queryAll();
 
 		if (!empty($subscribes))
@@ -60,9 +64,17 @@ class CronCommand extends CConsoleCommand
 						Yii::app()->db->createCommand($sql)->execute();
 					}
 
+					//ИЩЕМ БАН ЗА НЕУПЛАТУ АБОНЕНТКИ
+					$doBan = true;
+					$banInfo = Yii::app()->db->createCommand()
+						->select('*')
+						->from('{{bannedusers}}')
+						->where('user_id = ' . $s['user_id'] . ' AND reason = ' . _BANREASON_ABONENTFEE_)
+						->queryRow();
 					//ЕСЛИ ЭТО ПЕРИОДИЧЕСКАЯ УСЛУГА, ПРОВЕРЯЕМ ВОЗМОЖНОСТЬ СПИСАНИЯ С БАЛАНСА
 					if (!empty($usInfo['period']) && ($s['balance'] > $tst[$usInfo['tariff_id']]['price']))
 					{
+						$doBan = false;
 						$usInfo['paid_by'] = date('Y-m-d H:i:s', (time() + Utils::parsePeriod($tst[$usInfo['tariff_id']]['period'])));
 
 						//СПИСЫВАЕМ СУММУ
@@ -85,6 +97,40 @@ class CronCommand extends CConsoleCommand
 					$sql = 'UPDATE {{user_subscribes}}
 						SET period = "' . $usInfo['period'] . '", tariff_id = ' . $usInfo['tariff_id'] . ', paid_by="' . $usInfo['paid_by'] . '" WHERE id = ' . $usInfo['id'];
 					Yii::app()->db->createCommand($sql)->execute();
+
+					if ($s['is_option'])
+					{
+						if (empty($usInfo['period']))
+						{
+							//ЗА РАЗОВЫЕ ОПЦИИ НЕ БАНИМ
+						}
+						else
+						{
+							/**
+							 * ДОДЕЛАТЬ!
+							 * ПЕРИОДИЧЕСКИЕ ОПЦИИ ОТКЛЮЧАТЬ ИЛИ БАНИТЬ АККАУНТ - К ОБСУЖДЕНИЮ
+							 */
+						}
+						continue;
+					}
+
+					if ($doBan)
+					{
+						if (empty($banInfo))
+						{
+							$sql = 'INSERT INTO {{bannedusers}} (id, user_id, start, finish, state, reason)
+								VALUES (NULL, ' . $s['user_id'] . ', "' . $now . '", "0000-00-00 00:00:00", ' . _BANSTATE_READONLY_ . ', ' . _BANREASON_ABONENTFEE_ . ')';
+							Yii::app()->db->createCommand($sql)->execute();
+						}
+					}
+					else
+					{
+						if (!empty($banInfo))
+						{
+							$sql = 'DELETE FROM {{bannedusers}} WHERE id = ' . $banInfo['id'];
+							Yii::app()->db->createCommand($sql)->execute();
+						}
+					}
 				}
 			}
 		}

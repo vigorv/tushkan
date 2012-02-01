@@ -158,12 +158,21 @@ class UserIdentity extends CUserIdentity
 		$userInfo['lastvisit'] = date('Y-m-d H:i:s', time());
 		$hash = $this->createHash($userInfo);
 
+		//ПРОВЕРЯЕМ МНФО ПО БАНАМ (САМЫЕ СУРОВЫЕ В НАЧАЛЕ)
+		$bansInfo = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{bannedusers}}')
+			->where('user_id = ' . $id)
+			->order('state DESC')
+			->queryAll();
+
 		//СОХРАНИЛИ В СЕССИЮ
 		Yii::app()->user->setState('dmUserId', $id);
 		Yii::app()->user->setState('dmUserGroupId', $userInfo['group_id']);
 		Yii::app()->user->setState('dmUserHash', $hash);
 		Yii::app()->user->setState('dmUserIp', $ip);
 		Yii::app()->user->setState('dmHashExpired', time() + Yii::app()->params['tushkan']['hashDuration']);
+		Yii::app()->user->setState('dmUserBans', $bansInfo);
 
 		//СОХРАНИЛИ В КУКИ
 		$dmUserId = new CHttpCookie('dmUserId', $id);

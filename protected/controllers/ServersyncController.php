@@ -6,6 +6,7 @@ class ServersyncController extends Controller {
 
     public function beforeAction($action) {
         parent::beforeAction($action);
+    //    return true;
         $shash = $_GET['shash'];
         $hash_local = md5(date('%h%d') . 'where am i');
         if ($shash <> $hash_local) {
@@ -40,8 +41,9 @@ class ServersyncController extends Controller {
                     ->query();
             $response = array();
             if (($row = $dataReader->read()) !== false) {
-                $response['fname'] = $row['loc.fname'];
-                $response['title'] = $row['uf.title'];
+                //print_r($row);
+                $response['fname'] = $row['fname'];
+                $response['title'] = $row['title'];
             } else
                 $response['error'] = 'unknown file';
             echo (serialize($response));

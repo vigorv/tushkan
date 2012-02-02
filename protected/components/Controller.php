@@ -21,6 +21,7 @@ class Controller extends CController {
     public function init() {
         parent::init();
         $app = Yii::app();
+        $utils = new Utils(); //ПРИНУДИТЕЛЬНО ПОДГРУЖАЕМ
         $this->identity = new UserIdentity('', '');
         $this->identity->authenticate();
 

@@ -127,7 +127,7 @@
 		echo '
 			<h4>pwd:
 				<div id="' . $nm . '_static">
-					<span id="' . $nm . '_static_value">******</span> <a id="' . $nm . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>
+					<span id="' . $nm . '_static_value">***********</span> <a id="' . $nm . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>
 				</div>
 				<div id="' . $nm . '_edit" style="display: none">
 					' . Yii::t('users', 'New password') . '<br />

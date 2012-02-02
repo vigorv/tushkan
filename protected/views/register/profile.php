@@ -57,7 +57,53 @@ if (!empty($subscribes))
 		if ($s['paid_by'] > date('Y-m-d H:i:s') || !empty($s['period']))
 		{
 			echo $hd; $hd = 0;
-			echo '<li>' . $s['ttitle'] . ' (' . $s['botitle'] . ') оплачено по ' . $s['paid_by'] . '</li>';
+			if ($s['paid_by'] > date('Y-m-d H:i:s'))
+				$paidByStr = 'оплачено по';
+			else
+				$paidByStr = 'неоплачен с';
+
+			echo '<li>' . $s['ttitle'] . ' (' . $s['botitle'] . ') ' . $paidByStr . ' ' . $s['paid_by'] . '</li>';
 		}
 	}
+	echo '</ul>';
+}
+
+$bans = Yii::app()->user->getState('dmUserBans');
+if (!empty($bans))
+{
+	echo '<h3>' . Yii::t('users', 'Account bans') . '</h3><ul>';
+	foreach ($bans as $b)
+	{
+		$period = '';
+		$start = strtotime($b["start"]);
+		if (!empty($start))
+			$period .= Yii::t('common', 'from') . ' ' . $b["start"] . ' ';
+		$finish = strtotime($b["finish"]);
+		if (!empty($finish))
+			$period .= Yii::t('common', 'to') . ' ' . $b["finish"];
+		switch ($b['state'])
+		{
+			case _BANSTATE_READONLY_:
+				$state = Yii::t('users', 'Account in readonly mode');
+			break;
+			case _BANSTATE_FULL_:
+				$state = Yii::t('users', 'Account banned');
+			break;
+			default:
+				$state = '';
+		}
+		switch ($b['reason'])
+		{
+			case _BANREASON_ABONENTFEE_:
+				$reason = Yii::t('users', 'Overdue abonent fee');
+			break;
+			case _BANREASON_VIOLATION_:
+				$reason = Yii::t('users', 'User violation');
+			break;
+			default:
+				$reason = '';
+		}
+		echo '<li>' . $period . ' ' . $reason . ' ' . $state . '</li>';
+	}
+	echo '</ul>';
 }

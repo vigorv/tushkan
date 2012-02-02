@@ -23,6 +23,12 @@ return array (
   'Invalid email'		=> 'Неверный email',
   'Old password'		=> 'Старый пароль',
   'New password'		=> 'Новый пароль',
+  'Account bans'		=> 'Блокировки аккаунта',
+
+  'Account in readonly mode'	=> 'Аккаунт в режиме "только для чтения"',
+  'Account banned'				=> 'Аккаунт блокирован',
+  'Overdue abonent fee'			=> 'Просрочена абонентская плата',
+  'User violation'				=> 'Грубое нарушение пользователя',
 
   'Invalid old password'		=> 'Неверный старый пароль',
   'Username not specified'		=> 'Имя не указано',

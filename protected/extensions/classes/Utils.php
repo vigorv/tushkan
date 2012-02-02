@@ -1,4 +1,10 @@
 <?php
+define('_BANSTATE_READONLY_', 0);
+define('_BANSTATE_FULL_', 10);
+define('_BANREASON_ABONENTFEE_', 0);
+define('_BANREASON_VIOLATION_', 1);
+define('_CURRENCY_', 'rur');
+
 class Utils
 {
 	/**

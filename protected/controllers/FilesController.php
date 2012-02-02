@@ -126,7 +126,7 @@ class FilesController extends Controller {
     private function GetServer($stype) {
         //$zone = CZones::model()->F
         $zone = 0;
-        $server = CServers::model()->findByAttributes(array('zone_id' => $zone, 'stype' => $stype));
+        $server = CServers::model()->findByAttributes(array('zone_id' => $zone, 'stype' => $stype,'active'=>1));
         if ($server['alias'] == '')
             return $server['ip'];
         else

@@ -128,9 +128,9 @@ class FilesController extends Controller {
         $zone = 0;
         $server = CServers::model()->findByAttributes(array('zone_id' => $zone, 'stype' => $stype,'active'=>1));
         if ($server['alias'] == '')
-            return CServers::convertIpToString($server['ip']);
+            return CServers::convertIpToString($server['ip']).':'.$server['port'];
         else
-            return $server['alias'];
+            return $server['alias'].':'.$server['port'];
     }
 
     public function actionIndex() {

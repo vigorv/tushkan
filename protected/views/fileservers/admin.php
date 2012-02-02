@@ -20,7 +20,7 @@
                 <td><?= long2ip($f['ip']); ?></td>
                 <td><?= $f['alias']; ?></td>
                 <td><?= $f['stype']; ?></td>
-                <td><?= $f['desc']; ?></td>
+                <td><?= $f['dsc']; ?></td>
                 <td><?= $f['active']; ?></td>
                 <td><?= $f['zone_id']; ?></td>
             </tr>

@@ -31,22 +31,20 @@ class ServersyncController extends Controller {
         if ($user_id > 0) {
             $id = (int) $user_id;
             $fid = (int) $_GET['fid'];
-            $dataReader  = Yii::app()->db->createCommand()
+            $dataReader = Yii::app()->db->createCommand()
                     ->select('*')
                     ->from('{{userfiles}} uf')
                     ->leftJoin('{{filelocations}} as loc', ' loc.user_id=uf.user_id and loc.id = uf.id')
                     ->where('uf.user_id=' . $id . ' AND uf.id=' . $fid)
                     ->limit(1)
                     ->query();
-            if (($row = $dataReader->read())!==false) {
-                $filedata = array();
-                $filedata['fname'] = $row['loc.fname'];
-                $filedata['title'] = $row['uf.title'];
-                echo (serialize($filedata));
-                exit();
-            }
-            $response['error'] = 'unknown file';
-            echo (serialize($filedata));
+            $response = array();
+            if (($row = $dataReader->read()) !== false) {
+                $response['fname'] = $row['loc.fname'];
+                $response['title'] = $row['uf.title'];
+            } else
+                $response['error'] = 'unknown file';
+            echo (serialize($response));
             exit;
         }
         exit();

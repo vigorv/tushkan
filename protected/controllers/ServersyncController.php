@@ -35,7 +35,7 @@ class ServersyncController extends Controller {
                     ->select('*')
                     ->from('{{userfiles}} uf')
                     ->leftJoin('{{filelocations}} as loc', ' loc.user_id=uf.user_id and loc.id = uf.id')
-                    ->where('user_id=' . $id . ' AND id=' . $fid)
+                    ->where('uf.user_id=' . $id . ' AND id=' . $fid)
                     ->limit(1)
                     ->query();
             if (($row = $dataReader->read())!==false) {

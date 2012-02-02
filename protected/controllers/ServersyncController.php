@@ -58,10 +58,11 @@ class ServersyncController extends Controller {
         if ($user_id > 0) {
             //OK 
             //WHat is server doing this
-            $ip = $_SERVER['REMOTE_ADDR'];
-            $server = CServers::model()->findByAttributes(array('ip' => ip2long($ip), 'stype' => 2));
+            $ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
+
+            $server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 2));
             if ($server === null)
-                die('Unknown Server');
+                die('Unknown Server ' . $ip);
             $input = unserialize($data);
             $new_title = $input['filename'];
             $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
@@ -75,14 +76,14 @@ class ServersyncController extends Controller {
             $files->title = $new_title;
             $files->pid = $input['pid'];
             $files->fsize = $input['fsize'];
-            $files->user_id = $user_id;            
+            $files->user_id = $user_id;
             $files->save();
             $fileloc = new CFilelocations();
             $fileloc->id = $files->id;
-            $fileloc->server_id=$server->id;
+            $fileloc->server_id = $server->id;
             $fileloc->user_id = $user_id;
             $fileloc->fsize = $files->fsize;
-            $fileloc->fname =$input['save'];
+            $fileloc->fname = $input['save'];
             //$fileloc->folder = (int) $input['folder'];
             $fileloc->save();
             echo "OK";

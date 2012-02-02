@@ -32,9 +32,9 @@ class ServersyncController extends Controller {
             $id = (int) $user_id;
             $fid = (int) $_GET['fid'];
             $dataReader = Yii::app()->db->createCommand()
-                    ->select('*')
+                    ->select('uf.*,loc.*')
                     ->from('{{userfiles}} uf')
-                    ->leftJoin('{{filelocations}} as loc', ' loc.user_id=uf.user_id and loc.id = uf.id')
+                    ->leftJoin('{{filelocations}} loc', ' loc.user_id=uf.user_id and loc.id = uf.id')
                     ->where('uf.user_id=' . $id . ' AND uf.id=' . $fid)
                     ->limit(1)
                     ->query();

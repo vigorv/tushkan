@@ -32,12 +32,17 @@ class AccessFilter extends CFilter
     	$access = true;
 		switch (get_class($filterChain->controller))
 		{
+			case "UniverseController":
+				$access = ($userPower >= _IS_USER_);
+			break;
 			case "PagesController":
 				//$access = ($userPower >= _IS_USER_);
 			break;
 			case "ProductController":
 				if (($filterChain->action->id == 'admin') || ($filterChain->action->id == 'edit') || ($filterChain->action->id == 'form'))
 					$access = ($userPower >= _IS_MODERATOR_);
+				if (($filterChain->action->id == 'tocloud'))
+					$access = ($userPower >= _IS_USER_);
 			break;
 
 			case "RegisterController":
@@ -60,7 +65,8 @@ class AccessFilter extends CFilter
 			break;
 
 			case "PaysController":
-				if (Yii::app()->user->isGuest && ($filterChain->action->id == 'index'))
+				if (Yii::app()->user->isGuest
+					&& (($filterChain->action->id == 'index') || ($filterChain->action->id == 'do')))
 				{
 					$access = false;
 				}

@@ -11,4 +11,5 @@ return array(
 	'onlineurl'				=> 'Ссылка на онлайн просмотр',
 	'platform'				=> 'Платформа',
 	'System requirements'	=> 'Системные требования',
+	'fsize'					=> 'Размер файла',
 );

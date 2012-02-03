@@ -24,7 +24,8 @@ return array (
   'Srt' 					=> 'Сортировка',
   'Fields with' 			=> 'Поля, отмеченные знаком',
   'are required' 			=> ', обязательны для заполнения',
-  'Products' 				=> 'Товары, витрины',
+  'Partners' 				=> 'Партнеры, витрины',
+  'Products' 				=> 'Продукты',
   'Tariffs' 				=> 'Тарифы',
   'Pages' 					=> 'Текстовые страницы',
   'Feedback'				=> 'Обратная связь',
@@ -65,8 +66,11 @@ return array (
   'houra'					=> 'часа',
 
   'Administrator resources'	=> 'Ресурсы администратора',
+  'Page not found'			=> 'Страница не найдена',
+  'Are you sure?'			=> 'Вы уверены?',
 
   'Request cannot be processed'	=> 'Запрос не может быть выполнен',
+
 
   'Access denied. Authentication required'			=> 'Отказано в доступе. Tребуется аутентификация.',
   'Letters of verify code are not case-sensitive.'	=> 'Символы проверочного кода не чувствительны к регистру.',

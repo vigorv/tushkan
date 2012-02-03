@@ -77,6 +77,9 @@ class ParamsController extends Controller {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
                 $params = new CParam();
                 $attrs = $paramForm->getAttributes();
+                if (empty($attrs['srt'])) {
+                    $attrs['srt'] = 0;
+                }
                 foreach ($attrs as $k => $v) {
                     $params->{$k} = $v;
                 }

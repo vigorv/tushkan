@@ -129,7 +129,7 @@ class Utils
         if (abs($size) > pow(1024, 3)) return round(($size / pow(1024, 3)), 2) . "&nbsp;Gb";
         if (abs($size) > pow(1024, 2)) return round(($size / pow(1024, 2)), 2) . "&nbsp;Mb";
         if (abs($size) > pow(1024, 1)) return round(($size / pow(1024, 1)), 2) . "&nbsp;kb";
-        return $size . "&nbsp;b";
+        return $size . "&nbsp;байт";
     }
 
     /**

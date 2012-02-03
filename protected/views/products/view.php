@@ -1,60 +1,6 @@
 <?php
 if(!empty($info))
 {
-	$title = '';
-	foreach ($info as $variant)
-	{
-		if (empty($title))
-		{
-			$title = $variant['ptitle'];
-			echo'<h2>' . $title . '</h2><ul>';
-		}
-		echo '<li>Вариант исполнения №' . $variant['pvid'];
-		$inOrder = false; $actions = array();
-		$isOwned = false; $isRented = false;
-		$preOwned = false; $preRented = false;
-
-		if (!empty($variant['period']))//ЗНАЧИТ ПРИСУТСТВУЕТ В ТЕКУЩЕЙ АРЕНДЕ
-		{
-			$inOrder = true; $start = strtotime($variant['start']);
-			if (empty($start) || (!empty($start) && ($start + Utils::parsePeriod($variant['period'], $variant['start']) < time())))
-			{
-				$isRented = true;
-			}
-			else
-			{
-				$inOrder = false;
-			}
-		}
-
-		if (!$inOrder && !empty($orders))
-		{
-			foreach ($orders as $order)
-			{
-				if ($order['variant_id'] == $variant['pvid'])
-				{
-					$inOrder = true;
-					if ($order['state'] == _ORDER_PAYED_)
-					{
-						//ЕСЛИ ОПЛАТИЛИ
-						if (!empty($variant['prid']))
-							$isOwned = true;
-						if (!empty($variant['rid']))
-							$isRented = true;
-						break;
-					}
-					if ($order['state'] == _ORDER_CART_)
-					{
-						//ЕСЛИ В КОРЗИНЕ
-						if (!empty($variant['prid']))
-							$preOwned = true;
-						if (!empty($variant['rid']))
-							$preRented = true;
-						break;
-					}
-				}
-			}
-		}
 ?>
 <script type="text/javascript">
 	function doBuy(vid, prid)
@@ -90,46 +36,172 @@ if(!empty($info))
 		});
 		return false;
 	}
+	function doCloud(vid)
+	{
+		$.post("/universe/tadd/" + vid, function(data){
+			oid = parseInt(data);
+			if (oid > 0)
+			{
+				location.href="/universe/tview/" + oid;
+			}
+		});
+		return false;
+	}
 </script>
 <?php
+	echo'<h2>' . $productInfo['title'] . '</h2><ul>';
+	$curVariantId = 0;
+	$variantsParams = array(); //ЗДЕСЬ СОБИРАЕМ ВСЕ ПАРАМЕТРЫ ВСЕХ ВАРИАНТОВ
+	foreach ($info as $variant)
+	{
+		if ($curVariantId <> $variant['id'])
+		{
+			//ВЫВОДИМ ПАРАМЕТРЫ ПРЕДЫДУЩЕГО ВАРИАНТА ПРИ ПЕРЕХОДЕ К НОВОМУ
+			$curVariantId = $variant['id'];
+			$variantsParams[$curVariantId] = array();
+			$variantsParams[$curVariantId]['id'] = $curVariantId;
+		}
+
+		$variantsParams[$curVariantId][$variant['title']] = $variant['value'];
+		if (count($variantsParams[$curVariantId]) > 2)
+		{
+			continue; //ПОЛНУЮ ИТЕРАЦИЮ (С ОПРЕДЕЛЕНИЕМ ДЕЙСТВИЙ) ДЛЯ ВАРИАНТА ДЕЛАЕМ ОДИН РАЗ
+		}
+
+		$inOrder = false; $actions = array();
+		$isOwned = false; $isRented = false;
+		$preOwned = false; $preRented = false;
+		$inCloud = false;
+		$order = array();
+
+		if (!empty($typedFiles))
+		{
+			foreach ($typedFiles as $f)
+			{
+				if ($f['variant_id'] == $variant['id'])
+				{
+					$inCloud = true;
+					$cloudId = $f['id'];
+					break;
+				}
+			}
+		}
+
+		if (!empty($orders))
+		{
+			foreach ($orders as $order)
+			{
+				if ($order['variant_id'] == $variant['id'])
+				{
+					$inOrder = true;
+					if ($order['state'] == _ORDER_PAYED_)
+					{
+						//ЕСЛИ ОПЛАТИЛИ
+						if (!empty($order['price_id']))
+							$isOwned = true;
+						if (!empty($order['rent_id']))
+						{
+							$isRented = true;
+						}
+						break;
+					}
+					if ($order['state'] == _ORDER_CART_)
+					{
+						//ЕСЛИ В КОРЗИНЕ
+						if (!empty($order['price_id']))
+							$preOwned = true;
+						if (!empty($order['rent_id']))
+							$preRented = true;
+						break;
+					}
+				}
+			}
+		}
+
 		if (!empty($order['oid']))
 			$actionPay = '<a href="/orders/view/' . $order['oid'] . '">оплатить</a>';
 
-		if (!empty($variant['prid']))
-			$actionBuy = '<a href="#" onclick="return doBuy(' . $variant['pvid'] . ', ' . $variant['prid'] . ')">купить</a> (' . $variant['pprice'] . ' rur)';
+		if (!empty($variant['price_id']))
+			$actionBuy = '<a href="#" onclick="return doBuy(' . $variant['id'] . ', ' . $variant['price_id'] . ')">купить</a> за ' . $variant['pprice'] . ' rur';
 
-		if (!empty($variant['rid']))
-			$actionRent = '<a href="#" onclick="return doRent(' . $variant['pvid'] . ', ' . $variant['rid'] . ')">в аренду</a> (' . $variant['rprice'] . ' rur)';
+		if (!empty($variant['rent_id']))
+			$actionRent = '<a href="#" onclick="return doRent(' . $variant['id'] . ', ' . $variant['rent_id'] . ')">в аренду</a> за ' . $variant['rprice'] . ' rur';
 
-		if (!empty($variant['rid']) || !empty($variant['prid']))
-			$actionTocart = '<a href="#" onclick="return doTocart(' . $variant['pvid'] . ', ' . intval($variant['prid']) . ', ' . intval($variant['rid']) . ')">в корзину</a>';
-
-		//$actionOnline = '<a href="#" onclick="return doOnline(' . $variant['pvid'] . ')">смотреть</a>';
-		$actionOnline = '<a href="/products/online/' . $variant['pvid'] . '">смотреть</a>';
-		if (!empty($variant['period']))
+		if (!empty($order['rent_id']) || !empty($order['price_id']))
 		{
-			$actionOnline .= ' арендовано на ' . Utils::spellPeriod($variant['period']);
+			$actionTocloud = 'добавить в пространство';
+			if ($userInfo['free_limit'] > 0)
+				$actionTocloud = '<a href="#" onclick="return doCloud(' . $variant['id'] . ')">' . $actionTocloud . '</a>';
+			else
+				$actionTocloud = '<s>' . $actionTocloud . '</s>';
+			$actionTocloud .= ' <b>свободно ' . Utils::sizeFormat($userInfo['free_limit'] * 1024 * 1024) . '</b>';
 		}
-		if (strtotime($variant['start']) > 0)
+		if (!empty($variant['rent_id']) || !empty($variant['price_id']))
 		{
-			$actionOnline .= ' до окончания аренды ' . Utils::timeFormat((strtotime($variant['start']) + Utils::parsePeriod($variant['period'], $variant['start']) - time()));
+			$actionTocart = '<a href="#" onclick="return doTocart(' . $variant['id'] . ', ' . intval($variant['price_id']) . ', ' . intval($variant['rent_id']) . ')">в корзину</a>';
 		}
 
-		$actionDownload = '<a href="#" onclick="return doDownload(' . $variant['pvid'] . ')">скачать</a>';
+		if ($inCloud)
+		{
+			$actionOnline = '<a href="/universe/tview/id/' . $cloudId . '/do/online">смотреть</a>';
+			$actionDownload = '<a href="/universe/tview/id/' . $cloudId . '/do/download">скачать</a>';
+		}
+		$rentDsc = '';
+		if ($isRented)
+		{
+			//ОПРЕДЕЛЯЕМ ПЕРИОД ПО ТЕКУШЕЙ АРЕНДЕ
+			foreach ($actualRents as $a)
+			{
+				if ($a['variant_id'] == $variant['id'])
+				{
+					$rentDsc = ' арендовано на ' . Utils::spellPeriod($a['period']);
+					$start = strtotime($a['start']);
+					if ($start > 0)
+					{
+						$less = $start + Utils::parsePeriod($a['period'], $a['start']) - time();
+						if ($less)
+						{
+							$isRented = true;
+							$rentDsc .= ' до окончания аренды ' . Utils::timeFormat($less);
+							break;
+						}
+						else
+						{
+							$isRented = false; $inOrder = false;
+							$rentDsc .= ' срок аренды истек';
+							//ПРОДОЛЖАЕМ ПЕРЕБОР ТК АРЕНДОВАНО МОЖЕТ БЫТЬ ПОВТОРНО
+						}
+					}
+					else
+					{
+						$isRented = true;
+						$break;
+					}
+				}
+			}
+		}
 
 		if ($isOwned || $isRented)
 		{
-			if ($variant['online_only'])
-				$actions[] = $actionOnline;
+			if (!$inCloud)
+			{
+				if (!empty($actionTocloud))
+					$actions[] = $actionTocloud;
+			}
 			else
 			{
-				$actions[] = $actionDownload;
-				$actions[] = $actionOnline;
+				if ($variant['online_only'])
+					$actions[] = $actionOnline;
+				else
+				{
+					$actions[] = $actionDownload;
+					$actions[] = $actionOnline;
+				}
 			}
 		}
 		else
 		{
-			if ($inOrder)
+			if ($inOrder && ($preOwned || $preRented))
 			{
 				$actions[] = $actionPay;
 				if (($preOwned)&&(!empty($actionRent)))
@@ -152,8 +224,48 @@ if(!empty($info))
 
 		if (!empty($actions))
 		{
-			echo ' (' . implode(' | ', $actions) . ')';
+			$variantsParams[$curVariantId]['actions'] =  ' (' . implode(' | ', $actions) . ') ' . $rentDsc;
 		}
 	}
-	echo'</ul>';
+
+	if (!empty($variantsParams))
+	{
+		foreach ($variantsParams as $vps)
+		{
+			echo '<div class="shortfilm">';
+			if (!empty($variantsParams['poster']))
+			{
+				$poster = $variantsParams['poster'];
+				unset($variantsParams['poster']);
+			}
+			else
+			{
+				$poster = '/images/films/noposter.jpg';
+			}
+			echo '<img src="' . $poster . '" />';
+
+			echo '<ul>';
+			if (!empty($vps['actions']))
+			{
+				$actions = '<p>' . $vps['actions'] . '</p>';
+				unset($vps['actions']);
+			}
+			else $actions = '';
+			unset($vps['id']);
+			unset($vps['url']);
+			unset($vps['onlineurl']);
+
+			foreach ($vps as $param => $value)
+			{
+				if ($param == Yii::app()->params['tushkan']['fsizePrmName'])
+				{
+					$value = Utils::sizeFormat($value);
+				}
+				echo '<li>' . Yii::t('params', $param) . ': ' . $value . '</li>';
+			}
+			echo'</ul>';
+			echo $actions;
+			echo'</div>';
+		}
+	}
 }

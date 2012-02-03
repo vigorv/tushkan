@@ -64,7 +64,7 @@ class OrdersController extends Controller
 				if (empty($info['price_id']))
 				{
 				//ПРИНУДИТЕЛЬНО УСТАНАВЛИВАЕМ СТАТУС "ПОКУПКА" (СБРАСЫВАЕМ ПОЛЕ rent_id)
-					$sql = 'UPDATE {{order_items}} SET rent_id=0, price_id=' . $price_id . ', price=' . $price['price'] . ' WHERE id=' . $info['oiid'];
+					$sql = 'UPDATE {{order_items}} SET rent_id=0, price_id=' . $price['id'] . ', price=' . $price['price'] . ' WHERE id=' . $info['oiid'];
 					Yii::app()->db->createCommand($sql)->query();
 				}
 			}

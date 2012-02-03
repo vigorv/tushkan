@@ -7,6 +7,9 @@ class Controller extends CController {
     public $menu = array();
     public $breadcrumbs = array();
     public $identity = null;
+    public $userPower;
+    public $userGroupId;
+    public $userInfo;
 
     public $active = 0;//СОДЕРЖИМОЕ ПОЛЯ active ТЕКУЩЕГО ОБЪЕКТА
 
@@ -34,6 +37,14 @@ class Controller extends CController {
     }
 
     public function beforeAction($action) {
+    	$this->userGroupId = intval(Yii::app()->user->getState('dmUserGroupId'));
+    	$this->userPower = intval(Yii::app()->user->getState('dmUserPower'));
+    	$this->userInfo = Yii::app()->user->getState('dmUserInfo');
+    	if (!empty($this->userInfo))
+    	{
+    		$this->userInfo = unserialize($this->userInfo);
+    	}
+
         if (Yii::app()->request->isAjaxRequest) {
             //    $this->renderPartial('_ajaxContent', $data);
             $this->layout = 'ajax';

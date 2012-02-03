@@ -13,6 +13,11 @@
         <?php echo $form->textArea($model, 'description', array('class' => 'text ui-widget-content ui-corner-all')); ?>
     </div>
 
+    <div class="row">
+        <?php echo $form->label($model, 'srt', array('label' => Yii::t('common', 'Srt'))); ?>
+        <?php echo $form->textField($model, 'srt', array('class' => 'text ui-widget-content ui-corner-all')); ?>
+    </div>
+
    <div class="row submit">
         <?php echo CHtml::submitButton(Yii::t('params', 'Add param')); ?>
     </div>

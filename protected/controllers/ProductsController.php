@@ -5,54 +5,103 @@
  */
 class ProductsController extends Controller
 {
+	/**
+	 * вывод списка витрин
+	 *
+	 */
 	public function actionIndex()
 	{
 		$lst = Yii::app()->db->createCommand()
-			->select('p.id as pid, p.title as ptitle, pt.title as ttitle, pv.id as vid, pt.id as tid')
-			->from('{{products}} p')
-	        ->join('{{product_variants}} pv', 'pv.product_id=p.id')
-	        ->join('{{product_types}} pt', 'pt.id=pv.type_id')
-	        ->group('p.id')
-			->where('p.active > 0')
-			->order('p.srt DESC, p.id ASC')->queryAll();
-		$userId = Yii::app()->user->getId();
-		if (!empty($userId))
-		{
-			$actualRents = Yii::app()->db->createCommand()
-				->select('*')
-				->from('{{actual_rents}}')
-				->where('user_id = ' . $userId)
-				->order('start DESC')->queryAll();
-		}
+			->select('*')
+			->from('{{partners}}')
+			->where('active <= ' . $this->userPower)
+			->queryAll();
 		$this->render('/products/index', array('lst' => $lst));
+	}
+
+	/**
+	 * вывод товаров витрины партнера
+	 *
+	 * @param integer $id
+	 */
+	public function actionPartner($id = 0)
+	{
+		//ПОСТРАНИЧНУЮ НАКЛАДЫВАЕМ НА ЭТУ ВЫБОРКУ
+		$cmd = Yii::app()->db->createCommand()
+			->select('p.id, p.title AS ptitle, prt.title AS prttitle')
+			->from('{{products}} p')
+			->join('{{partners}} prt', 'prt.id=p.partner_id')
+			->where('p.partner_id = :id AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower);
+		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+		$pst = $cmd->queryAll();
+
+		$lst = array();
+		if (!empty($pst))
+		{
+			$pIds = array();
+			foreach($pst as $p)
+			{
+				$pIds[$p['id']] = $p['id'];
+			}
+		}
+		else
+		{
+			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
+			Yii::app()->request->redirect('/universe/error');
+		}
+		$this->render('/products/partner', array('pst' => $pst));
 	}
 
 	public function actionView($id)
 	{
 		$Order = new COrder();
 		$userId = intval(Yii::app()->user->getId());
+		$orders = $actualRents = $typedFiles = array();
 		$cmd = Yii::app()->db->createCommand()
-			->select('p.id as pid, p.title as ptitle, pv.online_only, pv.id as pvid, ar.start, ar.period, pr.id AS prid, pr.price AS pprice, r.id AS rid, r.price AS rprice')
-			->from('{{products}} p')
-	        ->join('{{product_variants}} pv', 'pv.product_id=p.id')
-	        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
-	        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
-	        ->leftJoin('{{actual_rents}} ar', 'ar.variant_id=pv.id AND ar.user_id = ' . $userId)
-			->where('p.id = :id AND p.active > 0')
-			->order('p.id ASC, pv.id ASC');
+			->select('id, title')
+			->from('{{products}}')
+			->where('id = :id AND active <= ' . $this->userPower);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-		$info = $cmd->queryAll();
-		$orders = array();
-		if(!empty($userId))
+		$productInfo = $cmd->queryRow();
+		if (!empty($productInfo))
 		{
-			$orders = Yii::app()->db->createCommand()
-				->select('o.id AS oid, o.state, oi.id AS iid, oi.variant_id, oi.price_id, oi.rent_id, oi.price')
-				->from('{{orders}} o')
-		        ->join('{{order_items}} oi', 'o.id=oi.order_id')
-				->where('o.user_id = ' . $userId)
-				->order('o.created DESC')->queryAll();
+			$info = Yii::app()->db->createCommand()
+				->select('pv.id, pv.online_only, ptp.title, ppv.value, pr.id AS price_id, pr.price AS pprice, r.id AS rent_id, r.price AS rprice')
+				->from('{{product_variants}} pv')
+		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
+		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
+		        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
+		        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
+				->where('pv.product_id = ' . $productInfo['id'])
+				->group('ptp.id')
+				->order('pv.id ASC, ptp.srt DESC')->queryAll();
+			if (!empty($userId))
+			{
+				$actualRents = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{actual_rents}}')
+					->where('user_id = ' . $userId)
+					->order('start DESC')->queryAll();
+				$typedFiles = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{typedfiles}}')
+					->where('variant_id > 0 AND user_id = ' . $userId)
+					->queryAll();
+				$orders = Yii::app()->db->createCommand()
+					->select('o.id AS oid, o.state, oi.id AS iid, oi.variant_id, oi.price_id, oi.rent_id, oi.price')
+					->from('{{orders}} o')
+			        ->join('{{order_items}} oi', 'o.id=oi.order_id')
+					->where('o.user_id = ' . $userId)
+					->order('o.created DESC')->queryAll();
+			}
 		}
-		$this->render('/products/view', array('info' => $info, 'orders' => $orders));
+		else
+		{
+			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
+			Yii::app()->request->redirect('/universe/error');
+		}
+		$this->render('/products/view', array('info' => $info, 'productInfo' => $productInfo, 'orders' => $orders,
+				'actualRents' => $actualRents, 'typedFiles' => $typedFiles, 'userInfo' => $this->userInfo));
 	}
 
 	/**
@@ -116,7 +165,7 @@ class ProductsController extends Controller
 						if (strtotime($r['start']) == 0)
 						{
 							$sql = 'UPDATE {{actual_rents}} SET start="' . date('Y-m-d H:i:s') . '" WHERE id=' . $r['id'];
-							Yii::app()->db->createCommand($sql)->query();
+							Yii::app()->db->createCommand($sql)->execute();
 							break;
 						}
 						else
@@ -126,7 +175,7 @@ class ProductsController extends Controller
 								$isOwned = false;
 								//СРОК АРЕНДЫ ИСТЕК
 								$sql = 'DELETE FROM {{actual_rents}} WHERE id=' . $r['id'];
-								Yii::app()->db->createCommand($sql)->query();
+								Yii::app()->db->createCommand($sql)->execute();
 							}
 						}
 					}

@@ -6,14 +6,22 @@ Yii::import('application.components.Controller');
 /**
  * класс консольных команд
  *
- * пример вызова:
- * protected>yiic cron abonentfee
+ * списание абонентской платы
+ *		yiic cron abonentfee
+ *
+ * проверка текущей аренды продуктов
+ * 		yiic cron checkactualrent
  *
  * не забудь настроить config/console.php
  *
  */
 class CronCommand extends CConsoleCommand
 {
+	/**
+	 * Автоматическое списание абонентской платы со счетов пользователей
+	 * с одновременной обработкой заявок на смену тарифа
+	 *
+	 */
 	public function actionAbonentfee()
 	{
 		$utils = new Utils();
@@ -131,6 +139,31 @@ class CronCommand extends CConsoleCommand
 							Yii::app()->db->createCommand($sql)->execute();
 						}
 					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * проверка текущей аренды продуктов
+	 *
+	 */
+	public function actionCheckactualrent()
+	{
+		$utils = new Utils();
+		$lst = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{actual_rents}}')
+			->where('start > "0000-00-00 00:00:00"')
+			->queryAll();
+		if (!empty($lst))
+		{
+			foreach($lst as $l)
+			{
+				if (strtotime($l['start']) + Utils::parsePeriod($l['period'], $l['start']) - time() <= 0)
+				{
+					$sql = 'DELETE FROM {{actual_rents}} WHERE id=' . $l['id'];
+					Yii::app()->db->createCommand($sql)->execute();
 				}
 			}
 		}

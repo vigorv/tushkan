@@ -56,8 +56,8 @@
         fid = elem.attr('fid');
         dir = elem.attr('dir');
         if (fid>0){
-            if (dir==undefined){
-                window.location=('http://mycloud.local/files/download?fid='+fid);
+            if (dir==undefined){                
+                window.location=('http://<?=$download_server;?>/files/download?fid='+fid+'&kpt=<?=$kpt;?>&user_id=<?=$user_id;?>');
             } else alert("Can't download directory via browser");
         } else alert('Nothing selected');
     });

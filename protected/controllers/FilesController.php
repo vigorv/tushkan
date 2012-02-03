@@ -9,13 +9,15 @@ class FilesController extends Controller {
         $this->user_id = Yii::app()->user->id;
         if ($this->user_id)
             return true;
+        else
+            Yii::app()->request->redirect('/register/login');
     }
 
     /**
      * 
-     * @param type $pid
-     * @param type $title
-     * @param type $is_dir 
+     * @param int $pid        Parent id
+     * @param str $title      ViewName
+     * @param int $is_dir   1|0 is directory
      */
     public function FCreate($pid, $title, $is_dir) {
         $files = new CUserfiles();
@@ -27,7 +29,7 @@ class FilesController extends Controller {
     }
 
     /**
-     *
+     * Move to folder $pid
      * @param type $id
      * @param type $pid 
      */
@@ -37,6 +39,12 @@ class FilesController extends Controller {
         echo "OK";
     }
 
+    /**
+     *
+     * @param type $id
+     * @param type $file
+     * @return type 
+     */
     public function FRemove($id, $file=null) {
         if ($file == null)
             $file = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
@@ -85,15 +93,23 @@ class FilesController extends Controller {
         }
     }
 
+    /**
+     *  Upload page
+     */
     public function actionAdd() {
         $UPLOAD_SERVER = 2;
+        $DOWNLOAD_SERVER = 2;
         $user_id = Yii::app()->user->id;
         $sid = CUser::model()->findByPk($user_id)->getAttribute('sess_id');
         $kpt = md5($user_id . $sid . "I am robot");
         $up_server = $this->GetServer($UPLOAD_SERVER);
-        $this->render('add', array('user_id' => $user_id, 'kpt' => $kpt,'upload_server'=>$up_server));
+        $dl_server = $this->GetServer($DOWNLOAD_SERVER);
+        $this->render('add', array('user_id' => $user_id, 'kpt' => $kpt, 'upload_server' => $up_server, 'download_server' => $dl_server));
     }
 
+    /**
+     * Handle Ajax tree
+     */
     public function actionAjaxFoldersList() {
         if (!Yii::app()->request->isAjaxRequest) {
 //exit();
@@ -123,30 +139,41 @@ class FilesController extends Controller {
         exit();
     }
 
+    /**
+     * Choose server
+     * @param int $stype
+     * @return type 
+     */
     private function GetServer($stype) {
         //$zone = CZones::model()->F
         $zone = 0;
-        $server = CServers::model()->findByAttributes(array('zone_id' => $zone, 'stype' => $stype,'active'=>1));
+        $server = CServers::model()->findByAttributes(array('zone_id' => $zone, 'stype' => $stype, 'active' => 1));
         if ($server['alias'] == '')
-            return CServers::convertIpToString($server['ip']).':'.$server['port'];
+            return CServers::convertIpToString($server['ip']) . ':' . $server['port'];
         else
-            return $server['alias'].':'.$server['port'];
+            return $server['alias'] . ':' . $server['port'];
     }
 
     public function actionIndex() {
         $UPLOAD_SERVER = 2;
+        $DOWNLOAD_SERVER = 1;
         $sid = CUser::model()->findByPk($this->user_id)->getAttribute('sess_id');
         $kpt = md5($this->user_id . $sid . "I am robot");
         $up_server = $this->GetServer($UPLOAD_SERVER);
-        $this->render('view', array('user_id' => $this->user_id, 'kpt' => $kpt, 'upload_server' => $up_server));
+        $dl_server = $this->GetServer($DOWNLOAD_SERVER);
+        $this->render('view', array('user_id' => $this->user_id, 'kpt' => $kpt, 'upload_server' => $up_server, 'download_server' => $dl_server));
     }
 
+    
+    /**
+     *  
+     */
     public function actionDownload() {
         $fid = (int) $_GET['fid'];
         if ($fid > 0)
             $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $fid));
         if ($item->is_dir == 0) {
-            $server = CFilelocations::model()->findAllByPK(array('user_id' => $this->user_id, 'id' => $fid));
+            $server = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $fid));
             echo "it's file aviable on " . $server['id'];
         } else {
             echo "It's not aviable to download folder via browser for this moment";

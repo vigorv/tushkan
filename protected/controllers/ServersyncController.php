@@ -1,4 +1,4 @@
-<?
+<?  
 
 class ServersyncController extends Controller {
 
@@ -6,7 +6,7 @@ class ServersyncController extends Controller {
 
     public function beforeAction($action) {
         parent::beforeAction($action);
-    //    return true;
+        //    return true;
         $shash = $_GET['shash'];
         $hash_local = md5(date('%h%d') . 'where am i');
         if ($shash <> $hash_local) {
@@ -18,12 +18,9 @@ class ServersyncController extends Controller {
     public function actionUserdata($user_id=0) {
         if ($user_id > 0) {
             $id = (int) $user_id;
-            $sid = CUser::model()->findByPk($user_id)->getAttribute('sess_id');
-            echo $sid;
-            //if (count($sid)) {
-//                $kpt = md5($id . $sid[0]['sess_id'] . "I am robot");
-//                echo $kpt;
-//            }
+            $response = array();
+            $response['sid'] = CUser::model()->findByPk($user_id)->getAttribute('sess_id');
+            echo serialize($response);
         }
         exit();
     }

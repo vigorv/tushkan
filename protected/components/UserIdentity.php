@@ -173,6 +173,7 @@ class UserIdentity extends CUserIdentity
 		Yii::app()->user->setState('dmUserIp', $ip);
 		Yii::app()->user->setState('dmHashExpired', time() + Yii::app()->params['tushkan']['hashDuration']);
 		Yii::app()->user->setState('dmUserBans', $bansInfo);
+		Yii::app()->user->setState('dmUserInfo', serialize($userInfo));
 
 		//СОХРАНИЛИ В КУКИ
 		$dmUserId = new CHttpCookie('dmUserId', $id);

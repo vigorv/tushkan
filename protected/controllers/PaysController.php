@@ -27,7 +27,7 @@ class PaysController extends Controller
 	 */
 	public function actionDo($id)
 	{
-		$userPower = Yii::app()->user->getState('dmUserPower');
+		$userPower = intval(Yii::app()->user->getState('dmUserPower'));
 		$lst = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{paysystems}}')
@@ -106,57 +106,76 @@ class PaysController extends Controller
 		$this->layout = '//layouts/ajax';
 		if (!empty($_POST))
 		{
-			$created = date('Y-m-d H:i:s');
-			$payInfo = $_POST;
-			$payInfo['created'] = $created;
-			$sql = '
-				INSERT INTO {{payments}}
-					(user_id, paysystem_id, created, modified, operation_id, summa, state, hash, info, order_id)
-				VALUES
-					(:user_id, :paysystem_id, "' . $created . '", "' . $created . '", :operation_id, :summa, ' . _PS_STARTED_ . ', :hash, "", :order_id)
-			';
-			$cmd = Yii::app()->db->createCommand($sql);
-			if (!empty($_POST['user_id']))
-				$cmd->bindParam(':user_id', $_POST['user_id'], PDO::PARAM_INT);
-			if (!empty($_POST['operation_id']))
-				$cmd->bindParam(':operation_id', $_POST['operation_id'], PDO::PARAM_INT);
-			if (!empty($_POST['order_id']))
-				$order_id = $_POST['order_id'];
-			else
-				$order_id = 0;
-			$cmd->bindParam(':order_id', $order_id, PDO::PARAM_INT);
-
-			$cmd->bindParam(':paysystem_id', $id, PDO::PARAM_INT);
-			if (!empty($_POST['summa']))
+			$userPower = Yii::app()->user->getState('dmUserPower');
+			if (!empty($id))
 			{
-				$cmd->bindParam(':summa', $_POST['summa'], PDO::PARAM_LOB);
-				$hash = $this->createPaymentHash(array(
-						'summa' => $_POST['summa'],
-						'date' => $created,
-						'user_id' => $_POST['user_id'])
-				);
-				$payInfo['hash'] = $hash;
-				$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);
+				//ПРОВЕРЯЕМ ДОСТУПНА ЛИ ДАННАЯ ПЛАТЕЖНАЯ СИСТЕМА ЮЗЕРУ
+				$cmd = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{paysystems}}')
+					->where('id = :id AND active <= :power');
+				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$cmd->bindParam(':power', $userPower, PDO::PARAM_INT);
+				$paysystemInfo = $cmd->queryRow();
 			}
-			$res = $cmd->query();
-			if ($res)
+			else
 			{
-				$lastId = Yii::app()->db->getLastInsertID('{{payments}}');
-				$payInfo['payment_id'] = $lastId;
-				$payInfo['description'] = Yii::t('pays', 'Payment') . ' №' . $lastId;
-				//ДОБАВИТЬ НАЗВАНИЕ ПЛАТЕЖА
-				if (!empty($id))
-				{
-					$this->initPaysystem($id);
-					$resultMsg = $this->Paysystem->start($payInfo);
-				}
+				//ОПЛАТА С БАЛАНСА
+				$paysystemInfo['id'] = 0;
+			}
+
+			if (!empty($paysystemInfo))
+			{
+				$created = date('Y-m-d H:i:s');
+				$payInfo = $_POST;
+				$payInfo['created'] = $created;
+				$sql = '
+					INSERT INTO {{payments}}
+						(user_id, paysystem_id, created, modified, operation_id, summa, state, hash, info, order_id)
+					VALUES
+						(:user_id, ' . $paysystemInfo['id'] . ', "' . $created . '", "' . $created . '", :operation_id, :summa, ' . _PS_STARTED_ . ', :hash, "", :order_id)
+				';
+				$cmd = Yii::app()->db->createCommand($sql);
+				if (!empty($_POST['user_id']))
+					$cmd->bindParam(':user_id', $_POST['user_id'], PDO::PARAM_INT);
+				if (!empty($_POST['operation_id']))
+					$cmd->bindParam(':operation_id', $_POST['operation_id'], PDO::PARAM_INT);
+				if (!empty($_POST['order_id']))
+					$order_id = $_POST['order_id'];
 				else
+					$order_id = 0;
+				$cmd->bindParam(':order_id', $order_id, PDO::PARAM_INT);
+				if (!empty($_POST['summa']))
 				{
-					$this->balancePaymentInfo = $payInfo;
-					$resultMsg = $this->actionProcess(0);
+					$cmd->bindParam(':summa', $_POST['summa'], PDO::PARAM_LOB);
+					$hash = $this->createPaymentHash(array(
+							'summa' => $_POST['summa'],
+							'date' => $created,
+							'user_id' => $_POST['user_id'])
+					);
+					$payInfo['hash'] = $hash;
+					$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);
 				}
-				$this->out($resultMsg);
-				return;
+				$res = $cmd->query();
+				if ($res)
+				{
+					$lastId = Yii::app()->db->getLastInsertID('{{payments}}');
+					$payInfo['payment_id'] = $lastId;
+					$payInfo['description'] = Yii::t('pays', 'Payment') . ' №' . $lastId;
+					//ДОБАВИТЬ НАЗВАНИЕ ПЛАТЕЖА
+					if (!empty($id))
+					{
+						$this->initPaysystem($id);
+						$resultMsg = $this->Paysystem->start($payInfo);
+					}
+					else
+					{
+						$this->balancePaymentInfo = $payInfo;
+						$resultMsg = $this->actionProcess(0);
+					}
+					$this->out($resultMsg);
+					return;
+				}
 			}
 			$this->out('saving payment error');
 			return;
@@ -395,20 +414,14 @@ class PaysController extends Controller
 					{
 						$period = $priceInfo['period'];
 					}
+					$sql = '
+						INSERT INTO {{actual_rents}}
+							(id, variant_id, start, period, user_id)
+						VALUES
+							(null, ' . $i['variant_id'] . ', 0, "' . $period . '", ' . $payInfo['user_id'] . ')
+					';
+					Yii::app()->db->createCommand($sql)->query();
 				}
-
-				if (!empty($i['price_id']))
-				{
-					$period = '';//ТОВАР КУПЛЕН
-				}
-
-				$sql = '
-					INSERT INTO {{actual_rents}}
-						(id, variant_id, start, period, user_id)
-					VALUES
-						(null, ' . $i['variant_id'] . ', 0, "' . $period . '", ' . $payInfo['user_id'] . ')
-				';
-				Yii::app()->db->createCommand($sql)->query();
 			}
 		}
 	}

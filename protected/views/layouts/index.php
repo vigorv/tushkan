@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        <meta name="language" content="ru" />      
+        <meta name="language" content="ru" />
         <!-- blueprint CSS framework -->
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/screen.css" media="screen, projection" />
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/print.css" media="print" />
@@ -23,7 +23,7 @@
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.hotkeys.js');
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.cookie.js');
         Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jstree/jquery.jstree.js');
-        ?>        
+        ?>
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
     </head>
     <body>
@@ -44,7 +44,7 @@
                         array('label' => Yii::t('common', 'Registration'), 'url' => array('/register'), 'visible' => Yii::app()->user->isGuest),
                         array('label' => Yii::t('pays', 'Account'), 'url' => array('/pays'), 'visible' => !Yii::app()->user->isGuest),
                         array('label' => Yii::t('common', 'Profile'), 'url' => array('/register/profile'), 'visible' => !Yii::app()->user->isGuest),
-                        array('label' => Yii::t('common', 'Products'),
+                        array('label' => Yii::t('common', 'Partners'),
                             'url' => array('/products'), 'visible' => !Yii::app()->user->isGuest
                         ),
                         array('label' => Yii::t('orders', 'Orders'),

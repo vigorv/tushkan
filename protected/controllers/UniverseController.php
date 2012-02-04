@@ -37,6 +37,99 @@ class UniverseController extends Controller {
     }
 
     /**
+     * обработчик ответа от конвертора
+     * переносит сконвертированный файл в типизированные объекты
+     * входные параметры передаются в $_POST
+     * 		result
+     * 		task_id
+     * 		server_id
+     * 		folder
+     * 		filename
+     * 		fsize
+     * 		type_id
+     *
+     */
+    public function actionTypify()
+    {
+//*ЗАГЛУШКА
+		$result		= 0;
+		$task_id	= 1;
+		$server_id	= 1;
+		$folder		= 1;
+		$filename	= 'generated_filename.avi';
+		$fsize		= 1000000000;
+		$type_id	= 1;
+//*///КОНЕЦ ЗАГЛУШКИ
+    	if (!empty($_POST))
+    	{
+    		$result		= $_POST['result'];
+    		$task_id	= $_POST['task_id'];
+    		$server_id	= $_POST['server_id'];
+    		$folder		= $_POST['folder'];
+    		$filename	= $_POST['filename'];
+    		$fsize		= $_POST['fsize'];
+    		$type_id	= $_POST['type_id'];
+    	}
+    	if (!empty($task_id))
+    	{
+	    	$cmd = Yii::app()->db->createCommand()
+	    		->select('*')
+	    		->from('{{convert_queue}}')
+	    		->where('task_id = :id');
+	    	$cmd->bindParam(':id', $task_id, PDO::PARAM_INT);
+	    	$queue = $cmd->queryRow();
+	    	if (!empty($queue))//ЕСЛИ ЕСТЬ ИНФО О ЗАДАНИИ
+	    	{
+		    	//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
+		    	if (!empty($result))
+		    	{
+		    		//ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
+		    	}
+		    	else
+		    	{
+		    		//ЧТЕНИЕ ИНФО О ФАЙЛЕ
+			    	$cmd = Yii::app()->db->createCommand()
+			    		->select('*')
+			    		->from('{{userfiles}}')
+			    		->where('id = ' . $queue['id']);
+			    	$fileInfo = $cmd->queryRow();
+		    		//ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
+			    	$cmd = Yii::app()->db->createCommand()
+			    		->select('*')
+			    		->from('{{filelocations}}')
+			    		->where('id = ' . $queue['id']);
+			    	$locInfo = $cmd->queryRow();
+//ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
+
+			    	//СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
+			    	$objInfo = array(
+			    		'id'		=> $fileInfo['id'],
+			    		'user_id'	=> $fileInfo['user_id'],
+			    		'title'		=> $fileInfo['title'],
+			    		'type_id'	=> intval($type_id),
+			    	);
+//СОХРАНИТЬ
+			    	//СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
+			    	$objLocInfo = array(
+			    		'id'		=> $locInfo['id'],
+			    		'user_id'	=> $locInfo['user_id'],
+			    		'server_id'	=> intval($server_id),
+			    		'state'		=> 0,// ?? ЧТО СЮДА ПРОПИСАТЬ ??
+			    		'fsize'		=> $fsize,
+			    		'fname'		=> $filename,
+			    		'folder'		=> $folder,
+			    	);
+//СОХРАНИТЬ
+
+			    	//ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+					$sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
+					Yii::app()->db->createCommand($sql)->execute();
+		    	}
+	    	}
+    	}
+    }
+
+    /**
      * добавить в пространство вариант продукта с витрины
      *
      * @param integer $id - идентификатор варианта продукта с витрины

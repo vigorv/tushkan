@@ -47,9 +47,12 @@ class CFiletypes {
                                 $img = '64x64/mimetypes/unknown.png';
                         }
                     }
-                    echo '<li fid="' . $file['id'] . '" '.$ads.' ><img src="' . $img_path . $img . '" /><br/>';
-                    echo '<span>' . $file['title'] . '</span>';
-                    echo '</li>';
+                    echo '<li fid="' . $file['id'] . '" '.$ads.' >
+                    		<a href="/files/fview/' . $file['id'] . '">
+                    		<img src="' . $img_path . $img . '" /><br/>
+                    		<span>' . $file['title'] . '</span>
+                    		</a>
+                    	</li>';
                 }
                 break;
             default:

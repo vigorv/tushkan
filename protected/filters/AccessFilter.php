@@ -34,6 +34,8 @@ class AccessFilter extends CFilter
 		{
 			case "UniverseController":
 				$access = ($userPower >= _IS_USER_);
+				if ($filterChain->action->id == 'typify')
+					$access = true;
 			break;
 			case "PagesController":
 				//$access = ($userPower >= _IS_USER_);

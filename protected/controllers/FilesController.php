@@ -14,7 +14,7 @@ class FilesController extends Controller {
     }
 
     /**
-     * 
+     *
      * @param int $pid        Parent id
      * @param str $title      ViewName
      * @param int $is_dir   1|0 is directory
@@ -31,7 +31,7 @@ class FilesController extends Controller {
     /**
      * Move to folder $pid
      * @param type $id
-     * @param type $pid 
+     * @param type $pid
      */
     public function FMove($id, $pid) {
 //  TO DO :check
@@ -43,7 +43,7 @@ class FilesController extends Controller {
      *
      * @param type $id
      * @param type $file
-     * @return type 
+     * @return type
      */
     public function FRemove($id, $file=null) {
         if ($file == null)
@@ -72,7 +72,7 @@ class FilesController extends Controller {
 
     /**
      *
-     * @param type $id 
+     * @param type $id
      */
     public function actionFOpen($id=0) {
         if ($id > 0)
@@ -90,6 +90,89 @@ class FilesController extends Controller {
                 default:
                     echo "Open files support comes later";
             }
+        }
+    }
+
+    /**
+     * действие добавление в очередь на конвертацию
+     * принимает параметры в $_POST
+     *
+     */
+    public function actionQueue()
+    {
+    	$task_id = 0;
+    	if (!empty($_POST['id']))
+    	{
+	    	$cmd = Yii::app()->db->createCommand()
+	    		->select('*')
+	    		->from('{{convert_queue}}')
+	    		->where('id = :id AND user_id = ' . $this->user_id);
+	    	$cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
+	    	$queue = $cmd->queryRow();
+
+	    	switch ($_POST['subaction'])
+	    	{
+	    		case "add":
+			    	if (empty($queue))
+			    	{
+			    		//ЕСЛИ В ОЧЕРЕДИ НЕТ ДАННОГО ФАЙЛА
+$task_id = 1; //ЗАГЛУШКА ВЫЗОВА КОНВЕРТОРА
+			    		//$task_id = file_get_contents('[АДРЕС КОНВЕРТОРА]');//ВЫЗОВ КОНВЕРТОРА
+			    		$sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id) VALUES (:id, ' . $this->user_id . ', ' . $task_id . ')';
+			    		$cmd = Yii::app()->db->createCommand($sql);
+			    		$cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
+			    		$cmd->execute();
+			    	}
+	    		break;
+	    		case "cancel":
+	    			if (!empty($queue))
+	    			{
+	    				$task_id = $queue['task_id'];
+$canceled_task_id = $task_id;//ЗАГЛУШКА
+			    		//$canceled_task_id = file_get_contents('[АДРЕС КОНВЕРТОРА]');//ВЫЗОВ КОНВЕРТОРА ДЛЯ ОТМЕНЫ ОПЕРАЦИИ
+			    		if ($task_id == $canceled_task_id)
+			    		{
+							$sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
+							Yii::app()->db->createCommand($sql)->execute();
+			    		}
+	    			}
+	    		break;
+	    	}
+    	}
+       	$this->render('fview', array('task_id' => $task_id));
+	}
+
+    /**
+     * действие: детальная информация о файле, интерфейс управления
+     * @param integer $id - ид файла
+     */
+    public function actionFview($id = 0) {
+    	$item = $queue = array();
+        if ($id > 0)
+        {
+            $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
+            if (!empty($item))
+            {
+            	$queue = Yii::app()->db->createCommand()
+            		->select('*')
+            		->from('{{convert_queue}}')
+            		->where('id = ' . $item['id'] . ' AND user_id = ' . $this->user_id)
+            		->queryRow();
+            }
+        }
+        if (($id == 0) || ($item->is_dir))
+        {
+            $flist = CUserfiles::model()->findAllByAttributes(array('user_id' => $this->user_id, 'pid' => $id), array('select' => 'id,pid,title,is_dir'));
+            if (true) {
+                echo CFiletypes::ParsePrint($flist, 'FL1');
+                exit;
+            } else {
+            	//$this
+            }
+        }
+        else
+        {
+        	$this->render('fview', array('item' => $item, 'queue' => $queue));
         }
     }
 
@@ -142,7 +225,7 @@ class FilesController extends Controller {
     /**
      * Choose server
      * @param int $stype
-     * @return type 
+     * @return type
      */
     private function GetServer($stype) {
         //$zone = CZones::model()->F
@@ -164,9 +247,9 @@ class FilesController extends Controller {
         $this->render('view', array('user_id' => $this->user_id, 'kpt' => $kpt, 'upload_server' => $up_server, 'download_server' => $dl_server));
     }
 
-    
+
     /**
-     *  
+     *
      */
     public function actionDownload() {
         $fid = (int) $_GET['fid'];
@@ -194,7 +277,7 @@ class FilesController extends Controller {
                 echo "OK. Let's Create";
             }
         }
-// displays the login form        
+// displays the login form
         $this->render('create', array('model' => $model, 'pid' => (int) $fid));
     }
 

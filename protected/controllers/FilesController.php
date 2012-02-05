@@ -101,6 +101,7 @@ class FilesController extends Controller {
     public function actionQueue() {
 	$task_id = 0;
 	if (!empty($_POST['id'])) {
+	    $fid = (int) $_POST['id'];
 	    $cmd = Yii::app()->db->createCommand()
 		    ->select('*')
 		    ->from('{{convert_queue}}')
@@ -112,7 +113,8 @@ class FilesController extends Controller {
 		case "add":
 		    if (empty($queue)) {
 			//ЕСЛИ В ОЧЕРЕДИ НЕТ ДАННОГО ФАЙЛА
-			$task_id = 1; //ЗАГЛУШКА ВЫЗОВА КОНВЕРТОРА
+			$task_id = CloudTaskManager::model()->CreateTaskConvert(QUEUE_CONVERTER, $fid, 'x480');
+			//$task_id = 1; //ЗАГЛУШКА ВЫЗОВА КОНВЕРТОРА
 			//$task_id = file_get_contents('[АДРЕС КОНВЕРТОРА]');//ВЫЗОВ КОНВЕРТОРА
 			$sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id) VALUES (:id, ' . $this->user_id . ', ' . $task_id . ')';
 			$cmd = Yii::app()->db->createCommand($sql);
@@ -123,9 +125,11 @@ class FilesController extends Controller {
 		case "cancel":
 		    if (!empty($queue)) {
 			$task_id = $queue['task_id'];
-			$canceled_task_id = $task_id; //ЗАГЛУШКА
+			$result = CloudTaskManager::model()->AbortTaskConvert(QUEUE_CONVERTER, $task_id);
+			//$canceled_task_id = $task_id; //ЗАГЛУШКА
 			//$canceled_task_id = file_get_contents('[АДРЕС КОНВЕРТОРА]');//ВЫЗОВ КОНВЕРТОРА ДЛЯ ОТМЕНЫ ОПЕРАЦИИ
-			if ($task_id == $canceled_task_id) {
+			//if ($task_id == $canceled_task_id) {
+			if ($result) {
 			    $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
 			    Yii::app()->db->createCommand($sql)->execute();
 			}
@@ -211,38 +215,18 @@ class FilesController extends Controller {
 	exit();
     }
 
-    /**
-     * Choose server
-     * @param int $stype
-     * @return type
-     */
-    private function GetServer($stype) {
-	//$zone = CZones::model()->F
-	$zone = 0;
-	$server = CServers::model()->findByAttributes(array('zone_id' => $zone, 'stype' => $stype, 'active' => 1));
-	if ($server['alias'] == '')
-	    return CServers::convertIpToString($server['ip']) . ':' . $server['port'];
-	else
-	    return $server['alias'] . ':' . $server['port'];
-    }
-
     public function actionIndex() {
-	$UPLOAD_SERVER = 2;
-	$DOWNLOAD_SERVER = 1;
-	$up_server = $this->GetServer($UPLOAD_SERVER);
+	$up_server = CServers::model()->getServer($UPLOAD_SERVER);
 	$this->render('view', array('user_id' => $this->user_id, 'up_server' => $up_server));
     }
 
-    /**
-     *
-     */
     public function actionDownload() {
 	$fid = (int) $_GET['fid'];
 	if ($fid > 0)
 	    $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $fid));
 	if ($item->is_dir == 0) {
 	    //        $server = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $fid));
-//            echo "it's file aviable on " . $server['id'];
+	    //            echo "it's file aviable on " . $server['id'];
 	    $dl_server = Yii::app()->params['tushkan']['dl_server'];
 	    //die (CUser::model()->findByPk($this->user_id)->sess_id);
 	    $sid = CUser::model()->findByPk($this->user_id)->sess_id;
@@ -255,7 +239,9 @@ class FilesController extends Controller {
 	exit();
     }
 
-    public function actionKPT() {	
+    /* Just key for user access to other servers */
+    
+    public function actionKPT() {
 	$sid = CUser::model()->findByPk($this->user_id)->sess_id;
 	$kpt = md5($this->user_id . $sid . "I am robot");
 	echo $kpt;

@@ -4,7 +4,7 @@
  * 
  */
 class CServers extends CActiveRecord {
-
+    
     /**
      *
      * @param string $className

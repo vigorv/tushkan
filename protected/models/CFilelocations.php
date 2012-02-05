@@ -7,7 +7,6 @@ class CFilelocations extends CActiveRecord {
     /**
      * @property $id
      * @property $addr
-     * @property $desc
      * @property  $active
      */
 

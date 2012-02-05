@@ -7,7 +7,7 @@ class CFileservers extends CActiveRecord {
     /**
      * @property $id
      * @property $addr
-     * @property $desc
+     * @property $dsc
      * @property  $active
      */
 

@@ -8,12 +8,12 @@
 <div id="result"></div>
 <div id="file_manager">
     <div id="file_left_panel">
-        <?php
-        $this->widget('CFileTreeExt', array(
-            'id' => 'folder_tree',
-            'url' => array('/files/AjaxFoldersList'))
-        );
-        ?>
+	<?php
+	$this->widget('CFileTreeExt', array(
+	    'id' => 'folder_tree',
+	    'url' => array('/files/AjaxFoldersList'))
+	);
+	?>
         <div id="file_uploader">		
             <noscript><p>Please enable JavaScript to use file uploader.</p></noscript>         
         </div>
@@ -27,9 +27,9 @@
 
         </div>
         <ul id="file_list" tabindex="1" >
-            <?php if (!empty($filelist)): ?>
-                <?php CFiletypes::ParsePrint($filelist, 'FL1'); ?>
-            <?php endif; ?>
+	    <?php if (!empty($filelist)): ?>
+		<?php CFiletypes::ParsePrint($filelist, 'FL1'); ?>
+	    <?php endif; ?>
         </ul>
     </div>
     <div class="clearfix"></div>
@@ -39,12 +39,27 @@
 <script type="text/javascript">  
     var uploader = new qq.FileUploader({
         element: document.getElementById('file_uploader'),
-        action: 'http://<?= $upload_server; ?>/files/upload',
-        params:{
-            kpt:'<?= $kpt; ?>',
+        action: 'http://<?= $up_server; ?>/files/upload',
+        params:{            
             user_id:'<?= $user_id; ?>',
             pid: 0
         },
+        onSubmit: function(id, fileNanme){
+	    var kpt_value;
+	    $.ajax({
+		url:'files/kpt',
+		async:false,
+		success:function(data){	
+		    kpt_value=data;
+		    uploader.setParam(
+			'kpt',data
+		    );	
+		return true;
+		}
+	    });
+	    if (kpt_value==undefined)
+	    return false;
+	},
         onComplete:function(id, fileName, responseJSON){
             flist=$('#file_list');
             flist.load('/files/fopen?id='+flist.attr('fid'));              
@@ -57,7 +72,7 @@
         dir = elem.attr('dir');
         if (fid>0){
             if (dir==undefined){                
-                window.location=('http://<?=$download_server;?>/files/download?fid='+fid+'&kpt=<?=$kpt;?>&user_id=<?=$user_id;?>');
+                window.location.href=('/files/download?fid='+fid);
             } else alert("Can't download directory via browser");
         } else alert('Nothing selected');
     });
@@ -185,8 +200,8 @@
             
             uploader.setParams(
             {
-                kpt:'<?= $kpt; ?>',
-                user_id:'<?= $user_id; ?>',
+		//             kpt:'<= $kpt; ?>',
+                user_id:'<= $user_id; ?>',
                 pid:pid
             })
             return false;

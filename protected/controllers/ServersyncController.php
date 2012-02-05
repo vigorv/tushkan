@@ -10,6 +10,7 @@ class ServersyncController extends Controller {
 	$shash = $_GET['shash'];
 	$hash_local = md5(date('%h%d') . 'where am i');
 	if ($shash <> $hash_local) {
+	    echo 'bye';
 	    return false;
 	}
 	return true;
@@ -33,6 +34,8 @@ class ServersyncController extends Controller {
 	if ($user_id > 0) {
 	    $id = (int) $user_id;
 	    $fid = (int) $_GET['fid'];
+	    $stype = (int) $stype;
+	    $zone = (int) $zone;
 	    $filemeta = Yii::app()->db->createCommand()
 		    ->select('uf.*')
 		    ->from('{{userfiles}} uf')
@@ -40,28 +43,36 @@ class ServersyncController extends Controller {
 		    ->limit(1)
 		    ->queryAll();
 	    if (count($filemeta)) {
-		$response['fname'] = $filemeta[0]['uf.fname'];
-		$response['title'] = $filemeta[0]['uf.title'];
-		$fileloc = Yii::app()->db->createCommand('SELECT fl.*,fs.* FROM {{filelocations}} fl'
-			. 'INNER JOIN {{fileservers}} fs on fl.server_id = fs.id');
+
+		$response['title'] = $filemeta[0]['title'];
+		$fileloc = Yii::app()->db->createCommand()
+			->select('fl.*,fs.*')
+			->from('{{filelocations}} fl')
+			->join('{{fileservers}} fs', 'fl.server_id = fs.id');
+		$where = array('and');
+
 		if ($stype)
-		    $fileloc->where('fs.stype=' . $stype);
+		    $where[] = 'fs.stype=' . $stype;
 		if ($zone)
-		    $fileloc->where('fs.zone_id=' . $zone);
+		    $where[] = 'fs.zone_id=' . $zone;
+		$where[] = 'fl.id=' . $fid;
+		$where[] = 'fl.user_id=' . $id;
+		$fileloc->where($where);
 		$filedata = $fileloc->queryAll();
-		foreach ($filedata as $file)
+		foreach ($filedata as $file) {
 		    $fdata = array();
-		$fdata['ip'] = $file['fs.ip'];
-		$fdata['port'] = $file['fs.port'];
-		$fdata['name'] = $file['fl.fname'];
-		$fdata['size'] = $file['fl.fsize'];
-		$response['filedata'][] = $fdata;
-	    }
-	    else {
+		    $fdata['ip'] = $file['ip'];
+		    $fdata['port'] = $file['port'];
+		    $fdata['name'] = $file['fname'];
+		    $fdata['size'] = $file['fsize'];
+		    $response['filedata'][] = $fdata;
+		}
+	    } else {
 		$response['error'] = 'unknown file';
 	    }
 	    echo (serialize($response));
-	}
+	} else
+	    echo ('bye bye');
 	exit();
     }
 

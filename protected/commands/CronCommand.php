@@ -164,6 +164,10 @@ class CronCommand extends CConsoleCommand
 				{
 					$sql = 'DELETE FROM {{actual_rents}} WHERE id=' . $l['id'];
 					Yii::app()->db->createCommand($sql)->execute();
+
+					//УДАЛЯЕМ ИЗ ЛИЧНОГО ПРОСТРАНСТВА
+					$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $l['variant_id'] . ' AND user_id = ' . $l['user_id'];
+					Yii::app()->db->createCommand($sql)->execute();
 				}
 			}
 		}

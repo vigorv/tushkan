@@ -18,8 +18,55 @@ class UniverseController extends Controller {
     }
 
     public function actionIndex() {
-        //if (!Yii::app()->user->isGuest) {
-        $this->render('index');
+    	//ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
+		$tFiles = Yii::app()->db->createCommand()
+			->select('id, variant_id')
+			->from('{{typedfiles}}')
+			->where('variant_id > 0 AND user_id = ' . $this->userInfo['id'])
+			->queryAll();
+    	$fParams = array();
+    	if (!empty($tFiles))
+    	{
+    		$tfIds = array();
+    		foreach ($tFiles as $tf)
+    		{
+    			$tfIds[$tFiles['variant_id']] = $tf['variant_id'];
+    		}
+			$fParams = Yii::app()->db->createCommand()
+				->select('pv.id, ptp.title, ppv.value')
+				->from('{{product_variants}} pv')
+		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
+		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
+				->where('pv.id = IN (' . implode(', ', $tfIds) . ')')
+				->group('ptp.id')
+				->order('pv.id ASC, ptp.srt DESC')->queryAll();
+    	}
+
+    	//ВЫБОРКА ТИПИЗИРОВАНННОГО КОНТЕНТА
+		$tObjects = Yii::app()->db->createCommand()
+			->select('id, userobject_id')
+			->from('{{typedfiles}}')
+			->where('userobject_id > 0 AND user_id = ' . $this->userInfo['id'])
+			->queryAll();
+		$oParams = array();
+    	if (!empty($tObjects))
+    	{
+    		$toIds = array();
+    		foreach ($tObjects as $to)
+    		{
+    			$toIds[$tObjects['userobject_id']] = $to['userobject_id'];
+    		}
+			$oParams = Yii::app()->db->createCommand()
+				->select('uo.id, ptp.title, opv.value')
+				->from('{{usertobjects}} uo')
+		        ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
+		        ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
+				->where('uo.id = IN (' . implode(', ', $toIds) . ')')
+				->group('ptp.id')
+				->order('uo.id ASC, ptp.srt DESC')->queryAll();
+    	}
+        $this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
+        	'tObjects' => $tObjects, 'oParams' => $oParams));
     }
 
     public function actionAdd($step=1) {
@@ -329,6 +376,11 @@ class UniverseController extends Controller {
 									//СРОК АРЕНДЫ ИСТЕК
 									$sql = 'DELETE FROM {{actual_rents}} WHERE id=' . $r['id'];
 									Yii::app()->db->createCommand($sql)->execute();
+
+									//УДАЛЯЕМ ИЗ ЛИЧНОГО ПРОСТРАНСТВА
+									$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $r['variant_id'] . ' AND user_id = ' . $r['user_id'];
+									Yii::app()->db->createCommand($sql)->execute();
+
 									$subAction = 'view';
 									$info['start'] = '';
 									$info['period'] = '';

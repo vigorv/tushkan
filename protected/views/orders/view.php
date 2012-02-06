@@ -11,7 +11,7 @@
 			if (empty($inf['rent_id']))
 				$state = Yii::t('orders', 'Buy');
 			echo'<tr>
-				<td>' . $inf['ptitle'] . ' (Вариант исполнения №' . $inf['pvid'] . ')</td>
+				<td><a href="/products/view/' . $inf['pid'] . '">' . $inf['ptitle'] . '</a> (Вариант исполнения №' . $inf['pvid'] . ')</td>
 				<td>' . $inf['cnt'] . '</td>
 				<td>' . $state . '</td>
 				<td>' . $inf['price'] . '</td>

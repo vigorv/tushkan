@@ -62,6 +62,7 @@ $links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_
 		echo '<li>' . Yii::t('params', $param) . ': ' . $value . '</li>';
 	}
 	echo'</ul>';
+	$rentDsc = '';
 	if (!empty($actions))
 	{
 		if (!empty($info['period']))

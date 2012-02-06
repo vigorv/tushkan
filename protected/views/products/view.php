@@ -87,6 +87,7 @@ if(!empty($info))
 			}
 		}
 
+		$rentDsc = '';
 		if (!empty($orders))
 		{
 			foreach ($orders as $order)
@@ -98,13 +99,47 @@ if(!empty($info))
 					{
 						//ЕСЛИ ОПЛАТИЛИ
 						if (!empty($order['price_id']))
-							$isOwned = true;
+						{
+							$isOwned = true; $isRented = false;
+							break;
+						}
 						if (!empty($order['rent_id']))
 						{
-							$isRented = true;
+							//ОПРЕДЕЛЯЕМ ПЕРИОД ПО ТЕКУШЕЙ АРЕНДЕ
+							foreach ($actualRents as $a)
+							{
+								if ($a['variant_id'] == $variant['id'])
+								{
+									$rentDsc = ' арендовано на ' . Utils::spellPeriod($a['period']);
+									$start = strtotime($a['start']);
+									if ($start > 0)
+									{
+										$less = $start + Utils::parsePeriod($a['period'], $a['start']) - time();
+										if ($less)
+										{
+											$isRented = true;
+											$rentDsc .= ' до окончания аренды ' . Utils::timeFormat($less);
+											break;
+										}
+										else
+										{
+											$isRented = false; $inOrder = false;
+											$rentDsc .= ' срок аренды истек';
+											//ПРОДОЛЖАЕМ ПЕРЕБОР ТК АРЕНДОВАНО МОЖЕТ БЫТЬ ПОВТОРНО
+										}
+									}
+									else
+									{
+										$isRented = true;
+										$break;
+									}
+								}
+							}
+
+							if ($isRented) break;
 						}
-						break;
 					}
+
 					if ($order['state'] == _ORDER_CART_)
 					{
 						//ЕСЛИ В КОРЗИНЕ
@@ -145,40 +180,6 @@ if(!empty($info))
 		{
 			$actionOnline = '<a href="/universe/tview/id/' . $cloudId . '/do/online">смотреть</a>';
 			$actionDownload = '<a href="/universe/tview/id/' . $cloudId . '/do/download">скачать</a>';
-		}
-		$rentDsc = '';
-		if ($isRented)
-		{
-			//ОПРЕДЕЛЯЕМ ПЕРИОД ПО ТЕКУШЕЙ АРЕНДЕ
-			foreach ($actualRents as $a)
-			{
-				if ($a['variant_id'] == $variant['id'])
-				{
-					$rentDsc = ' арендовано на ' . Utils::spellPeriod($a['period']);
-					$start = strtotime($a['start']);
-					if ($start > 0)
-					{
-						$less = $start + Utils::parsePeriod($a['period'], $a['start']) - time();
-						if ($less)
-						{
-							$isRented = true;
-							$rentDsc .= ' до окончания аренды ' . Utils::timeFormat($less);
-							break;
-						}
-						else
-						{
-							$isRented = false; $inOrder = false;
-							$rentDsc .= ' срок аренды истек';
-							//ПРОДОЛЖАЕМ ПЕРЕБОР ТК АРЕНДОВАНО МОЖЕТ БЫТЬ ПОВТОРНО
-						}
-					}
-					else
-					{
-						$isRented = true;
-						$break;
-					}
-				}
-			}
 		}
 
 		if ($isOwned || $isRented)

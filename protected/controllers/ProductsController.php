@@ -92,7 +92,7 @@ class ProductsController extends Controller
 					->from('{{orders}} o')
 			        ->join('{{order_items}} oi', 'o.id=oi.order_id')
 					->where('o.user_id = ' . $userId)
-					->order('o.created DESC')->queryAll();
+					->order('o.state DESC, o.created DESC')->queryAll();
 			}
 		}
 		else
@@ -175,6 +175,10 @@ class ProductsController extends Controller
 								$isOwned = false;
 								//СРОК АРЕНДЫ ИСТЕК
 								$sql = 'DELETE FROM {{actual_rents}} WHERE id=' . $r['id'];
+								Yii::app()->db->createCommand($sql)->execute();
+
+								//УДАЛЯЕМ ИЗ ЛИЧНОГО ПРОСТРАНСТВА
+								$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $r['variant_id'] . ' AND user_id = ' . $r['user_id'];
 								Yii::app()->db->createCommand($sql)->execute();
 							}
 						}

@@ -1,10 +1,10 @@
 <?php
 
-CONST DOWNLOAD_SERVER=1;
-CONST UPLOAD_SERVER=2;
-CONST CONTENT_SERVER=3;
-CONST CONVERT_SERVER=4;
-CONST TASK_SERVER=5;
+define('DOWNLOAD_SERVER', 1);
+define('UPLOAD_SERVER', 2);
+define('CONTENT_SERVER', 3);
+define('CONVERT_SERVER', 4);
+define('TASK_SERVER', 5);
 
 /**
  * @property id
@@ -39,7 +39,7 @@ class CServers extends CActiveRecord {
     public function sendCommand($action, $sid, $data) {
 	$server = $this->findByPk($sid);
 	if ($server == null) {
-	    
+
 	} else {
 	    $sdata = serialize($data);
 	    $hash = '';

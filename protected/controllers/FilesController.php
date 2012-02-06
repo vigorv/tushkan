@@ -216,7 +216,7 @@ class FilesController extends Controller {
     }
 
     public function actionIndex() {
-	$up_server = CServers::model()->getServer($UPLOAD_SERVER);
+	$up_server = CServers::model()->getServer(UPLOAD_SERVER);
 	$this->render('view', array('user_id' => $this->user_id, 'up_server' => $up_server));
     }
 
@@ -240,7 +240,7 @@ class FilesController extends Controller {
     }
 
     /* Just key for user access to other servers */
-    
+
     public function actionKPT() {
 	$sid = CUser::model()->findByPk($this->user_id)->sess_id;
 	$kpt = md5($this->user_id . $sid . "I am robot");

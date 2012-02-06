@@ -31,25 +31,15 @@ if (!empty($info))
 	$actions = array();
 	$actions[] = '<a href="#" onclick="return doRemove(' . $info['id'] . ')">удалить из пространства</a>';
 	$onlineHref = '';
-	if (!empty($params['onlineurl']))
-	{
-		$onlineLinks[$fk] = $params['onlineurl'];
+		$onlineLinks[$fk] = $locInfo['filename'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
+		$actions[] = '<a href="/universe/oview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
 		$onlineHref = '<a id="autostart" rel="video" alt="" title="" href="#video' . $fk . '"></a>';
-	}
-	else
-		$onlineLinks[$fk] = '';
 	unset($params['onlineurl']);
 
-	if (!empty($params['url']) && !$info['online_only'])
-	{
-		$links[$fk] = $params['url'];
+	$links[$fk] = $locInfo['filename'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a rel="video" alt="" title="" href="' . $links[$fk] . '">скачать</a>';
-	}
-	else
-		$links[$fk] = '';
 	unset($params['url']);
 
 	echo '<ul>';
@@ -62,27 +52,9 @@ if (!empty($info))
 		echo '<li>' . Yii::t('params', $param) . ': ' . $value . '</li>';
 	}
 	echo'</ul>';
-	$rentDsc = '';
 	if (!empty($actions))
 	{
-		if (!empty($info['period']))
-		{
-			$rentDsc = ' арендовано на ' . Utils::spellPeriod($info['period']);
-			$start = strtotime($info['start']);
-			if ($start > 0)
-			{
-				$less = $start + Utils::parsePeriod($info['period'], $info['start']) - time();
-				if ($less)
-				{
-					$rentDsc .= ' до окончания аренды ' . Utils::timeFormat($less);
-				}
-				else
-				{
-					$rentDsc .= ' срок аренды истек';
-				}
-			}
-		}
-		echo '<p>' . implode(' | ', $actions) . ' ' . $rentDsc . '</p>';
+		echo '<p>' . implode(' | ', $actions) . '</p>';
 	}
 	echo'</div>';
 
@@ -155,7 +127,7 @@ if (!empty($info))
 	if ($subAction == 'online')
 	{
 ?>
-$(document).ready(function() {
+	$(document).ready(function() {
 		$('#autostart').trigger('click');
 	});
 <?php

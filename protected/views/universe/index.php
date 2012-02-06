@@ -13,12 +13,17 @@
 
     <div id="user_content" class="block_content">
 <?php
-	if (!empty($fLst))
+	if (!empty($tFiles))
 	{
-		echo '<h4>Видео</h4>';
-		foreach ($fLst as $f)
+		echo '<h4>Видео с витрин</h4>';
+		foreach ($tFiles as $f)
 		{
-			echo '<div class="shortfilm">';
+			$params = array();
+			foreach($fParams as $p)
+			{
+				$params[$p['title']] = $p['value'];
+			}
+			echo '<div class="shortfilm"><a href="/universe/tview/' . $f['id'] . '">';
 			if (!empty($params['poster']))
 			{
 				$poster = $params['poster'];
@@ -28,8 +33,35 @@
 			{
 				$poster = '/images/films/noposter.jpg';
 			}
-			echo '<img src="' . $poster . '" />';
-			echo '</div>';
+			echo '<img width="50" src="' . $poster . '" />';
+			echo '<b>' . $f['title'] . '</b>';
+			echo '</a></div>';
+		}
+	}
+
+	if (!empty($tObjects))
+	{
+		echo '<h4>Мое видео</h4>';
+		foreach ($tObjects as $o)
+		{
+			$params = array();
+			foreach($oParams as $p)
+			{
+				$params[$p['title']] = $p['value'];
+			}
+			echo '<div class="shortfilm"><a href="/universe/oview/' . $o['id'] . '">';
+			if (!empty($params['poster']))
+			{
+				$poster = $params['poster'];
+				unset($params['poster']);
+			}
+			else
+			{
+				$poster = '/images/films/noposter.jpg';
+			}
+			echo '<img width="50" src="' . $poster . '" />';
+			echo '<b>' . $o['title'] . '</b>';
+			echo '</a></div>';
 		}
 	}
 ?>

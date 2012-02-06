@@ -20,7 +20,7 @@ class UniverseController extends Controller {
     public function actionIndex() {
     	//ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
 		$tFiles = Yii::app()->db->createCommand()
-			->select('id, variant_id')
+			->select('id, variant_id, title')
 			->from('{{typedfiles}}')
 			->where('variant_id > 0 AND user_id = ' . $this->userInfo['id'])
 			->queryAll();
@@ -30,21 +30,21 @@ class UniverseController extends Controller {
     		$tfIds = array();
     		foreach ($tFiles as $tf)
     		{
-    			$tfIds[$tFiles['variant_id']] = $tf['variant_id'];
+    			$tfIds[$tf['variant_id']] = $tf['variant_id'];
     		}
 			$fParams = Yii::app()->db->createCommand()
 				->select('pv.id, ptp.title, ppv.value')
 				->from('{{product_variants}} pv')
 		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
-				->where('pv.id = IN (' . implode(', ', $tfIds) . ')')
-				->group('ptp.id')
+				->where('pv.id IN (' . implode(', ', $tfIds) . ')')
+				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
     	}
 
     	//ВЫБОРКА ТИПИЗИРОВАНННОГО КОНТЕНТА
 		$tObjects = Yii::app()->db->createCommand()
-			->select('id, userobject_id')
+			->select('id, userobject_id, title')
 			->from('{{typedfiles}}')
 			->where('userobject_id > 0 AND user_id = ' . $this->userInfo['id'])
 			->queryAll();
@@ -54,15 +54,15 @@ class UniverseController extends Controller {
     		$toIds = array();
     		foreach ($tObjects as $to)
     		{
-    			$toIds[$tObjects['userobject_id']] = $to['userobject_id'];
+    			$toIds[$to['userobject_id']] = $to['userobject_id'];
     		}
 			$oParams = Yii::app()->db->createCommand()
 				->select('uo.id, ptp.title, opv.value')
 				->from('{{usertobjects}} uo')
 		        ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
-				->where('uo.id = IN (' . implode(', ', $toIds) . ')')
-				->group('ptp.id')
+				->where('uo.id IN (' . implode(', ', $toIds) . ')')
+				->group('opv.id')
 				->order('uo.id ASC, ptp.srt DESC')->queryAll();
     	}
         $this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
@@ -109,6 +109,7 @@ class UniverseController extends Controller {
 //*///КОНЕЦ ЗАГЛУШКИ
     	if (!empty($_POST))
     	{
+//*
     		$result		= $_POST['result'];
     		$task_id	= $_POST['task_id'];
     		$server_id	= $_POST['server_id'];
@@ -116,6 +117,7 @@ class UniverseController extends Controller {
     		$filename	= $_POST['filename'];
     		$fsize		= $_POST['fsize'];
     		$type_id	= $_POST['type_id'];
+//*/
     	}
     	if (!empty($task_id))
     	{
@@ -155,7 +157,44 @@ class UniverseController extends Controller {
 			    		'title'		=> $fileInfo['title'],
 			    		'type_id'	=> intval($type_id),
 			    	);
-//СОХРАНИТЬ
+			    	$sql = 'INSERT INTO {{typedfiles}} (id, variant_id, user_id, fsize, title, userobject_id)
+			    		VALUES (null, 0, ' . $objInfo['user_id'] . ', :fsize, "' . $objInfo['title'] . '", ' . $objInfo['id'] . ')';
+			    	$cmd = Yii::app()->db->createCommand($sql);
+			    	$cmd->bindParam(':fsize', $fsize, PDO::PARAM_LOB);
+			    	$cmd->execute();
+
+			    	$sql = 'INSERT INTO {{usertobjects}} (id, user_id, title, type_id)
+			    		VALUES (' . $objInfo['id'] . ', ' . $objInfo['user_id'] . ', "' . $objInfo['title'] . '", ' . $objInfo['type_id'] . ')';
+			    	Yii::app()->db->createCommand($sql)->execute();
+
+		    		//ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
+		    		$cmd = Yii::app()->db->createCommand()
+		    			->select('ptp.id, ptp.title')
+		    			->from('{{product_type_params}} ptp')
+		    			->join('{{product_types_type_params}} pttp', 'ptp.id = pttp.param_id')
+		    			->where('pttp.type_id = :id');
+		    		$cmd->bindParam(':id', $type_id, PDO::PARAM_INT);
+		    		$params = $cmd->queryAll();
+
+$height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
+//ВООБЩЕ ПАРАМЕТРЫ ДОЛЖНЫ ПРИХОДИТЬ ОТДЕЛЬНО. К ОБСУЖДЕНИЮ: ОТКУДА?
+		    		if (!empty($params))
+		    		{
+		    		//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
+		    			foreach ($params as $p)
+		    			{
+		    				if (!empty($$p['title']))
+		    				{
+		    					$p_id = $p['id'];
+		    					$p_vl = $$p['title'];
+						    	$sql = 'INSERT INTO {{tobjects_param_values}} (id, param_id, value, userobject_id)
+						    		VALUES (null, ' . $p_id . ',
+						    		"' . $p_vl . '", ' . $objInfo['id'] . ')';
+						    	Yii::app()->db->createCommand($sql)->execute();
+		    				}
+		    			}
+		    		}
+
 			    	//СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
 			    	$objLocInfo = array(
 			    		'id'		=> $locInfo['id'],
@@ -164,9 +203,12 @@ class UniverseController extends Controller {
 			    		'state'		=> 0,// ?? ЧТО СЮДА ПРОПИСАТЬ ??
 			    		'fsize'		=> $fsize,
 			    		'fname'		=> $filename,
-			    		'folder'		=> $folder,
+			    		'folder'	=> $folder,
 			    	);
-//СОХРАНИТЬ
+			    	$sql = 'INSERT INTO {{userobjectlocations}} (id, user_id, server_id, state, fsize, fname, folder)
+			    		VALUES (' . $locInfo['id'] . ', ' . $locInfo['user_id'] . ', ' . $locInfo['server_id'] . ',
+			    		' . $locInfo['state'] . ', ' . $locInfo['fsize'] . ', "' . $locInfo['fname'] . '", ' . $locInfo['folder'] . ')';
+			    	Yii::app()->db->createCommand($sql)->execute();
 
 			    	//ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
 					$sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
@@ -196,7 +238,7 @@ class UniverseController extends Controller {
 		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 				->where('pv.id = :id')
-				->group('ptp.id')
+				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC');
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$prms = $cmd->queryAll();
@@ -263,15 +305,19 @@ class UniverseController extends Controller {
 								}
 						}
 					}
+					if (empty($price_id) && empty($rent_id))
+					{
+						$canAdd = true;
+					}
 
 					$fSize = 0;
 					if (!empty($params[Yii::app()->params['tushkan']['fsizePrmName']]))
 					{
 						$fSize = $params[Yii::app()->params['tushkan']['fsizePrmName']];
 					}
-					if ($canAdd && ($this->userInfo['free_limit'] > $fSize))
+					$mB = 1024;
+					if ($canAdd && ($this->userInfo['free_limit'] * $mB > $fSize))
 					{
-						$result = 'ok'; $mB = 1024 * 1024;
 						//КОРРЕКТИРУЕМ ОБЪЕМ СВОБОДНОГО ПРОСТРАНСТВА
 						$freeLimit = $this->userInfo['free_limit'] * $mB - $fSize;
 						if ($freeLimit < 0) $freeLimit = 0;
@@ -335,7 +381,7 @@ class UniverseController extends Controller {
 			        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 			        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
 					->where('pv.id = ' . $info['variant_id'])
-					->group('ptp.id')
+					->group('ppv.id')
 					->order('pv.id ASC, ptp.srt DESC')->queryAll();
 		    	if (!empty($prms))
 		    	{
@@ -429,5 +475,69 @@ class UniverseController extends Controller {
     		}
     	}
         $this->render('tview', array('info' => $info, 'params' => $params, 'subAction' => $subAction));
+    }
+
+
+    /**
+     * Отображение подробной информации по типизированному объекту пользователя в ПП (пространстве пользователя)
+     *
+     * @param integer $id - идентификатор объекта в ПП
+     */
+    public function actionOview($id = 0)
+    {
+    	$info = $params = array();
+    	$subAction = 'view';
+    	if (!empty($this->userInfo) && !empty($id))
+    	{
+    		$cmd = Yii::app()->db->createCommand()
+    			->select('*')
+    			->from('{{typedfiles}}')
+    			->where('id = :id AND user_id = ' . $this->userInfo['id']);
+    		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+    		$info = $cmd->queryRow();
+    		if (!empty($info))
+    		{
+	    		$locInfo = Yii::app()->db->createCommand()
+	    			->select('*')
+	    			->from('{{userobjectlocations}}')
+	    			->where('id = ' . $info['id'])
+	    			->queryRow();
+
+				$prms = Yii::app()->db->createCommand()
+					->select('uo.id, ptp.title, opv.value')
+					->from('{{usertobjects}} uo')
+			        ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
+			        ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
+					->where('uo.id = ' . $info['userobject_id'])
+					->group('opv.id')
+					->order('uo.id ASC, ptp.srt DESC')->queryAll();
+		    	if (!empty($prms))
+		    	{
+		    		$params = array();
+					foreach ($prms as $p)
+					{
+						$params[$p['title']] = $p['value'];
+					}
+		    	}
+
+		    	$subAction = 'view';
+		    	if (!empty($_GET['do']))
+		    	{
+		    		$subAction = $_GET['do'];
+		    	}
+
+				//ЕСЛИ НЕТ ЦЕН НИ ПОКУПКИ НИ АРЕНДЫ, ТО ДОСТУПНО И СКАЧКА И ОНЛАЙН
+
+	    		switch ($subAction)
+	    		{
+	    			case "download":
+					break;
+
+	    			case "online":
+	    			break;
+	    		}
+    		}
+    	}
+        $this->render('oview', array('info' => $info, 'params' => $params, 'subAction' => $subAction, 'locInfo' => $locInfo));
     }
 }

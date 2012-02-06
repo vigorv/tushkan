@@ -42,7 +42,7 @@ if (!empty($tariff))
 		echo '<p>Вы собираетесь сменить тариф на "' . $newTariff['title'] . '" (' . $newTariff['price'] . ' ' . $currency . ')</p>';
 	}
 
-	echo '<h3>Ваше пространство ' . $tariff['size_limit'] . ' Мб, свободно ' . $info['free_limit'] . ' Мб</h3>';
+	echo '<h3>Ваше пространство ' . Utils::sizeFormat($tariff['size_limit'] * 1024) . ' , свободно ' . Utils::sizeFormat($info['free_limit'] * 1024) . '</h3>';
 }
 else
 {

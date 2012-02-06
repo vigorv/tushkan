@@ -169,7 +169,7 @@ if(!empty($info))
 				$actionTocloud = '<a href="#" onclick="return doCloud(' . $variant['id'] . ')">' . $actionTocloud . '</a>';
 			else
 				$actionTocloud = '<s>' . $actionTocloud . '</s>';
-			$actionTocloud .= ' <b>свободно ' . Utils::sizeFormat($userInfo['free_limit'] * 1024 * 1024) . '</b>';
+			$actionTocloud .= ' <b>свободно ' . Utils::sizeFormat($userInfo['free_limit'] * 1024) . '</b>';
 		}
 		if (!empty($variant['rent_id']) || !empty($variant['price_id']))
 		{
@@ -231,13 +231,13 @@ if(!empty($info))
 
 	if (!empty($variantsParams))
 	{
-		foreach ($variantsParams as $vps)
+		foreach ($variantsParams as $vk => $vps)
 		{
 			echo '<div class="shortfilm">';
-			if (!empty($variantsParams['poster']))
+			if (!empty($vps['poster']))
 			{
-				$poster = $variantsParams['poster'];
-				unset($variantsParams['poster']);
+				$poster = $vps['poster'];
+				unset($vps['poster']);
 			}
 			else
 			{

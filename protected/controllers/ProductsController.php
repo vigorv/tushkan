@@ -73,7 +73,7 @@ class ProductsController extends Controller
 		        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 		        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
 				->where('pv.product_id = ' . $productInfo['id'])
-				->group('ptp.id')
+				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
 			if (!empty($userId))
 			{
@@ -293,9 +293,9 @@ class ProductsController extends Controller
             Yii::t('products', 'Add product'),
         );
 
-        $cLst = Yii::app()->db->createCommand()
+        $tLst = Yii::app()->db->createCommand()
                 ->select('id, title')
-                ->from('{{countries}}')
+                ->from('{{product_types}}')
                 ->queryAll();
 
         $countries = $chkCountries = array();
@@ -307,7 +307,7 @@ class ProductsController extends Controller
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
                 $products = new Cproduct();
-                $attrs = $filmForm->getAttributes();
+                $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {
                     $products->{$k} = $v;
                 }
@@ -318,8 +318,8 @@ class ProductsController extends Controller
                 //$this->redirect('/films/admin');
             }
 
-            if (!empty($_POST['ProductForm']['countries'])) {
-                $chkCountries = $_POST['ProductForm']['countries'];
+            if (!empty($_POST['ProductForm']['params'])) {
+                $paramValues = $_POST['ProductForm']['params'];
             }
             $countries = array();
             foreach ($cLst as $country) {

@@ -231,13 +231,13 @@ if(!empty($info))
 
 	if (!empty($variantsParams))
 	{
-		foreach ($variantsParams as $vps)
+		foreach ($variantsParams as $vk => $vps)
 		{
 			echo '<div class="shortfilm">';
-			if (!empty($variantsParams['poster']))
+			if (!empty($vps['poster']))
 			{
-				$poster = $variantsParams['poster'];
-				unset($variantsParams['poster']);
+				$poster = $vps['poster'];
+				unset($variantsParams[$vk]['poster']);
 			}
 			else
 			{

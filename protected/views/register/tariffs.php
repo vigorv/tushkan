@@ -20,7 +20,7 @@ foreach ($lst as $l)
 	echo '
 		<tr>
 			<td>' . $l['title'] . $arc . '</td>
-			<td>' . $l['size_limit'] . '</td>
+			<td>' . Utils::sizeFormat($l['size_limit'] * 1024 * 1024). '</td>
 			<td>' . $l['device_cnt'] . '</td>
 			<td>' . Utils::spellPeriod($l['period']) . '</td>
 			<td>' . $l['price'] . ', ' . Yii::t('pays', _CURRENCY_) . '</td>

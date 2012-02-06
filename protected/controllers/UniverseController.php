@@ -62,7 +62,7 @@ class UniverseController extends Controller {
 		        ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
 				->where('uo.id IN (' . implode(', ', $toIds) . ')')
-				->group('ptp.id')
+				->group('opv.id')
 				->order('uo.id ASC, ptp.srt DESC')->queryAll();
     	}
         $this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,

@@ -38,7 +38,7 @@ class UniverseController extends Controller {
 		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 				->where('pv.id IN (' . implode(', ', $tfIds) . ')')
-				->group('ptp.id')
+				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
     	}
 
@@ -238,7 +238,7 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 				->where('pv.id = :id')
-				->group('ptp.id')
+				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC');
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$prms = $cmd->queryAll();
@@ -381,7 +381,7 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 			        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 			        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
 					->where('pv.id = ' . $info['variant_id'])
-					->group('ptp.id')
+					->group('ppv.id')
 					->order('pv.id ASC, ptp.srt DESC')->queryAll();
 		    	if (!empty($prms))
 		    	{
@@ -509,7 +509,7 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 			        ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
 			        ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
 					->where('uo.id = ' . $info['userobject_id'])
-					->group('ptp.id')
+					->group('opv.id')
 					->order('uo.id ASC, ptp.srt DESC')->queryAll();
 		    	if (!empty($prms))
 		    	{

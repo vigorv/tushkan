@@ -123,13 +123,15 @@ class ServersyncController extends Controller {
 	    if (isset($input['folder']))
 		$fileloc->folder = (int) $input['folder'];
 	    $fileloc->save();
-	    echo "OK";
+	    $result = array();
+	    $result['fid'] = $files->id;
+	    echo serialize($result);
 	    exit();
 	} else
 	    die("Bad User");
     }
 
-        public function actionDownload($user_id=0, $data='') {
+    public function actionDownload($user_id=0, $data='') {
 	if ($user_id > 0) {
 	    //OK 
 	    //WHat is server doing this
@@ -141,20 +143,20 @@ class ServersyncController extends Controller {
 	    $input = unserialize($data);
 	    $new_title = $input['filename'];
 	    /** Metadata already in Base after upload
-	    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
-	    $i = 1;
-	    while (count($cur_file)) {
-		$new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
-		$cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
-		$i++;
-	    }
-	    
-	    $files = new CUserfiles();
-	    $files->title = $new_title;
-	    $files->pid = $input['pid'];
-	    $files->fsize = $input['fsize'];
-	    $files->user_id = $user_id;
-	    $files->save();
+	      $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
+	      $i = 1;
+	      while (count($cur_file)) {
+	      $new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
+	      $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
+	      $i++;
+	      }
+
+	      $files = new CUserfiles();
+	      $files->title = $new_title;
+	      $files->pid = $input['pid'];
+	      $files->fsize = $input['fsize'];
+	      $files->user_id = $user_id;
+	      $files->save();
 	     * *
 	     */
 	    $fileloc = new CFilelocations();

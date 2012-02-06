@@ -237,7 +237,7 @@ if(!empty($info))
 			if (!empty($vps['poster']))
 			{
 				$poster = $vps['poster'];
-				unset($variantsParams[$vk]['poster']);
+				unset($vps['poster']);
 			}
 			else
 			{

@@ -65,7 +65,7 @@ class UserIdentity extends CUserIdentity
 		if (!empty($dmUserId) && !empty($dmUserHash)
 				&& ($dmUserId == Yii::app()->user->getState('dmUserId'))
 				&& ($dmUserHash == Yii::app()->user->getState('dmUserHash'))
-				&& ($this->getUserIp() == Yii::app()->user->getState('dmUserIp'))
+				//&& ($this->getUserIp() == Yii::app()->user->getState('dmUserIp'))//ВРЕМЕННО УБИРАЕМ ПРОВЕРКУ ПО АДРЕСУ
 				&& (Yii::app()->user->getState('dmHashExpired') > time())
 			)
 		{

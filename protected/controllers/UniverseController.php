@@ -305,13 +305,17 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 								}
 						}
 					}
+					if (empty($price_id) && empty($rent_id))
+					{
+						$canAdd = true;
+					}
 
 					$fSize = 0;
 					if (!empty($params[Yii::app()->params['tushkan']['fsizePrmName']]))
 					{
 						$fSize = $params[Yii::app()->params['tushkan']['fsizePrmName']];
 					}
-					$mB = 1024 * 1024;
+					$mB = 1024;
 					if ($canAdd && ($this->userInfo['free_limit'] * $mB > $fSize))
 					{
 						//КОРРЕКТИРУЕМ ОБЪЕМ СВОБОДНОГО ПРОСТРАНСТВА

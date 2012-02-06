@@ -32,13 +32,13 @@ if (!empty($info))
 	$actions[] = '<a href="#" onclick="return doRemove(' . $info['id'] . ')">удалить из пространства</a>';
 	$onlineHref = '';
 		$onlineLinks[$fk] = $locInfo['filename'];
-$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
+//$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/oview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
 		$onlineHref = '<a id="autostart" rel="video" alt="" title="" href="#video' . $fk . '"></a>';
 	unset($params['onlineurl']);
 
 	$links[$fk] = $locInfo['filename'];
-$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
+//$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a rel="video" alt="" title="" href="' . $links[$fk] . '">скачать</a>';
 	unset($params['url']);
 

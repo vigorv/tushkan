@@ -34,7 +34,7 @@ if (!empty($info))
 	if (!empty($params['onlineurl']))
 	{
 		$onlineLinks[$fk] = $params['onlineurl'];
-$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
+//$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
 		$onlineHref = '<a id="autostart" rel="video" alt="" title="" href="#video' . $fk . '"></a>';
 	}
@@ -45,7 +45,7 @@ $onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren
 	if (!empty($params['url']) && !$info['online_only'])
 	{
 		$links[$fk] = $params['url'];
-$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
+//$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a rel="video" alt="" title="" href="' . $links[$fk] . '">скачать</a>';
 	}
 	else

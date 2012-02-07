@@ -14,14 +14,15 @@
 
 echo '<h2>Hi, <a href="/register/personal">' . Yii::app()->user->name . '</a>!</h2>';
 
+$upBalance = ' <a href="/pays/do/1">' . Yii::t('users', 'Fill up balance') . '</a>';
 $currency = Yii::t('pays', _CURRENCY_);
 if (!empty($balance))
 {
-	echo '<h3>Ваш баланс: ' . $balance['balance'] . ' ' . $currency . '</h3>';
+	echo '<h3>Ваш баланс: ' . $balance['balance'] . ' ' . $currency . $upBalance . '</h3>';
 }
 else
 {
-	echo '<h3>У вас на балансе нет средств</h3>';
+	echo '<h3>У вас на балансе нет средств' . $upBalance . '</h3>';
 }
 
 $tLst = array();

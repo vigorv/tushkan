@@ -52,6 +52,11 @@ class PaysController extends Controller
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$oInfo = $cmd->queryRow();
 
+		if (empty($oInfo))
+		{
+			Yii::app()->user->setFlash('error', Yii::t('pays', 'Payment initialisation error.'));
+			$this->redirect('/universe/error');
+		}
 		$this->render('/pays/do', array('lst' => $lst, 'oInfo' => $oInfo, 'balance' => $balance, 'postInfo' => $postInfo));
 	}
 
@@ -136,22 +141,22 @@ class PaysController extends Controller
 						(:user_id, ' . $paysystemInfo['id'] . ', "' . $created . '", "' . $created . '", :operation_id, :summa, ' . _PS_STARTED_ . ', :hash, "", :order_id)
 				';
 				$cmd = Yii::app()->db->createCommand($sql);
-				if (!empty($_POST['user_id']))
-					$cmd->bindParam(':user_id', $_POST['user_id'], PDO::PARAM_INT);
-				if (!empty($_POST['operation_id']))
-					$cmd->bindParam(':operation_id', $_POST['operation_id'], PDO::PARAM_INT);
-				if (!empty($_POST['order_id']))
-					$order_id = $_POST['order_id'];
+				if (!empty($payInfo['user_id']))
+					$cmd->bindParam(':user_id', $payInfo['user_id'], PDO::PARAM_INT);
+				if (!empty($payInfo['operation_id']))
+					$cmd->bindParam(':operation_id', $payInfo['operation_id'], PDO::PARAM_INT);
+				if (!empty($payInfo['order_id']))
+					$order_id = $payInfo['order_id'];
 				else
 					$order_id = 0;
 				$cmd->bindParam(':order_id', $order_id, PDO::PARAM_INT);
-				if (!empty($_POST['summa']))
+				if (!empty($payInfo['summa']))
 				{
-					$cmd->bindParam(':summa', $_POST['summa'], PDO::PARAM_LOB);
+					$cmd->bindParam(':summa', $payInfo['summa'], PDO::PARAM_LOB);
 					$hash = $this->createPaymentHash(array(
-							'summa' => $_POST['summa'],
+							'summa' => $payInfo['summa'],
 							'date' => $created,
-							'user_id' => $_POST['user_id'])
+							'user_id' => $payInfo['user_id'])
 					);
 					$payInfo['hash'] = $hash;
 					$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);

@@ -1,6 +1,6 @@
 <?php
 return array (
-  'Home'					=> 'Главная',
+  'Home'					=> 'Мои файлы',
   'Admin index'				=> 'Админка',
   'action'					=> 'действие',
   'edit'					=> 'редактирование',

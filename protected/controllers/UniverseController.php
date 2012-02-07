@@ -107,18 +107,20 @@ class UniverseController extends Controller {
 		$fsize		= 1000000000;
 		$type_id	= 1;
 //*///КОНЕЦ ЗАГЛУШКИ
-    	if (!empty($_POST))
+/*
+    	if (!empty($_POST['']))
     	{
-//*
-    		$result		= $_POST['result'];
-    		$task_id	= $_POST['task_id'];
-    		$server_id	= $_POST['server_id'];
-    		$folder		= $_POST['folder'];
-    		$filename	= $_POST['filename'];
-    		$fsize		= $_POST['fsize'];
-    		$type_id	= $_POST['type_id'];
-//*/
+			$convertInfo = unserialize($_POST['']);
+
+    		$result		= $convertInfo['result'];
+    		$task_id	= $convertInfo['task_id'];
+    		$server_id	= $convertInfo['server_id'];
+    		$folder		= $convertInfo['folder'];
+    		$filename	= $convertInfo['filename'];
+    		$fsize		= $convertInfo['fsize'];
+    		$type_id	= $convertInfo['type_id'];
     	}
+//*/
     	if (!empty($task_id))
     	{
 	    	$cmd = Yii::app()->db->createCommand()

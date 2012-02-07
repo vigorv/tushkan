@@ -53,6 +53,7 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function checkAuthInfo()
 	{
+return true;//ЗАГЛУШКА
 		$cookies = Yii::app()->request->getCookies();
 		if (!empty($cookies['dmUserId']))
 		{

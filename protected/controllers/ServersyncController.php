@@ -100,6 +100,7 @@ class ServersyncController extends Controller {
 	    if ($server === null)
 		die('Unknown Server ' . $ip);
 	    $input = unserialize($data);
+	    if (!$input) die('Bad data') ;
 	    $new_title = $input['filename'];
 	    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
 	    $i = 1;

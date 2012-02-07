@@ -184,6 +184,11 @@ class UserIdentity extends CUserIdentity
 			$dmUserId->expire = $expire;
 			$dmUserHash->expire = $expire;
 		}
+		else
+		{
+			$dmUserId->expire = 0;
+			$dmUserHash->expire = 0;
+		}
 		Yii::app()->request->cookies->add('dmUserId', $dmUserId);
 		Yii::app()->request->cookies->add('dmUserHash', $dmUserHash);
 

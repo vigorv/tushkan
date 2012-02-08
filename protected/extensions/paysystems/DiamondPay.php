@@ -31,20 +31,8 @@ class DiamondPay
 	public function process($payInfo)
 	{
 		$answerInfo = array('payment_id' => $payInfo['order_id']);
-		switch ($payInfo['user_id'])
-		{
-			case 1: //(vano)
-				$answerInfo['result_id'] = _PS_CHECK_;
-				$answerInfo['msg'] = '_PS_CHECK_';
-			break;
-			case 2: //(admin)
-				$answerInfo['result_id'] = _PS_PAYED_;
-				$answerInfo['msg'] = '_PS_PAYED_';
-			break;
-			default:
-				$answerInfo['result_id'] = _PS_CANCELED_;
-				$answerInfo['msg'] = '_PS_CANCELED_';
-		}
+		$answerInfo['result_id'] = _PS_PAYED_;
+		$answerInfo['msg'] = '_PS_PAYED_';
 		return $answerInfo;
 	}
 

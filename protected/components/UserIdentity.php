@@ -65,7 +65,7 @@ class UserIdentity extends CUserIdentity
 		if (!empty($dmUserId) && !empty($dmUserHash)
 				&& ($dmUserId == Yii::app()->user->getState('dmUserId'))
 				&& ($dmUserHash == Yii::app()->user->getState('dmUserHash'))
-				//&& ($this->getUserIp() == Yii::app()->user->getState('dmUserIp'))//ВРЕМЕННО УБИРАЕМ ПРОВЕРКУ ПО АДРЕСУ
+				&& ($this->getUserIp() == Yii::app()->user->getState('dmUserIp'))//ВРЕМЕННО УБИРАЕМ ПРОВЕРКУ ПО АДРЕСУ
 				&& (Yii::app()->user->getState('dmHashExpired') > time())
 			)
 		{
@@ -183,6 +183,11 @@ class UserIdentity extends CUserIdentity
 			$expire = time() + 3600*24*30; // 30 days
 			$dmUserId->expire = $expire;
 			$dmUserHash->expire = $expire;
+		}
+		else
+		{
+			$dmUserId->expire = 0;
+			$dmUserHash->expire = 0;
 		}
 		Yii::app()->request->cookies->add('dmUserId', $dmUserId);
 		Yii::app()->request->cookies->add('dmUserHash', $dmUserHash);

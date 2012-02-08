@@ -15,7 +15,9 @@
 
 	if (!empty($lst))
 	{
-		$select = array(0 => 'Списать с баланса');
+		$select = array();
+		if ($oInfo['id'] <> 1)
+			$select[] = 'Списать с баланса';
 		$jsCondition = '(sid == 0)';
 		foreach($lst as $l)
 		{

@@ -147,7 +147,7 @@ class RegisterController extends Controller {
                     if (!empty($trial))
                     {
 						$sql = 'INSERT INTO {{tariffs_users}} (user_id, tariff_id, switch_to) VALUES (' . $userId . ', ' . $trial['id'] . ', 0)';
-						Yii::app()->db->createCommand($sql)->execute();;
+						Yii::app()->db->createCommand($sql)->execute();
 
 						//ПОДКЛЮЧАЕМ ПЕРИОДИЧЕСКУЮ УСЛУГУ
 						$operationId = Yii::app()->params['tushkan']['abonentFeeId'];
@@ -156,6 +156,9 @@ class RegisterController extends Controller {
 							VALUES (NULL, ' . $userId . ', ' . $operationId . ', "", "' . $paidBy . '", ' . $trial['id'] . ')';
 						Yii::app()->db->createCommand($sql)->execute();;
                     }
+                    //АВТОМАТИЧЕСКАЯ АВТОРИЗАЦИЯ
+					$this->identity->saveAuthInfo(CUser::model()->findByPk($userId)->attributes);
+					$this->redirect('/register/profile');
 
                 } else {
                     $model->addError('name', Yii::t('users', 'Unable to register user'));

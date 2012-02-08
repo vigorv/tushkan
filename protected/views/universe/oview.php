@@ -39,7 +39,7 @@ if (!empty($info))
 
 	$links[$fk] = $locInfo['filename'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<a rel="video" alt="" title="" href="' . $links[$fk] . '">скачать</a>';
+		$actions[] = '<a alt="" title="" href="' . $links[$fk] . '">скачать</a>';
 	unset($params['url']);
 
 	echo '<ul>';

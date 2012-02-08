@@ -18,24 +18,32 @@
 		echo '<h4>Видео с витрин</h4>';
 		foreach ($tFiles as $f)
 		{
+			$curVariantId = $f['variant_id'];
 			$params = array();
 			foreach($fParams as $p)
 			{
-				$params[$p['title']] = $p['value'];
+				if ($p['id'] == $curVariantId)
+				{
+					$params[$p['title']] = $p['value'];
+				}
 			}
-			echo '<div class="shortfilm"><a href="/universe/tview/' . $f['id'] . '">';
-			if (!empty($params['poster']))
+
+			if (!empty($params))
 			{
-				$poster = $params['poster'];
-				unset($params['poster']);
+				echo '<div class="shortfilm"><a href="/universe/tview/' . $f['id'] . '">';
+				if (!empty($params['poster']))
+				{
+					$poster = $params['poster'];
+					unset($params['poster']);
+				}
+				else
+				{
+					$poster = '/images/films/noposter.jpg';
+				}
+				echo '<img width="50" src="' . $poster . '" />';
+				echo '<b>' . $f['title'] . '</b>';
+				echo '</a></div>';
 			}
-			else
-			{
-				$poster = '/images/films/noposter.jpg';
-			}
-			echo '<img width="50" src="' . $poster . '" />';
-			echo '<b>' . $f['title'] . '</b>';
-			echo '</a></div>';
 		}
 	}
 

@@ -116,10 +116,12 @@ class FilesController extends Controller {
 			$task_id = CloudTaskManager::model()->CreateTaskConvert(QUEUE_CONVERTER, $fid, 'x480');
 			//$task_id = 1; //ЗАГЛУШКА ВЫЗОВА КОНВЕРТОРА
 			//$task_id = file_get_contents('[АДРЕС КОНВЕРТОРА]');//ВЫЗОВ КОНВЕРТОРА
-			$sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id) VALUES (:id, ' . $this->user_id . ', ' . $task_id . ')';
-			$cmd = Yii::app()->db->createCommand($sql);
-			$cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
-			$cmd->execute();
+			if ($task_id) {
+			    $sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id) VALUES (:id, ' . $this->user_id . ', ' . $task_id . ')';
+			    $cmd = Yii::app()->db->createCommand($sql);
+			    $cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
+			    $cmd->execute();
+			}
 		    }
 		    break;
 		case "cancel":

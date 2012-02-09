@@ -12,4 +12,5 @@ return array(
 	'platform'				=> 'Платформа',
 	'System requirements'	=> 'Системные требования',
 	'fsize'					=> 'Размер файла',
+	'poster'				=> 'Постер',
 );

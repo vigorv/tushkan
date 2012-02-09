@@ -48,13 +48,15 @@ class ParamsController extends Controller {
                     $param[$k] = $v;
                     $params->{$k} = $v;
                 }
+                if (empty($params->srt))
+                	$params->srt = 0;
                 $params->id = $param['id'];
                 $params->isNewRecord = false;
                 $params->save();
                 Yii::app()->user->setFlash('success', Yii::t('params', 'Param saved'));
             }
         }
-        $this->render('/params/edit', array('param' => $param, 'model' => $paramForm));
+        $this->render('/params/edit', array('info' => $param, 'model' => $paramForm));
     }
 
     /**
@@ -77,12 +79,11 @@ class ParamsController extends Controller {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
                 $params = new CParam();
                 $attrs = $paramForm->getAttributes();
-                if (empty($attrs['srt'])) {
-                    $attrs['srt'] = 0;
-                }
                 foreach ($attrs as $k => $v) {
                     $params->{$k} = $v;
                 }
+                if (empty($params->srt))
+                	$params->srt = 0;
                 $params->save();
                 Yii::app()->user->setFlash('success', Yii::t('params', 'Param saved'));
             }

@@ -25,6 +25,11 @@ return array (
   'New password'		=> 'Новый пароль',
   'Account bans'		=> 'Блокировки аккаунта',
 
+  'Visible for admins'		=> 'Видим администраторам',
+  'Visible for moderators'	=> 'Видим модераторам',
+  'Visible for users'		=> 'Видим пользователям',
+  'Visible for all'			=> 'Видим всем',
+
   'Account in readonly mode'	=> 'Аккаунт в режиме "только для чтения"',
   'Account banned'				=> 'Аккаунт блокирован',
   'Overdue abonent fee'			=> 'Просрочена абонентская плата',

@@ -42,6 +42,7 @@ class TypesController extends Controller {
 			$pLst = Yii::app()->db->createCommand()
 	        	->select('*')
 	        	->from('{{product_type_params}}')
+                ->order('srt DESC')
 	        	->queryAll();
 
 	        $relations = Yii::app()->db->createCommand()

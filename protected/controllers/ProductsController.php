@@ -293,12 +293,20 @@ class ProductsController extends Controller
             Yii::t('products', 'Add product'),
         );
 
-        $tLst = Yii::app()->db->createCommand()
+        $types = Yii::app()->db->createCommand()
                 ->select('id, title')
                 ->from('{{product_types}}')
                 ->queryAll();
+		$tLst = Utils::arrayToKeyValues($types, 'id', 'title');
 
-        $countries = $chkCountries = array();
+
+        $partners = Yii::app()->db->createCommand()
+                ->select('id, title')
+                ->from('{{partners}}')
+                ->queryAll();
+		$pLst = Utils::arrayToKeyValues($partners, 'id', 'title');
+
+        $variants = $params = array();
 
         $productForm = new ProductForm();
         if (isset($_POST['ProductForm'])) {
@@ -307,29 +315,68 @@ class ProductsController extends Controller
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
                 $products = new Cproduct();
+
                 $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {
                     $products->{$k} = $v;
                 }
+                $products->original_id = 0;
+                if (empty($products->srt))
+                	$products->srt = 0;
                 $products->created = date('Y-m-d H:i:s');
                 $products->modified = date('Y-m-d H:i:s');
+
                 $products->save();
                 Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
                 //$this->redirect('/films/admin');
             }
+            else
+            {
+            	$attrs = $productForm->getAttributes();
+            	$variants = $attrs['variants'];
+            	$params = $attrs['params'];
+            }
 
-            if (!empty($_POST['ProductForm']['params'])) {
-                $paramValues = $_POST['ProductForm']['params'];
-            }
-            $countries = array();
-            foreach ($cLst as $country) {
-                $countries[$country['id']] = $country['title'];
-            }
         } else {
-            foreach ($cLst as $country) {
-                $countries[$country['id']] = $country['title'];
-            }
+
         }
-        $this->render('/products/form', array('model' => $productForm, 'countries' => $countries, 'chkCountries' => $chkCountries));
+        $this->render('/products/form', array('model' => $productForm,
+        	'tLst' => $tLst, 'pLst' => $pLst,
+        	'variants' => $variants, 'params' => $params));
     }
+
+	public function actionAjax()
+	{
+		$subAction = ''; $result = array();
+		if (!empty($_POST))
+		{
+			if (!empty($_POST['action']))
+			{
+				$subAction = $_POST['action'];
+			}
+			switch ($subAction)
+			{
+				case "typeparams":
+					$typeId = 0;
+					$result['variantId'] = 0;
+					if (!empty($_POST['typeId']))
+						$typeId = $_POST['typeId'];
+					$cmd = Yii::app()->db->createCommand()
+						->select('ptp.id, ptp.title, ptp.description')
+						->from('{{product_type_params}} ptp')
+						->join('{{product_types_type_params}} pttp', 'pttp.param_id = ptp.id')
+						->where('pttp.type_id = :id')
+						->order('ptp.srt DESC');
+					$cmd->bindParam(':id', $typeId, PDO::PARAM_INT);
+					$result['lst'] = $cmd->queryAll();
+					if (!empty($_POST['variantId']))
+					{
+						$result['variantId'] = $_POST['variantId'];
+					}
+				break;
+			}
+		}
+
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
+	}
 }

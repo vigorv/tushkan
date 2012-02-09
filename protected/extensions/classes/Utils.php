@@ -111,7 +111,7 @@ class Utils
      * @param array  $titles Массив слов для склонения
      * @return string
      **/
-    function pluralForm($number, $titles)
+    public function pluralForm($number, $titles)
     {
         $cases = array (2, 0, 1, 1, 1, 2);
         return number_format($number, 0 , ',', ' ' ) . " " . $titles[ ($number%100>4 && $number%100<20)? 2 : $cases[min($number%10, 5)] ];
@@ -123,7 +123,7 @@ class Utils
      * @param string $size
      * @return string
      */
-    function sizeFormat($size)
+    public function sizeFormat($size)
     {
         if (abs($size) > pow(1024, 4)) return round(($size / pow(1024, 4)), 2) . "&nbsp;Tb";
         if (abs($size) > pow(1024, 3)) return round(($size / pow(1024, 3)), 2) . "&nbsp;Gb";
@@ -180,4 +180,58 @@ class Utils
         return implode(' ', $t);
     }
 
+    /**
+     * заполнить ключи массива значениями из елемента массива
+     *
+     * @param string $indexName - название ключа, значения которого, пойдут в ключи результата
+     * @param mixed $arr
+     * @return mixed
+     */
+    public function pushIndexToKey($indexName, $arr)
+    {
+    	$result = array();
+    	if (!empty($arr))
+    	{
+    		foreach($arr as $a)
+    		{
+    			if (isset($a[$indexName]))
+    			{
+    				$result[$a[$indexName]] = $a;
+    			}
+    			else
+    			{
+    				return false;
+    			}
+    		}
+    	}
+    	return $result;
+    }
+
+    /**
+     * вернуть массив в виде ключ - значение
+     *
+     * @param mixed $arr - исходный массив
+     * @param string $kName - название ключа, значения которого пойдут в ключи результата
+     * @param string $vName - название ключа, значения которого пойдут в значения результата
+     * @return mixed
+     */
+    public function arrayToKeyValues($arr, $kName, $vName)
+    {
+    	$result = array();
+    	foreach ($arr as $a)
+    	{
+    		$result[$a[$kName]] = $a[$vName];
+    	}
+    	return $result;
+    }
+
+    public function getActiveStates()
+    {
+    	return array(
+    		_IS_GUEST_		=> Yii::t('users', 'Visible for all'),
+    		_IS_USER_		=> Yii::t('users', 'Visible for users'),
+    		_IS_MODERATOR_	=> Yii::t('users', 'Visible for moderators'),
+    		_IS_ADMIN_		=> Yii::t('users', 'Visible for admins'),
+    	);
+    }
 }

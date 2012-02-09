@@ -25,6 +25,7 @@ return array (
   'Fields with' 			=> 'Поля, отмеченные знаком',
   'are required' 			=> ', обязательны для заполнения',
   'Partners' 				=> 'Партнеры, витрины',
+  'Partner' 				=> 'Партнер',
   'Products' 				=> 'Продукты',
   'Tariffs' 				=> 'Тарифы',
   'Pages' 					=> 'Текстовые страницы',
@@ -40,6 +41,9 @@ return array (
   'Profile'					=> 'Профиль',
   'from'					=> 'с',
   'to'						=> 'по',
+  'online only'				=> 'только онлайн',
+  'Variants'				=> 'Варианты',
+  'Variant'					=> 'Вариант',
 
   'day'						=> 'день',
   'days'					=> 'дней',

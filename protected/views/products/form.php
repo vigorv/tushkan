@@ -83,9 +83,9 @@
 				echo'
     			<div id="variantId' . $vk . '">
 					<input type="hidden" name="ProductForm[variants][' . $vk . '][id]" value="' . $variant['id'] .  '" />
-					<input type="checkbox" ' . $checked . ' name="ProductForm[variants][' . $vk . '][online_only]" class="text ui-widget-content ui-corner-all" /> ' .  Yii::t('common', 'online only') . '<br />
 
 					<select onchange="return variantParams(' . $vk .  ', this);" id="variants' . $vk .  'type_id" name="ProductForm[variants][' . $vk . '][type_id]" class="text ui-widget-content ui-corner-all">
+					<input type="checkbox" ' . $checked . ' name="ProductForm[variants][' . $vk . '][online_only]" class="text ui-widget-content ui-corner-all" /> ' .  Yii::t('common', 'online only') . '<br />
 				';
 
 				foreach ($tLst as $k => $v)

@@ -265,20 +265,101 @@ class ProductsController extends Controller
         );
 
         $cmd = Yii::app()->db->createCommand()
-                ->select('p.id, p.title, d.description, pp.filename, GROUP_CONCAT(DISTINCT c.title SEPARATOR ", ") AS country')
-                ->from('{{products}} p')
-                ->join('{{product_descriptions}} d', 'd.product_id=p.id')
-                ->join('{{countries_products}} cp', 'cp.product_id=p.id')
-                ->join('{{countries}} c', 'cp.country_id=c.id')
-                ->leftJoin('{{product_pictures}} pp', 'pp.product_id=p.id AND pp.tp="smallposter"')
-                ->where('p.id=:id')
-                ->group('p.id');
-
+        	->select('*')
+        	->from('{{products}}')
+        	->where('id = :id');
         $cmd->bindParam(':id', $id, PDO::PARAM_INT);
-        $product = $cmd->queryAll();
-        print_r($_GET);
+        $info = $cmd->queryRow();
 
-        $this->render('/products/edit', array('product' => $product));
+        if (empty($info))
+        {
+			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
+			$this->redirect('/universe/error');
+        }
+
+        $dscInfo = Yii::app()->db->createCommand()
+        	->select('description')
+        	->from('{{product_descriptions}}')
+        	->where('product_id = ' . $info['id'])->queryRow();
+        if (!empty($dscInfo))
+        {
+        	$info['description'] = $dscInfo['description'];
+        }
+
+		$variantsInfo = Yii::app()->db->createCommand()
+			->select('pv.id, pv.online_only, pv.type_id, pv.active, ptp.id AS pid, ptp.title, ppv.value')
+			->from('{{product_variants}} pv')
+	        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
+	        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
+			->where('pv.product_id = ' . $info['id'])
+			->group('ppv.id')
+			->order('pv.id ASC, ptp.srt DESC')->queryAll();
+		//ПРИВОДИМ ДАННЫЕ ВАРИАНТОВ И ИХ ПАРМЕТРОВ К СТРУКТУРЕ, ПРИХОДЯЩЕЙ С POST-ФОРМЫ
+		$variants = $params = array();
+		foreach ($variantsInfo as $vInfo)
+		{
+			$variants[$vInfo['id']]['id'] = $vInfo['id'];
+			$variants[$vInfo['id']]['online_only'] = $vInfo['online_only'];
+			$variants[$vInfo['id']]['type_id'] = $vInfo['type_id'];
+			$variants[$vInfo['id']]['active'] = $vInfo['active'];
+
+			$params[$vInfo['id']][$vInfo['pid']]['id'] = $vInfo['pid'];
+			$params[$vInfo['id']][$vInfo['pid']]['title'] = $vInfo['title'];
+			$params[$vInfo['id']][$vInfo['pid']]['value'] = $vInfo['value'];
+			$params[$vInfo['id']][$vInfo['pid']]['variant_id'] = $vInfo['pid'];
+		}
+
+        $types = Yii::app()->db->createCommand()
+                ->select('id, title')
+                ->from('{{product_types}}')
+                ->queryAll();
+		$tLst = Utils::arrayToKeyValues($types, 'id', 'title');
+
+        $partners = Yii::app()->db->createCommand()
+                ->select('id, title')
+                ->from('{{partners}}')
+                ->queryAll();
+		$pLst = Utils::arrayToKeyValues($partners, 'id', 'title');
+
+        $productForm = new ProductForm();
+        if (isset($_POST['ProductForm'])) {
+            $productForm->attributes = $_POST['ProductForm'];
+
+            if ($productForm->validate()) {
+                //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
+                $products = new Cproduct();
+
+                $attrs = $productForm->getAttributes();
+                foreach ($attrs as $k => $v) {
+                    $products->{$k} = $v;
+                }
+                $products->original_id = 0;
+                if (empty($products->srt))
+                	$products->srt = 0;
+                $products->created = date('Y-m-d H:i:s');
+                $products->modified = date('Y-m-d H:i:s');
+
+                $products->isNewRecord = false;
+                $products->id = $info['id'];
+                $products->save();
+                Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
+                $this->redirect('/products/edit/' . $id);
+            }
+            else
+            {
+            	$attrs = $productForm->getAttributes();
+            	$info = $attrs;//ДЛЯ ОТОБРАЖЕНИЯ В ФОРМЕ ИЗМЕНЕННЫХ ДАННЫХ
+            	$variants = $attrs['variants'];
+            	$params = $attrs['params'];
+            }
+
+        } else {
+
+        }
+        $this->render('/products/edit', array('model' => $productForm,
+        	'info' => $info,
+        	'tLst' => $tLst, 'pLst' => $pLst,
+        	'variants' => $variants, 'params' => $params));
     }
 
     /**
@@ -328,7 +409,7 @@ class ProductsController extends Controller
 
                 $products->save();
                 Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
-                //$this->redirect('/films/admin');
+                $this->redirect('/films/edit/' . $products->id);
             }
             else
             {

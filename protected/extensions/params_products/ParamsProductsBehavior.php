@@ -18,14 +18,6 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 			//ВАРИАНТЫ ПРОДУКТА НЕ УДАЛЯЕМ, А ТОЛЬКО ДОБАВЛЯЕМ ИЛИ ОБНОВЛЯЕМ
 			if (!empty($this->variants))
 			{
-				$oldVariants = Yii::app()->db->createCommand()
-					->select('*')
-					->from('{{product_variants}}')
-					->where('product_id = ' . $this->getOwner()->id)
-					->queryAll();
-
-				$oldVariants = Utils::pushIndexToKey('id', $oldVariants);
-
 				foreach ($this->variants as $vk => $variant)
 				{
 					$vId = $variant['id']; //ЗАПОМИНАЕМ ID ТЕКУЩЕГО ВАРИАНТА
@@ -51,7 +43,7 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 					{
 						//ОБНОВЛЯЕМ ВАРИАНТ
 						$sql = 'UPDATE {{product_variants}} SET online_only = ' . $variant['online_only'] . ',
-							active = :active) WHERE id = :id';
+							active = :active WHERE id = :id';
 						$cmd = Yii::app()->db->createCommand($sql);
 						$cmd->bindParam(":id", $variant['id'], PDO::PARAM_INT);
 						$cmd->bindParam(":active", $variant['active'], PDO::PARAM_INT);

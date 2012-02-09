@@ -39,7 +39,7 @@ class CServers extends CActiveRecord {
     public function sendCommand($action, $sid, $data) {
 	$server = $this->findByPk($sid);
 	if ($server == null) {
-
+	    
 	} else {
 	    $sdata = serialize($data);
 	    $hash = '';
@@ -63,10 +63,13 @@ class CServers extends CActiveRecord {
 	    $cond['zone'] = $zone;
 	$cond['active'] = 1;
 	$server = CServers::model()->findByAttributes($cond);
-	if ($server['alias'] == '')
-	    return CServers::convertIpToString($server['ip']) . ':' . $server['port'];
-	else
-	    return $server['alias'] . ':' . $server['port'];
+	if ($server) {
+	    if ($server['alias'] == '')
+		return CServers::convertIpToString($server['ip']) . ':' . $server['port'];
+	    else
+		return $server['alias'] . ':' . $server['port'];
+	} else
+	    return false;
     }
 
     public function tableName() {

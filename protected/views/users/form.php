@@ -1,5 +1,8 @@
 <div class="form">
-<?php $form=$this->beginWidget('CActiveForm'); ?>
+<?php
+	$form=$this->beginWidget('CActiveForm');
+	$aLst = Utils::getActiveStates();
+?>
 
     <?php echo $form->errorSummary($model); ?>
 
@@ -26,8 +29,8 @@
     </div>
 
     <div class="row">
-        <?php echo $form->label($model, 'active'); ?>
-        <?php echo $form->textField($model, 'active', array('class' => 'text ui-widget-content ui-corner-all')); ?>
+        <?php echo $form->label($model, 'active', array('label' => Yii::t('common', 'Active'))); ?>
+        <?php echo $form->dropdownlist($model, 'active', $aLst, array('class' => 'text ui-widget-content ui-corner-all')); ?>
     </div>
 
     <div class="row submit">

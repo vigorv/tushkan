@@ -7,6 +7,7 @@
 define('_IS_ADMIN_',		70);
 define('_IS_MODERATOR_',	60);
 define('_IS_USER_',			10);
+define('_IS_GUEST_',		0);
 class AccessFilter extends CFilter
 {
     protected function preFilter($filterChain)

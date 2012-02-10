@@ -25,6 +25,8 @@
 			echo '<td><input type="checkbox" name="massIds[' . $u['id'] . ']" />
 				 ' . $action . '
 			</td>';
+			if (empty($u['name']))
+				$u['name'] = '[ ' . Yii::t('users', 'name') . ' ]';
 			echo '<td>' . $u['id'] . '</td>';
 			echo '<td><a href="' . $href . '">' . $u['name'] . '</a>' . $g . '</td>';
 			echo '<td>' . $u['email'] . '</td>';

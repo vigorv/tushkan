@@ -8,6 +8,7 @@ class ParamForm extends CFormModel
 	public $title;
 	public $description;
 	public $srt;
+	public $active;
 
 	public function rules()
 	{
@@ -15,6 +16,7 @@ class ParamForm extends CFormModel
 			array('title', 'required'),
 			array('description', 'safe'),
 			array('srt', 'numerical'),
+			array('active', 'numerical'),
 		);
 	}
 }

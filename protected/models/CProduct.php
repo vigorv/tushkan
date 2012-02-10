@@ -14,6 +14,17 @@ class CProduct extends CActiveRecord {
         return parent::model($className);
     }
 
+    public function behaviors() {
+        return array(
+            'params' => array(
+                'class' => 'ext.params_products.ParamsProductsBehavior',
+            ),
+            'description' => array(
+                'class' => 'ext.product_descriptions.ProductDescriptionsBehavior',
+            ),
+        );
+    }
+
     public function tableName() {
         return '{{products}}';
     }

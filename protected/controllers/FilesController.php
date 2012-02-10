@@ -102,39 +102,16 @@ class FilesController extends Controller {
 	$task_id = 0;
 	if (!empty($_POST['id'])) {
 	    $fid = (int) $_POST['id'];
-	    $cmd = Yii::app()->db->createCommand()
-		    ->select('*')
-		    ->from('{{convert_queue}}')
-		    ->where('id = :id AND user_id = ' . $this->user_id);
-	    $cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
-	    $queue = $cmd->queryRow();
-
+	    $queue = CloudTaskManager::model()->getTaskForFile($fid, $this->user_id);
 	    switch ($_POST['subaction']) {
 		case "add":
 		    if (empty($queue)) {
-			//ЕСЛИ В ОЧЕРЕДИ НЕТ ДАННОГО ФАЙЛА
-			$task_id = CloudTaskManager::model()->CreateTaskConvert(QUEUE_CONVERTER, $fid, 'x480');
-			//$task_id = 1; //ЗАГЛУШКА ВЫЗОВА КОНВЕРТОРА
-			//$task_id = file_get_contents('[АДРЕС КОНВЕРТОРА]');//ВЫЗОВ КОНВЕРТОРА
-			if ($task_id) {
-			    $sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id) VALUES (:id, ' . $this->user_id . ', ' . $task_id . ')';
-			    $cmd = Yii::app()->db->createCommand($sql);
-			    $cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
-			    $cmd->execute();
-			}
+			$task_id = CloudTaskManager::model()->CreateFileTask(1, $fid, $this->user_id, 'x480');
 		    }
 		    break;
 		case "cancel":
 		    if (!empty($queue)) {
-			$task_id = $queue['task_id'];
-			$result = CloudTaskManager::model()->AbortTaskConvert(QUEUE_CONVERTER, $task_id);
-			//$canceled_task_id = $task_id; //ЗАГЛУШКА
-			//$canceled_task_id = file_get_contents('[АДРЕС КОНВЕРТОРА]');//ВЫЗОВ КОНВЕРТОРА ДЛЯ ОТМЕНЫ ОПЕРАЦИИ
-			//if ($task_id == $canceled_task_id) {
-			if ($result) {
-			    $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
-			    Yii::app()->db->createCommand($sql)->execute();
-			}
+			$result = CloudTaskManager::model()->AbortFileTaskQueue($queue);
 		    }
 		    break;
 	    }
@@ -171,19 +148,10 @@ class FilesController extends Controller {
 	}
     }
 
-    /**
-     *  Upload page
+    public function actionAdd() {
 
-
-      public function actionAdd() {
-      $UPLOAD_SERVER = 2;
-      $DOWNLOAD_SERVER = 2;
-      $user_id = Yii::app()->user->id;
-      $up_server = $this->GetServer($UPLOAD_SERVER);
-      $dl_server = $this->GetServer($DOWNLOAD_SERVER);
-      $this->render('add', array('user_id' => $user_id, 'kpt' => $kpt, 'upload_server' => $up_server, 'download_server' => $dl_server));
-      }
-     */
+	$this->render('add');
+    }
 
     /**
      * Handle Ajax tree

@@ -17,7 +17,7 @@ class ServersyncController extends Controller {
     }
 
     /**
-     *
+     * GET  USERINFO
      * @param int $user_id 
      */
     public function actionUserdata($user_id=0) {
@@ -30,20 +30,23 @@ class ServersyncController extends Controller {
 	exit();
     }
 
-    public function actionFiledata($user_id=0, $stype=0, $zone=0) {
+    public function actionFiledata($user_id=0) {
+	$user_id = (int) $user_id;
 	if ($user_id > 0) {
-	    $id = (int) $user_id;
-	    $fid = (int) $_GET['fid'];
-	    $stype = (int) $stype;
-	    $zone = (int) $zone;
+	    if (!isset($_GET['data']))
+		die("Data is not enough");
+	    $data = unserialize($_GET['data']);
+	    $fid = (int) $data['fid'];
+	    $stype = (int) $data['stype'];
+	    $user_ip = (int) $data['user_ip'];
+	    $zone = CZones::model()->GetZoneByIp($user_ip);
 	    $filemeta = Yii::app()->db->createCommand()
 		    ->select('uf.*')
 		    ->from('{{userfiles}} uf')
-		    ->where('uf.user_id=' . $id . ' AND uf.id=' . $fid)
+		    ->where('uf.user_id=' . $user_id . ' AND uf.id=' . $fid)
 		    ->limit(1)
 		    ->queryAll();
 	    if (count($filemeta)) {
-
 		$response['title'] = $filemeta[0]['title'];
 		$fileloc = Yii::app()->db->createCommand()
 			->select('fl.*,fs.*')
@@ -56,7 +59,7 @@ class ServersyncController extends Controller {
 		if ($zone)
 		    $where[] = 'fs.zone_id=' . $zone;
 		$where[] = 'fl.id=' . $fid;
-		$where[] = 'fl.user_id=' . $id;
+		$where[] = 'fl.user_id=' . $user_id;
 		$fileloc->where($where);
 		$filedata = $fileloc->queryAll();
 		foreach ($filedata as $file) {
@@ -72,8 +75,8 @@ class ServersyncController extends Controller {
 	    }
 	    echo (serialize($response));
 	} else
-	    echo ('bye bye');
-	exit();
+	    die('bye bye');
+	exit;
     }
 
     public function actionCreate($user_id=0, $title='', $pid=0, $is_dir=0) {
@@ -100,7 +103,8 @@ class ServersyncController extends Controller {
 	    if ($server === null)
 		die('Unknown Server ' . $ip);
 	    $input = unserialize($data);
-	    if (!$input) die('Bad data') ;
+	    if (!$input)
+		die('Bad data');
 	    $new_title = $input['filename'];
 	    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
 	    $i = 1;
@@ -132,37 +136,20 @@ class ServersyncController extends Controller {
 	    die("Bad User");
     }
 
-    public function actionDownload($user_id=0, $data='') {
+    public function actionDownload($user_id=0) {
 	if ($user_id > 0) {
 	    //OK 
 	    //WHat is server doing this
 	    $ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
-
 	    $server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 1));
 	    if ($server === null)
-		die('Unknown Server ' . $ip);
-	    $input = unserialize($data);
-	    $new_title = $input['filename'];
-	    /** Metadata already in Base after upload
-	      $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
-	      $i = 1;
-	      while (count($cur_file)) {
-	      $new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
-	      $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
-	      $i++;
-	      }
-
-	      $files = new CUserfiles();
-	      $files->title = $new_title;
-	      $files->pid = $input['pid'];
-	      $files->fsize = $input['fsize'];
-	      $files->user_id = $user_id;
-	      $files->save();
-	     * *
-	     */
+		die('Unknown Server ' . $_SERVER['REMOTE_ADDR']);
+	    if (!isset($_GET['data']))
+		die('not enough data');
+	    $input = unserialize($_GET['data']);
 	    $fileloc = new CFilelocations();
 	    $fileloc->id = $input['fid'];
-	    $fileloc->server_id = $server->id;
+	    $fileloc->server_id = $server['id'];
 	    $fileloc->user_id = $user_id;
 	    $fileloc->fsize = $input['fsize'];
 	    $fileloc->fname = $input['save'];

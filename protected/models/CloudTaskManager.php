@@ -30,6 +30,9 @@ class CloudTaskManager {
 	$server = CServers::model()->getServerFull(TASK_SERVER, $zone);
 	$server_addr = Cservers::model()->convertIpToString($server['ip']) . ':' . $server['port'];
 	$file = CUserfiles::model()->getFileloc($fid, $user_id, $zone);
+	
+	$preset_id = CPresets::model()->getPresetID($preset_name);
+	
 	if (count($file) && ($server)) {
 	    $task_id = (int) CServers::model()->sendCommandAddr('/tasks/addtask', $server_addr, array(
 			'queue' => $queue_id,
@@ -41,7 +44,7 @@ class CloudTaskManager {
 			'fsize' => $file[0]['fsize'],
 			'ip' => Cservers::model()->convertIpToString($file[0]['ip'])));
 	    if ($task_id > 0) {
-		$sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id,server_id) VALUES (' . $fid . ', ' . $user_id . ', ' . $task_id . ',' . $server['id'] . ')';
+		$sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id,server_id,preset_id) VALUES (' . $fid . ', ' . $user_id . ', ' . $task_id . ',' . $server['id'] . ','.$preset_id.')';
 		return Yii::app()->db->createCommand($sql)->execute();
 	    }
 	}

@@ -35,43 +35,47 @@ class ServersyncController extends Controller {
 	if ($user_id > 0) {
 	    if (!isset($_GET['data']))
 		die("Data is not enough");
-	    $data = unserialize($_GET['data']);
-	    $fid = (int) $data['fid'];
-	    $stype = (int) $data['stype'];
-	    $user_ip = (int) $data['user_ip'];
-	    $zone = CZones::model()->GetZoneByIp($user_ip);
-	    $filemeta = Yii::app()->db->createCommand()
-		    ->select('uf.*')
-		    ->from('{{userfiles}} uf')
-		    ->where('uf.user_id=' . $user_id . ' AND uf.id=' . $fid)
-		    ->limit(1)
-		    ->queryAll();
-	    if (count($filemeta)) {
-		$response['title'] = $filemeta[0]['title'];
-		$fileloc = Yii::app()->db->createCommand()
-			->select('fl.*,fs.*')
-			->from('{{filelocations}} fl')
-			->join('{{fileservers}} fs', 'fl.server_id = fs.id');
-		$where = array('and');
+	    $data = @unserialize($_GET['data']);
+	    if ($data) {
+		$fid = (int) $data['fid'];
+		$stype = (int) $data['stype'];
+		$user_ip = (int) $data['user_ip'];
+		$zone = CZones::model()->GetZoneByIp($user_ip);
+		$filemeta = Yii::app()->db->createCommand()
+			->select('uf.*')
+			->from('{{userfiles}} uf')
+			->where('uf.user_id=' . $user_id . ' AND uf.id=' . $fid)
+			->limit(1)
+			->queryAll();
+		if (count($filemeta)) {
+		    $response['title'] = $filemeta[0]['title'];
+		    $fileloc = Yii::app()->db->createCommand()
+			    ->select('fl.*,fs.*')
+			    ->from('{{filelocations}} fl')
+			    ->join('{{fileservers}} fs', 'fl.server_id = fs.id');
+		    $where = array('and');
 
-		if ($stype)
-		    $where[] = 'fs.stype=' . $stype;
-		if ($zone)
-		    $where[] = 'fs.zone_id=' . $zone;
-		$where[] = 'fl.id=' . $fid;
-		$where[] = 'fl.user_id=' . $user_id;
-		$fileloc->where($where);
-		$filedata = $fileloc->queryAll();
-		foreach ($filedata as $file) {
-		    $fdata = array();
-		    $fdata['ip'] = $file['ip'];
-		    $fdata['port'] = $file['port'];
-		    $fdata['name'] = $file['fname'];
-		    $fdata['size'] = $file['fsize'];
-		    $response['filedata'][] = $fdata;
+		    if ($stype)
+			$where[] = 'fs.stype=' . $stype;
+		    if ($zone)
+			$where[] = 'fs.zone_id=' . $zone;
+		    $where[] = 'fl.id=' . $fid;
+		    $where[] = 'fl.user_id=' . $user_id;
+		    $fileloc->where($where);
+		    $filedata = $fileloc->queryAll();
+		    foreach ($filedata as $file) {
+			$fdata = array();
+			$fdata['ip'] = $file['ip'];
+			$fdata['port'] = $file['port'];
+			$fdata['name'] = $file['fname'];
+			$fdata['size'] = $file['fsize'];
+			$response['filedata'][] = $fdata;
+		    }
+		} else {
+		    $response['error'] = 'unknown file';
 		}
 	    } else {
-		$response['error'] = 'unknown file';
+		$response['error'] = 'bad data';
 	    }
 	    echo (serialize($response));
 	} else
@@ -102,36 +106,41 @@ class ServersyncController extends Controller {
 	    $server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 2));
 	    if ($server === null)
 		die('Unknown Server ' . $ip);
-	    $input = unserialize($data);
-	    if (!$input)
-		die('Bad data');
-	    $new_title = $input['filename'];
-	    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
-	    $i = 1;
-	    while (count($cur_file)) {
-		$new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
-		$cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
-		$i++;
+	    $input = @unserialize($data);
+	    if (!($input === false)) {
+
+		$new_title = base64_decode($input['filename']);
+		$cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
+		$i = 1;
+		while (count($cur_file)) {
+		    $new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
+		    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
+		    $i++;
+		}
+		$files = new CUserfiles();
+		$files->title = $new_title;
+		$files->pid = $input['pid'];
+		$files->fsize = $input['fsize'];
+		$files->user_id = $user_id;
+		$files->save();
+		$fileloc = new CFilelocations();
+		$fileloc->id = $files->id;
+		$fileloc->server_id = $server->id;
+		$fileloc->user_id = $user_id;
+		$fileloc->fsize = $files->fsize;
+		$fileloc->fname = $input['save'];
+		if (isset($input['folder']))
+		    $fileloc->folder = (int) $input['folder'];
+		$fileloc->save();
+		$result = array();
+		$result['fid'] = $files->id;
+		echo serialize($result);
+		exit();
+	    } else {
+		$result = array('error' => 'bad data format');
+		echo serialize($result);
+		exit();
 	    }
-	    $files = new CUserfiles();
-	    $files->title = $new_title;
-	    $files->pid = $input['pid'];
-	    $files->fsize = $input['fsize'];
-	    $files->user_id = $user_id;
-	    $files->save();
-	    $fileloc = new CFilelocations();
-	    $fileloc->id = $files->id;
-	    $fileloc->server_id = $server->id;
-	    $fileloc->user_id = $user_id;
-	    $fileloc->fsize = $files->fsize;
-	    $fileloc->fname = $input['save'];
-	    if (isset($input['folder']))
-		$fileloc->folder = (int) $input['folder'];
-	    $fileloc->save();
-	    $result = array();
-	    $result['fid'] = $files->id;
-	    echo serialize($result);
-	    exit();
 	} else
 	    die("Bad User");
     }
@@ -146,18 +155,23 @@ class ServersyncController extends Controller {
 		die('Unknown Server ' . $_SERVER['REMOTE_ADDR']);
 	    if (!isset($_GET['data']))
 		die('not enough data');
-	    $input = unserialize($_GET['data']);
-	    $fileloc = new CFilelocations();
-	    $fileloc->id = $input['fid'];
-	    $fileloc->server_id = $server['id'];
-	    $fileloc->user_id = $user_id;
-	    $fileloc->fsize = $input['fsize'];
-	    $fileloc->fname = $input['save'];
-	    if (isset($input['folder']))
-		$fileloc->folder = (int) $input['folder'];
-	    $fileloc->save();
-	    echo "OK";
-	    exit();
+	    $input = @unserialize($_GET['data']);
+	    if ($input) {
+		$fileloc = new CFilelocations();
+		$fileloc->id = $input['fid'];
+		$fileloc->server_id = $server['id'];
+		$fileloc->user_id = $user_id;
+		$fileloc->fsize = $input['fsize'];
+		$fileloc->fname = $input['save'];
+		if (isset($input['folder']))
+		    $fileloc->folder = (int) $input['folder'];
+		$fileloc->save();
+		echo "OK";
+		exit();
+	    } else {
+		echo "Bad data";
+		exit();
+	    }
 	} else
 	    die("Bad User");
     }

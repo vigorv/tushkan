@@ -33,6 +33,7 @@ class CloudTaskManager {
 	if (count($file) && ($server)) {
 	    $task_id = (int) CServers::model()->sendCommandAddr('/tasks/addtask', $server_addr, array(
 			'queue' => $queue_id,
+			'user_id' => $user_id,
 			'fid' => $fid,
 			'preset' => $preset_name,
 			'fpath' => '',
@@ -47,17 +48,23 @@ class CloudTaskManager {
 	return false;
     }
 
-    public function AbortFileTaskQueue($queue) {
+    public function AbortFileTaskQueue($queue, $queue_id=1) {
 	$server = CServers::model()->findByPk($queue['server_id']);
 	if ($server) {
 	    $ip = CServers::model()->convertIpToString($server['ip']);
-	    $result = (int) CServers::model()->sendCommandAddr('/tasks/abort', $ip . ':' . $server['port'], array('task_id' => $queue['task_id']));
-	    if ($result) {
+	    $result = CServers::model()->sendCommandAddr('/tasks/abort', $ip . ':' . $server['port'], array('task_id' => $queue['task_id'],
+		'queue' => $queue_id, 'user_id' => $queue['user_id']));
+	    if ($result == 1) {
 		$sql = 'DELETE FROM {{convert_queue}} WHERE task_id=' . $queue['task_id'] . ' AND server_id=' . $queue['server_id'];
 		Yii::app()->db->createCommand($sql)->execute();
+	    } else {
+		echo "Fail to sync";
+		return false;
 	    }
-	} else
+	} else {
+	    echo "unknown server";
 	    return false;
+	}
     }
 
     public function GetTaskForFile($fid, $user_id) {

@@ -97,8 +97,6 @@ class RegisterController extends Controller {
 	            else
 	            {
 	            	$subAction = '';
-	            	$model->clearErrors();
-					$model->addError('email', Yii::t('users', 'Invalid Email'));
 	            }
 			}
 		}
@@ -205,8 +203,6 @@ class RegisterController extends Controller {
 	            else
 	            {
 	            	$subAction = '';
-	            	$model->clearErrors();
-					$model->addError('email', Yii::t('users', 'Invalid email'));
 	            }
 			}
 		}

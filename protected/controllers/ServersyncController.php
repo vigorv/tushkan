@@ -3,6 +3,7 @@
 class ServersyncController extends Controller {
 
     var $layout = 'ajax';
+    var $server = null;
 
     public function beforeAction($action) {
 	parent::beforeAction($action);
@@ -13,11 +14,17 @@ class ServersyncController extends Controller {
 	    echo 'bye';
 	    return false;
 	}
+	$ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
+
+	$this->server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 2));
+	if ($this->server === null)
+	    die('Unknown Server ' . $ip);
+
 	return true;
     }
 
     /**
-     *
+     * GET  USERINFO
      * @param int $user_id 
      */
     public function actionUserdata($user_id=0) {
@@ -30,50 +37,57 @@ class ServersyncController extends Controller {
 	exit();
     }
 
-    public function actionFiledata($user_id=0, $stype=0, $zone=0) {
+    public function actionFiledata($user_id=0) {
+	$user_id = (int) $user_id;
 	if ($user_id > 0) {
-	    $id = (int) $user_id;
-	    $fid = (int) $_GET['fid'];
-	    $stype = (int) $stype;
-	    $zone = (int) $zone;
-	    $filemeta = Yii::app()->db->createCommand()
-		    ->select('uf.*')
-		    ->from('{{userfiles}} uf')
-		    ->where('uf.user_id=' . $id . ' AND uf.id=' . $fid)
-		    ->limit(1)
-		    ->queryAll();
-	    if (count($filemeta)) {
+	    if (!isset($_GET['data']))
+		die("Data is not enough");
+	    $data = @unserialize($_GET['data']);
+	    if ($data) {
+		$fid = (int) $data['fid'];
+		$stype = (int) $data['stype'];
+		$user_ip = (int) $data['user_ip'];
+		$zone = CZones::model()->GetZoneByIp($user_ip);
+		$filemeta = Yii::app()->db->createCommand()
+			->select('uf.*')
+			->from('{{userfiles}} uf')
+			->where('uf.user_id=' . $user_id . ' AND uf.id=' . $fid)
+			->limit(1)
+			->queryAll();
+		if (count($filemeta)) {
+		    $response['title'] = $filemeta[0]['title'];
+		    $fileloc = Yii::app()->db->createCommand()
+			    ->select('fl.*,fs.*')
+			    ->from('{{filelocations}} fl')
+			    ->join('{{fileservers}} fs', 'fl.server_id = fs.id');
+		    $where = array('and');
 
-		$response['title'] = $filemeta[0]['title'];
-		$fileloc = Yii::app()->db->createCommand()
-			->select('fl.*,fs.*')
-			->from('{{filelocations}} fl')
-			->join('{{fileservers}} fs', 'fl.server_id = fs.id');
-		$where = array('and');
-
-		if ($stype)
-		    $where[] = 'fs.stype=' . $stype;
-		if ($zone)
-		    $where[] = 'fs.zone_id=' . $zone;
-		$where[] = 'fl.id=' . $fid;
-		$where[] = 'fl.user_id=' . $id;
-		$fileloc->where($where);
-		$filedata = $fileloc->queryAll();
-		foreach ($filedata as $file) {
-		    $fdata = array();
-		    $fdata['ip'] = $file['ip'];
-		    $fdata['port'] = $file['port'];
-		    $fdata['name'] = $file['fname'];
-		    $fdata['size'] = $file['fsize'];
-		    $response['filedata'][] = $fdata;
+		    if ($stype)
+			$where[] = 'fs.stype=' . $stype;
+		    if ($zone)
+			$where[] = 'fs.zone_id=' . $zone;
+		    $where[] = 'fl.id=' . $fid;
+		    $where[] = 'fl.user_id=' . $user_id;
+		    $fileloc->where($where);
+		    $filedata = $fileloc->queryAll();
+		    foreach ($filedata as $file) {
+			$fdata = array();
+			$fdata['ip'] = $file['ip'];
+			$fdata['port'] = $file['port'];
+			$fdata['name'] = $file['fname'];
+			$fdata['size'] = $file['fsize'];
+			$response['filedata'][] = $fdata;
+		    }
+		} else {
+		    $response['error'] = 'unknown file';
 		}
 	    } else {
-		$response['error'] = 'unknown file';
+		$response['error'] = 'bad data';
 	    }
 	    echo (serialize($response));
 	} else
-	    echo ('bye bye');
-	exit();
+	    die('bye bye');
+	exit;
     }
 
     public function actionCreate($user_id=0, $title='', $pid=0, $is_dir=0) {
@@ -94,85 +108,174 @@ class ServersyncController extends Controller {
 	if ($user_id > 0) {
 	    //OK 
 	    //WHat is server doing this
-	    $ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
 
-	    $server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 2));
-	    if ($server === null)
-		die('Unknown Server ' . $ip);
-	    $input = unserialize($data);
-	    if (!$input) die('Bad data') ;
-	    $new_title = $input['filename'];
-	    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
-	    $i = 1;
-	    while (count($cur_file)) {
-		$new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
-		$cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
-		$i++;
+	    $input = @unserialize($data);
+	    if (!($input === false)) {
+
+		$new_title = base64_decode($input['filename']);
+		$cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
+		$i = 1;
+		while (count($cur_file)) {
+		    $new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
+		    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
+		    $i++;
+		}
+		$files = new CUserfiles();
+		$files->title = $new_title;
+		$files->pid = $input['pid'];
+		$files->fsize = $input['fsize'];
+		$files->user_id = $user_id;
+		$files->save();
+		$fileloc = new CFilelocations();
+		$fileloc->id = $files->id;
+		$fileloc->server_id = $this->server->id;
+		$fileloc->user_id = $user_id;
+		$fileloc->fsize = $files->fsize;
+		$fileloc->fname = $input['save'];
+		if (isset($input['folder']))
+		    $fileloc->folder = (int) $input['folder'];
+		$fileloc->save();
+		$result = array();
+		$result['fid'] = $files->id;
+		echo serialize($result);
+		exit();
+	    } else {
+		$result = array('error' => 'bad data format');
+		echo serialize($result);
+		exit();
 	    }
-	    $files = new CUserfiles();
-	    $files->title = $new_title;
-	    $files->pid = $input['pid'];
-	    $files->fsize = $input['fsize'];
-	    $files->user_id = $user_id;
-	    $files->save();
-	    $fileloc = new CFilelocations();
-	    $fileloc->id = $files->id;
-	    $fileloc->server_id = $server->id;
-	    $fileloc->user_id = $user_id;
-	    $fileloc->fsize = $files->fsize;
-	    $fileloc->fname = $input['save'];
-	    if (isset($input['folder']))
-		$fileloc->folder = (int) $input['folder'];
-	    $fileloc->save();
-	    $result = array();
-	    $result['fid'] = $files->id;
-	    echo serialize($result);
-	    exit();
 	} else
 	    die("Bad User");
     }
 
-    public function actionDownload($user_id=0, $data='') {
+    public function actionDownload($user_id=0) {
 	if ($user_id > 0) {
 	    //OK 
 	    //WHat is server doing this
-	    $ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
 
-	    $server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 1));
-	    if ($server === null)
-		die('Unknown Server ' . $ip);
-	    $input = unserialize($data);
-	    $new_title = $input['filename'];
-	    /** Metadata already in Base after upload
-	      $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $input['filename'], 'pid' => $input['pid']));
-	      $i = 1;
-	      while (count($cur_file)) {
-	      $new_title = pathinfo($input['filename'], PATHINFO_FILENAME) . $i . '.' . pathinfo($input['filename'], PATHINFO_EXTENSION);
-	      $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $new_title, 'pid' => $input['pid']));
-	      $i++;
-	      }
-
-	      $files = new CUserfiles();
-	      $files->title = $new_title;
-	      $files->pid = $input['pid'];
-	      $files->fsize = $input['fsize'];
-	      $files->user_id = $user_id;
-	      $files->save();
-	     * *
-	     */
-	    $fileloc = new CFilelocations();
-	    $fileloc->id = $input['fid'];
-	    $fileloc->server_id = $server->id;
-	    $fileloc->user_id = $user_id;
-	    $fileloc->fsize = $input['fsize'];
-	    $fileloc->fname = $input['save'];
-	    if (isset($input['folder']))
-		$fileloc->folder = (int) $input['folder'];
-	    $fileloc->save();
-	    echo "OK";
-	    exit();
+	    if (!isset($_GET['data']))
+		die('not enough data');
+	    $input = @unserialize($_GET['data']);
+	    if ($input) {
+		$fileloc = new CFilelocations();
+		$fileloc->id = $input['fid'];
+		$fileloc->server_id = $this->server['id'];
+		$fileloc->user_id = $user_id;
+		$fileloc->fsize = $input['fsize'];
+		$fileloc->fname = $input['save'];
+		if (isset($input['folder']))
+		    $fileloc->folder = (int) $input['folder'];
+		$fileloc->save();
+		echo "OK";
+		exit();
+	    } else {
+		echo "Bad data";
+		exit();
+	    }
 	} else
 	    die("Bad User");
+    }
+
+    public function actionTypify($user_id=0, $data='') {
+	if ($user_id > 0) {
+	    $input = @unserialize($data);
+	    if (!($input === false)) {
+		$result = 1;
+		//$folder = $convertInfo['folder'];
+		$server_id = $this->server->id;
+		$fid = (int) $input['file_id'];
+		$filename = $input['save'];
+		$fsize = $input['fsize'];
+		$task_id = (int) $input['task_id'];
+		if ($task_id > 0) {
+		    $queue = CConvertQueue::model()->findByAttributes(array('task_id' => $task_id));
+		    if (!(queue == null)) {//ЕСЛИ ЕСТЬ ИНФО О ЗАДАНИИ
+			//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
+			if (!empty($result)) {
+			    //ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
+			} else {
+			    //ЧТЕНИЕ ИНФО О ФАЙЛЕ
+			    $cmd = Yii::app()->db->createCommand()
+				    ->select('*')
+				    ->from('{{userfiles}}')
+				    ->where('id = ' . $queue['id']);
+			    $fileInfo = $cmd->queryRow();
+			    //ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
+			    $cmd = Yii::app()->db->createCommand()
+				    ->select('*')
+				    ->from('{{filelocations}}')
+				    ->where('id = ' . $queue['id']);
+			    $locInfo = $cmd->queryRow();
+			    //ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
+			    //СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
+			    $objInfo = array(
+				'id' => $fid,
+				'user_id' => $user_id,
+				'title' => $filename,
+				'type_id' => $queue->preset_id,
+			    );
+
+			    //CREATE METAFILE
+			    $sql = 'INSERT INTO {{typedfiles}} (id, variant_id, user_id, fsize, title, userobject_id)
+			    		VALUES (null, 0, ' . $objInfo['user_id'] . ', :fsize, "' . $objInfo['title'] . '", ' . $objInfo['id'] . ')';
+			    $cmd = Yii::app()->db->createCommand($sql);
+			    $cmd->bindParam(':fsize', $fsize, PDO::PARAM_LOB);
+			    $cmd->execute();
+
+			    //CREATE FILELOC
+			    $sql = 'INSERT INTO {{usertobjects}} (id, user_id, title, type_id)
+			    		VALUES (' . $objInfo['id'] . ', ' . $objInfo['user_id'] . ', "' . $objInfo['title'] . '", ' . $objInfo['type_id'] . ')';
+			    Yii::app()->db->createCommand($sql)->execute();
+
+			    //ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
+			    $cmd = Yii::app()->db->createCommand()
+				    ->select('ptp.id, ptp.title')
+				    ->from('{{product_type_params}} ptp')
+				    ->join('{{product_types_type_params}} pttp', 'ptp.id = pttp.param_id')
+				    ->where('pttp.type_id = :id');
+			    $cmd->bindParam(':id', $type_id, PDO::PARAM_INT);
+			    $params = $cmd->queryAll();
+
+			    $height = 200;
+			    $width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
+//ВООБЩЕ ПАРАМЕТРЫ ДОЛЖНЫ ПРИХОДИТЬ ОТДЕЛЬНО. К ОБСУЖДЕНИЮ: ОТКУДА?
+			    if (!empty($params)) {
+				//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
+				foreach ($params as $p) {
+				    if (!empty($$p['title'])) {
+					$p_id = $p['id'];
+					$p_vl = $$p['title'];
+					$sql = 'INSERT INTO {{tobjects_param_values}} (id, param_id, value, userobject_id)
+						    		VALUES (null, ' . $p_id . ',
+						    		"' . $p_vl . '", ' . $objInfo['id'] . ')';
+					Yii::app()->db->createCommand($sql)->execute();
+				    }
+				}
+			    }
+
+			    //СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
+			    $objLocInfo = array(
+				'id' => $locInfo['id'],
+				'user_id' => $locInfo['user_id'],
+				'server_id' => intval($server_id),
+				'state' => 0, // ?? ЧТО СЮДА ПРОПИСАТЬ ??
+				'fsize' => $fsize,
+				'fname' => $filename,
+				'folder' => $folder,
+			    );
+			    $sql = 'INSERT INTO {{userobjectlocations}} (id, user_id, server_id, state, fsize, fname, folder)
+			    		VALUES (' . $locInfo['id'] . ', ' . $locInfo['user_id'] . ', ' . $locInfo['server_id'] . ',
+			    		' . $locInfo['state'] . ', ' . $locInfo['fsize'] . ', "' . $locInfo['fname'] . '", ' . $locInfo['folder'] . ')';
+			    Yii::app()->db->createCommand($sql)->execute();
+
+			    //ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+			    $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
+			    Yii::app()->db->createCommand($sql)->execute();
+			}
+		    }
+		}
+	    }
+	}
     }
 
 }

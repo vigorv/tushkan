@@ -51,8 +51,9 @@ class CServers extends CActiveRecord {
     public function sendCommandAddr($action, $addr, $data) {
 	$sdata = serialize($data);
 	$hash = '';
-	$link = 'http://' . $addr . '/' . $action . '?hash=' . $hash . '&data=' . $sdata;
-	file_get_contents($link);
+	$link = 'http://' . $addr . '/' . $action . '?hash=' . $hash . '&data=' . $sdata;	
+	$result= file_get_contents($link);
+	return $result;
     }
 
     public function getServer($stype=0, $zone = 0) {
@@ -70,6 +71,42 @@ class CServers extends CActiveRecord {
 		return $server['alias'] . ':' . $server['port'];
 	} else
 	    return false;
+    }
+    /**
+     *
+     * @param type $stype
+     * @param type $zone
+     * @return type 
+     */
+        public function getServerFull($stype=0, $zone = 0) {
+	$cond = array();
+	if ($stype)
+	    $cond['stype'] = $stype;
+	if ($zone)
+	    $cond['zone'] = $zone;
+	$cond['active'] = 1;
+	$server = CServers::model()->findByAttributes($cond);
+	return $server;
+    }
+
+    /**
+     *
+     * @param type $stype
+     * @param type $zone 
+     */
+    public function getZoneServersIdList($stype=0, $zone=0) {
+	$where = array();
+
+	if ($stype)
+	    $where['stype'] = $stype;
+	if ($zone)
+	    $where['zone'] = $zone;
+
+	$result = Yii::app()->db->createCommand()
+		->select('CONCAT id')
+		->from('{{fileservers}}')
+		->where($where);
+	return $result;
     }
 
     public function tableName() {

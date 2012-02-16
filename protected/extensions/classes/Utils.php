@@ -128,7 +128,7 @@ class Utils
      * @param string $size
      * @return string
      */
-    public function sizeFormat($size)
+    public static function sizeFormat($size)
     {
         if (abs($size) > pow(1024, 4)) return round(($size / pow(1024, 4)), 2) . "&nbsp;Tb";
         if (abs($size) > pow(1024, 3)) return round(($size / pow(1024, 3)), 2) . "&nbsp;Gb";

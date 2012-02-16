@@ -11,7 +11,7 @@ if (!empty($item)) {
     	    {
 
     	    }
-    	    location.href = '/files/fview/<?php echo $item['id']; ?>';
+    	      location.href = '/files/fview/<?php echo $item['id']; ?>';
     	});
     	return false;
         }

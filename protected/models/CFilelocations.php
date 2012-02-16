@@ -1,26 +1,23 @@
 <?php
 
 /**
- * 
+ * @property $id
+ * @property $addr
+ * @property  $active
  */
 class CFilelocations extends CActiveRecord {
-    /**
-     * @property $id
-     * @property $addr
-     * @property  $active
-     */
 
     /**
      *
-     * @param type $className
-     * @return type 
+     * @param string $className
+     * @return CFilelocations
      */
     public static function model($className = __CLASS__) {
-        return parent::model($className);
+	return parent::model($className);
     }
 
     public function tableName() {
-        return '{{filelocations}}';
+	return '{{filelocations}}';
     }
 
 }

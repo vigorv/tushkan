@@ -5,17 +5,18 @@
  *
  */
 class CPage extends CActiveRecord {
+
     /**
      *
      * @param string $className
-     * @return CActiveRecord
+     * @return CPage
      */
     public static function model($className = __CLASS__) {
-        return parent::model($className);
+	return parent::model($className);
     }
 
     public function tableName() {
-        return '{{pages}}';
+	return '{{pages}}';
     }
 
 }

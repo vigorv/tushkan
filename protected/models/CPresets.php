@@ -8,6 +8,11 @@ class CPresets {
     private static $_models = array();
 # array with the options to create stream context
 
+    /**
+     *
+     * @param type $className
+     * @return CPresets
+     */
     public static function model($className=__CLASS__) {
 	if (isset(self::$_models[$className]))
 	    return self::$_models[$className];

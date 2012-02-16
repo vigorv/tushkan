@@ -8,7 +8,7 @@ class CParam extends CActiveRecord {
     /**
      *
      * @param string $className
-     * @return CActiveRecord
+     * @return CParam
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);

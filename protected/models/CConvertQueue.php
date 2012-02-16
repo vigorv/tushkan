@@ -4,12 +4,12 @@
  * 
  */
 class CConvertQueue extends CActiveRecord {
-    /*
-     *
-     * @param type $className
-     * @return type 
-     */
 
+    /**
+     *
+     * @param string $className
+     * @return CConvertQueue
+     */
     public static function model($className = __CLASS__) {
 	return parent::model($className);
     }

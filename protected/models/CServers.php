@@ -15,6 +15,15 @@ define('TASK_SERVER', 5);
  * @property stype
  * @property alias
  * @property port
+ * 
+ * 
+ * @static convertIpToString($ip) 
+ * @static convertIpToLong($ip)
+ * @method sendCommand($action, $sid, $data)
+ * @method sendCommandAddr($action, $addr, $data) 
+ * @method getServer($stype=0, $zone = 0)
+ * @method getServerFull($stype=0, $zone = 0) 
+ * @method getZoneServersIdList($stype=0, $zone=0) 
  */
 class CServers extends CActiveRecord {
 

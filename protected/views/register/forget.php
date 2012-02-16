@@ -19,12 +19,29 @@ switch($subAction)
 	</p>
 
     <div class="row">
+    <?php
+		$clearScript = '
+	$( "#passwordId" )
+		.click(function(obj) {
+			$( "#passwordId" ).val("");
+			$( "#rememberId" ).attr("checked", false);
+	});
+		';
+    	$pwd = $info['newpassword'];
+    	if (!empty($model->pwd))
+    	{
+    		$pwd = $model->pwd;
+    		$clearScript = '';//ЧИСТКА ПАРОЛЯ БОЛЬШЕ НЕ НУЖНА
+    	}
+    	$checked = $model->rememberMe;
+
+    ?>
         <?php echo $form->labelEx($model, 'pwd', array('label' => Yii::t('users', 'New password'))); ?>
-        <?php echo $form->passwordField($model, 'pwd', array('value' => $info['newpassword'], 'class' => 'text ui-widget-content ui-corner-all', 'style' => 'width: 350px;')); ?>
+        <?php echo $form->passwordField($model, 'pwd', array('id' => 'passwordId', 'value' => $pwd, 'class' => 'text ui-widget-content ui-corner-all', 'style' => 'width: 350px;')); ?>
 		<?php echo $form->error($model,'pwd'); ?>
     </div>
 	<div class="row rememberMe">
-		<?php echo $form->checkBox($model,'rememberMe'); ?>
+		<?php echo $form->checkBox($model,'rememberMe', array('checked' => $checked, 'id' => 'rememberId')); ?>
 		<?php echo $form->label($model,'rememberMe', array('label' => Yii::t('users', 'remember me'))); ?>
 		<?php echo $form->error($model,'rememberMe'); ?>
 	</div>
@@ -32,6 +49,10 @@ switch($subAction)
 	<div class="row buttons"><center>
 		<button type="submit" id="submitButton"><?php echo Yii::t('common', 'Login');?></button>
 <script type="text/javascript">
+<?php
+	echo $clearScript;
+?>
+
 	$( "#submitButton" )
 				.button()
 				.click(function() {

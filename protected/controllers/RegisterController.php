@@ -50,7 +50,7 @@ class RegisterController extends Controller {
 		            	$attrs = $model->getAttributes();
 						$this->identity->password = $attrs['pwd'];
 						$newPassword = $this->identity->transformPassword($userInfo);
-			        	$sql = 'UPDATE {{users}} SET pwd="' . $newPassword . '" WHERE id = ' . $userInfo['id'];
+			        	$sql = 'UPDATE {{users}} SET pwd="' . $newPassword . '", confirmed=1 WHERE id = ' . $userInfo['id'];
 			        	$cmd = Yii::app()->db->createCommand($sql)->query();
 
 			        	$this->setTrialMode($userInfo);
@@ -182,11 +182,11 @@ class RegisterController extends Controller {
 	            	{
 						//ОТПРАВКА ПИСЬМА СО ССЫЛКОЙ НА СМЕНУ ПАРОЛЯ
 						$hashLink = Yii::app()->params['tushkan']['siteURL'] . '/register/forget/' . $userInfo['sess_id'];
-						$body = "Здравствуйте!\n\n
-						Если вы забыли ваш пароль, перейдите по следующей ссылке:\n\n
-						{$hashLink}\n\n
-						Если вы не запрашивали восстановление пароля, просто удалите это письмо.\n\n
-						С уважением, администрация ресурса " . Yii::app()->name;
+						$body = "Здравствуйте!\n\n"
+						. "Если вы забыли ваш пароль, перейдите по следующей ссылке:\n\n"
+						. "{$hashLink}\n\n"
+						. "Если вы не запрашивали восстановление пароля, просто удалите это письмо.\n\n"
+						. "С уважением, администрация ресурса " . Yii::app()->name;
 
 						$ml = new SimpleMail();
 						$ml->setFrom(Yii::app()->params['adminEmail']);
@@ -313,11 +313,11 @@ class RegisterController extends Controller {
 		//ОТПРАВКА ПИСЬМА СО ССЫЛКОЙ НА ПОДТВЕРЖДЕНИЕ
 		$headers="From: " . Yii::app()->params['adminEmail'] . "\r\nReply-To: " . $userInfo['email'];
 		$hashLink = Yii::app()->params['tushkan']['siteURL'] . '/register/confirm/' . $userInfo['sess_id'];
-		$body = "Здравствуйте!\n\n
-		Для подтверждения регистрации на сайте " . Yii::app()->name . ", пожалуйста, перейдите по следующей ссылке:\n\n
-		{$hashLink}\n\n
-		Если вы не регистрировались на данном ресурсе, просто удалите это письмо.\n\n
-		С уважением, администрация " . Yii::app()->name;
+		$body = "Здравствуйте!\n\n"
+		. "Для подтверждения регистрации на сайте " . Yii::app()->name . ", пожалуйста, перейдите по следующей ссылке:\n\n"
+		. "{$hashLink}\n\n"
+		. "Если вы не регистрировались на данном ресурсе, просто удалите это письмо.\n\n"
+		. "С уважением, администрация " . Yii::app()->name;
 
 		$ml = new SimpleMail();
 		$ml->setFrom(Yii::app()->params['adminEmail']);
@@ -402,6 +402,11 @@ class RegisterController extends Controller {
             $model->attributes = $_POST['LoginForm'];
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
+            	if (!$this->userInfo['confirmed'])
+            	{
+	                $this->redirect('/register/confirm');
+	                return;
+            	}
                 $this->redirect(Yii::app()->user->returnUrl);
             }
         }

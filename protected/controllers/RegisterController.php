@@ -321,7 +321,7 @@ exit(serialize($body));
 		С уважением, администрация " . Yii::app()->name;
 
 		if (Yii::app()->params['tushkan']['sendMail'])
-			mail($model->email, Yii::t('users', 'Confirm registration'), $body, $headers);
+			mail($userInfo['email'], Yii::t('users', 'Confirm registration'), $body, $headers);
 		return $body;
 	}
 

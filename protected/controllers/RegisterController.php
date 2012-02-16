@@ -1,4 +1,5 @@
 <?php
+Yii::import('ext.classes.SimpleMail');
 
 class RegisterController extends Controller {
 
@@ -180,7 +181,6 @@ class RegisterController extends Controller {
 	            	if (!empty($userInfo))
 	            	{
 						//ОТПРАВКА ПИСЬМА СО ССЫЛКОЙ НА СМЕНУ ПАРОЛЯ
-						$headers="From: " . Yii::app()->params['adminEmail'] . "\r\nReply-To: " . $model->email;
 						$hashLink = Yii::app()->params['tushkan']['siteURL'] . '/register/forget/' . $userInfo['sess_id'];
 						$body = "Здравствуйте!\n\n
 						Если вы забыли ваш пароль, перейдите по следующей ссылке:\n\n
@@ -188,8 +188,12 @@ class RegisterController extends Controller {
 						Если вы не запрашивали восстановление пароля, просто удалите это письмо.\n\n
 						С уважением, администрация ресурса " . Yii::app()->name;
 
-						if (Yii::app()->params['tushkan']['sendMail'])
-							mail($model->email, Yii::t('users', 'Forget password?'), $body, $headers);
+						$ml = new SimpleMail();
+						$ml->setFrom(Yii::app()->params['adminEmail']);
+						$ml->setTo($model->email);
+						$ml->setSubject(Yii::t('users', 'Forget password?'));
+						$ml->setTextBody($body);
+						$ml->send();
 
 						$info['body'] = $body;
 	            	}
@@ -248,7 +252,6 @@ class RegisterController extends Controller {
                     $userId = Yii::app()->db->getLastInsertID('{{users}}');
 					$userInfo = CUser::model()->findByPk($userId)->attributes;
 					$body = $this->sendConfirmMail($userInfo);
-exit(serialize($body));
 					$this->redirect('/register/confirm');
                 }
             }
@@ -316,8 +319,13 @@ exit(serialize($body));
 		Если вы не регистрировались на данном ресурсе, просто удалите это письмо.\n\n
 		С уважением, администрация " . Yii::app()->name;
 
-		if (Yii::app()->params['tushkan']['sendMail'])
-			mail($userInfo['email'], Yii::t('users', 'Confirm registration'), $body, $headers);
+		$ml = new SimpleMail();
+		$ml->setFrom(Yii::app()->params['adminEmail']);
+		$ml->setTo($userInfo['email']);
+		$ml->setSubject(Yii::t('users', 'Confirm registration'));
+		$ml->setTextBody($body);
+		$ml->send();
+
 		return $body;
 	}
 
@@ -655,8 +663,13 @@ exit(serialize($body));
 			$model->attributes=$_POST['FeedbackForm'];
 			if($model->validate())
 			{
-				$headers="From: {$model->email}\r\nReply-To: {$model->email}";
-				mail(Yii::app()->params['adminEmail'],$model->subject,$model->body,$headers);
+				$ml = new SimpleMail();
+				$ml->setFrom(Yii::app()->params['adminEmail']);
+				$ml->setTo($model->email);
+				$ml->setSubject($model->subject);
+				$ml->setTextBody($model->body);
+				$ml->send();
+
 				Yii::app()->user->setFlash('contact', Yii::t('users', 'Thank you for contacting us. We will respond to you as soon as possible.'));
 				$this->refresh();
 			}

@@ -14,7 +14,8 @@ class RegisterForm extends CFormModel
 	{
 		return array(
 			array('name', 'safe'),
-		    array('name', 'length', 'min' => 3),
+		    array('name', 'length', 'min' => 3, 'message'=>'Имя должно состоять миниммум из трех символов.'),
+
 			array('pwd', 'required'),
 		    array('pwd', 'length', 'min' => 5),
 			array('verifyCode', 'captcha', 'allowEmpty' => !CCaptcha::checkRequirements()),
@@ -35,8 +36,9 @@ class RegisterForm extends CFormModel
 		{
 			if (!$this->hasErrors('email'))
 				$this->clearErrors();
-			return;
 		}
+
+		if (empty($this->scenario) || ($this->scenario == 'quick'))
 		$attrs = $this->getAttributes();
 		if (!empty($attrs['email']))
 		{

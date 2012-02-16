@@ -11,8 +11,6 @@ $this->pageTitle=Yii::app()->name . ' - ' . Yii::t('common', 'Registration');
 	),
 )); ?>
 
-    <?php echo $form->errorSummary($model); ?>
-
 	<div class="row">
 		<?php echo $form->labelEx($model,'email'); ?>
 		<?php echo $form->textField($model,'email', array('class' => 'text ui-widget-content ui-corner-all', 'style' => 'width: 350px')) ?>

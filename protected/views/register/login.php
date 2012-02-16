@@ -46,6 +46,5 @@ $this->pageTitle=Yii::app()->name . ' - ' . Yii::t('common', 'Login');
 		<a href="/register/forget"><?php echo Yii::t('users', 'Forget password?'); ?></a>
 	</p></center>
 	</div>
-
 <?php $this->endWidget(); ?>
-</div><!-- form -->
+</div>

@@ -5,6 +5,11 @@ define('_BANREASON_ABONENTFEE_', 0);
 define('_BANREASON_VIOLATION_', 1);
 define('_CURRENCY_', 'rur');
 
+define('_VIDEO_HIGH_',		3);
+define('_VIDEO_MEDIUM_',	2);
+define('_VIDEO_LOW_',		1);
+define('_VIDEO_ASIS_',		0);
+
 class Utils
 {
 	/**
@@ -225,6 +230,11 @@ class Utils
     	return $result;
     }
 
+    /**
+     * получить список статусов видимости объекта
+     *
+     * @return mixed
+     */
     public function getActiveStates()
     {
     	return array(
@@ -232,6 +242,21 @@ class Utils
     		_IS_USER_		=> Yii::t('users', 'Visible for users'),
     		_IS_MODERATOR_	=> Yii::t('users', 'Visible for moderators'),
     		_IS_ADMIN_		=> Yii::t('users', 'Visible for admins'),
+    	);
+    }
+
+    /**
+     * получить список качества конвертирования видео
+     *
+     * @return mixed
+     */
+    public function getVideoConverterQuality()
+    {
+    	return array(
+    		_VIDEO_HIGH_	=> Yii::t('common', 'High'),
+    		_VIDEO_MEDIUM_	=> Yii::t('common', 'Medium'),
+    		_VIDEO_LOW_		=> Yii::t('common', 'Low'),
+    		_VIDEO_ASIS_	=> Yii::t('common', 'As is'),
     	);
     }
 }

@@ -26,7 +26,23 @@ switch ($subAction)
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][variant_id]" type="hidden" value="' . $curVariantId . '" />
 				<br />
 				';
-				$pid++;
+			}
+		}
+	break;
+
+	case "wizardtypeparams":
+		if (!empty($result['lst']))
+		{
+			foreach($result['lst'] as $p)
+			{
+				$pid = $p['id'];
+				$title = Yii::t('params', $p['title']);
+				echo'<div class="chess">
+				<input name="wizardForm[params][' . $pid . '][id]" type="hidden" value="' . $pid . '" />
+				' . $title . ':<br />
+				<input name="wizardForm[params][' . $pid . '][value]" type="text" value="" class="text ui-widget-content ui-corner-all" />
+				</div>
+				';
 			}
 		}
 	break;

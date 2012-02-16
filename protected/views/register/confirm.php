@@ -1,11 +1,12 @@
-<h2><?php echo Yii::t('users', 'Restoring password');?></h2>
 <?php
 switch($subAction)
 {
 	case "askpassword":
+		echo '<h2>' . Yii::t('users', 'Registration confirmed') . '</h2>';
 ?>
 <div class="form">
-<?php $form=$this->beginWidget('CActiveForm', array(
+<?php
+$form=$this->beginWidget('CActiveForm', array(
 	'id'=>'forget-form',
 /*
 	'enableClientValidation'=>true,
@@ -15,7 +16,7 @@ switch($subAction)
 */
 )); ?>
 	<p class="note">
-		Введите новый пароль <u>или воспользуйтесь паролем, сгенерированным специально для вас</u>.
+		Введите новый пароль <u>или воспользуйтесь паролем сгенерированным специально для вас</u>.
 	</p>
 
     <div class="row">
@@ -50,10 +51,19 @@ default:
 ?>
 <div class="form">
 <?php
+$form=$this->beginWidget('CActiveForm', array(
+	'id'=>'forget-form',
+	'action' => '/register/confirm',
+	'enableClientValidation'=>true,
+	'clientOptions'=>array(
+		'validateOnSubmit'=>true,
+	),
+));
 	if (!empty($info['error']))
 	{
 		if (empty($subAction))
 		{
+			echo '<h2>' . Yii::t('users', 'Confirm registration') . '</h2>';
 			echo '<p class="note"><span class="required">Срок действия ссылки истек, сделайте запрос на получение новой ссылки</span></p>';
 		}
 		else
@@ -61,26 +71,16 @@ default:
 	}
 	else
 	{
-		if (!empty($subAction))
-		{
-			echo '<h4>На ваш адрес Email отправлено письмо со ссылкой смены пароля.</h4>';
-			echo '<p class="note">
-			Если вы не получили письмо со ссылкой смены пароля, сделайте запрос.
-			Введите адрес Email, указанный вами при регистрации.
-			</p>';
-		}
-		else
-			echo '<p class="note">Введите адрес Email, указанный вами при регистрации.</p>';
+		echo '<h1>Вы зарегистрированы</h1>';
+		echo '<p class="note"><span class="required">Регистрация не подтверждена.</span></p>';
+		echo '<h4>Для подтверждения регистрации на ваш адрес Email отправлено письмо со ссылкой подтверждения.</h4>';
 	}
+	echo '<p class="note">
+	Если вы не получили письмо со ссылкой подтверждения, сделайте запрос.
+	Введите адрес Email, указанный вами при регистрации.
+	</p>';
 
-$form=$this->beginWidget('CActiveForm', array(
-	'id'=>'forget-form',
-	'action' => '/register/forget',
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-	),
-)); ?>
+?>
 
     <div class="row">
         <?php echo $form->labelEx($model, 'email'); ?>
@@ -89,7 +89,7 @@ $form=$this->beginWidget('CActiveForm', array(
     </div>
 
 	<div class="row buttons"><center>
-		<button type="submit" id="submitButton"><?php echo Yii::t('users', 'Forget password?');?></button>
+		<button type="submit" id="submitButton"><?php echo Yii::t('common', 'Submit');?></button>
 <script type="text/javascript">
 	$( "#submitButton" )
 				.button()

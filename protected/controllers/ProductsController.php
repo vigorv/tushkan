@@ -204,8 +204,10 @@ class ProductsController extends Controller
 	 *
 	 * @param integer $id - идентификатор варианта продукта
 	 */
-	public function actionDownload($id)
+	public function actionDownload($id = 0)
 	{
+        $this->layout = '/layouts/testui';
+		$this->render('download');
 	}
 
 /**
@@ -454,6 +456,21 @@ class ProductsController extends Controller
 					{
 						$result['variantId'] = $_POST['variantId'];
 					}
+				break;
+
+				case "wizardtypeparams":
+					$typeId = 0;
+					if (!empty($_POST['typeId']))
+						$typeId = $_POST['typeId'];
+					$userPower = Yii::app()->user->getState('dmUserPower');
+					$cmd = Yii::app()->db->createCommand()
+						->select('ptp.id, ptp.title, ptp.description')
+						->from('{{product_type_params}} ptp')
+						->join('{{product_types_type_params}} pttp', 'pttp.param_id = ptp.id')
+						->where('pttp.type_id = :id AND ptp.active <= ' . $userPower)
+						->order('ptp.srt DESC');
+					$cmd->bindParam(':id', $typeId, PDO::PARAM_INT);
+					$result['lst'] = $cmd->queryAll();
 				break;
 			}
 		}

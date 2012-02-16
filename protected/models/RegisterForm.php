@@ -15,18 +15,23 @@ class RegisterForm extends CFormModel
 		return array(
 			array('name', 'safe'),
 		    array('name', 'length', 'min' => 3),
+			array('pwd', 'required'),
+		    array('pwd', 'length', 'min' => 5),
+			array('verifyCode', 'captcha', 'allowEmpty' => !CCaptcha::checkRequirements()),
 			array('email', 'required'),
 			array('email', 'email'),
 			array('email', 'required', 'on' => 'forget'),
 			array('email', 'email', 'on' => 'forget'),
-			array('pwd', 'required'),
-			array('verifyCode', 'captcha', 'allowEmpty' => !CCaptcha::checkRequirements()),
+			array('email', 'required', 'on' => 'quick'),
+			array('email', 'email', 'on' => 'quick'),
+			array('email', 'required', 'on' => 'confirm'),
+			array('email', 'email', 'on' => 'confirm'),
 		);
 	}
 
 	public function afterValidate()
 	{
-		if ($this->scenario == 'forget')
+		if (($this->scenario == 'forget') || ($this->scenario == 'confirm') || ($this->scenario == 'quick'))
 		{
 			if (!$this->hasErrors('email'))
 				$this->clearErrors();

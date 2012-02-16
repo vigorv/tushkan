@@ -42,6 +42,18 @@ class UniverseController extends Controller {
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
     	}
 
+    	$uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
+    	$quality = Utils::getVideoConverterQuality();
+
+    	//ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
+		$userPower = Yii::app()->user->getState('dmUserPower');
+		$types = Yii::app()->db->createCommand()
+			->select('id, title')
+			->from('{{product_types}}')
+			->where('active <= ' . $userPower)
+			->queryAll();
+		$types = Utils::arrayToKeyValues($types, 'id', 'title');
+
     	//ВЫБОРКА ТИПИЗИРОВАНННОГО КОНТЕНТА
 		$tObjects = Yii::app()->db->createCommand()
 			->select('id, userobject_id, title')
@@ -66,7 +78,8 @@ class UniverseController extends Controller {
 				->order('uo.id ASC, ptp.srt DESC')->queryAll();
     	}
         $this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
-        	'tObjects' => $tObjects, 'oParams' => $oParams));
+        	'uploadServer' => $uploadServer, 'quality' => $quality,
+        	'types' => $types, 'tObjects' => $tObjects, 'oParams' => $oParams));
     }
 
     public function actionAdd($step=1) {

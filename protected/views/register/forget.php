@@ -27,13 +27,14 @@ switch($subAction)
 			$( "#rememberId" ).attr("checked", false);
 	});
 		';
+		$checked = true;
     	$pwd = $info['newpassword'];
     	if (!empty($model->pwd))
     	{
     		$pwd = $model->pwd;
     		$clearScript = '';//ЧИСТКА ПАРОЛЯ БОЛЬШЕ НЕ НУЖНА
+	    	$checked = $model->rememberMe;
     	}
-    	$checked = $model->rememberMe;
 
     ?>
         <?php echo $form->labelEx($model, 'pwd', array('label' => Yii::t('users', 'New password'))); ?>

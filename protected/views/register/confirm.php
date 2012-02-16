@@ -13,13 +13,14 @@ switch($subAction)
 			$( "#rememberId" ).attr("checked", false);
 	});
 		';
+		$checked = true;
     	$pwd = $info['newpassword'];
     	if (!empty($model->pwd))
     	{
     		$pwd = $model->pwd;
     		$clearScript = '';//ЧИСТКА ПАРОЛЯ БОЛЬШЕ НЕ НУЖНА
+	    	$checked = $model->rememberMe;
     	}
-    	$checked = $model->rememberMe;
 
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'forget-form',

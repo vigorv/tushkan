@@ -39,24 +39,26 @@ class RegisterForm extends CFormModel
 		}
 
 		if (empty($this->scenario) || ($this->scenario == 'quick'))
-		$attrs = $this->getAttributes();
-		if (!empty($attrs['email']))
 		{
-			$cmd = Yii::app()->db->createCommand()
-				->select('id')
-				->from('{{users}}')
-				->where('email = :email')
-				->limit(1);
-			$cmd->bindParam(':email', $attrs['email'], PDO::PARAM_STR);
-			$result = $cmd->queryRow();
-			if (!empty($result))
+			$attrs = $this->getAttributes();
+			if (!empty($attrs['email']))
 			{
-				$this->addError('email', Yii::t('users', 'Email exists'));
+				$cmd = Yii::app()->db->createCommand()
+					->select('id')
+					->from('{{users}}')
+					->where('email = :email')
+					->limit(1);
+				$cmd->bindParam(':email', $attrs['email'], PDO::PARAM_STR);
+				$result = $cmd->queryRow();
+				if (!empty($result))
+				{
+					$this->addError('email', Yii::t('users', 'Email exists'));
+				}
 			}
-		}
-		else
-		{
-			$this->addError('email', Yii::t('users', 'Email could not be empty'));
+			else
+			{
+				$this->addError('email', Yii::t('users', 'Email could not be empty'));
+			}
 		}
 	}
 }

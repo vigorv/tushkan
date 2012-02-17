@@ -15,24 +15,28 @@ switch($subAction)
 */
 )); ?>
 	<p class="note">
-		Введите новый пароль <u>или воспользуйтесь паролем, сгенерированным специально для вас</u>.
+		Введите (<u>или сгенерируйте</u>) новый пароль.
 	</p>
 
     <div class="row">
     <?php
 		$clearScript = '
 	$( "#passwordId" )
-		.click(function(obj) {
-			$( "#passwordId" ).val("");
-			$( "#rememberId" ).attr("checked", false);
+		.focus(function(obj) {
+			if (generated)
+			{
+				$( "#passwordId" ).val("");
+				generated = 0;
+			}
 	});
 		';
-		$checked = true;
-    	$pwd = $info['newpassword'];
+		$checked = false;
+    	//$pwd = $info['newpassword'];
+    	$pwd = '';
     	if (!empty($model->pwd))
     	{
     		$pwd = $model->pwd;
-    		$clearScript = '';//ЧИСТКА ПАРОЛЯ БОЛЬШЕ НЕ НУЖНА
+    		//$clearScript = '';//ЧИСТКА ПАРОЛЯ БОЛЬШЕ НЕ НУЖНА
 	    	$checked = $model->rememberMe;
     	}
 
@@ -49,15 +53,35 @@ switch($subAction)
 
 	<div class="row buttons"><center>
 		<button type="submit" id="submitButton"><?php echo Yii::t('common', 'Login');?></button>
+		<button type="button" id="generateButton"><?php echo Yii::t('common', 'Generate');?></button>
 <script type="text/javascript">
 <?php
 	echo $clearScript;
 ?>
-
+	var generated = 0;
+	$( "#passwordId" ).focus();
 	$( "#submitButton" )
 				.button()
 				.click(function() {
 					$("#forget-form").submit();
+	});
+
+	$( "#generateButton" )
+				.button()
+				.click(function() {
+					generated++;
+					$("#passwordId").val("");
+					$(this).button( "option", "disabled", true );
+					hash = new String();
+					for (i = 0; i < 15; i++)
+					{
+						code = Math.round(Math.random() * 100);
+						if (code < 50) code = code + 50;
+						hash += String.fromCharCode(code);
+					}
+					window.setTimeout('$( "#rememberId" ).attr("checked", true);$("#passwordId").val("' + hash + '");$("#generateButton").button( "option", "disabled", false );', 1000);
+
+				return false;
 	});
 </script>
 		</center>
@@ -113,6 +137,7 @@ $form=$this->beginWidget('CActiveForm', array(
 	<div class="row buttons"><center>
 		<button type="submit" id="submitButton"><?php echo Yii::t('users', 'Forget password?');?></button>
 <script type="text/javascript">
+	$( "input:text" ).focus();
 	$( "#submitButton" )
 				.button()
 				.click(function() {

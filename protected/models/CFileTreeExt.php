@@ -10,10 +10,10 @@ class CFileTreeExt extends CTreeView {
         if ($this->url !== null)
             $this->url = CHtml::normalizeUrl($this->url);
         $cs = Yii::app()->getClientScript();
-        $cs->registerCoreScript('treeview');
+        //$cs->registerCoreScript('treeview');
         $options = $this->getClientOptions();
         $options = $options === array() ? '{}' : CJavaScript::encode($options);
-        $cs->registerScript('/js/jquery.treeview.js', "jQuery(\"#{$id}\").treeview($options);");
+        //$cs->registerScript('/js/jquery.treeview.js', "jQuery(\"#{$id}\").treeview($options);");
        // if ($this->cssFile === null)
 //            $cs->registerCssFile('/css/jquery.treeview.css');
 //        else if ($this->cssFile !== false)

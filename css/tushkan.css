@@ -1,2 +1,2 @@
-.shortfilm { float: left; clear: both; margin:3px; }
+.chess, .shortfilm { float: left; clear: right; margin:3px; }
 .shortfilm img { margin-right: 8px; margin-bottom: 5px; width: 100px; align: left; }

@@ -6,6 +6,7 @@
 class TypeForm extends CFormModel
 {
 	public $title;
+	public $active;
 	public $buy_limit;
 
 	public function rules()
@@ -14,6 +15,8 @@ class TypeForm extends CFormModel
 			array('title', 'required'),
 			array('buy_limit', 'required'),
 			array('buy_limit', 'numerical'),
+			array('active', 'numerical'),
+			array('active', 'safe'),
 		);
 	}
 }

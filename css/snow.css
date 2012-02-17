@@ -1,4 +1,4 @@
-/* 
+/*
     Document   : snow
     Created on : 15.01.2012, 18:55:25
     Author     : snowing
@@ -16,18 +16,18 @@
     list-style:none;float:left;
 }
 #file_list li{
-    float:left; margin:10px 0 0 30px;  
+    float:left; margin:10px 0 0 30px;
     width:45px;
     text-align:center;
-}    
+}
 
 #file_list li img{
     width:45px;
     height:50px;
     border: 1px solid white;
 }
-#file_list li.selected img{        
-    border: 1px solid blue;        
+#file_list li.selected img{
+    border: 1px solid blue;
 }
 #file_list li.elem  img{
     border: 1px inset gray;
@@ -37,32 +37,33 @@
     overflow:auto;
 }
 #FileList .options{
-    list-style: none; 
+    list-style: none;
 }
 
-#FileList .options li{ 
+#FileList .options li{
     float:left; margin:5px 0 0 5px;
 }
 .fleft{
     float:left;
 }
 .fright{
-    float:right;    
+    float:right;
 }
 #Universe{
     padding:10px;
 }
 .block_content{
-    margin:10px;   
+    margin:10px;
+    clear: both;
 }
 
 .listview_a li {
     list-style: none;
-    display:inline-block;      
+    display:inline-block;
     width:100px;
     white-space: normal;
     vertical-align: top;
-    margin:3px 0 0 3px;        
+    margin:3px 0 0 3px;
     text-align: center;
 }
 .listview_a{

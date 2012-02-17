@@ -250,6 +250,44 @@ class FilesController extends Controller {
 	echo "OK";
     }
 
-}
 
-?>
+    /**
+     * Действие обработчика мультифайловой загрузки
+     *
+     * входные параметры передаются методом GET
+     * например: /universe/receivefile?q=2
+     *
+     * в ответ ожидается строка в виде пары [результат] [ид файла][разделитель]
+     * например: ok 101/error 102/ok 103
+     *
+     */
+    public function actionReceivefile()
+    {
+		// e.g. url:"page.php?upload=true" as handler property
+	    $headers = getallheaders();
+	    if (
+	        // basic checks
+	        isset(
+	            $headers['Content-Type'],
+	            $headers['Content-Length'],
+	            $headers['X-File-Size'],
+	            $headers['X-File-Name']
+	        ) &&
+	        $headers['Content-Type'] === 'multipart/form-data' &&
+	        $headers['Content-Length'] === $headers['X-File-Size']
+	    ){
+	        // create the object and assign property
+	        $file = new stdClass;
+	        $file->name = basename($headers['X-File-Name']);
+	        $file->size = $headers['X-File-Size'];
+	        $file->content = file_get_contents("php://input");
+
+	        // if everything is ok, save the file somewhere
+	        if(file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/' . $file->name, $file->content))
+	            exit('ok ' . $file->name . '/');
+	    }
+
+	    // if there is an error this will be the output instead of "OK"
+	    exit('error unknownfile/');
+	}
+}

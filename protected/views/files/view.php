@@ -50,10 +50,11 @@
 		url:'files/kpt',
 		async:false,
 		success:function(data){	
+		success:function(data){
 		    kpt_value=data;
 		    uploader.setParam(
 			'kpt',data
-		    );	
+		    );
 		return true;
 		}
 	    });
@@ -62,16 +63,16 @@
 	},
         onComplete:function(id, fileName, responseJSON){
             flist=$('#file_list');
-            flist.load('/files/fopen?id='+flist.attr('fid'));              
+            flist.load('/files/fopen?id='+flist.attr('fid'));
         },
         debug: false
-    });           
+    });
     $('#downloadButton').click(function(e){
         var elem = $('#file_list').find('li.selected');
         fid = elem.attr('fid');
         dir = elem.attr('dir');
         if (fid>0){
-            if (dir==undefined){                
+            if (dir==undefined){
                 window.location.href=('/files/download?fid='+fid);
             } else alert("Can't download directory via browser");
         } else alert('Nothing selected');
@@ -85,19 +86,19 @@
                 $.post('/files/remove',{id:fid},function(data){
                     if (data=='OK'){
                         elem.remove();
-                    } 
-                });  
+                    }
+                });
             } else {
                 $.post('/files/remove',{id:fid},function(data){
                     if (data=='OK'){
                         elem.remove();
                         $("#folder_tree").update();
-                    } 
+                    }
                 });
             }
         } else alert('Nothing selected');
     });
-    
+
     $('#CreateDir').click(function(e){
         var elem = $('#file_list')
         fid=elem.attr('fid');
@@ -105,7 +106,7 @@
             window.location=('http://mycloud.local/files/create?fid='+fid);
         } else alert("unknown place to CreateDIr");
     });
-    
+
     $('#AddtoCollection').click(function(e){
         var elem = $('#file_list').find('li.selected');
         fid=elem.attr('fid');
@@ -113,7 +114,7 @@
             window.location=('http://mycloud.local/files/types?fid='+fid);
         } else alert("No items Selected");
     });
-           
+
     $(document).delegate("#file_list li","click",function(e){
         if ($(this).hasClass('selected')){
             $(this).removeClass('selected');
@@ -124,7 +125,7 @@
     $(document).delegate("#file_list",'keydown',function(e){
         var elem=$(".elem",this);
         new_e=null;
-        switch(e.keyCode){            
+        switch(e.keyCode){
             case 39: //right
                 e.preventDefault()
                 var new_e = elem.next('li');
@@ -138,10 +139,10 @@
                 var line_count=parseInt($(this).width() / 75)-1;
                 var new_e = elem.prevAll("li:eq("+line_count+")");
                 break;
-            case 40://down         
+            case 40://down
                 e.preventDefault()
                 var line_count=parseInt($(this).width() / 75)-1;
-                var new_e = elem.nextAll("li:eq("+line_count+")");    
+                var new_e = elem.nextAll("li:eq("+line_count+")");
                 break;
             case 35://end
                 e.preventDefault()
@@ -161,7 +162,7 @@
                 break;
             default:
         }
-        if  (new_e && new_e.length){            
+        if  (new_e && new_e.length){
             if(!($(new_e).hasClass('elem'))){
                 elem.removeClass('elem');
                 new_e.addClass('elem');
@@ -171,14 +172,14 @@
     }
 );
     $("#file_list li:first ").addClass('elem');
-    
+
     $('#item_del').click(function(e){
         var postText = "";
         $('#file_list li.selected').each(function(){
             //postText += $( this ).attr( "name" ) +',';
             postText += $( this ).text() +',';
         });
-        $.ajax( { 
+        $.ajax( {
             url: "/files/remove",
             type: "POST",
             data: "postText=" + postText,
@@ -188,16 +189,16 @@
             }
         } );
     });
-    
-    $('#file_list').load('/files/fopen?id=0');              
+
+    $('#file_list').load('/files/fopen?id=0');
     $('#file_list').attr('fid',0);
-    
+
     $("#folder_tree").bind("click", function(event) {
         if ($(event.target).is("span")) {
             var pid = $(event.target).parent('li').attr('id');
             $('#file_list').attr('fid',pid);
-            $('#file_list').load('/files/fopen?id='+pid);              
-            
+            $('#file_list').load('/files/fopen?id='+pid);
+
             uploader.setParams(
             {
 		//             kpt:'<= $kpt; ?>',
@@ -206,7 +207,7 @@
             })
             return false;
         }
-    });  
-    
-    
-</script>  
+    });
+
+
+</script>

@@ -1,25 +1,11 @@
-<h2><?php echo Yii::t('users', 'Restoring password');?></h2>
 <?php
 switch($subAction)
 {
 	case "askpassword":
+		echo '<h2>' . Yii::t('users', 'Registration confirmed') . '</h2>';
 ?>
 <div class="form">
-<?php $form=$this->beginWidget('CActiveForm', array(
-	'id'=>'forget-form',
-/*
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-	),
-*/
-)); ?>
-	<p class="note">
-		Введите (<u>или сгенерируйте</u>) новый пароль.
-	</p>
-
-    <div class="row">
-    <?php
+<?php
 		$clearScript = '
 	$( "#passwordId" )
 		.focus(function(obj) {
@@ -40,7 +26,20 @@ switch($subAction)
 	    	$checked = $model->rememberMe;
     	}
 
-    ?>
+$form=$this->beginWidget('CActiveForm', array(
+	'id'=>'forget-form',
+/*
+	'enableClientValidation'=>true,
+	'clientOptions'=>array(
+		'validateOnSubmit'=>true,
+	),
+*/
+)); ?>
+	<p class="note">
+		Введите (<u>или сгенерируйте</u>) пароль.
+	</p>
+
+    <div class="row">
         <?php echo $form->labelEx($model, 'pwd', array('label' => Yii::t('users', 'New password'))); ?>
         <?php echo $form->passwordField($model, 'pwd', array('id' => 'passwordId', 'value' => $pwd, 'class' => 'text ui-widget-content ui-corner-all', 'style' => 'width: 350px;')); ?>
 		<?php echo $form->error($model,'pwd'); ?>
@@ -96,10 +95,21 @@ default:
 ?>
 <div class="form">
 <?php
+$form=$this->beginWidget('CActiveForm', array(
+	'id'=>'forget-form',
+	'action' => '/register/confirm',
+	'enableClientValidation'=>true,
+	'clientOptions'=>array(
+		'validateOnSubmit'=>true,
+	),
+));
+    echo $form->errorSummary($model);
+
 	if (!empty($info['error']))
 	{
 		if (empty($subAction))
 		{
+			echo '<h2>' . Yii::t('users', 'Confirm registration') . '</h2>';
 			echo '<p class="note"><span class="required">Срок действия ссылки истек, сделайте запрос на получение новой ссылки</span></p>';
 		}
 		else
@@ -107,26 +117,19 @@ default:
 	}
 	else
 	{
-		if (!empty($subAction))
-		{
-			echo '<h4>На ваш адрес Email отправлено письмо со ссылкой смены пароля.</h4>';
-			echo '<p class="note">
-			Если вы не получили письмо со ссылкой смены пароля, сделайте запрос.
-			Введите адрес Email, указанный вами при регистрации.
-			</p>';
-		}
+		echo '<h1>Вы зарегистрированы</h1>';
+		echo '<p class="note"><span class="required">Регистрация не подтверждена.</span></p>';
+		if (empty($model->email))
+			echo '<h4>Для подтверждения регистрации на ваш адрес Email отправлено письмо со ссылкой подтверждения.</h4>';
 		else
-			echo '<p class="note">Введите адрес Email, указанный вами при регистрации.</p>';
+			echo '<h4>Повторное письмо со ссылкой подтверждения отправлено по адресу <i>' . $model->email . '</i></h4>';
 	}
+	echo '<p class="note">
+	Если вы не получили письмо со ссылкой подтверждения, сделайте запрос.
+	Введите адрес Email, указанный вами при регистрации.
+	</p>';
 
-$form=$this->beginWidget('CActiveForm', array(
-	'id'=>'forget-form',
-	'action' => '/register/forget',
-	'enableClientValidation'=>true,
-	'clientOptions'=>array(
-		'validateOnSubmit'=>true,
-	),
-)); ?>
+?>
 
     <div class="row">
         <?php echo $form->labelEx($model, 'email'); ?>
@@ -135,7 +138,7 @@ $form=$this->beginWidget('CActiveForm', array(
     </div>
 
 	<div class="row buttons"><center>
-		<button type="submit" id="submitButton"><?php echo Yii::t('users', 'Forget password?');?></button>
+		<button type="submit" id="submitButton"><?php echo Yii::t('common', 'Submit');?></button>
 <script type="text/javascript">
 	$( "input:text" ).focus();
 	$( "#submitButton" )

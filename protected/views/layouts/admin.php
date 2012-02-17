@@ -38,6 +38,7 @@
                     <li><a href="<?php echo $this->createUrl('params/admin'); ?>"><?php echo Yii::t('params', 'Type params');?></a></li>
                     <li><a href="<?php echo $this->createUrl('products/admin'); ?>"><?php echo Yii::t('common', 'Products');?></a></li>
                     <li><a href="<?php echo $this->createUrl('pages/admin'); ?>"><?php echo Yii::t('common', 'Pages');?></a></li>
+                    <li><a href="<?php echo $this->createUrl('personaldataparams/admin'); ?>"><?php echo Yii::t('params', 'Personal data params');?></a></li>
                 </ul>
             </div>
             <div id="admincontent">

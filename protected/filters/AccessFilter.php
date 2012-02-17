@@ -57,6 +57,7 @@ class AccessFilter extends CFilter
 					$access = ($userPower >= _IS_USER_);
 			break;
 
+			case "PersonaldataParamsController":
 			case "ParamsController":
 			case "TypesController":
 			case "AdminController":

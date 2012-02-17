@@ -54,6 +54,7 @@ return array (
   'Choose a file'			=> 'Выберите файл',
   'Choose convert quality'	=> 'Выберите качество конвертирования',
   'Generate'				=> 'Сгенерировать',
+  'Type UI'					=> 'Тип в UI',
 
   'High'					=> 'Высокое',
   'Medium'					=> 'Среднее',

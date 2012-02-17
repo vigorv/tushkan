@@ -166,6 +166,13 @@ class UserIdentity extends CUserIdentity
 			->order('state DESC')
 			->queryAll();
 
+    	if (!$userRecord['confirmed'])
+    	{
+    		$this->dropAuthInfo();
+            Yii::app()->request->redirect('/register/confirm');
+            return;
+    	}
+
 		//СОХРАНИЛИ В СЕССИЮ
 		Yii::app()->user->setState('dmUserId', $id);
 		Yii::app()->user->setState('dmUserGroupId', $userInfo['group_id']);

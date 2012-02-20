@@ -54,11 +54,14 @@ class UniverseController extends Controller {
 			->queryAll();
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
 
-    	//ВЫБОРКА ТИПИЗИРОВАНННОГО КОНТЕНТА
+    	//ВЫБОРКА ТИПИЗИРОВАННОГО КОНТЕНТА
 		$tObjects = Yii::app()->db->createCommand()
-			->select('id, userobject_id, title')
-			->from('{{typedfiles}}')
-			->where('userobject_id > 0 AND user_id = ' . $this->userInfo['id'])
+			->select('uf.id, uf.title, ptp.title, fpv.value')
+			->from('{{userfiles}} uf')
+	        ->join('{{files_param_values}} fpv', 'fpv.file_id=uf.id')
+	        ->join('{{product_type_params}} ptp', 'ptp.id=fpv.param_id')
+			->where('user_id = ' . $this->userInfo['id'])
+			->group('fpv.id')
 			->queryAll();
 		$oParams = array();
     	if (!empty($tObjects))
@@ -66,16 +69,15 @@ class UniverseController extends Controller {
     		$toIds = array();
     		foreach ($tObjects as $to)
     		{
-    			$toIds[$to['userobject_id']] = $to['userobject_id'];
+    			$toIds[$to['id']] = $to['id'];
     		}
 			$oParams = Yii::app()->db->createCommand()
-				->select('uo.id, ptp.title, opv.value')
-				->from('{{usertobjects}} uo')
-		        ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
-		        ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
-				->where('uo.id IN (' . implode(', ', $toIds) . ')')
-				->group('opv.id')
-				->order('uo.id ASC, ptp.srt DESC')->queryAll();
+				->select('fv.id, fv.file_id')
+				->from('{{filevariants}} fv')
+		        ->join('{{filelocations}} fl', 'fl.id=fv.id')
+				->where('fv.file_id IN (' . implode(', ', $toIds) . ')')
+				->group('fpv.id')
+				->order('fv.id ASC, ptp.srt DESC')->queryAll();
     	}
         $this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
         	'uploadServer' => $uploadServer, 'quality' => $quality,
@@ -325,21 +327,8 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 						$canAdd = true;
 					}
 
-					$fSize = 0;
-					if (!empty($params[Yii::app()->params['tushkan']['fsizePrmName']]))
+					if ($canAdd)
 					{
-						$fSize = $params[Yii::app()->params['tushkan']['fsizePrmName']];
-					}
-					$mB = 1024;
-					if ($canAdd && ($this->userInfo['free_limit'] * $mB > $fSize))
-					{
-						//КОРРЕКТИРУЕМ ОБЪЕМ СВОБОДНОГО ПРОСТРАНСТВА
-						$freeLimit = $this->userInfo['free_limit'] * $mB - $fSize;
-						if ($freeLimit < 0) $freeLimit = 0;
-						$freeLimit = intval(round($freeLimit / $mB));
-						$this->userInfo['free_limit'] = $freeLimit;
-						Yii::app()->user->setState('dmUserInfo', serialize($this->userInfo));
-
 						$productInfo = Yii::app()->db->createCommand()
 							->select('title')
 							->from('{{products}}')
@@ -349,14 +338,11 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 						if (!empty($productInfo['title']))
 							$title = $productInfo['title'];
 
-						$sql = 'UPDATE {{users}} SET free_limit=' . $freeLimit . ' WHERE id=' . $this->userInfo['id'];
-						Yii::app()->db->createCommand($sql)->execute();
-
 						$sql = '
 							INSERT INTO {{typedfiles}}
-								(id, variant_id, user_id, fsize, title, userobject_id)
+								(id, variant_id, user_id, title)
 							VALUES
-								(null, :id, ' . $this->userInfo['id'] . ', ' . $fSize . ', "' . $title . '", 0)
+								(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '")
 						';
 						$cmd = Yii::app()->db->createCommand($sql);
 						$cmd->bindParam(':id', $id, PDO::PARAM_INT);
@@ -504,28 +490,25 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
     	$subAction = 'view';
     	if (!empty($this->userInfo) && !empty($id))
     	{
-    		$cmd = Yii::app()->db->createCommand()
-    			->select('*')
-    			->from('{{typedfiles}}')
-    			->where('id = :id AND user_id = ' . $this->userInfo['id']);
+			$cmd = Yii::app()->db->createCommand()
+				->select('uf.id, uf.title, ptp.title, fpv.value')
+				->from('{{userfiles}} uf')
+		        ->join('{{files_param_values}} fpv', 'fpv.file_id=uf.id')
+		        ->join('{{product_type_params}} ptp', 'ptp.id=fpv.param_id')
+    			->where('uf.id = :id AND uf.user_id = ' . $this->userInfo['id'])
+				->group('fpv.id');
     		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-    		$info = $cmd->queryRow();
+    		$info = $cmd->queryAll();
     		if (!empty($info))
     		{
-	    		$locInfo = Yii::app()->db->createCommand()
-	    			->select('*')
-	    			->from('{{userobjectlocations}}')
-	    			->where('id = ' . $info['id'])
-	    			->queryRow();
-
-				$prms = Yii::app()->db->createCommand()
-					->select('uo.id, ptp.title, opv.value')
-					->from('{{usertobjects}} uo')
-			        ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
-			        ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
-					->where('uo.id = ' . $info['userobject_id'])
-					->group('opv.id')
-					->order('uo.id ASC, ptp.srt DESC')->queryAll();
+				$cmd = Yii::app()->db->createCommand()
+					->select('fv.id, ptp.title, fpv.value')
+					->from('{{filevariants}} fv')
+			        ->join('{{filelocations}} fl', 'fl.id=fv.id')
+					->where('fb.file_id = :id')
+					->group('fl.id');
+	    		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$prms = $cmd->queryAll();
 		    	if (!empty($prms))
 		    	{
 		    		$params = array();
@@ -553,6 +536,6 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 	    		}
     		}
     	}
-        $this->render('oview', array('info' => $info, 'params' => $params, 'subAction' => $subAction, 'locInfo' => $locInfo));
+        $this->render('oview', array('info' => $info, 'params' => $params, 'subAction' => $subAction));
     }
 }

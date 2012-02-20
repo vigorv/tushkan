@@ -264,4 +264,20 @@ class Utils {
 	}
     }
 
+    /**
+     * getSectionIdByName($ext)
+     * 
+     * @param string $ext
+     * @return int
+     */
+    public static function getSectionIdByExt($ext) {
+	$supported_video_ext = array('avi', 'mp4', 'mkv', 'flv', '3gp');
+	$supported_audio_ext = array('mp3', 'm4a', 'flac', 'ogg', 'wma');
+	if (in_array($ext, $supported_video_ext))
+	    return 1;
+	if (in_array($ext, $supported_audio_ext))
+	    return 1;
+	return 0;
+    }
+
 }

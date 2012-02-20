@@ -10,11 +10,11 @@ define('_VIDEO_MEDIUM_',	2);
 define('_VIDEO_LOW_',		1);
 define('_VIDEO_ASIS_',		0);
 
+define("_PD_FILE_"			, "file");
 define("_PD_TEXT_"			, "text");
 define("_PD_TEXTAREA_"		, "textarea");
-define("_PD_FILE_"			, "file");
-define("_PD_CHECKBOX_"		, "checkbox");
 define("_PD_PWD_"			, "pwd");
+define("_PD_CHECKBOX_"		, "checkbox");
 
 define("_PD_GROUP_COMMON_"	, 0);
 
@@ -279,8 +279,8 @@ class Utils
     		_PD_TEXT_		=> Yii::t('params', 'Text'),
     		_PD_TEXTAREA_	=> Yii::t('params', 'Textarea'),
     		_PD_FILE_		=> Yii::t('params', 'File'),
-    		_PD_CHECKBOX_	=> Yii::t('params', 'Checkbox'),
     		_PD_PWD_		=> Yii::t('params', 'Pwd'),
+    		_PD_CHECKBOX_	=> Yii::t('params', 'Checkbox'),
     	);
     }
 

@@ -27,4 +27,6 @@ return array(
 
 	'Personal data params'	=> 'Параметры персональных данных',
 	'Administrate personal data params'	=> 'Администрирование параметров персональных данных',
+
+	'fio'					=> 'ФИО'
 );

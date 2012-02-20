@@ -18,7 +18,7 @@ class PersonaldataParamsForm extends CFormModel
 			array('srt', 'numerical'),
 			array('parent_id', 'numerical'),
 			array('active', 'numerical'),
-			array('tp', 'numerical'),
+			array('tp', 'safe'),
 		);
 	}
 }

@@ -46,6 +46,8 @@ class PersonalDataParamsController extends Controller {
                 }
                 if (empty($params->srt))
                 	$params->srt = 0;
+                if (empty($params->parent_id))
+                	$params->parent_id = 0;
                 $params->id = $param['id'];
                 $params->isNewRecord = false;
                 $params->save();
@@ -68,8 +70,8 @@ class PersonalDataParamsController extends Controller {
         );
 
         $paramForm = new PersonalDataParamsForm();
-        if (isset($_POST['PersonalDataParamsForm'])) {
-            $paramForm->attributes = $_POST['PersonalDataParamsForm'];
+        if (isset($_POST['PersonaldataParamsForm'])) {
+            $paramForm->attributes = $_POST['PersonaldataParamsForm'];
 
             if ($paramForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
@@ -80,6 +82,8 @@ class PersonalDataParamsController extends Controller {
                 }
                 if (empty($params->srt))
                 	$params->srt = 0;
+                if (empty($params->parent_id))
+                	$params->parent_id = 0;
                 $params->save();
                 Yii::app()->user->setFlash('success', Yii::t('params', 'Param saved'));
             }

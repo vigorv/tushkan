@@ -4,7 +4,7 @@
  * модель таблицы параметров персональных данных пользователей
  *
  */
-class CPersonaldataParam extends CActiveRecord {
+class CPersonaldataParams extends CActiveRecord {
     /**
      *
      * @param string $className

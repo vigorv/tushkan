@@ -151,7 +151,7 @@ class ServersyncController extends Controller {
 	if (!($input === false)) {
 	    $file_location = new CFilelocations();
 	    $file_location->id = $data['variant_id'];
-	    $file_location->fname = $data['smame'];
+	    $file_location->fname = $data['sname'];
 	    $file_location->fsize = $data['fsize'];
 	    $file_location->modified = $data['modified'];
 	    $file_location->folder = $data['folder'];

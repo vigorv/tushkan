@@ -47,7 +47,7 @@ class ServersyncController extends Controller {
 		$fid = (int) $data['fid'];
 		$stype = (int) $data['stype'];
 		$user_ip = (int) $data['user_ip'];
-		$zone = CZones::model()->GetZoneByIp($user_ip);
+		$zone = CZones::model()->GetZoneByIp($user_ip);		
 		$filemeta = Yii::app()->db->createCommand()
 			->select('uf.*')
 			->from('{{userfiles}} uf')

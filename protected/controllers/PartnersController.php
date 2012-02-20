@@ -1,10 +1,22 @@
 <?php
 
 class PartnersController extends Controller {
-    
-    public function actionAdmin(){
+
+    public function actionAdmin() {
         $this->layout = '/layouts/admin';
-        $this->render('admin');
+
+        $criteria = new CDbCriteria();
+        $count = CPartners::model()->count($criteria);
+        $server_count = CPartners::model()->count();
+
+        $per_page = 10;
+        $pages = new CPagination($count);
+        $pages->pageSize = $per_page;
+
+        $partner_list = CPartners::model()->findAll($criteria);
+        $this->render('admin', array('partner_list' => $partner_list));
+
+        
     }
 
     public function actionIndex() {
@@ -12,8 +24,8 @@ class PartnersController extends Controller {
     }
 
     public function actionPartnerList($id) {
-      //get partner script  
-        //
+        //get partner script  
+    //
     }
 
     public function actionPartnerItemsList() {
@@ -31,5 +43,5 @@ class PartnersController extends Controller {
     public function actionPartnerItemPurchase() {
         
     }
-    
+
 }

@@ -1,10 +1,26 @@
 <?php
 
+/**
+ *  ApiController
+ * @author Snow
+ *
+ */
 class ApiController extends Controller {
+
     public $layout = '//layouts/ajax';
-    
-    public function BeforeAction() {
-	return true;
+    var $user_id;
+
+    public function beforeAction($action) {
+	parent::beforeAction($action);
+	$this->user_id = Yii::app()->user->id;
+	if ($this->user_id)
+	    return true;
+	else
+	    Yii::app()->request->redirect('/register/login');
+    }
+
+    private function XmlRender() {
+	
     }
 
     public function actionLogin() {
@@ -21,15 +37,19 @@ class ApiController extends Controller {
     }
 
     public function actionGetUserInfo() {
-	
+	//$user= CUser::model()->getU
+	echo "No info";
     }
 
     public function actionGetDirTree() {
-	
+	$dirs = CUserfiles::model()->getDirTree($user_id);
+	echo CXmlHandler::arrayToXml($dirs);
     }
 
     public function actionGetFileList() {
-	
+	$pid = 0;
+	$files = CUserfiles::model()->getFileList($this->user_id, $pid);
+	echo CXmlHandler::arrayToXml($files);
     }
 
     public function actionCreate() {
@@ -42,6 +62,7 @@ class ApiController extends Controller {
 	$files->is_dir = $is_dir;
 	$files->user_id = $this->user_id;
 	$files->save();
+	$xml_data->save();
     }
 
     public function actionMove() {
@@ -55,8 +76,11 @@ class ApiController extends Controller {
 	    if ($files) {
 		$files->pid = $new_pid;
 		$files->save();
-	    }
-	}
+		echo "OK: Moved";
+	    }else
+		echo "ERROR: Unknown file";
+	}else
+	    echo "ERROR: Unknown place";
     }
 
     public function actionRename() {
@@ -66,7 +90,10 @@ class ApiController extends Controller {
 	if ($files) {
 	    $files->title = $title;
 	    $files->save();
+	    echo "OK: Renamed";
 	}
+	else
+	    echo "ERROR: unknown file";
     }
 
     public function actionDelete() {
@@ -74,19 +101,25 @@ class ApiController extends Controller {
 	$files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
 	if ($files) {
 	    $files->delete();
+	    echo "OK: Deleted";
 	}
+	else
+	    echo "ERROR: unknown file";
     }
 
     public function actionGetUpdatesCmdList() {
-	
+	echo "No Updates";
     }
 
     public function actionGetSettings() {
-	
+	echo "No Settings";
     }
 
     public function actionSetSyncSettings() {
-	
+	if (isset($_POST['data'])) {
+	    $data = $_POST['data'];
+	}else
+	    echo "ERROR: no data";
     }
 
 }

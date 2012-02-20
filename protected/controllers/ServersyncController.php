@@ -7,7 +7,7 @@ class ServersyncController extends Controller {
 
     public function beforeAction($action) {
 	parent::beforeAction($action);
-	//    return true;
+//    return true;
 	$shash = $_GET['shash'];
 	$hash_local = md5(date('%h%d') . 'where am i');
 	if ($shash <> $hash_local) {
@@ -104,9 +104,14 @@ class ServersyncController extends Controller {
 	}
     }
 
+    /**
+     * actionCreateMetaFile
+     * @param int $user_id
+     * @param string$data 
+     */
     public function actionCreateMetaFile($user_id=0, $data='') {
 	if ($user_id > 0) {
-	    //OK 
+//OK 
 	    $input = @unserialize($data);
 	    if (!($input === false)) {
 		$files = new CUserfiles();
@@ -114,14 +119,75 @@ class ServersyncController extends Controller {
 		$files->user_id = $user_id;
 		$ext = pathinfo($files->title, PATHINFO_EXTENSION);
 		$files->type_id = Utils::getSectionIdByExt($ext);
-		$files->save();
-	    }
+		if ($files->save())
+		    $result = array('fid' => $files->id);
+		else
+		    $result = array('error' => "Can't save record");
+	    } else
+		$result = array('error' => 'Bad input data');
+	    echo serialize($result);
+	    exit;
 	}
+	exit;
+    }
+
+    /**
+     * actionCreateFileVariant
+     * @param int $user_id
+     * @param string $data 
+     */
+    public function actionCreateFileVariant($user_id=0, $data='') {
+	if ($user_id > 0) {
+	    $input = @unserialize($data);
+	    if (!($input === false)) {
+		$file_variant = new CFilevariants();
+		$file_variant->file_id = $data['fid'];
+		$preset_id = 0; //CPresets::model()->findPresetByName($data['preset']);
+		$file_variant->preset_id = $preset_id;
+		$file_variant->fmd5 = $data['fmd5'];
+		$file_variant->fsize = $data['fsize'];
+		if ($file_variant->save())
+		    $result = array('variant_id' => $file_variant->id);
+		else
+		    $result = array('error' => "Can't save record");
+	    } else
+		$result = array('error' => 'Bad input data');
+	    echo serialize($result);
+	    exit;
+	}
+	exit;
+    }
+
+    /**
+     * actionCreateFileLocation
+     * @param int $user_id
+     * @param string $data 
+     */
+    public function actionCreateFileLocation($user_id=0, $data='') {
+	if ($user_id > 0) {
+	    $input = @unserialize($data);
+	    if (!($input === false)) {
+		$file_location = new CFilelocations();
+		$file_location->id = $data['variant_id'];
+		$file_location->fname = $data['smame'];
+		$file_location->fsize = $data['fsize'];
+		$file_location->modified = $data['modified'];
+		$file_location->folder = $data['folder'];
+		if ($file_location->save())
+		    $result = array('file_location_id' => $file_location->id);
+		else
+		    $result = array('error' => "Can't save record");
+	    } else
+		$result = array('error' => 'Bad input data');
+	    echo serialize($result);
+	    exit;
+	}
+	exit;
     }
 
     public function actionUpload($user_id=0, $data='') {
 	if ($user_id > 0) {
-	    //OK 
+//OK 
 
 
 	    $input = @unserialize($data);
@@ -165,8 +231,8 @@ class ServersyncController extends Controller {
 
     public function actionDownload($user_id=0) {
 	if ($user_id > 0) {
-	    //OK 
-	    //WHat is server doing this
+//OK 
+//WHat is server doing this
 
 	    if (!isset($_GET['data']))
 		die('not enough data');
@@ -196,7 +262,7 @@ class ServersyncController extends Controller {
 	    $input = @unserialize($data);
 	    if (!($input === false)) {
 		$result = 1;
-		//$folder = $convertInfo['folder'];
+//$folder = $convertInfo['folder'];
 		$server_id = $this->server->id;
 		$fid = (int) $input['file_id'];
 		$filename = $input['save'];
@@ -205,24 +271,24 @@ class ServersyncController extends Controller {
 		if ($task_id > 0) {
 		    $queue = CConvertQueue::model()->findByAttributes(array('task_id' => $task_id));
 		    if (!(queue == null)) {//ЕСЛИ ЕСТЬ ИНФО О ЗАДАНИИ
-			//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
+//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
 			if (!empty($result)) {
-			    //ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
+//ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
 			} else {
-			    //ЧТЕНИЕ ИНФО О ФАЙЛЕ
+//ЧТЕНИЕ ИНФО О ФАЙЛЕ
 			    $cmd = Yii::app()->db->createCommand()
 				    ->select('*')
 				    ->from('{{userfiles}}')
 				    ->where('id = ' . $queue['id']);
 			    $fileInfo = $cmd->queryRow();
-			    //ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
+//ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
 			    $cmd = Yii::app()->db->createCommand()
 				    ->select('*')
 				    ->from('{{filelocations}}')
 				    ->where('id = ' . $queue['id']);
 			    $locInfo = $cmd->queryRow();
-			    //ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
-			    //СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
+//ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
+//СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
 			    $objInfo = array(
 				'id' => $fid,
 				'user_id' => $user_id,
@@ -230,19 +296,19 @@ class ServersyncController extends Controller {
 				'type_id' => $queue->preset_id,
 			    );
 
-			    //CREATE METAFILE
+//CREATE METAFILE
 			    $sql = 'INSERT INTO {{typedfiles}} (id, variant_id, user_id, fsize, title, userobject_id)
 			    		VALUES (null, 0, ' . $objInfo['user_id'] . ', :fsize, "' . $objInfo['title'] . '", ' . $objInfo['id'] . ')';
 			    $cmd = Yii::app()->db->createCommand($sql);
 			    $cmd->bindParam(':fsize', $fsize, PDO::PARAM_LOB);
 			    $cmd->execute();
 
-			    //CREATE FILELOC
+//CREATE FILELOC
 			    $sql = 'INSERT INTO {{usertobjects}} (id, user_id, title, type_id)
 			    		VALUES (' . $objInfo['id'] . ', ' . $objInfo['user_id'] . ', "' . $objInfo['title'] . '", ' . $objInfo['type_id'] . ')';
 			    Yii::app()->db->createCommand($sql)->execute();
 
-			    //ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
+//ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
 			    $cmd = Yii::app()->db->createCommand()
 				    ->select('ptp.id, ptp.title')
 				    ->from('{{product_type_params}} ptp')
@@ -255,7 +321,7 @@ class ServersyncController extends Controller {
 			    $width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 //ВООБЩЕ ПАРАМЕТРЫ ДОЛЖНЫ ПРИХОДИТЬ ОТДЕЛЬНО. К ОБСУЖДЕНИЮ: ОТКУДА?
 			    if (!empty($params)) {
-				//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
+//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
 				foreach ($params as $p) {
 				    if (!empty($$p['title'])) {
 					$p_id = $p['id'];
@@ -268,7 +334,7 @@ class ServersyncController extends Controller {
 				}
 			    }
 
-			    //СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
+//СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
 			    $objLocInfo = array(
 				'id' => $locInfo['id'],
 				'user_id' => $locInfo['user_id'],
@@ -283,7 +349,7 @@ class ServersyncController extends Controller {
 			    		' . $locInfo['state'] . ', ' . $locInfo['fsize'] . ', "' . $locInfo['fname'] . '", ' . $locInfo['folder'] . ')';
 			    Yii::app()->db->createCommand($sql)->execute();
 
-			    //ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+//ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
 			    $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
 			    Yii::app()->db->createCommand($sql)->execute();
 			}

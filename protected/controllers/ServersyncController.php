@@ -90,20 +90,6 @@ class ServersyncController extends Controller {
 	exit;
     }
 
-    public function actionCreate($user_id=0, $title='', $pid=0, $is_dir=0) {
-	if ($user_id > 0) {
-	    $cur_file = CUserfiles::model()->findAllByAttributes(array('user_id' => $user_id, 'title' => $title, 'pid' => $pid));
-	    if (!$cur_file['id']) {
-		$files = new CUserfiles();
-		$files->title = $title;
-		$files->pid = $pid;
-		$files->is_dir = $is_dir;
-		$files->user_id = $user_id;
-		$files->save();
-	    }
-	}
-    }
-
     /**
      * actionCreateMetaFile
      * @param int $user_id
@@ -136,25 +122,22 @@ class ServersyncController extends Controller {
      * @param int $user_id
      * @param string $data 
      */
-    public function actionCreateFileVariant($user_id=0, $data='') {
-	if ($user_id > 0) {
-	    $input = @unserialize($data);
-	    if (!($input === false)) {
-		$file_variant = new CFilevariants();
-		$file_variant->file_id = $data['fid'];
-		$preset_id = 0; //CPresets::model()->findPresetByName($data['preset']);
-		$file_variant->preset_id = $preset_id;
-		$file_variant->fmd5 = $data['fmd5'];
-		$file_variant->fsize = $data['fsize'];
-		if ($file_variant->save())
-		    $result = array('variant_id' => $file_variant->id);
-		else
-		    $result = array('error' => "Can't save record");
-	    } else
-		$result = array('error' => 'Bad input data');
-	    echo serialize($result);
-	    exit;
-	}
+    public function actionCreateFileVariant($data='') {
+	$input = @unserialize($data);
+	if (!($input === false)) {
+	    $file_variant = new CFilevariants();
+	    $file_variant->file_id = $data['fid'];
+	    $preset_id = 0; //CPresets::model()->findPresetByName($data['preset']);
+	    $file_variant->preset_id = $preset_id;
+	    $file_variant->fmd5 = $data['fmd5'];
+	    $file_variant->fsize = $data['fsize'];
+	    if ($file_variant->save())
+		$result = array('variant_id' => $file_variant->id);
+	    else
+		$result = array('error' => "Can't save record");
+	} else
+	    $result = array('error' => 'Bad input data');
+	echo serialize($result);
 	exit;
     }
 
@@ -163,27 +146,46 @@ class ServersyncController extends Controller {
      * @param int $user_id
      * @param string $data 
      */
-    public function actionCreateFileLocation($user_id=0, $data='') {
-	if ($user_id > 0) {
-	    $input = @unserialize($data);
-	    if (!($input === false)) {
-		$file_location = new CFilelocations();
-		$file_location->id = $data['variant_id'];
-		$file_location->fname = $data['smame'];
-		$file_location->fsize = $data['fsize'];
-		$file_location->modified = $data['modified'];
-		$file_location->folder = $data['folder'];
-		if ($file_location->save())
-		    $result = array('file_location_id' => $file_location->id);
-		else
-		    $result = array('error' => "Can't save record");
-	    } else
-		$result = array('error' => 'Bad input data');
-	    echo serialize($result);
-	    exit;
-	}
+    public function actionCreateFileLocation($data='') {
+	$input = @unserialize($data);
+	if (!($input === false)) {
+	    $file_location = new CFilelocations();
+	    $file_location->id = $data['variant_id'];
+	    $file_location->fname = $data['smame'];
+	    $file_location->fsize = $data['fsize'];
+	    $file_location->modified = $data['modified'];
+	    $file_location->folder = $data['folder'];
+	    $file_location->server_id = $this->server->id;
+	    if ($file_location->save())
+		$result = array('file_location_id' => $file_location->id);
+	    else
+		$result = array('error' => "Can't save record");
+	} else
+	    $result = array('error' => 'Bad input data');
+	echo serialize($result);
 	exit;
     }
+
+    public function actionCreateConvertTask($data='') {
+	$input = @unserialize($data);
+	if (!($input === false)) {
+	    $cqueue = new CConvertQueue();
+	    $cqueue->id = $data['fid'];
+	    $preset_id = 0; //CPresets::model()->findPresetByName($data['preset']);
+	    $cqueue->preset_id = $preset_id;
+	    $cqueue->server_id = $this->server->id;
+	    $cqueue->task_id = $data['job_id'];
+	    if ($cqueue->save())
+		$result = array('queue_id' => $cqueue->id);
+	    else
+		$result = array('error' => "Can't save record");
+	} else
+	    $result = array('error' => 'Bad input data');
+	echo serialize($result);
+	exit;
+    }
+
+    ///Deprecated Upload
 
     public function actionUpload($user_id=0, $data='') {
 	if ($user_id > 0) {

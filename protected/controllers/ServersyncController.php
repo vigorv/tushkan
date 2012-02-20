@@ -47,7 +47,7 @@ class ServersyncController extends Controller {
 		$fid = (int) $data['fid'];
 		$stype = (int) $data['stype'];
 		$user_ip = (int) $data['user_ip'];
-		$zone = CZones::model()->GetZoneByIp($user_ip);		
+		$zone = CZones::model()->GetZoneByIp($user_ip);
 		$filemeta = Yii::app()->db->createCommand()
 			->select('uf.*')
 			->from('{{userfiles}} uf')
@@ -104,10 +104,25 @@ class ServersyncController extends Controller {
 	}
     }
 
+    public function actionCreateMetaFile($user_id=0, $data='') {
+	if ($user_id > 0) {
+	    //OK 
+	    $input = @unserialize($data);
+	    if (!($input === false)) {
+		$files = new CUserfiles();
+		$files->title = base64_decode($title);
+		$files->user_id = $user_id;
+		$ext = pathinfo($files->title, PATHINFO_EXTENSION);
+		$files->type_id = Utils::getSectionIdByExt($ext);
+		$files->save();
+	    }
+	}
+    }
+
     public function actionUpload($user_id=0, $data='') {
 	if ($user_id > 0) {
 	    //OK 
-	    //WHat is server doing this
+
 
 	    $input = @unserialize($data);
 	    if (!($input === false)) {

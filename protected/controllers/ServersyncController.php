@@ -17,8 +17,8 @@ class ServersyncController extends Controller {
 	$ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
 
 	$this->server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 2));
-	if ($this->server === null)
-	    die('Unknown Server ' . $ip);
+	//if ($this->server === null)
+	//    die('Unknown Server ' . $ip);
 
 	return true;
     }

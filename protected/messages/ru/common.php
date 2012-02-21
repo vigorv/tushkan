@@ -24,6 +24,7 @@ return array (
   'Srt' 					=> 'Сортировка',
   'Fields with' 			=> 'Поля, отмеченные знаком',
   'are required' 			=> '- обязательны для заполнения',
+  'required field' 			=> 'обязательное поле',
   'Partners' 				=> 'Партнеры, витрины',
   'Partner' 				=> 'Партнер',
   'Products' 				=> 'Продукты',
@@ -55,6 +56,7 @@ return array (
   'Choose convert quality'	=> 'Выберите качество конвертирования',
   'Generate'				=> 'Сгенерировать',
   'Type UI'					=> 'Тип в UI',
+  'File info'				=> 'Информация о файле',
 
   'High'					=> 'Высокое',
   'Medium'					=> 'Среднее',

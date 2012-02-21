@@ -17,6 +17,21 @@ class UniverseController extends Controller {
         }
     }
 
+    public function actionUpload()
+    {
+    	//ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
+		$userPower = Yii::app()->user->getState('dmUserPower');
+		$types = Yii::app()->db->createCommand()
+			->select('id, title')
+			->from('{{product_types}}')
+			->where('active <= ' . $userPower)
+			->queryAll();
+		$types = Utils::arrayToKeyValues($types, 'id', 'title');
+		//$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
+
+        $this->render('upload', array('types' => $types, 'user_id' => $this->userInfo['id'], /* 'kpt' => $kpt */));
+    }
+
     public function actionIndex() {
     	//ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
 		$tFiles = Yii::app()->db->createCommand()
@@ -502,10 +517,10 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
     		if (!empty($info))
     		{
 				$cmd = Yii::app()->db->createCommand()
-					->select('fv.id, ptp.title, fpv.value')
+					->select('fv.id, fv.file_id, fl.fname')
 					->from('{{filevariants}} fv')
 			        ->join('{{filelocations}} fl', 'fl.id=fv.id')
-					->where('fb.file_id = :id')
+					->where('fv.file_id = :id')
 					->group('fl.id');
 	    		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 				$prms = $cmd->queryAll();
@@ -519,12 +534,10 @@ $height = 200;	$width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 		    	}
 
 		    	$subAction = 'view';
-		    	if (!empty($_GET['do']))
+		    	if (!empty($_GET['do']) && !empty($_GET['vid']))//ДОЛЖНО БЫТЬ УКАЗАНО ДЕЙСТВИЕ И ВАРИАНТ
 		    	{
 		    		$subAction = $_GET['do'];
 		    	}
-
-				//ЕСЛИ НЕТ ЦЕН НИ ПОКУПКИ НИ АРЕНДЫ, ТО ДОСТУПНО И СКАЧКА И ОНЛАЙН
 
 	    		switch ($subAction)
 	    		{

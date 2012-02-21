@@ -33,17 +33,25 @@ switch ($subAction)
 	case "wizardtypeparams":
 		if (!empty($result['lst']))
 		{
+			$rNote = '';
 			foreach($result['lst'] as $p)
 			{
 				$pid = $p['id'];
+				$r = '';
+				if (!empty($p['required']))
+				{
+					$r = ' <span class="required">*</span>';
+					$rNote = '<div class="block_content"><p class="note">' . $r . ' - ' . Yii::t('common', 'required field') . '</p></div>';
+				}
 				$title = Yii::t('params', $p['title']);
 				echo'<div class="chess">
-				<input name="wizardForm[params][' . $pid . '][id]" type="hidden" value="' . $pid . '" />
-				' . $title . ':<br />
-				<input name="wizardForm[params][' . $pid . '][value]" type="text" value="" class="text ui-widget-content ui-corner-all" />
+				<input name="paramsForm[params][' . $pid . '][id]" type="hidden" value="' . $pid . '" />
+				' . $title . ':' . $r . '<br />
+				<input name="paramsForm[params][' . $pid . '][value]" type="text" value="" class="text ui-widget-content ui-corner-all" />
 				</div>
 				';
 			}
+			echo $rNote;
 		}
 	break;
 }

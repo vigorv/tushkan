@@ -15,6 +15,7 @@ define("_PD_TEXT_"			, "text");
 define("_PD_TEXTAREA_"		, "textarea");
 define("_PD_PWD_"			, "pwd");
 define("_PD_CHECKBOX_"		, "checkbox");
+define("_PD_RADIO_"			, "radio");
 
 define("_PD_GROUP_COMMON_"	, 0);
 
@@ -255,17 +256,30 @@ class Utils
 
     /**
      * получить список качества конвертирования видео
-     *
+     * @param $ret = 'id' - с индексами в виде id, иначе - с индексами в виде строк
      * @return mixed
      */
-    public function getVideoConverterQuality()
+    public function getVideoConverterQuality($ret = 'id')
     {
-    	return array(
-    		_VIDEO_HIGH_	=> Yii::t('common', 'High'),
-    		_VIDEO_MEDIUM_	=> Yii::t('common', 'Medium'),
-    		_VIDEO_LOW_		=> Yii::t('common', 'Low'),
-    		_VIDEO_ASIS_	=> Yii::t('common', 'As is'),
+    	$qArr =  array(
+    		_VIDEO_HIGH_	=> 'High',
+    		_VIDEO_MEDIUM_	=> 'Medium',
+    		_VIDEO_LOW_		=> 'Low',
+    		_VIDEO_ASIS_	=> 'As is',
     	);
+    	$res = array();
+    	foreach ($qArr as $k => $v)
+    	{
+    		if ($ret == 'id')
+    		{
+    			$res[$k] = Yii::t('common', $v);
+    		}
+    		else
+    		{
+    			$res[$v] = Yii::t('common', $v);
+    		}
+    	}
+    	return $res;
     }
 
     /**
@@ -281,6 +295,7 @@ class Utils
     		_PD_FILE_		=> Yii::t('params', 'File'),
     		_PD_PWD_		=> Yii::t('params', 'Pwd'),
     		_PD_CHECKBOX_	=> Yii::t('params', 'Checkbox'),
+    		_PD_RADIO_		=> Yii::t('params', 'Radio'),
     	);
     }
 

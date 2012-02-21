@@ -3,7 +3,7 @@
 class UniverseController extends Controller {
 
     public function accessRules() {
-	
+
     }
 
     public function actionError() {
@@ -108,6 +108,44 @@ class UniverseController extends Controller {
 	    'types' => $types, 'tObjects' => $tObjects, 'oParams' => $oParams));
     }
 
+    /**
+     * действие сохранения информации о загруженном файле (параметры)
+     *
+     */
+	public function actionPostuploadparams()
+	{
+		if (!empty($_POST['paramsForm']))
+		{
+			if (!empty($_POST['paramsForm']['fileId']))
+			{
+				$fileId = intval($_POST['paramsForm']['fileId']);
+			}
+			if (!empty($_POST['paramsForm']['params']))
+			{
+				$params = $_POST['paramsForm']['params'];
+			}
+			if (!empty($fileId) && !empty($params))
+			{
+				foreach ($params as $p)
+				{
+					if (empty($p['id'])) continue;
+
+					$sql = 'INSERT INTO {{files_param_values}} (id, param_id, value, file_id)
+						VALUES (null, :param_id, :value, ' . $fileId . ')
+					';
+					$cmd = Yii::app()->db->createCommand($sql);
+					$cmd->bindParam(':param_id', $p['id'], PDO::PARAM_INT);
+					$cmd->bindParam(':value', $p['value'], PDO::PARAM_STR);
+					$cmd->execute();
+				}
+			}
+		}
+	}
+
+    /**
+     * действие формы загрузки файла
+     *
+     */
     public function actionUpload() {
 //ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
 	$userPower = Yii::app()->user->getState('dmUserPower');
@@ -129,7 +167,7 @@ class UniverseController extends Controller {
 
     public function actionExt() {
 	if (isset($_GET['goods_add'])) {
-	    
+
 	}
 
 	$this->render('steps');

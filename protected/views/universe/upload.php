@@ -166,14 +166,13 @@ $quality = Utils::getVideoConverterQuality('values');
 		inputs = $("#paramsform input:text").filter("[value != '']");
 		if (inputs.length)
 		{
-			$.post("/univers/postuploadparams", $("#paramsFormId").serialize());
+			$.post("/universe/postuploadparams", $("#paramsFormId").serialize());
+			$("#paramsform").dialog("close");
 		}
 		else
 		{
 			return false;
 		}
-
-
 	}
 
 </script>
@@ -272,7 +271,6 @@ $quality = Utils::getVideoConverterQuality('values');
         		+ $("#wizardpage2 input:radio").filter("[checked != '']").val()
         		+ "&kpt=" + kpt
         		+ "&user_id=<?php echo $user_id; ?>";
-        alert(url);
 	 	sendMultipleFiles({
 
         	//url: "/files/receivefile?preset="

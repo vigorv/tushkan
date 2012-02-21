@@ -269,23 +269,9 @@ class Utils {
     }
 
     /**
-     * получить список типов параметров персональных данных
-     *
-     * @return mixed
-     */
-    public function getVideoConverterQuality() {
-	return array(
-	    _VIDEO_HIGH_ => Yii::t('common', 'High'),
-	    _VIDEO_MEDIUM_ => Yii::t('common', 'Medium'),
-	    _VIDEO_LOW_ => Yii::t('common', 'Low'),
-	    _VIDEO_ASIS_ => Yii::t('common', 'As is'),
-	);
-    }
-
-    /**
      * getSectionIdByName($name)
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      * @return mixed
      */
     public static function getSectionIdByName($name) {
@@ -300,7 +286,7 @@ class Utils {
 
     /**
      * getSectionIdByName($ext)
-     * 
+     *
      * @param string $ext
      * @return int
      */

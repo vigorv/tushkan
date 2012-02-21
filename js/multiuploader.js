@@ -50,8 +50,8 @@ sendFile = (function(toString, maxSize){
 	    }
 	};
 	//	Access-Control-Request-Headers:Origin, X-Requested-With, Content-Disposition, X-File-Name, Content-Type
-	
-	xhr.open("post", handler.url || "?upload=true", true);
+
+	xhr.open("post", handler.url, true);
 	xhr.setRequestHeader("If-Modified-Since", "Mon, 26 Jul 1997 05:00:00 GMT");
 	xhr.setRequestHeader("Origin", "http://mycloud.anka.ws");
 	xhr.setRequestHeader("Cache-Control", "no-cache");

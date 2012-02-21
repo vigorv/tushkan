@@ -10,7 +10,8 @@ var sendFile = 2 * 1024*1024*1024; // maximum allowed file size
 // function to upload a single file via handler
 sendFile = (function(toString, maxSize){
     var isFunction = function(Function){return  toString.call(Function) === "[object Function]";},
-        split = "onabort.onerror.onloadstart.onprogress".split("."),
+//        split = "onabort.onerror.onloadstart.onprogress".split("."),
+        split = "onabort.onerror.onloadstart".split("."),
         length = split.length;
     return  function(handler){
         if(maxSize && maxSize < handler.file.fileSize){

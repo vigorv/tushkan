@@ -13,11 +13,11 @@ class UniverseController extends Controller {
 		echo $error['message'];
 	    else
 		var_dump($error);
-	    //$this->render('error', $error);
+//$this->render('error', $error);
 	}
     }
 
-    public function actionIndex($section='') {
+    public function actionIndex2($section='') {
 	$this->layout = 'concept1';
 
 
@@ -45,8 +45,8 @@ class UniverseController extends Controller {
 	    'title' => '', 'mb_content_items' => $mb_content_items));
     }
 
-    public function actionIndex1() {
-	//ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
+    public function actionIndex() {
+//ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
 	$tFiles = Yii::app()->db->createCommand()
 		->select('id, variant_id, title')
 		->from('{{typedfiles}}')
@@ -71,7 +71,7 @@ class UniverseController extends Controller {
 	$uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
 	$quality = Utils::getVideoConverterQuality();
 
-	//ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
+//ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
 	$userPower = Yii::app()->user->getState('dmUserPower');
 	$types = Yii::app()->db->createCommand()
 		->select('id, title')
@@ -80,30 +80,46 @@ class UniverseController extends Controller {
 		->queryAll();
 	$types = Utils::arrayToKeyValues($types, 'id', 'title');
 
-	//ВЫБОРКА ТИПИЗИРОВАНННОГО КОНТЕНТА
+//ВЫБОРКА ТИПИЗИРОВАННОГО КОНТЕНТА
 	$tObjects = Yii::app()->db->createCommand()
-		->select('id, userobject_id, title')
-		->from('{{typedfiles}}')
-		->where('userobject_id > 0 AND user_id = ' . $this->userInfo['id'])
+		->select('uf.id, uf.title, ptp.title, fpv.value')
+		->from('{{userfiles}} uf')
+		->join('{{files_param_values}} fpv', 'fpv.file_id=uf.id')
+		->join('{{product_type_params}} ptp', 'ptp.id=fpv.param_id')
+		->where('user_id = ' . $this->userInfo['id'])
+		->group('fpv.id')
 		->queryAll();
 	$oParams = array();
 	if (!empty($tObjects)) {
 	    $toIds = array();
 	    foreach ($tObjects as $to) {
-		$toIds[$to['userobject_id']] = $to['userobject_id'];
+		$toIds[$to['id']] = $to['id'];
 	    }
 	    $oParams = Yii::app()->db->createCommand()
-			    ->select('uo.id, ptp.title, opv.value')
-			    ->from('{{usertobjects}} uo')
-			    ->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
-			    ->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
-			    ->where('uo.id IN (' . implode(', ', $toIds) . ')')
-			    ->group('opv.id')
-			    ->order('uo.id ASC, ptp.srt DESC')->queryAll();
+			    ->select('fv.id, fv.file_id')
+			    ->from('{{filevariants}} fv')
+			    ->join('{{filelocations}} fl', 'fl.id=fv.id')
+			    ->where('fv.file_id IN (' . implode(', ', $toIds) . ')')
+			    ->group('fpv.id')
+			    ->order('fv.id ASC, ptp.srt DESC')->queryAll();
 	}
 	$this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
 	    'uploadServer' => $uploadServer, 'quality' => $quality,
 	    'types' => $types, 'tObjects' => $tObjects, 'oParams' => $oParams));
+    }
+
+    public function actionUpload() {
+//ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
+	$userPower = Yii::app()->user->getState('dmUserPower');
+	$types = Yii::app()->db->createCommand()
+		->select('id, title')
+		->from('{{product_types}}')
+		->where('active <= ' . $userPower)
+		->queryAll();
+	$types = Utils::arrayToKeyValues($types, 'id', 'title');
+//$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
+
+	$this->render('upload', array('types' => $types, 'user_id' => $this->userInfo['id'], /* 'kpt' => $kpt */));
     }
 
     public function actionAdd($step=1) {
@@ -164,24 +180,24 @@ class UniverseController extends Controller {
 	    $cmd->bindParam(':id', $task_id, PDO::PARAM_INT);
 	    $queue = $cmd->queryRow();
 	    if (!empty($queue)) {//ЕСЛИ ЕСТЬ ИНФО О ЗАДАНИИ
-		//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
+//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
 		if (!empty($result)) {
-		    //ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
+//ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
 		} else {
-		    //ЧТЕНИЕ ИНФО О ФАЙЛЕ
+//ЧТЕНИЕ ИНФО О ФАЙЛЕ
 		    $cmd = Yii::app()->db->createCommand()
 			    ->select('*')
 			    ->from('{{userfiles}}')
 			    ->where('id = ' . $queue['id']);
 		    $fileInfo = $cmd->queryRow();
-		    //ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
+//ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
 		    $cmd = Yii::app()->db->createCommand()
 			    ->select('*')
 			    ->from('{{filelocations}}')
 			    ->where('id = ' . $queue['id']);
 		    $locInfo = $cmd->queryRow();
 //ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
-		    //СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
+//СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
 		    $objInfo = array(
 			'id' => $fileInfo['id'],
 			'user_id' => $fileInfo['user_id'],
@@ -198,7 +214,7 @@ class UniverseController extends Controller {
 			    		VALUES (' . $objInfo['id'] . ', ' . $objInfo['user_id'] . ', "' . $objInfo['title'] . '", ' . $objInfo['type_id'] . ')';
 		    Yii::app()->db->createCommand($sql)->execute();
 
-		    //ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
+//ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
 		    $cmd = Yii::app()->db->createCommand()
 			    ->select('ptp.id, ptp.title')
 			    ->from('{{product_type_params}} ptp')
@@ -211,7 +227,7 @@ class UniverseController extends Controller {
 		    $width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
 //ВООБЩЕ ПАРАМЕТРЫ ДОЛЖНЫ ПРИХОДИТЬ ОТДЕЛЬНО. К ОБСУЖДЕНИЮ: ОТКУДА?
 		    if (!empty($params)) {
-			//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
+//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
 			foreach ($params as $p) {
 			    if (!empty($$p['title'])) {
 				$p_id = $p['id'];
@@ -224,7 +240,7 @@ class UniverseController extends Controller {
 			}
 		    }
 
-		    //СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
+//СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
 		    $objLocInfo = array(
 			'id' => $locInfo['id'],
 			'user_id' => $locInfo['user_id'],
@@ -239,7 +255,7 @@ class UniverseController extends Controller {
 			    		' . $locInfo['state'] . ', ' . $locInfo['fsize'] . ', "' . $locInfo['fname'] . '", ' . $locInfo['folder'] . ')';
 		    Yii::app()->db->createCommand($sql)->execute();
 
-		    //ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+//ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
 		    $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
 		    Yii::app()->db->createCommand($sql)->execute();
 		}
@@ -322,20 +338,7 @@ class UniverseController extends Controller {
 			$canAdd = true;
 		    }
 
-		    $fSize = 0;
-		    if (!empty($params[Yii::app()->params['tushkan']['fsizePrmName']])) {
-			$fSize = $params[Yii::app()->params['tushkan']['fsizePrmName']];
-		    }
-		    $mB = 1024;
-		    if ($canAdd && ($this->userInfo['free_limit'] * $mB > $fSize)) {
-			//КОРРЕКТИРУЕМ ОБЪЕМ СВОБОДНОГО ПРОСТРАНСТВА
-			$freeLimit = $this->userInfo['free_limit'] * $mB - $fSize;
-			if ($freeLimit < 0)
-			    $freeLimit = 0;
-			$freeLimit = intval(round($freeLimit / $mB));
-			$this->userInfo['free_limit'] = $freeLimit;
-			Yii::app()->user->setState('dmUserInfo', serialize($this->userInfo));
-
+		    if ($canAdd) {
 			$productInfo = Yii::app()->db->createCommand()
 				->select('title')
 				->from('{{products}}')
@@ -345,14 +348,11 @@ class UniverseController extends Controller {
 			if (!empty($productInfo['title']))
 			    $title = $productInfo['title'];
 
-			$sql = 'UPDATE {{users}} SET free_limit=' . $freeLimit . ' WHERE id=' . $this->userInfo['id'];
-			Yii::app()->db->createCommand($sql)->execute();
-
 			$sql = '
 							INSERT INTO {{typedfiles}}
-								(id, variant_id, user_id, fsize, title, userobject_id)
+								(id, variant_id, user_id, title)
 							VALUES
-								(null, :id, ' . $this->userInfo['id'] . ', ' . $fSize . ', "' . $title . '", 0)
+								(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '")
 						';
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
@@ -482,26 +482,23 @@ class UniverseController extends Controller {
 	$subAction = 'view';
 	if (!empty($this->userInfo) && !empty($id)) {
 	    $cmd = Yii::app()->db->createCommand()
-		    ->select('*')
-		    ->from('{{typedfiles}}')
-		    ->where('id = :id AND user_id = ' . $this->userInfo['id']);
+		    ->select('uf.id, uf.title, ptp.title, fpv.value')
+		    ->from('{{userfiles}} uf')
+		    ->join('{{files_param_values}} fpv', 'fpv.file_id=uf.id')
+		    ->join('{{product_type_params}} ptp', 'ptp.id=fpv.param_id')
+		    ->where('uf.id = :id AND uf.user_id = ' . $this->userInfo['id'])
+		    ->group('fpv.id');
 	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
-	    $info = $cmd->queryRow();
+	    $info = $cmd->queryAll();
 	    if (!empty($info)) {
-		$locInfo = Yii::app()->db->createCommand()
-			->select('*')
-			->from('{{userobjectlocations}}')
-			->where('id = ' . $info['id'])
-			->queryRow();
-
-		$prms = Yii::app()->db->createCommand()
-				->select('uo.id, ptp.title, opv.value')
-				->from('{{usertobjects}} uo')
-				->join('{{tobjects_param_values}} opv', 'uo.id=opv.userobject_id')
-				->join('{{product_type_params}} ptp', 'ptp.id=opv.param_id')
-				->where('uo.id = ' . $info['userobject_id'])
-				->group('opv.id')
-				->order('uo.id ASC, ptp.srt DESC')->queryAll();
+		$cmd = Yii::app()->db->createCommand()
+			->select('fv.id, fv.file_id, fl.fname')
+			->from('{{filevariants}} fv')
+			->join('{{filelocations}} fl', 'fl.id=fv.id')
+			->where('fv.file_id = :id')
+			->group('fl.id');
+		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+		$prms = $cmd->queryAll();
 		if (!empty($prms)) {
 		    $params = array();
 		    foreach ($prms as $p) {
@@ -510,11 +507,9 @@ class UniverseController extends Controller {
 		}
 
 		$subAction = 'view';
-		if (!empty($_GET['do'])) {
+		if (!empty($_GET['do']) && !empty($_GET['vid'])) {//ДОЛЖНО БЫТЬ УКАЗАНО ДЕЙСТВИЕ И ВАРИАНТ
 		    $subAction = $_GET['do'];
 		}
-
-		//ЕСЛИ НЕТ ЦЕН НИ ПОКУПКИ НИ АРЕНДЫ, ТО ДОСТУПНО И СКАЧКА И ОНЛАЙН
 
 		switch ($subAction) {
 		    case "download":
@@ -525,7 +520,7 @@ class UniverseController extends Controller {
 		}
 	    }
 	}
-	$this->render('oview', array('info' => $info, 'params' => $params, 'subAction' => $subAction, 'locInfo' => $locInfo));
+	$this->render('oview', array('info' => $info, 'params' => $params, 'subAction' => $subAction));
     }
 
 }

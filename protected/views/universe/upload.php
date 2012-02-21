@@ -1,6 +1,8 @@
 <?php
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/multiuploader.js");
 
+$uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
+
 $quality = Utils::getVideoConverterQuality('values');
 ?>
 
@@ -257,8 +259,9 @@ $quality = Utils::getVideoConverterQuality('values');
 	 	sendMultipleFiles({
 
         	//url: "/files/receivefile?preset="
-        	url: "/files/uploads?preset="
+        	url: "http://<?php echo $uploadServer; ?>/files/uploads?preset="
         		+ $("#wizardpage2 input:radio").filter("[checked != '']").val()
+        		+ "&kpt=" + kpt
         		+ "&user_id=<?php echo $user_id; ?>",
 
             files:input.files,

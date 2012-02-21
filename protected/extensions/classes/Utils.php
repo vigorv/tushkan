@@ -268,10 +268,11 @@ class Utils {
 	return $res;
     }
 
+
     /**
      * getSectionIdByName($name)
-     *
-     * @param string $name
+     * 
+     * @param string $name 
      * @return mixed
      */
     public static function getSectionIdByName($name) {

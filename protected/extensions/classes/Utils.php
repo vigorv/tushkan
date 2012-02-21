@@ -294,10 +294,14 @@ class Utils {
     public static function getSectionIdByExt($ext) {
 	$supported_video_ext = array('avi', 'mp4', 'mkv', 'flv', '3gp');
 	$supported_audio_ext = array('mp3', 'm4a', 'flac', 'ogg', 'wma');
+	$supported_photo_ext =array('jpg','jpeg','png');
+	
 	if (in_array($ext, $supported_video_ext))
 	    return 1;
 	if (in_array($ext, $supported_audio_ext))
-	    return 1;
+	    return 2;
+	if (in_array($ext, $supported_photo_ext))
+	    return 3;
 	return 0;
     }
 

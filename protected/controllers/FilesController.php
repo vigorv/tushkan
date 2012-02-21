@@ -260,6 +260,8 @@ class FilesController extends Controller {
      * в ответ ожидается строка в виде пары [результат] [ид файла][разделитель]
      * например: ok 101/error 102/ok 103
      *
+     * ИЛИ возвращаем JSON
+     *
      */
     public function actionReceivefile()
     {
@@ -284,10 +286,10 @@ class FilesController extends Controller {
 
 	        // if everything is ok, save the file somewhere
 	        if(file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/' . $file->name, $file->content))
-	            exit('ok ' . $file->name . '/');
+	            exit('{"success" : "true", "id" : "' . $file->name . '"}');
 	    }
 
 	    // if there is an error this will be the output instead of "OK"
-	    exit('error unknownfile/');
+	    exit('{"error" : "true"}');
 	}
 }

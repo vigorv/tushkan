@@ -23,4 +23,10 @@ return array(
 	'title_en'				=> 'Оригинальное название',
 	'usertitle'				=> 'Название',
 	'tags'					=> 'Теги',
+
+
+	'Personal data params'	=> 'Параметры персональных данных',
+	'Administrate personal data params'	=> 'Администрирование параметров персональных данных',
+
+	'fio'					=> 'ФИО'
 );

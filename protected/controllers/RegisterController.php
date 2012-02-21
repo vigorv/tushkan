@@ -402,11 +402,6 @@ class RegisterController extends Controller {
             $model->attributes = $_POST['LoginForm'];
             // validate user input and redirect to the previous page if valid
             if ($model->validate() && $model->login()) {
-            	if (!$this->userInfo['confirmed'])
-            	{
-	                $this->redirect('/register/confirm');
-	                return;
-            	}
                 $this->redirect(Yii::app()->user->returnUrl);
             }
         }

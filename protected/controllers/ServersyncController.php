@@ -101,7 +101,7 @@ class ServersyncController extends Controller {
 	    $input = @unserialize($data);
 	    if (!($input === false)) {
 		$files = new CUserfiles();
-		$files->title = base64_decode($title);
+		$files->title = base64_decode($input['title']);
 		$files->user_id = $user_id;
 		$ext = pathinfo($files->title, PATHINFO_EXTENSION);
 		$files->type_id = Utils::getSectionIdByExt($ext);
@@ -125,12 +125,12 @@ class ServersyncController extends Controller {
     public function actionCreateFileVariant($data='') {
 	$input = @unserialize($data);
 	if (!($input === false)) {
-	    $file_variant = new CFilevariants();
-	    $file_variant->file_id = $data['fid'];
+	    $file_variant = new CFilesvariants();
+	    $file_variant->file_id = $input['fid'];
 	    $preset_id = 0; //CPresets::model()->findPresetByName($data['preset']);
 	    $file_variant->preset_id = $preset_id;
-	    $file_variant->fmd5 = $data['fmd5'];
-	    $file_variant->fsize = $data['fsize'];
+	    $file_variant->fmd5 = $input['fmd5'];
+	    $file_variant->fsize = $input['fsize'];
 	    if ($file_variant->save())
 		$result = array('variant_id' => $file_variant->id);
 	    else

@@ -7,7 +7,7 @@
  * @property $fsize
  * @property $fmd5
  */
-class CFilevariants extends CActiveRecord {
+class CFilesvariants extends CActiveRecord {
 
     /**
      *

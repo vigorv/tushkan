@@ -124,13 +124,25 @@ $quality = Utils::getVideoConverterQuality('values');
 	function uploadComplete(msg)
 	{
 		infoDiv.innerHTML = '';
+
 		answer = $.parseJSON(allAnswers);
 		$("#wizardform").dialog("close");
 
-		if (answer.success)
+		if (answer != null)
 		{
-			loadParams(currentTypeId, answer.id);
-			$("#paramsform").dialog("open");
+			if (answer.success)
+			{
+				loadParams(currentTypeId, answer.id);
+				$("#paramsform").dialog("open");
+			}
+			else
+			{
+				alert('upload failed')
+			}
+		}
+		else
+		{
+			alert('bad JSON in uploader answer')
 		}
 	}
 
@@ -256,13 +268,15 @@ $quality = Utils::getVideoConverterQuality('values');
 			}
 	 	});
 
+	 	url = "http://<?php echo $uploadServer; ?>/files/uploads?preset="
+        		+ $("#wizardpage2 input:radio").filter("[checked != '']").val()
+        		+ "&kpt=" + kpt
+        		+ "&user_id=<?php echo $user_id; ?>";
+        alert(url);
 	 	sendMultipleFiles({
 
         	//url: "/files/receivefile?preset="
-        	url: "http://<?php echo $uploadServer; ?>/files/uploads?preset="
-        		+ $("#wizardpage2 input:radio").filter("[checked != '']").val()
-        		+ "&kpt=" + kpt
-        		+ "&user_id=<?php echo $user_id; ?>",
+        	url: url,
 
             files:input.files,
 

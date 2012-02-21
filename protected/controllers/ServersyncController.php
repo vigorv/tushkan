@@ -101,7 +101,7 @@ class ServersyncController extends Controller {
 	    $input = @unserialize($data);
 	    if (!($input === false)) {
 		$files = new CUserfiles();
-		$files->title = base64_decode($title);
+		$files->title = base64_decode($input['title']);
 		$files->user_id = $user_id;
 		$ext = pathinfo($files->title, PATHINFO_EXTENSION);
 		$files->type_id = Utils::getSectionIdByExt($ext);

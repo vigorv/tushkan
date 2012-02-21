@@ -108,10 +108,13 @@ class ServersyncController extends Controller {
 		$files->user_id = $user_id;
 		$ext = pathinfo($files->title, PATHINFO_EXTENSION);
 		$files->type_id = Utils::getSectionIdByExt($ext);
+		if($files->type_id>0){
 		if ($files->save())
 		    $result = array('fid' => $files->id);
 		else
 		    $result = array('error' => "Can't save record");
+		} else 
+		    $result = array('error' => "Unsupported filetype");
 	    } else
 		$result = array('error' => 'Bad input data');
 	    echo serialize($result);

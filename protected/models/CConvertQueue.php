@@ -1,7 +1,11 @@
 <?php
 
 /**
- * 
+ * @property $server_id
+ * @property $preset_id
+ 
+ * @property $task_id
+ * @property $id
  */
 class CConvertQueue extends CActiveRecord {
 

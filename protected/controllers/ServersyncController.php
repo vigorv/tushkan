@@ -17,7 +17,7 @@ class ServersyncController extends Controller {
 	$ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
 	
 	//zaglushka
-	$ip = CServers::convertIpToLong('192.168.201.161');
+	//$ip = CServers::convertIpToLong('192.168.201.161');
 	
 	$this->server = CServers::model()->findByAttributes(array('ip' => $ip));
 	if ($this->server === null)

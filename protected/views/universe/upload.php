@@ -4,21 +4,25 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 $uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
 
 $quality = Utils::getVideoConverterQuality('values');
+$media = Utils::getMediaList();
 ?>
 
 <script type="text/javascript">
 	supportedExtensions = new Array();
-	supportedExtensions[".mp4"] = 1;
-	supportedExtensions[".mkv"] = 1;
-	supportedExtensions[".avi"] = 1;
-	supportedExtensions[".jpg"] = 1;
+<?php
+	foreach ($media as $m)
+	{
+		foreach($m['exts'] as $e)
+			echo 'supportedExtensions["' . $e . '"] = ' . $m['id'] . ';';
+	}
+?>
 
 	function detectTypeId()
 	{
 		$("#fileList").text(''); z = '';
 		for (i = 0; i < input.files.length; i++)
 		{
-			fn = input.files[i].fileName.toLowerCase();
+			fn = input.files[i].name.toLowerCase();
 			ext = getFileExt(fn);
 			if (supportedExtensions[ext] != null)
 			{
@@ -47,8 +51,7 @@ $quality = Utils::getVideoConverterQuality('values');
 		if( filename.length == 0 ) return "";
 		var dot = filename.lastIndexOf(".");
 		if( dot == -1 ) return "";
-		var extension = filename.substr(dot, filename.length);
-
+		var extension = filename.substr(dot + 1, filename.length);
 		return extension;
 	}
 

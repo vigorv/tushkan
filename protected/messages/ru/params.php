@@ -24,9 +24,13 @@ return array(
 	'usertitle'				=> 'Название',
 	'tags'					=> 'Теги',
 
+	'Main parameters'		=> 'Главные параметры',
+	'Common parameters'		=> 'Основные параметры',
 
 	'Personal data params'	=> 'Параметры персональных данных',
 	'Administrate personal data params'	=> 'Администрирование параметров персональных данных',
 
-	'fio'					=> 'ФИО'
+	'fio'					=> 'ФИО',
+	'about'					=> 'О себе',
+	'subscribe_news'		=> 'Подписка на новости',
 );

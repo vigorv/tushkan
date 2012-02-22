@@ -10,6 +10,7 @@ class PersonaldataParamsForm extends CFormModel
 	public $active;
 	public $parent_id;
 	public $tp;
+	public $required;
 
 	public function rules()
 	{
@@ -19,6 +20,7 @@ class PersonaldataParamsForm extends CFormModel
 			array('parent_id', 'numerical'),
 			array('active', 'numerical'),
 			array('tp', 'safe'),
+			array('required', 'safe'),
 		);
 	}
 }

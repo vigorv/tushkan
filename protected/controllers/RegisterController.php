@@ -496,7 +496,7 @@ class RegisterController extends Controller {
      */
 	public function actionPersonal()
 	{
-    	$userId = Yii::app()->user->id;
+    	$userId = $this->userInfo['id'];
     	$info = array(); $ajaxResult = '';
     	if (!empty($userId))
     	{
@@ -507,78 +507,134 @@ class RegisterController extends Controller {
     			->where('id = ' . $userId)
     			->queryRow();
 
-    		if (!empty($_POST['action']))
+    		if (!empty($info))
     		{
-    			$ajaxResult = Yii::t('common', 'Request cannot be processed');
-    			if (!empty($_POST['value']))
-    				switch ($_POST['action'])
-    			{
-    				case "name":
-    					$sql = 'UPDATE {{users}} SET name = :name WHERE id = ' . $userId;
-    					$cmd = Yii::app()->db->createCommand($sql);
-    					$cmd->bindParam(':name', $_POST['value'], PDO::PARAM_STR);
-    					if ($cmd->execute())
-    					{
-    						Yii::app()->user->setName($_POST['value']);
-    						$ajaxResult = 'ok';
-    					}
-    				break;
-    				case "email":
-    					$validator = new CEmailValidator();
-						if ($validator->validateValue($_POST['value']))
-						{
-							$cmd = Yii::app()->db->createCommand()
-								->select('id')
-								->from('{{users}}')
-								->where('email = :email AND id <> ' . $userId)
-								->limit(1);
-							$cmd->bindParam(':email', $attrs['email'], PDO::PARAM_STR);
-							$result = $cmd->queryRow();
-
-							if (empty($result))
+    			$personalParams = Yii::app()->db->createCommand()
+    				->select('p.id AS pid, p.title, p.tp, p.required, p.parent_id, v.id AS vid, v.text_value, v.textarea_value, v.int_value')
+    				->from('{{personaldata_params}} p')
+    				->leftJoin('{{personaldata_values}} v', 'v.param_id = p.id AND v.user_id = ' . $userId)
+    				->where('p.active <= ' . $userPower)
+    				->group('p.id')
+    				->order('p.parent_id ASC, p.srt DESC')
+    				->queryAll();
+    			$info['personalParams'] = $personalParams;
+	    		if (!empty($_POST['action']))
+	    		{
+	    			$ajaxResult = Yii::t('common', 'Request cannot be processed');
+	    			if (!empty($_POST['value']))
+	    				switch ($_POST['action'])
+	    			{
+	    				case "name":
+	    					$sql = 'UPDATE {{users}} SET name = :name WHERE id = ' . $userId;
+	    					$cmd = Yii::app()->db->createCommand($sql);
+	    					$cmd->bindParam(':name', $_POST['value'], PDO::PARAM_STR);
+	    					if ($cmd->execute())
+	    					{
+	    						Yii::app()->user->setName($_POST['value']);
+	    						$ajaxResult = 'ok';
+	    					}
+	    				break;
+	    				case "email":
+	    					$validator = new CEmailValidator();
+							if ($validator->validateValue($_POST['value']))
 							{
-		    					$sql = 'UPDATE {{users}} SET email = :email WHERE id = ' . $userId;
-		    					$cmd = Yii::app()->db->createCommand($sql);
-		    					$cmd->bindParam(':email', $_POST['value'], PDO::PARAM_STR);
-		    					if ($cmd->execute())
-		    					{
-		    						$ajaxResult = 'ok';
-		    					}
+								$cmd = Yii::app()->db->createCommand()
+									->select('id')
+									->from('{{users}}')
+									->where('email = :email AND id <> ' . $userId)
+									->limit(1);
+								$cmd->bindParam(':email', $attrs['email'], PDO::PARAM_STR);
+								$result = $cmd->queryRow();
+
+								if (empty($result))
+								{
+			    					$sql = 'UPDATE {{users}} SET email = :email WHERE id = ' . $userId;
+			    					$cmd = Yii::app()->db->createCommand($sql);
+			    					$cmd->bindParam(':email', $_POST['value'], PDO::PARAM_STR);
+			    					if ($cmd->execute())
+			    					{
+			    						$ajaxResult = 'ok';
+			    					}
+								}
+								else
+								{
+					    			$ajaxResult = Yii::t('users', 'Email exists');
+								}
 							}
 							else
 							{
-				    			$ajaxResult = Yii::t('users', 'Email exists');
+				    			$ajaxResult = Yii::t('users', 'Invalid email');
 							}
-						}
-						else
-						{
-			    			$ajaxResult = Yii::t('users', 'Invalid email');
-						}
-    				break;
+	    				break;
 
-    				case "pwd":
-						if (!empty($_POST['value2']))
-						{
-							$this->identity->password = $_POST['value2'];
-							$oldPassword = $this->identity->transformPassword($info);
-							if ($oldPassword == $info['pwd'])
+	    				case "pwd":
+							if (!empty($_POST['value2']))
 							{
-								$this->identity->password = $_POST['value'];
-								$newPassword = $this->identity->transformPassword($info);
-				        		$sql = 'UPDATE {{users}} SET pwd="' . $newPassword . '" WHERE id = ' . $userId;
-				        		$cmd = Yii::app()->db->createCommand($sql);
-		    					if ($cmd->execute())
-		    					{
-		    						$info['pwd'] = $newPassword;
-		    						$this->identity->saveAuthInfo($info);
-		    						$ajaxResult = 'ok';
-		    						break;
-		    					}
-							}
-    					}
-		    			$ajaxResult = Yii::t('users', 'Invalid old password');
-    				break;
-    			}
+								$this->identity->password = $_POST['value2'];
+								$oldPassword = $this->identity->transformPassword($info);
+								if ($oldPassword == $info['pwd'])
+								{
+									$this->identity->password = $_POST['value'];
+									$newPassword = $this->identity->transformPassword($info);
+					        		$sql = 'UPDATE {{users}} SET pwd="' . $newPassword . '" WHERE id = ' . $userId;
+					        		$cmd = Yii::app()->db->createCommand($sql);
+			    					if ($cmd->execute())
+			    					{
+			    						$info['pwd'] = $newPassword;
+			    						$this->identity->saveAuthInfo($info);
+			    						$ajaxResult = 'ok';
+			    						break;
+			    					}
+								}
+	    					}
+			    			$ajaxResult = Yii::t('users', 'Invalid old password');
+	    				break;
+
+	    				default:
+	    					if (substr($_POST['action'], 0, 5) == 'param')
+	    					{
+	    						$pid = intval(substr($_POST['action'], 6));
+	    						$ajaxResult = $pid;
+	    						if ($pid > 0)
+	    						{
+	    							$paramInfo = Yii::app()->db->createCommand()
+	    								->select('id')
+	    								->from('{{personaldata_values}}')
+	    								->where('param_id = ' . $pid . ' AND user_id = ' . $userId)
+	    								->queryRow();
+	    			$fieldName = 'text_value';
+	    							if (empty($paramInfo))
+	    							{
+						        		$sql = 'INSERT INTO {{personaldata_values}} (id, user_id, param_id, text_value, textarea_value, int_value)
+						        			VALUES (null, ' . $userId . ', ' . $pid . ', :value, "", 0)
+						        		';
+						        		$cmd = Yii::app()->db->createCommand($sql);
+						        		if ($fieldName == 'int_value')
+						        			$cmd->bindParam(':value', $_POST['value'], PDO::PARAM_INT);
+						        		else
+						        			$cmd->bindParam(':value', $_POST['value'], PDO::PARAM_STR);
+				    					if ($cmd->execute())
+				    					{
+				    						$ajaxResult = 'ok';
+				    					}
+	    							}
+	    							else
+	    							{
+						        		$sql = 'UPDATE {{personaldata_values}} SET ' . $fieldName . '= :value WHERE id = ' . $pid . ' AND user_id = ' . $userId;
+						        		$cmd = Yii::app()->db->createCommand($sql);
+						        		if ($fieldName == 'int_value')
+						        			$cmd->bindParam(':value', $_POST['value'], PDO::PARAM_INT);
+						        		else
+						        			$cmd->bindParam(':value', $_POST['value'], PDO::PARAM_STR);
+				    					if ($cmd->execute())
+				    					{
+				    						$ajaxResult = 'ok';
+				    					}
+	    							}
+	    						}
+	    					}
+	    			}
+	    		}
     		}
     	}
 		$this->render('personal', array('info' => $info, 'ajaxResult' => $ajaxResult));

@@ -346,7 +346,7 @@ class Utils {
      */
     public function getPersonaldataGroups() {
 	return array(
-	    _PD_GROUP_COMMON_ => Yii::t('params', 'Common'),
+	    _PD_GROUP_COMMON_ => Yii::t('params', 'Common parameters'),
 	);
     }
 

@@ -15,7 +15,7 @@
 
     <div class="row">
         <?php echo $form->label($model, 'srt', array('label' => Yii::t('common', 'Srt'))); ?>
-        <?php echo $form->textField($model, 'srt', array('class' => 'text ui-widget-content ui-corner-all')); ?>
+        <?php echo $form->textField($model, 'srt', array('value' => $info['srt'], 'class' => 'text ui-widget-content ui-corner-all')); ?>
     </div>
 
     <div class="row">
@@ -47,6 +47,12 @@
         	));
         ?>
     </div>
+
+	<div class="row rememberMe">
+		<?php echo $form->checkBox($model,'required', array('checked' => $info['required'])); ?>
+		<?php echo $form->label($model,'required', array('label' => Yii::t('common', 'required field'))); ?>
+		<?php echo $form->error($model,'required'); ?>
+	</div>
 
     <div class="row submit">
         <?php echo CHtml::submitButton(Yii::t('common', 'Save')); ?>

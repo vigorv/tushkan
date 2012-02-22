@@ -12,6 +12,7 @@ class PersonalDataParamsController extends Controller {
 		$params = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{personaldata_params}}')
+			->order('parent_id ASC, srt DESC')
 			->queryAll();
 
         $this->render('admin', array('params' => $params));

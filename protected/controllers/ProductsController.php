@@ -284,9 +284,9 @@ class ProductsController extends Controller
         	->from('{{product_descriptions}}')
         	->where('product_id = ' . $info['id'])->queryRow();
         if (!empty($dscInfo))
-        {
         	$info['description'] = $dscInfo['description'];
-        }
+        else
+        	$info['description'] = '';
 
 		$variantsInfo = Yii::app()->db->createCommand()
 			->select('pv.id, pv.online_only, pv.type_id, pv.active, ptp.id AS pid, ptp.title, ppv.value')

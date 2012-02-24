@@ -33,6 +33,12 @@
         <?php echo $form->dropdownlist($model, 'tp', $tpLst, array('class' => 'text ui-widget-content ui-corner-all')); ?>
     </div>
 
+	<div class="row rememberMe">
+		<?php echo $form->checkBox($model,'required'); ?>
+		<?php echo $form->label($model,'required', array('label' => Yii::t('common', 'required field'))); ?>
+		<?php echo $form->error($model,'required'); ?>
+	</div>
+
 	<div class="row submit">
         <?php echo CHtml::submitButton(Yii::t('params', 'Add param')); ?>
     </div>

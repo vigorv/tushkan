@@ -3,7 +3,7 @@
 class UniverseController extends Controller {
 
     public function accessRules() {
-	
+
     }
 
     public function actionError() {
@@ -35,9 +35,10 @@ class UniverseController extends Controller {
 		    ->from('{{userlocks}} ul')
 		    ->join('{{userfiles}} uf', ' ((uf.id =ul.lock_id) AND (ul.type=1))');
 
+	$media = Utils::getMediaList();
 	$this->render('mainblock', array(
 	    'mb_top_items' => array(
-		array('caption' => 'Видео', 'link' => '/universe/index?section=video'),
+		array('caption' => $media[1]['title'], 'link' => $media[1]['link']),
 		array('caption' => 'Музыка', 'link' => '/universe/index?section=music'),
 		array('caption' => 'Фото', 'link' => '/universe/index?section=music'),
 		array('caption' => 'Документы', 'link' => '/universe/index?section=music')
@@ -82,15 +83,16 @@ class UniverseController extends Controller {
 
 //ВЫБОРКА ТИПИЗИРОВАННОГО КОНТЕНТА
 	$tObjects = Yii::app()->db->createCommand()
-		->select('uf.id, uf.title, ptp.title, fpv.value')
-		->from('{{userfiles}} uf')
-		->join('{{files_param_values}} fpv', 'fpv.file_id=uf.id')
-		->join('{{product_type_params}} ptp', 'ptp.id=fpv.param_id')
+		->select('uo.id, uo.title, ptp.title, uopv.value')
+		->from('{{userobjects}} uo')
+		->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uo.id')
+		->join('{{product_type_params}} ptp', 'ptp.id=uopv.param_id')
 		->where('user_id = ' . $this->userInfo['id'])
-		->group('fpv.id')
+		->group('uopv.id')
 		->queryAll();
 	$oParams = array();
 	if (!empty($tObjects)) {
+/*
 	    $toIds = array();
 	    foreach ($tObjects as $to) {
 		$toIds[$to['id']] = $to['id'];
@@ -102,12 +104,80 @@ class UniverseController extends Controller {
 			    ->where('fv.file_id IN (' . implode(', ', $toIds) . ')')
 			    ->group('fpv.id')
 			    ->order('fv.id ASC, ptp.srt DESC')->queryAll();
+*/
 	}
 	$this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
 	    'uploadServer' => $uploadServer, 'quality' => $quality,
 	    'types' => $types, 'tObjects' => $tObjects, 'oParams' => $oParams));
     }
 
+    /**
+     * действие сохранения информации о загруженном файле (параметры)
+     *
+     */
+	public function actionPostuploadparams()
+	{
+		if (!empty($_POST['paramsForm']))
+		{
+			if (!empty($_POST['paramsForm']['typeId']))
+			{
+				$typeId = intval($_POST['paramsForm']['typeId']);
+			}
+			if (!empty($_POST['paramsForm']['fileId']))
+			{
+				$fileId = intval($_POST['paramsForm']['fileId']);
+			}
+			if (!empty($_POST['paramsForm']['params']))
+			{
+				$params = $_POST['paramsForm']['params'];
+			}
+			if (!empty($fileId) && !empty($params))
+			{
+				$cmd = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{userfiles}}')
+					->where('id = :id AND user_id = ' . $this->userInfo['id']);
+				$cmd->bindParam(':id', $fileId);
+				$fileInfo = $cmd->queryRow();
+				if (!empty($fileInfo))
+				{
+					//ПРИ ТИПИЗАЦИИ ЗАКРЕПЛЯЕМ ФАЙЛ ЗА ОБЪЕКТОМ
+					$sql = 'INSERT INTO {{userobjects}} (id, title, user_id, type_id, active, parent_id)
+						VALUES (null, :title, :user_id, :type_id, 0, 0)
+					';
+					$cmd = Yii::app()->db->createCommand($sql);
+					$cmd->bindParam(':title', $fileInfo['title'], PDO::PARAM_STR);
+					$cmd->bindParam(':user_id', $this->userInfo['id'], PDO::PARAM_INT);
+					$cmd->bindParam(':type_id', $typeId, PDO::PARAM_INT);
+					$cmd->execute();
+					$objectId = Yii::app()->db->getLastInsertID('{{userobjects}}');
+
+					$sql = 'UPDATE {{userfiles}} SET object_id = ' . $objectId . ' WHERE id = :id';
+					$cmd = Yii::app()->db->createCommand($sql);
+					$cmd->bindParam(':id', $fileInfo['id'], PDO::PARAM_INT);
+					$cmd->execute();
+
+					foreach ($params as $p)
+					{
+						if (empty($p['id'])) continue;
+
+						$sql = 'INSERT INTO {{userobjects_param_values}} (id, param_id, value, object_id)
+							VALUES (null, :param_id, :value, ' . $objectId . ')
+						';
+						$cmd = Yii::app()->db->createCommand($sql);
+						$cmd->bindParam(':param_id', $p['id'], PDO::PARAM_INT);
+						$cmd->bindParam(':value', $p['value'], PDO::PARAM_STR);
+						$cmd->execute();
+					}
+				}
+			}
+		}
+	}
+
+    /**
+     * действие формы загрузки файла
+     *
+     */
     public function actionUpload() {
 //ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
 	$userPower = Yii::app()->user->getState('dmUserPower');
@@ -129,7 +199,7 @@ class UniverseController extends Controller {
 
     public function actionExt() {
 	if (isset($_GET['goods_add'])) {
-	    
+
 	}
 
 	$this->render('steps');
@@ -482,12 +552,12 @@ class UniverseController extends Controller {
 	$subAction = 'view';
 	if (!empty($this->userInfo) && !empty($id)) {
 	    $cmd = Yii::app()->db->createCommand()
-		    ->select('uf.id, uf.title, ptp.title, fpv.value')
-		    ->from('{{userfiles}} uf')
-		    ->join('{{files_param_values}} fpv', 'fpv.file_id=uf.id')
-		    ->join('{{product_type_params}} ptp', 'ptp.id=fpv.param_id')
-		    ->where('uf.id = :id AND uf.user_id = ' . $this->userInfo['id'])
-		    ->group('fpv.id');
+		    ->select('uo.id, uo.title, ptp.title, uopv.value')
+		    ->from('{{userobjects}} uo')
+		    ->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uf.id')
+		    ->join('{{product_type_params}} ptp', 'ptp.id=uopv.param_id')
+		    ->where('uo.id = :id AND uo.user_id = ' . $this->userInfo['id'])
+		    ->group('uopv.id');
 	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
 	    $info = $cmd->queryAll();
 	    if (!empty($info)) {

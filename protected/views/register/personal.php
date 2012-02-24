@@ -95,51 +95,112 @@
 	{
 		if (empty($info['name']))
 			$info['name'] = Yii::t('users', 'Username not specified');
-		$nm = 'name';
-		echo '
-			<h4>Имя:
-				<div id="' . $nm . '_static">
-					<span id="' . $nm . '_static_value">' . $info[$nm] . '</span> <a id="' . $nm . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>
-				</div>
-				<div id="' . $nm . '_edit" style="display: none">
-					' . CHtml::textField($nm, $info['name'], array('id' => $nm . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeyup' => 'return keyUpText(this, event.keyCode);')) . '
-				</div>
-				<div id="' . $nm . '_wait" style="display: none">
-					' . Yii::t('common', 'Please wait...') . '
-				</div>
-			</h4>
-		';
-		$nm = 'email';
-		echo '
-			<h4>Email:
-				<div id="' . $nm . '_static">
-					<span id="' . $nm . '_static_value">' . $info[$nm] . '</span> <a id="' . $nm . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>
-				</div>
-				<div id="' . $nm . '_edit" style="display: none">
-					' . CHtml::textField($nm, $info['name'], array('id' => $nm . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeyup' => 'return keyUpText(this, event.keyCode);')) . '
-				</div>
-				<div id="' . $nm . '_wait" style="display: none">
-					' . Yii::t('common', 'Please wait...') . '
-				</div>
-			</h4>
-		';
-		$nm = 'pwd';
-		echo '
-			<h4>pwd:
-				<div id="' . $nm . '_static">
-					<span id="' . $nm . '_static_value">***********</span> <a id="' . $nm . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>
-				</div>
-				<div id="' . $nm . '_edit" style="display: none">
-					' . Yii::t('users', 'New password') . '<br />
+		$pNames = array('name' => 'text', 'email' => 'text', 'pwd' => 'password');
+		echo '<h3>' . Yii::t('params', 'Main parameters') . '</h3>';
+		foreach ($pNames as $nm => $tp)
+		{
+			echo '
+				<h4>' . Yii::t('params', $nm) . ':
+					<div id="' . $nm . '_static">
+			';
+			if ($tp == 'password')
+				echo '<span id="' . $nm . '_static_value">***********</span> <a id="' . $nm . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>';
+			else
+				echo '<span id="' . $nm . '_static_value">' . $info[$nm] . '</span> <a id="' . $nm . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+			echo'
+					</div>
+					<div id="' . $nm . '_edit" style="display: none">
+						';
+			switch ($tp)
+			{
+				case "text":
+					echo CHtml::textField($nm, $info[$nm], array('id' => $nm . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
+				break;
+				case "password":
+					echo Yii::t('params', 'New ' . $nm) . '<br />
 					' . CHtml::passwordField($nm, '', array('id' => $nm . '_edit_value', 'onkeyup' => 'return keyUpPassword(this, event.keyCode);')) . '<br />
-					' . Yii::t('users', 'Old password') . '<br />
-					' . CHtml::passwordField($nm . '2', '', array('id' => $nm . '_edit_value2', 'onkeyup' => 'return keyUpPassword(this, event.keyCode);')) . '<br />
-				</div>
-				<div id="' . $nm . '_wait" style="display: none">
-					' . Yii::t('common', 'Please wait...') . '
-				</div>
-			</h4>
-		';
+					' . Yii::t('params', 'Old ' . $nm) . '<br />
+					' . CHtml::passwordField($nm . '2', '', array('id' => $nm . '_edit_value2', 'onkeyup' => 'return keyUpPassword(this, event.keyCode);')) . '<br />';
+				break;
+			}
+			echo '
+					</div>
+					<div id="' . $nm . '_wait" style="display: none">
+						' . Yii::t('common', 'Please wait...') . '
+					</div>
+				</h4>
+			';
+		}
+
+		if (!empty($info['personalParams']))
+		{
+			$currentPid = -1;
+			$pdGroups = Utils::getPersonaldataGroups();
+			foreach ($info['personalParams'] as $pd)
+			{
+				$nm = $pd['title'];
+				if ($pd['parent_id'] <> $currentPid)
+				{
+					$currentPid = $pd['parent_id'];
+					echo '<h3>' . $pdGroups[$currentPid] . '</h3>';
+				}
+				$nmId = 'param_' . $pd['pid'];
+				echo '
+					<h4>' . Yii::t('params', $nm) . ':
+						<div id="' . $nmId . '_static">
+				';
+				$pName = 'param_' . $pd['pid'];
+				switch ($pd['tp'])
+				{
+					case "password":
+						echo '<span id="' . $nmId . '_static_value">***********</span> <a id="' . $nmId . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>';
+					break;
+					case "text":
+						echo '<span id="' . $nmId . '_static_value">' . $pd['text_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+					break;
+					case "textarea":
+						echo '<span id="' . $nmId . '_static_value">' . $pd['textarea_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+					break;
+					case "checkbox":
+						$chkStr = $pd['int_value'];
+						if ($chkStr)
+							$chkStr = Yii::t('common', 'Yes');
+						else
+							$chkStr = Yii::t('common', 'No');
+						echo '<span id="' . $nmId . '_static_value">' . $chkStr . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+					break;
+				}
+				echo'
+						</div>
+						<div id="' . $nmId . '_edit" style="display: none">
+							';
+				switch ($pd['tp'])
+				{
+					case "text":
+						echo CHtml::textField($pName, $pd['text_value'], array('id' => $nmId . '_edit_value', 'onblur' => 'return showText(this);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
+					break;
+					case "textarea":
+						echo CHtml::textArea($pName, $pd['textarea_value'], array('id' => $nmId . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
+					break;
+					case "checkbox":
+						echo CHtml::checkBox($pName, $pd['int_value'], array('id' => $nmId . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
+					break;
+					case "password":
+						echo Yii::t('params', 'New ' . $nm) . '<br />
+						' . CHtml::passwordField($pName, '', array('id' => $nmId . '_edit_value', 'onkeyup' => 'return keyUpPassword(this, event.keyCode);')) . '<br />
+						' . Yii::t('params', 'Old ' . $nm) . '<br />
+						' . CHtml::passwordField('old_' . $pName, '', array('id' => $nmId . '_edit_value2', 'onkeyup' => 'return keyUpPassword(this, event.keyCode);')) . '<br />';
+					break;
+				}
+				echo '
+						</div>
+						<div id="' . $nmId . '_wait" style="display: none">
+							' . Yii::t('common', 'Please wait...') . '
+						</div>
+					</h4>
+				';
+			}
+		}
 	}
 }
 else

@@ -3,7 +3,7 @@
 class UniverseController extends Controller {
 
     public function accessRules() {
-
+	
     }
 
     public function actionError() {
@@ -43,7 +43,7 @@ class UniverseController extends Controller {
 		array('caption' => 'Фото', 'link' => '/universe/index?section=music'),
 		array('caption' => 'Документы', 'link' => '/universe/index?section=music')
 	    ),
-	    'title' => '', 'mb_content_items' => $mb_content_items));
+	    'section' => $section, 'mb_content_items' => $mb_content_items));
     }
 
     public function actionIndex() {
@@ -92,19 +92,19 @@ class UniverseController extends Controller {
 		->queryAll();
 	$oParams = array();
 	if (!empty($tObjects)) {
-/*
-	    $toIds = array();
-	    foreach ($tObjects as $to) {
-		$toIds[$to['id']] = $to['id'];
-	    }
-	    $oParams = Yii::app()->db->createCommand()
-			    ->select('fv.id, fv.file_id')
-			    ->from('{{filevariants}} fv')
-			    ->join('{{filelocations}} fl', 'fl.id=fv.id')
-			    ->where('fv.file_id IN (' . implode(', ', $toIds) . ')')
-			    ->group('fpv.id')
-			    ->order('fv.id ASC, ptp.srt DESC')->queryAll();
-*/
+	    /*
+	      $toIds = array();
+	      foreach ($tObjects as $to) {
+	      $toIds[$to['id']] = $to['id'];
+	      }
+	      $oParams = Yii::app()->db->createCommand()
+	      ->select('fv.id, fv.file_id')
+	      ->from('{{filevariants}} fv')
+	      ->join('{{filelocations}} fl', 'fl.id=fv.id')
+	      ->where('fv.file_id IN (' . implode(', ', $toIds) . ')')
+	      ->group('fpv.id')
+	      ->order('fv.id ASC, ptp.srt DESC')->queryAll();
+	     */
 	}
 	$this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
 	    'uploadServer' => $uploadServer, 'quality' => $quality,
@@ -115,64 +115,57 @@ class UniverseController extends Controller {
      * действие сохранения информации о загруженном файле (параметры)
      *
      */
-	public function actionPostuploadparams()
-	{
-		if (!empty($_POST['paramsForm']))
-		{
-			if (!empty($_POST['paramsForm']['typeId']))
-			{
-				$typeId = intval($_POST['paramsForm']['typeId']);
-			}
-			if (!empty($_POST['paramsForm']['fileId']))
-			{
-				$fileId = intval($_POST['paramsForm']['fileId']);
-			}
-			if (!empty($_POST['paramsForm']['params']))
-			{
-				$params = $_POST['paramsForm']['params'];
-			}
-			if (!empty($fileId) && !empty($params))
-			{
-				$cmd = Yii::app()->db->createCommand()
-					->select('*')
-					->from('{{userfiles}}')
-					->where('id = :id AND user_id = ' . $this->userInfo['id']);
-				$cmd->bindParam(':id', $fileId);
-				$fileInfo = $cmd->queryRow();
-				if (!empty($fileInfo))
-				{
-					//ПРИ ТИПИЗАЦИИ ЗАКРЕПЛЯЕМ ФАЙЛ ЗА ОБЪЕКТОМ
-					$sql = 'INSERT INTO {{userobjects}} (id, title, user_id, type_id, active, parent_id)
+    public function actionPostuploadparams() {
+	if (!empty($_POST['paramsForm'])) {
+	    if (!empty($_POST['paramsForm']['typeId'])) {
+		$typeId = intval($_POST['paramsForm']['typeId']);
+	    }
+	    if (!empty($_POST['paramsForm']['fileId'])) {
+		$fileId = intval($_POST['paramsForm']['fileId']);
+	    }
+	    if (!empty($_POST['paramsForm']['params'])) {
+		$params = $_POST['paramsForm']['params'];
+	    }
+	    if (!empty($fileId) && !empty($params)) {
+		$cmd = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{userfiles}}')
+			->where('id = :id AND user_id = ' . $this->userInfo['id']);
+		$cmd->bindParam(':id', $fileId);
+		$fileInfo = $cmd->queryRow();
+		if (!empty($fileInfo)) {
+		    //ПРИ ТИПИЗАЦИИ ЗАКРЕПЛЯЕМ ФАЙЛ ЗА ОБЪЕКТОМ
+		    $sql = 'INSERT INTO {{userobjects}} (id, title, user_id, type_id, active, parent_id)
 						VALUES (null, :title, :user_id, :type_id, 0, 0)
 					';
-					$cmd = Yii::app()->db->createCommand($sql);
-					$cmd->bindParam(':title', $fileInfo['title'], PDO::PARAM_STR);
-					$cmd->bindParam(':user_id', $this->userInfo['id'], PDO::PARAM_INT);
-					$cmd->bindParam(':type_id', $typeId, PDO::PARAM_INT);
-					$cmd->execute();
-					$objectId = Yii::app()->db->getLastInsertID('{{userobjects}}');
+		    $cmd = Yii::app()->db->createCommand($sql);
+		    $cmd->bindParam(':title', $fileInfo['title'], PDO::PARAM_STR);
+		    $cmd->bindParam(':user_id', $this->userInfo['id'], PDO::PARAM_INT);
+		    $cmd->bindParam(':type_id', $typeId, PDO::PARAM_INT);
+		    $cmd->execute();
+		    $objectId = Yii::app()->db->getLastInsertID('{{userobjects}}');
 
-					$sql = 'UPDATE {{userfiles}} SET object_id = ' . $objectId . ' WHERE id = :id';
-					$cmd = Yii::app()->db->createCommand($sql);
-					$cmd->bindParam(':id', $fileInfo['id'], PDO::PARAM_INT);
-					$cmd->execute();
+		    $sql = 'UPDATE {{userfiles}} SET object_id = ' . $objectId . ' WHERE id = :id';
+		    $cmd = Yii::app()->db->createCommand($sql);
+		    $cmd->bindParam(':id', $fileInfo['id'], PDO::PARAM_INT);
+		    $cmd->execute();
 
-					foreach ($params as $p)
-					{
-						if (empty($p['id'])) continue;
+		    foreach ($params as $p) {
+			if (empty($p['id']))
+			    continue;
 
-						$sql = 'INSERT INTO {{userobjects_param_values}} (id, param_id, value, object_id)
+			$sql = 'INSERT INTO {{userobjects_param_values}} (id, param_id, value, object_id)
 							VALUES (null, :param_id, :value, ' . $objectId . ')
 						';
-						$cmd = Yii::app()->db->createCommand($sql);
-						$cmd->bindParam(':param_id', $p['id'], PDO::PARAM_INT);
-						$cmd->bindParam(':value', $p['value'], PDO::PARAM_STR);
-						$cmd->execute();
-					}
-				}
-			}
+			$cmd = Yii::app()->db->createCommand($sql);
+			$cmd->bindParam(':param_id', $p['id'], PDO::PARAM_INT);
+			$cmd->bindParam(':value', $p['value'], PDO::PARAM_STR);
+			$cmd->execute();
+		    }
 		}
+	    }
 	}
+    }
 
     /**
      * действие формы загрузки файла
@@ -199,7 +192,7 @@ class UniverseController extends Controller {
 
     public function actionExt() {
 	if (isset($_GET['goods_add'])) {
-
+	    
 	}
 
 	$this->render('steps');

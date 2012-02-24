@@ -268,11 +268,10 @@ class Utils {
 	return $res;
     }
 
-
     /**
      * getSectionIdByName($name)
-     * 
-     * @param string $name 
+     *
+     * @param string $name
      * @return mixed
      */
     public static function getSectionIdByName($name) {
@@ -286,22 +285,42 @@ class Utils {
     }
 
     /**
+     * Получить список медиа ресурсов, известных системе
+     *
+     * @return mixed
+     */
+    public function getMediaList() {
+	return array(
+	    1 => array(
+		'id' => 1,
+		'title' => Yii::t('common', 'Video'),
+		'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp', 'jpg'),
+		'link' => '/universe/index?section=video'
+	    ),
+		/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
+		  2 => array(
+		  'id'	=> 2,
+		  'title'	=> Yii::t('common', 'Audio'),
+		  'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma')
+		  'link'	=> '/universe/index?section=music'
+		  ),
+		  // */
+	);
+    }
+
+    /**
      * getSectionIdByName($ext)
-     * 
+     *
      * @param string $ext
      * @return int
      */
     public static function getSectionIdByExt($ext) {
-	$supported_video_ext = array('avi', 'mp4', 'mkv', 'flv', '3gp');
-	$supported_audio_ext = array('mp3', 'm4a', 'flac', 'ogg', 'wma');
-	$supported_photo_ext =array('jpg','jpeg','png');
-	
-	if (in_array($ext, $supported_video_ext))
-	    return 1;
-	if (in_array($ext, $supported_audio_ext))
-	    return 2;
-	if (in_array($ext, $supported_photo_ext))
-	    return 3;
+
+	$media = Utils::getMediaList();
+	foreach ($media as $m) {
+	    if (in_array($ext, $m['exts']))
+		return $m['id'];
+	}
 	return 0;
     }
 
@@ -323,7 +342,7 @@ class Utils {
      */
     public function getPersonaldataGroups() {
 	return array(
-	    _PD_GROUP_COMMON_ => Yii::t('params', 'Common'),
+	    _PD_GROUP_COMMON_ => Yii::t('params', 'Common parameters'),
 	);
     }
 

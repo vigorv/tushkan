@@ -3,12 +3,12 @@
 /**
  * ActiveRecord class for UserObjects
  * 
- * @property id
- * @property title
- * @property user_id
- * @property type_id
- * @property active
- * @property parent_id
+ * @property $id
+ * @property $title
+ * @property $user_id
+ * @property $type_id
+ * @property $active
+ * @property $parent_id
  */
 class CUserObjects extends CActiveRecord {
     

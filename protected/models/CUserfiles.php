@@ -7,12 +7,9 @@
 
  * @property $id
  * @property $user_id
- * @property $is_dir
- * @property $fsize
- * @property $curent_fsize
- * @property $pid
+ * @property $object_id
  * @property $title
- * @property $fname
+ * @property $type_id
  * @method  getFileList($user_id, $pid=0, $page=1, $count=100)
  * @method getFileloc($fid, $user_id, $zone_id, $stype=1)
  * @method getDirTree($user_id)

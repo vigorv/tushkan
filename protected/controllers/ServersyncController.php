@@ -15,10 +15,13 @@ class ServersyncController extends Controller {
 	    return false;
 	}
 	$ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
-
-	$this->server = CServers::model()->findByAttributes(array('ip' => $ip, 'stype' => 2));
+	
+	//zaglushka
+	//$ip = CServers::convertIpToLong('192.168.201.161');
+	
+	$this->server = CServers::model()->findByAttributes(array('ip' => $ip));
 	if ($this->server === null)
-	    die('Unknown Server ' . $ip);
+	    die('Unknown Server ' . $_SERVER['REMOTE_ADDR']);
 
 	return true;
     }
@@ -105,10 +108,13 @@ class ServersyncController extends Controller {
 		$files->user_id = $user_id;
 		$ext = pathinfo($files->title, PATHINFO_EXTENSION);
 		$files->type_id = Utils::getSectionIdByExt($ext);
+		if($files->type_id>0){
 		if ($files->save())
 		    $result = array('fid' => $files->id);
 		else
 		    $result = array('error' => "Can't save record");
+		} else 
+		    $result = array('error' => "Unsupported filetype");
 	    } else
 		$result = array('error' => 'Bad input data');
 	    echo serialize($result);
@@ -150,11 +156,13 @@ class ServersyncController extends Controller {
 	$input = @unserialize($data);
 	if (!($input === false)) {
 	    $file_location = new CFilelocations();
-	    $file_location->id = $data['variant_id'];
-	    $file_location->fname = $data['sname'];
-	    $file_location->fsize = $data['fsize'];
-	    $file_location->modified = $data['modified'];
-	    $file_location->folder = $data['folder'];
+	    $file_location->id = $input['variant_id'];
+	    $file_location->fname = $input['sname'];
+	    $file_location->fsize = $input['fsize'];
+	    if (isset($input['modified']))
+		$file_location->modified = $input['modified'];
+	    if (isset($input['folder']))
+	    $file_location->folder = $input['folder'];
 	    $file_location->server_id = $this->server->id;
 	    if ($file_location->save())
 		$result = array('file_location_id' => $file_location->id);

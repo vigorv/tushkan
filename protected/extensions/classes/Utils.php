@@ -270,7 +270,6 @@ class Utils {
 	return $res;
     }
 
-
     /**
      * getSectionIdByName($name)
      *
@@ -292,25 +291,24 @@ class Utils {
      *
      * @return mixed
      */
-	public function getMediaList()
-	{
-		return array(
-			1 => array(
-				'id'	=> 1,
-				'title'	=> Yii::t('common', 'Video'),
-				'exts'	=> array('avi', 'mp4', 'mkv', 'flv', '3gp', 'jpg'),
-				'link'	=> '/universe/index?section=video'
-			),
-/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
-			2 => array(
-				'id'	=> 2,
-				'title'	=> Yii::t('common', 'Audio'),
-				'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma')
-				'link'	=> '/universe/index?section=music'
-			),
-//*/
-		);
-	}
+    public function getMediaList() {
+	return array(
+	    1 => array(
+		'id' => 1,
+		'title' => Yii::t('common', 'Video'),
+		'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp', 'jpg'),
+		'link' => '/universe/index?section=video'
+	    ),
+		/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
+		  2 => array(
+		  'id'	=> 2,
+		  'title'	=> Yii::t('common', 'Audio'),
+		  'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma')
+		  'link'	=> '/universe/index?section=music'
+		  ),
+		  // */
+	);
+    }
 
     /**
      * getSectionIdByName($ext)
@@ -319,15 +317,13 @@ class Utils {
      * @return int
      */
     public static function getSectionIdByExt($ext) {
-//		$supported_video_ext = array('avi', 'mp4', 'mkv', 'flv', '3gp');
-//		$supported_audio_ext = array('mp3', 'm4a', 'flac', 'ogg', 'wma');
-		$media = Utils::getMediaList();
-		foreach ($media as $m)
-		{
-			if (in_array($ext, $m['exts']))
-			    return $m['id'];
-		}
-		return 0;
+
+	$media = Utils::getMediaList();
+	foreach ($media as $m) {
+	    if (in_array($ext, $m['exts']))
+		return $m['id'];
+	}
+	return 0;
     }
 
     public function getPersonaldataUItypes() {

@@ -22,6 +22,8 @@ define("_PD_RADIO_", "radio");
 
 define("_PD_GROUP_COMMON_", 0);
 
+define("_MB_", 1024*1024);
+
 class Utils {
 
     /**

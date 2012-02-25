@@ -1,5 +1,6 @@
 <?php
 Yii::import('ext.classes.SimpleMail');
+Yii::import('application.controllers.PaysController');
 
 class RegisterController extends Controller {
 
@@ -295,8 +296,8 @@ class RegisterController extends Controller {
 			//ПОДКЛЮЧАЕМ ПЕРИОДИЧЕСКУЮ УСЛУГУ
 			$operationId = Yii::app()->params['tushkan']['abonentFeeId'];
 			$paidBy = date('Y-m-d H:i:s', time() + Utils::parsePeriod($trial['period']));//ДЛЯ ТРИАЛА
-			$sql = 'INSERT INTO {{user_subscribes}} (id, user_id, operation_id, period, paid_by, tariff_id)
-				VALUES (NULL, ' . $userInfo['id'] . ', ' . $operationId . ', "", "' . $paidBy . '", ' . $trial['id'] . ')';
+			$sql = 'INSERT INTO {{user_subscribes}} (id, user_id, operation_id, period, paid_by, tariff_id, eof_period)
+				VALUES (NULL, ' . $userInfo['id'] . ', ' . $operationId . ', "", "' . $paidBy . '", ' . $trial['id'] . ', "' . date('Y-m-d H:i:s', time() + Utils::parsePeriod($trial['period'])) . '")';
 			Yii::app()->db->createCommand($sql)->execute();;
 
 			//КОРРЕКТИРУЕМ ЛИМИТ ПП
@@ -452,6 +453,7 @@ class RegisterController extends Controller {
 					 	(($tariff['id'] == $curTariffRelation['id']) && !empty($curTariffRelation['switch_to']))
 					 	)
 					{
+						//ЗАПУСКАЕМ ПРОЦЕДУРУ ОТЛОЖЕННОГО ПЕРЕКЛЮЧЕНИЯ
 						Yii::app()->user->setFlash('success', Yii::t('users', 'Request for change of tariff approved'));
 						if ($tariff['id'] == $curTariffRelation['id'])
 						{
@@ -465,6 +467,88 @@ class RegisterController extends Controller {
 					else
 						Yii::app()->user->setFlash('error', Yii::t('users', 'Choose another tariff'));
 
+					if ($tariff['id'] > 0)//ЕСЛИ ПОЛЬЗОВАТЕЛЬ НЕ ОТКАЗАЛСЯ ОТ ПЕРЕКЛЮЧЕНИЯ
+					{
+						//ПРОВЕРЯЕМ ВОЗМОЖНОСТЬ НЕМЕДЛЕННОГО ПОДКЛЮЧЕНИЯ НОВОГО
+						$subsInfo = Yii::app()->db->createCommand()
+							->select('*')
+							->from('{{user_subscribes}}')
+							->where('user_id = ' . $this->userInfo['id'] . ' AND tariff_id = ' . $curTariffRelation['id'])
+							->queryRow();
+						if (!empty($subsInfo) &&
+							(strtotime($subsInfo["paid_by"]) > time()) &&
+							((strtotime($subsInfo["paid_by"]) - time()) < 3600*24))
+						{
+							//ЕСЛИ ДО КОНЦА ОПЛАТЫ ТЕКУЩЕГО ПЕРИОДА МЕНЬЩЕ СУТОК - НЕМЕДЛЕННОЕ ПЕРЕКЛЮЧЕНИЕ ВОЗМОЖНО
+							//ВЫЧИСЛЯЕМ РАЗНИЦУ СТОИМОСТИ СТАРОГО И НОВОГО ТАРИФА ЗА СУТКИ
+							$oldTariff = Yii::app()->db->createCommand()
+								->select('*')
+								->from('{{tariffs}}')
+								->where('id = ' . $curTariffRelation['id'])
+								->queryRow();
+
+							$oldCost = $oldTariff['price'] / Utils::parsePeriod($oldTariff['period']) * 3600 * 24;
+							$newCost = $tariff['price'] / Utils::parsePeriod($tariff['period']) * 3600 * 24;
+							$canSwitch = true;
+
+							if ($newCost > $oldCost)
+							{
+								//СПИСЫВАЕМ РАЗНИЦУ СТОИМОСТИ ТАРИФОВ ЗА ТЕКУЩИЕ СУТКИ
+								$balanceInfo = Yii::app()->db->createCommand()
+									->select('*')
+									->from('{{balance}}')
+									->where('user_id = ' . $this->userInfo['id'])
+									->queryRow();
+								$cost = $newCost - $oldCost;
+								if ($balanceInfo['balance'] > $cost)
+								{
+									$now = date('Y-m-d H:i:s');
+									$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $balanceInfo['balance'] - $cost));
+									$sql = 'UPDATE {{balance}} SET balance = balance - ' . $cost . ', hash = "' . $hash . '" WHERE user_id = ' . $this->userInfo['id'];
+									Yii::app()->db->createCommand($sql)->execute();
+									//ФИКСИРУЕМ СПИСАНИЕ ПО РАЗНОСТИ СТОИМОСТИ
+									$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $cost));
+									$sql = '
+										INSERT INTO {{debits}}
+											(id, user_id, created, operation_id, order_id, summa, hash)
+										VALUES
+											(null, ' . $this->userInfo['id'] . ', "' . $now . '", ' . $subsInfo['operation_id'] . ', 0, ' . $cost . ', "' . $hash . '")
+									';
+									Yii::app()->db->createCommand($sql)->execute();
+								}
+								else
+									$canSwitch = false;
+							}
+
+							if ($canSwitch)
+							{
+								//ОБНОВЛЯЕМ СВЯЗЬ ПОЛЬЗОВАТЕЛЬ-ТАРИФ
+								$sql = 'UPDATE {{tariffs_users}}
+									SET switch_to=0, tariff_id=' . $tariff['id'] . '
+									WHERE user_id=' . $this->userInfo['id'] . ' AND tariff_id=' . $curTariffRelation['id'];
+								Yii::app()->db->createCommand($sql)->execute();
+
+								//КОРРЕКТИРУЕМ ОБЪЕМ СВОБОДНОГО МЕСТА ПП
+								$userInfo = Yii::app()->db->createCommand()
+									->select('free_limit')
+									->from('{{users}}')
+									->where('id = ' . $this->userInfo['id'])
+									->queryRow();
+								$freeLimit = $tariff['size_limit'] - ($oldTariff['size_limit'] - $userInfo['free_limit']);
+								if ($freeLimit < 0) $freeLimit = 0;
+								$sql = 'UPDATE {{users}} SET free_limit=' . $freeLimit . ' WHERE id=' . $this->userInfo['id'];
+								Yii::app()->db->createCommand($sql)->execute();
+
+								//ОБНОВЛЯЕМ ИНФ О ПЕРИОДИЧЕСКОЙ УСЛУГЕ
+								$eofSql = ', eof_period = "' . date("Y-m-d H:i:s", strtotime($subsInfo['paid_by']) + Utils::parsePeriod($tariff['period'])) . '"';
+								$sql = 'UPDATE {{user_subscribes}}
+									SET period = "' . $tariff['period'] . '"' . $eofSql . ', tariff_id = ' . $tariff['id'] . ' WHERE id = ' . $subsInfo['id'];
+								Yii::app()->db->createCommand($sql)->execute();
+
+								$result = 'ok';
+							}
+						}
+					}
 				}
 				else
 				{
@@ -476,8 +560,8 @@ class RegisterController extends Controller {
 					$operationId = Yii::app()->params['tushkan']['abonentFeeId'];
 					//$paidBy = date('Y-m-d H:i:s', time() + Utils::parsePeriod($tariff['period']));//ДЛЯ ТРИАЛА
 					$paidBy = date('Y-m-d H:i:s');
-					$sql = 'INSERT INTO {{user_subscribes}} (id, user_id, operation_id, period, paid_by, tariff_id)
-						VALUES (NULL, ' . $userId . ', ' . $operationId . ', "' . $tariff['period'] . '", "' . $paidBy . '", ' . $tariff['id'] . ')';
+					$sql = 'INSERT INTO {{user_subscribes}} (id, user_id, operation_id, period, paid_by, tariff_id, eof_period)
+						VALUES (NULL, ' . $userId . ', ' . $operationId . ', "' . $tariff['period'] . '", "' . $paidBy . '", ' . $tariff['id'] . ', "' . date('Y-m-d H:i:s', time() + Utils::parsePeriod($tariff['period'])) . '")';
 					Yii::app()->db->createCommand($sql)->execute();;
 					$result = 'ok';
 				}
@@ -520,9 +604,9 @@ class RegisterController extends Controller {
     			$info['personalParams'] = $personalParams;
 	    		if (!empty($_POST['action']))
 	    		{
-	    			$ajaxResult = Yii::t('common', 'Request cannot be processed');
-	    			if (!empty($_POST['value']))
-	    				switch ($_POST['action'])
+	    			//$ajaxResult = Yii::t('common', 'Request cannot be processed');
+	    			$ajaxResult = '';
+    				switch ($_POST['action'])
 	    			{
 	    				case "name":
 	    					$sql = 'UPDATE {{users}} SET name = :name WHERE id = ' . $userId;
@@ -593,20 +677,47 @@ class RegisterController extends Controller {
 	    				default:
 	    					if (substr($_POST['action'], 0, 5) == 'param')
 	    					{
+//СОХРАНЕНИЕ ПЕРСОНАЛЬНЫХ ДАННЫХ
 	    						$pid = intval(substr($_POST['action'], 6));
-	    						$ajaxResult = $pid;
+	    						//ИДЕНТИФИКАТОР ПРИХОДИТ В ИМЕНИ action в виде "param_[pid]" (c 6го символа)
 	    						if ($pid > 0)
 	    						{
 	    							$paramInfo = Yii::app()->db->createCommand()
+	    								->select('tp')
+	    								->from('{{personaldata_params}}')
+	    								->where('id = ' . $pid . ' AND active <= ' . $userPower)
+	    								->queryRow();
+	    						}
+
+	    						if (!empty($paramInfo))
+	    						{
+	    							switch ($paramInfo['tp'])
+	    							{
+	    								case "text":
+	    								case "file":
+	    								case "password":
+											$fieldName = 'text_value';
+											$insertValues = ', :value, "", 0';
+	    								break;
+	    								case "textarea":
+											$fieldName = 'textarea_value';
+											$insertValues = ', "", :value, 0';
+	    								break;
+	    								case "checkbox":
+	    								case "radio":
+											$fieldName = 'int_value';
+											$insertValues = ', "", "", :value';
+	    								break;
+	    							}
+	    							$valueInfo = Yii::app()->db->createCommand()
 	    								->select('id')
 	    								->from('{{personaldata_values}}')
 	    								->where('param_id = ' . $pid . ' AND user_id = ' . $userId)
 	    								->queryRow();
-	    			$fieldName = 'text_value';
-	    							if (empty($paramInfo))
+	    							if (empty($valueInfo))
 	    							{
 						        		$sql = 'INSERT INTO {{personaldata_values}} (id, user_id, param_id, text_value, textarea_value, int_value)
-						        			VALUES (null, ' . $userId . ', ' . $pid . ', :value, "", 0)
+						        			VALUES (null, ' . $userId . ', ' . $pid . $insertValues . ')
 						        		';
 						        		$cmd = Yii::app()->db->createCommand($sql);
 						        		if ($fieldName == 'int_value')
@@ -620,7 +731,8 @@ class RegisterController extends Controller {
 	    							}
 	    							else
 	    							{
-						        		$sql = 'UPDATE {{personaldata_values}} SET ' . $fieldName . '= :value WHERE id = ' . $pid . ' AND user_id = ' . $userId;
+
+						        		$sql = 'UPDATE {{personaldata_values}} SET ' . $fieldName . '= :value WHERE param_id = ' . $pid . ' AND user_id = ' . $userId;
 						        		$cmd = Yii::app()->db->createCommand($sql);
 						        		if ($fieldName == 'int_value')
 						        			$cmd->bindParam(':value', $_POST['value'], PDO::PARAM_INT);
@@ -662,15 +774,20 @@ class RegisterController extends Controller {
 				->where('user_id = ' . $userId)
 				->queryRow();
 			$tariff = Yii::app()->db->createCommand()
-				->select('t.title, t.price, t.size_limit, t.period, tu.switch_to')
+				->select('t.id AS tid, t.title, t.price, t.size_limit, t.period, tu.switch_to')
 				->from('{{tariffs}} t')
 				->where('t.is_option = 0')
 				->join('{{tariffs_users}} tu', 't.id=tu.tariff_id AND tu.user_id = ' . $userId)
 				->queryRow();
+			if (empty($tariff['switch_to']))
+				$tid = $tariff['tid'];
+			else
+				$tid = $tariff['switch_to'];
+
 			$tariffs = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{tariffs}}')
-				->where('active <= ' . $userPower . ' AND is_archive=0')
+				->where('id <> ' . $tid . ' AND active <= ' . $userPower . ' AND is_archive=0 AND is_option=0')
 				->queryAll();
 			$subscribes = Yii::app()->db->createCommand()
 				->select('us.paid_by, us.period, bo.title AS botitle, t.title AS ttitle')

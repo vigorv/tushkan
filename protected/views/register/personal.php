@@ -3,11 +3,12 @@
 	{
 ?>
 <script type="text/javascript">
-	function editText(obj)
+	function editText(obj, changeVal)
 	{
 		$(obj).parent().hide();
 		t = $("#" + obj.id + "_static_value").text();
-		$("#" + obj.id + "_edit_value").val(t);
+		if (changeVal)
+			$("#" + obj.id + "_edit_value").val(t);
 		$("#" + obj.id + "_edit").show();
 		$("#" + obj.id + "_edit_value").focus();
 		return false;
@@ -35,12 +36,31 @@
 				$("#" + obj.name + "_wait").hide();
 				if (data == 'ok')
 				{
-					$("#" + obj.name + "_static_value").text(obj.value);
+					if ($(obj).attr('rel') == 'checkbox')
+					{
+						if (obj.checked)
+							v = "<?php echo Yii::t('common', 'Yes');?>";
+						else
+							v = "<?php echo Yii::t('common', 'No');?>";
+					}
+					else
+						v = obj.value;
+					$("#" + obj.name + "_static_value").text(v);
 					$("#" + obj.name + "_static").show();
 				}
 				else
 				{
-					alert('<?php echo Yii::t('common', 'Error'); ?>! ' + data);
+					//alert('<?php echo Yii::t('common', 'Error'); ?>! ' + data);
+					if ($(obj).attr('rel') == 'checkbox')
+					{
+						if (obj.checked)
+							v = "<?php echo Yii::t('common', 'Yes');?>";
+						else
+							v = "<?php echo Yii::t('common', 'No');?>";
+						$("#" + obj.name + "_static_value").text(v);
+						$("#" + obj.name + "_static").show();
+						return false;
+					}
 					$("#" + obj.name + "_edit").show();
 				}
 			});
@@ -81,7 +101,7 @@
 				}
 				else
 				{
-					alert('<?php echo Yii::t('common', 'Error'); ?>! ' + data);
+					//alert('<?php echo Yii::t('common', 'Error'); ?>! ' + data);
 					$("#" + obj.name + "_edit").show();
 				}
 			});
@@ -106,7 +126,7 @@
 			if ($tp == 'password')
 				echo '<span id="' . $nm . '_static_value">***********</span> <a id="' . $nm . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>';
 			else
-				echo '<span id="' . $nm . '_static_value">' . $info[$nm] . '</span> <a id="' . $nm . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+				echo '<span id="' . $nm . '_static_value">' . $info[$nm] . '</span> <a id="' . $nm . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</a>';
 			echo'
 					</div>
 					<div id="' . $nm . '_edit" style="display: none">
@@ -156,10 +176,10 @@
 						echo '<span id="' . $nmId . '_static_value">***********</span> <a id="' . $nmId . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>';
 					break;
 					case "text":
-						echo '<span id="' . $nmId . '_static_value">' . $pd['text_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+						echo '<span id="' . $nmId . '_static_value">' . $pd['text_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</a>';
 					break;
 					case "textarea":
-						echo '<span id="' . $nmId . '_static_value">' . $pd['textarea_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+						echo '<span id="' . $nmId . '_static_value">' . $pd['textarea_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</a>';
 					break;
 					case "checkbox":
 						$chkStr = $pd['int_value'];
@@ -167,7 +187,7 @@
 							$chkStr = Yii::t('common', 'Yes');
 						else
 							$chkStr = Yii::t('common', 'No');
-						echo '<span id="' . $nmId . '_static_value">' . $chkStr . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this);">' . Yii::t('common', 'Edit') . '</a>';
+						echo '<span id="' . $nmId . '_static_value">' . $chkStr . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this, 0);">' . Yii::t('common', 'Edit') . '</a>';
 					break;
 				}
 				echo'
@@ -180,10 +200,10 @@
 						echo CHtml::textField($pName, $pd['text_value'], array('id' => $nmId . '_edit_value', 'onblur' => 'return showText(this);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
 					break;
 					case "textarea":
-						echo CHtml::textArea($pName, $pd['textarea_value'], array('id' => $nmId . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
+						echo CHtml::textArea($pName, $pd['textarea_value'], array('id' => $nmId . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeydown' => 'return keyUpText(this, event.keyCode);'));
 					break;
 					case "checkbox":
-						echo CHtml::checkBox($pName, $pd['int_value'], array('id' => $nmId . '_edit_value', 'onblur' => 'return keyUpText(this, 27);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
+						echo CHtml::checkBox($pName, $pd['int_value'], array('id' => $nmId . '_edit_value', 'value' => $pd['int_value'], 'rel' => 'checkbox', 'onclick' => 'if (this.checked) this.value=1; else this.value=0; return true;', 'onblur' => 'return keyUpText(this, 13);', 'onkeyup' => 'return keyUpText(this, event.keyCode);'));
 					break;
 					case "password":
 						echo Yii::t('params', 'New ' . $nm) . '<br />

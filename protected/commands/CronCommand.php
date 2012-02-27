@@ -129,7 +129,6 @@ continue;
 						$sql = 'UPDATE {{users}} SET free_limit=' . $freeLimit . ' WHERE id=' . $s['user_id'];
 						Yii::app()->db->createCommand($sql)->execute();
 					}
-					$doBan = false;
 					$usInfo["paid_by"] = date("Y-m-d H:i:s", strtotime($usInfo["paid_by"]) + $payPeriodLength);
 /*
 if ($s['user_id'] == 2)
@@ -179,6 +178,7 @@ echo "\r\n";
 						SET period = "' . $usInfo['period'] . '"' . $eofSql . ', tariff_id = ' . $usInfo['tariff_id'] . ', paid_by="' . $usInfo['paid_by'] . '" WHERE id = ' . $usInfo['id'];
 					Yii::app()->db->createCommand($sql)->execute();
 
+					$doBan = false;
 					if ($s['is_option'])
 					{
 						if (empty($usInfo['period']))
@@ -207,11 +207,8 @@ echo "\r\n";
 				}
 				else
 				{
-					if (!empty($banInfo))
-					{
-						$sql = 'DELETE FROM {{bannedusers}} WHERE id = ' . $banInfo['id'];
-						Yii::app()->db->createCommand($sql)->execute();
-					}
+					$sql = 'DELETE FROM {{bannedusers}} WHERE user_id = ' . $s['user_id'] . ' AND reason = ' . _BANREASON_ABONENTFEE_;
+					Yii::app()->db->createCommand($sql)->execute();
 				}
 			}
 		}

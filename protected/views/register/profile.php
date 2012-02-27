@@ -26,18 +26,21 @@ else
 }
 
 $tLst = array();
-foreach($tariffs as $t)
+if (!empty($tariffs))
 {
-	$tLst[$t['id']] = $t['title'];
+	foreach($tariffs as $t)
+		$tLst[$t['id']] = $t['title'];
 }
 if (!empty($tariff))
 {
 	echo '<h3>Ваш тариф: ' . $tariff['title'] . ' (период: ' . Utils::spellPeriod($tariff['period']) . ', стоимость: ' . $tariff['price'] . ' ' . $currency . ')</h3>';
 
-	echo'<p>Сменить тариф: ' .
-		CHtml::dropDownList('tariff_id', '', $tLst, array('id' => 'tariffSelectId')) .
-		CHtml::button(Yii::t('common', 'Choose'), array('onclick' => 'return setTariff();')). '</p>';
-
+	if (!empty($tLst))
+	{
+		echo'<p>Сменить тариф: ' .
+			CHtml::dropDownList('tariff_id', '', $tLst, array('id' => 'tariffSelectId')) .
+			CHtml::button(Yii::t('common', 'Choose'), array('onclick' => 'return setTariff();')). '</p>';
+	}
 	if (!empty($newTariff))
 	{
 		echo '<p>Вы собираетесь сменить тариф на "' . $newTariff['title'] . '" (' . $newTariff['price'] . ' ' . $currency . ')</p>';

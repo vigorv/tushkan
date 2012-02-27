@@ -435,13 +435,13 @@ class RegisterController extends Controller {
 			$cmd = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{tariffs}}')
-				->where('id = :id AND is_archive=0 AND active <= ' . $userPower);
+				->where('id = :id AND is_option=0 AND is_archive=0 AND active <= ' . $userPower);
 			$cmd->bindParam(':id', $_POST['tariff_id'], PDO::PARAM_INT);
 			$tariff = $cmd->queryRow();
 			if (!empty($tariff))
 			{
 				$curTariffRelation = Yii::app()->db->createCommand()
-					->select('t.id, tu.switch_to')
+					->select('t.id, t.price, tu.switch_to')
 					->from('{{tariffs}} t')
 					->where('t.is_option = 0')
 					->join('{{tariffs_users}} tu', 't.id=tu.tariff_id AND tu.user_id = ' . $userId)
@@ -476,10 +476,15 @@ class RegisterController extends Controller {
 							->where('user_id = ' . $this->userInfo['id'] . ' AND tariff_id = ' . $curTariffRelation['id'])
 							->queryRow();
 						if (!empty($subsInfo) &&
-							(strtotime($subsInfo["paid_by"]) > time()) &&
-							((strtotime($subsInfo["paid_by"]) - time()) < 3600*24))
-						{
-							//ЕСЛИ ДО КОНЦА ОПЛАТЫ ТЕКУЩЕГО ПЕРИОДА МЕНЬЩЕ СУТОК - НЕМЕДЛЕННОЕ ПЕРЕКЛЮЧЕНИЕ ВОЗМОЖНО
+							(
+								((strtotime($subsInfo["paid_by"]) - time()) < 3600*24)
+								||
+								($curTariffRelation['price'] == 0)
+							)
+						) {
+							//ЕСЛИ ДО КОНЦА ОПЛАТЫ ТЕКУЩЕГО ПЕРИОДА МЕНЬЩЕ СУТОК
+							//ИЛИ ОПЛАТА ПРОСРОЧЕНА
+							//ИЛИ ТАРИФ БЕСПЛАТНЫЙ - НЕМЕДЛЕННОЕ ПЕРЕКЛЮЧЕНИЕ ВОЗМОЖНО
 							//ВЫЧИСЛЯЕМ РАЗНИЦУ СТОИМОСТИ СТАРОГО И НОВОГО ТАРИФА ЗА СУТКИ
 							$oldTariff = Yii::app()->db->createCommand()
 								->select('*')

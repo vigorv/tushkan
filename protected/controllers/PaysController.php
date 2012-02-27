@@ -108,7 +108,7 @@ class PaysController extends Controller
 	 */
 	public function actionPayment($id = 0)
 	{
-		$this->layout = '//layouts/ajax';
+		$this->layout = '/layouts/ajax';
 		if (!empty($_POST))
 		{
 			$userPower = Yii::app()->user->getState('dmUserPower');
@@ -256,7 +256,7 @@ class PaysController extends Controller
 				}
 			}
 		}
-		$this->layout = '//layouts/ajax';
+		$this->layout = '/layouts/ajax';
 		$this->out($resultMsg);
 	}
 

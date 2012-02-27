@@ -29,7 +29,6 @@ class CronCommand extends CConsoleCommand
 		$tariffs = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{tariffs}}')
-			->where('is_archive=0')
 			->queryAll();
 		foreach ($tariffs as $t)
 		{

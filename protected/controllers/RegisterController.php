@@ -550,6 +550,17 @@ class RegisterController extends Controller {
 									SET period = "' . $tariff['period'] . '"' . $eofSql . ', tariff_id = ' . $tariff['id'] . ' WHERE id = ' . $subsInfo['id'];
 								Yii::app()->db->createCommand($sql)->execute();
 
+								//ОЧИЩАЕМ ИНФУ О БАНАХ (НА ВСЯКИЙ СЛУЧАЙ)
+								$sql = 'DELETE FROM {{bannedusers}} WHERE user_id = ' . $this->userInfo['id'] . ' AND reason = ' . _BANREASON_ABONENTFEE_;
+								Yii::app()->db->createCommand($sql)->execute();
+								$bansInfo = Yii::app()->db->createCommand()
+									->select('*')
+									->from('{{bannedusers}}')
+									->where('user_id = ' . $this->userInfo['id'])
+									->order('state DESC')
+									->queryAll();
+								Yii::app()->user->setState('dmUserBans', $bansInfo);
+
 								$result = 'ok';
 							}
 						}

@@ -158,6 +158,13 @@ class UserIdentity extends CUserIdentity
 		$userInfo['lastvisit'] = date('Y-m-d H:i:s', time());
 		$hash = $this->createHash($userInfo);
 
+    	if (!$userRecord['confirmed'])
+    	{
+    		$this->dropAuthInfo();
+            Yii::app()->request->redirect('/register/confirm');
+            return;
+    	}
+
 		//ПРОВЕРЯЕМ МНФО ПО БАНАМ (САМЫЕ СУРОВЫЕ В НАЧАЛЕ)
 		$bansInfo = Yii::app()->db->createCommand()
 			->select('*')
@@ -165,13 +172,6 @@ class UserIdentity extends CUserIdentity
 			->where('user_id = ' . $id)
 			->order('state DESC')
 			->queryAll();
-
-    	if (!$userRecord['confirmed'])
-    	{
-    		$this->dropAuthInfo();
-            Yii::app()->request->redirect('/register/confirm');
-            return;
-    	}
 
 		//СОХРАНИЛИ В СЕССИЮ
 		Yii::app()->user->setState('dmUserId', $id);

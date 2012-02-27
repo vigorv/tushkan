@@ -18,7 +18,7 @@ $upBalance = ' <a href="/pays/do/1">' . Yii::t('users', 'Fill up balance') . '</
 $currency = Yii::t('pays', _CURRENCY_);
 if (!empty($balance))
 {
-	echo '<h3>Ваш баланс: ' . $balance['balance'] . ' ' . $currency . $upBalance . '</h3>';
+	echo '<h3>Ваш баланс: ' . sprintf("%01.2f", $balance['balance']) . ' ' . $currency . $upBalance . '</h3>';
 }
 else
 {

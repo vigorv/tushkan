@@ -2,7 +2,7 @@
 
 class AdminController extends Controller
 {
-	public $layout = '//layouts/admin';
+	public $layout = '/layouts/admin';
 
 	public function actionIndex()
 	{

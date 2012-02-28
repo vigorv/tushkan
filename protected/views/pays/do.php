@@ -55,13 +55,13 @@
 		}
 		else
 		{
-			document.startPayForm.submit();
+			return true;
 		}
 		return false;
 	}
 </script>
 <div class="form">
-<?php echo CHtml::beginForm('/pays/payment/', "post", array('name' => 'startPayForm')); ?>
+<?php echo CHtml::beginForm('/pays/payment/', "post", array('name' => 'startPayForm', 'onsubmit' => 'return pay();')); ?>
     <div class="row">
         <?php echo CHtml::label('Выбрать платежную систему', 'paysystem_id'); ?>
         <?php
@@ -90,6 +90,6 @@
 		echo CHtml::hiddenField('summa', $postInfo['summa']);
 	}
 ?>
-<?php echo CHtml::button(Yii::t('orders', 'Pay'), array('onclick' => 'return pay();')); ?>
+<?php echo CHtml::button(Yii::t('orders', 'Pay'), array('type' => 'submit')); ?>
 <?php echo CHtml::endForm(); ?>
 </div>

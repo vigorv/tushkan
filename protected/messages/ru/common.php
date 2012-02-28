@@ -51,12 +51,15 @@ return array (
   'Upload'					=> 'Загрузить',
   'Upload process'			=> 'Процесс загрузки',
   'Upload a file'			=> 'Загрузить файл',
+  'Choose'					=> 'Выберите',
   'Choose type of file'		=> 'Выберите тип файла',
   'Choose a file'			=> 'Выберите файл',
   'Choose convert quality'	=> 'Выберите качество конвертирования',
   'Generate'				=> 'Сгенерировать',
   'Type UI'					=> 'Тип в UI',
   'File info'				=> 'Информация о файле',
+  'Yes'						=> 'Да',
+  'No'						=> 'Нет',
 
   'High'					=> 'Высокое',
   'Medium'					=> 'Среднее',
@@ -96,7 +99,6 @@ return array (
   'Are you sure?'			=> 'Вы уверены?',
 
   'Request cannot be processed'	=> 'Запрос не может быть выполнен',
-
 
   'Access denied. Authentication required'			=> 'Отказано в доступе. Tребуется аутентификация.',
   'Letters of verify code are not case-sensitive.'	=> 'Символы проверочного кода не чувствительны к регистру.',

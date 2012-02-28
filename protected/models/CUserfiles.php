@@ -14,7 +14,6 @@
  * @method getFileloc($fid, $user_id, $zone_id, $stype=1)
  * @method getDirTree($user_id)
  */
-
 class CUserfiles extends CActiveRecord {
 
     /**
@@ -69,6 +68,22 @@ class CUserfiles extends CActiveRecord {
 			->from('{{userfiles}} uf')
 			->where('uf.user_id =' . $user_id . ' AND uf.is_dir = 1')
 			->queryAll();
+    }
+
+    /**
+     *
+     * @param int $user_id
+     * @param int $page
+     * @param int $count 
+     * @return array
+     */
+    public function getFileListUnt($user_id, $page=1, $count=100) {
+	return Yii::app()->db->createCommand()
+		->select('uf.id, uf.title')
+		->from('{{userfiles}} uf')
+		->where('uf.user_id ='. $user_id.' AND uf.object_id = 0')
+		->limit($count, ($page-1) *$count)
+		->queryAll();
     }
 
 }

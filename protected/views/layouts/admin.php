@@ -39,8 +39,9 @@
                     <li><a href="<?php echo $this->createUrl('products/admin'); ?>"><?php echo Yii::t('common', 'Products');?></a></li>
                     <li><a href="<?php echo $this->createUrl('pages/admin'); ?>"><?php echo Yii::t('common', 'Pages');?></a></li>
                     <li><a href="<?php echo $this->createUrl('personaldataparams/admin'); ?>"><?php echo Yii::t('params', 'Personal data params');?></a></li>
+                    <li><a href="<?php echo $this->createUrl('partners/admin'); ?>"><?php echo Yii::t('admin', 'Partners');?></a></li>
                     <li><a href="<?php echo $this->createUrl('fileservers/admin'); ?>"><?php echo Yii::t('admin', 'FileServers');?></a></li>
-                    <li><a href="<?php echo $this->createUrl('Zones/admin'); ?>"><?php echo Yii::t('admin', 'Zones');?></a></li>
+                    <li><a href="<?php echo $this->createUrl('zones/admin'); ?>"><?php echo Yii::t('admin', 'Zones');?></a></li>
                 </ul>
             </div>
             <div id="admincontent">

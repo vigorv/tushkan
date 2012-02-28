@@ -5,10 +5,10 @@
  * 
  * @property $id
  * @property $guid
- * @property  $lastactive
  * @property $user_id
- * @property $dtype
+ * @property $device_type_id
  * @property $title
+ * @property $active
  */
 class CDevices extends CActiveRecord {
 
@@ -22,7 +22,7 @@ class CDevices extends CActiveRecord {
     }
 
     public function tableName() {
-	return '{{devices}}';
+	return '{{userdevices}}';
     }
 
 }

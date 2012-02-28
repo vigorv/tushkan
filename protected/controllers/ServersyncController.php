@@ -114,7 +114,7 @@ class ServersyncController extends Controller {
 		    else
 			$result = array('error' => "Can't save record");
 		} else
-		    $result = array('error' => "Unsupported filetype",'error_code'=> 1);
+		    $result = array('error' => "Unsupported filetype ".$ext,'error_code'=> 1);
 	    } else
 		$result = array('error' => 'Bad input data');
 	    echo serialize($result);

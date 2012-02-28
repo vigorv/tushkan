@@ -1,6 +1,6 @@
 <?php
 
-class PersonalDataParamsController extends Controller {
+class PersonaldataParamsController extends Controller {
 
     public function actionAdmin() {
         $this->layout = '/layouts/admin';
@@ -33,7 +33,7 @@ class PersonalDataParamsController extends Controller {
         $cmd->bindParam(':id', $id, PDO::PARAM_INT);
         $param = $cmd->queryRow();
 
-        $paramForm = new PersonalDataParamsForm();
+        $paramForm = new PersonaldataParamsForm();
         if (isset($_POST['PersonaldataParamsForm'])) {
             $paramForm->attributes = $_POST['PersonaldataParamsForm'];
 
@@ -70,7 +70,7 @@ class PersonalDataParamsController extends Controller {
             Yii::t('params', 'Add param'),
         );
 
-        $paramForm = new PersonalDataParamsForm();
+        $paramForm = new PersonaldataParamsForm();
         if (isset($_POST['PersonaldataParamsForm'])) {
             $paramForm->attributes = $_POST['PersonaldataParamsForm'];
 

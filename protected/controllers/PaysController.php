@@ -12,12 +12,62 @@ class PaysController extends Controller
 
 	public function actionIndex()
 	{
+//print_r($_GET);
+//exit;
+		$conditions = array(); $from = ''; $to = '';
+		if (!empty($_GET['from']))
+		{
+			$from = date('Y-m-d', strtotime($_GET['from']));
+			$fSql = $from . ' 00:00:00';
+			$conditions[] = 'created >= :from';
+		}
+		if (!empty($_GET['to']))
+		{
+			$to = date('Y-m-d', strtotime($_GET['to']));
+			$tSql = $to . ' 23:59:59';
+			$conditions[] = 'created <= :to';
+		}
+		if (!empty($conditions))
+		{
+			$conditions = ' AND ' . implode(' AND ', $conditions);
+		}
 		$balance = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{balance}}')
 			->where('user_id = ' . Yii::app()->user->getId())
 			->queryRow();
-		$this->render('/pays/index', array('balance' => $balance));
+
+		$cmd = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{debits}}')
+			->where('user_id = ' . $this->userInfo['id'] . $conditions)
+			->order('created DESC');
+		if (!empty($conditions))
+		{
+			if (!empty($fSql))
+				$cmd->bindParam(':from', $fSql, PDO::PARAM_STR);
+			if (!empty($tSql))
+				$cmd->bindParam(':to', $tSql, PDO::PARAM_STR);
+		}
+		else
+			$conditions = '';
+		$debits = $cmd->queryAll();
+
+		$cmd = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{payments}}')
+			->where('operation_id = 1 AND user_id = ' . $this->userInfo['id'] . $conditions)
+			->order('created DESC');
+		if (!empty($conditions))
+		{
+			if (!empty($fSql))
+				$cmd->bindParam(':from', $fSql, PDO::PARAM_STR);
+			if (!empty($tSql))
+				$cmd->bindParam(':to', $tSql, PDO::PARAM_STR);
+		}
+		$incs = $cmd->queryAll();
+
+		$this->render('/pays/index', array('balance' => $balance, 'debits' => $debits, 'incs' => $incs, 'from' => $from, 'to' => $to));
 	}
 
 	/**

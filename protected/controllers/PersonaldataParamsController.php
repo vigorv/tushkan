@@ -1,6 +1,6 @@
 <?php
 
-class PersonalDataParamsController extends Controller {
+class PersonaldataParamsController extends Controller {
 
     public function actionAdmin() {
         $this->layout = '/layouts/admin';

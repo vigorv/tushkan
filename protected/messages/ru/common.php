@@ -45,6 +45,7 @@ return array (
   'from'					=> 'с',
   'to'						=> 'по',
   'of'						=> 'из',
+  'Over a period'			=> 'За период',
   'online only'				=> 'только онлайн',
   'Variants'				=> 'Варианты',
   'Variant'					=> 'Вариант',
@@ -77,6 +78,10 @@ return array (
   'month'					=> 'месяц',
   'months'					=> 'месяцев',
   'montha'					=> 'месяца',
+
+  'week'					=> 'неделя',
+  'weeks'					=> 'недель',
+  'weeka'					=> 'недели',
 
   'year'					=> 'год',
   'years'					=> 'лет',

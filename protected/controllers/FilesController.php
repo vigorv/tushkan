@@ -15,63 +15,6 @@ class FilesController extends Controller {
 
     /**
      *
-     * @param int $pid        Parent id
-     * @param str $title      ViewName
-     * @param int $is_dir   1|0 is directory
-     */
-    public function FCreate($pid, $title, $is_dir) {
-	$files = new CUserfiles();
-	$files->title = $title;
-	$files->pid = $pid;
-	$files->is_dir = $is_dir;
-	$files->user_id = $this->user_id;
-	$files->save();
-    }
-
-    /**
-     * Move to folder $pid
-     * @param type $id
-     * @param type $pid
-     */
-    public function FMove($id, $pid) {
-//  TO DO :check
-	CUserfiles::model()->updateByPk(array('user_id' => $this->user_id, 'id' => $id), 'pid=' . $pid);
-	echo "OK";
-    }
-
-    /**
-     *
-     * @param type $id
-     * @param type $file
-     * @return type
-     */
-    public function FRemove($id, $file=null) {
-	if ($file == null)
-	    $file = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
-	if ($file == null)
-	    die("unknown file");
-	if ($file->is_dir) {
-	    $filelist = CUserfiles::model()->findAllByAttributes(array('user_id' => $this->user_id, 'pid' => $file->id));
-	    foreach ($filelist as $file) {
-		$this->fremove($id, $file);
-	    }
-	}
-
-	$files = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $file->id));
-	foreach ($files as $fileloc) {
-	    // CServers::model()->sendComand('delete', $files->server_id, array('fname' => $files->fname, 'folder' => $files->folder))
-	    $fileloc->delete();
-	    //echo "deleted location\n";
-	}
-	if ($file <> null) {
-	    $file->delete();
-	}
-	//   echo "deleted meta\n";
-	return true;
-    }
-
-    /**
-     *
      * @param type $id
      */
     public function actionFOpen($id=0) {
@@ -186,8 +129,9 @@ class FilesController extends Controller {
     }
 
     public function actionIndex() {
-	$up_server = CServers::model()->getServer(UPLOAD_SERVER);
-	$this->render('view', array('user_id' => $this->user_id, 'up_server' => $up_server));
+	$items = CUserfiles::model()->getFileListUnt($this->user_id);
+
+	$this->render('view', array('files' => $items));
     }
 
     public function actionDownload() {
@@ -250,7 +194,6 @@ class FilesController extends Controller {
 	echo "OK";
     }
 
-
     /**
      * Действие обработчика мультифайловой загрузки
      *
@@ -263,33 +206,30 @@ class FilesController extends Controller {
      * ИЛИ возвращаем JSON
      *
      */
-    public function actionReceivefile()
-    {
-		// e.g. url:"page.php?upload=true" as handler property
-	    $headers = getallheaders();
-	    if (
-	        // basic checks
-	        isset(
-	            $headers['Content-Type'],
-	            $headers['Content-Length'],
-	            $headers['X-File-Size'],
-	            $headers['X-File-Name']
-	        ) &&
-	        $headers['Content-Type'] === 'multipart/form-data' &&
-	        $headers['Content-Length'] === $headers['X-File-Size']
-	    ){
-	        // create the object and assign property
-	        $file = new stdClass;
-	        $file->name = basename($headers['X-File-Name']);
-	        $file->size = $headers['X-File-Size'];
-	        $file->content = file_get_contents("php://input");
+    public function actionReceivefile() {
+	// e.g. url:"page.php?upload=true" as handler property
+	$headers = getallheaders();
+	if (
+	// basic checks
+		isset(
+			$headers['Content-Type'], $headers['Content-Length'], $headers['X-File-Size'], $headers['X-File-Name']
+		) &&
+		$headers['Content-Type'] === 'multipart/form-data' &&
+		$headers['Content-Length'] === $headers['X-File-Size']
+	) {
+	    // create the object and assign property
+	    $file = new stdClass;
+	    $file->name = basename($headers['X-File-Name']);
+	    $file->size = $headers['X-File-Size'];
+	    $file->content = file_get_contents("php://input");
 
-	        // if everything is ok, save the file somewhere
-	        if(file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/' . $file->name, $file->content))
-	            exit('{"success" : "true", "id" : "' . $file->name . '"}');
-	    }
-
-	    // if there is an error this will be the output instead of "OK"
-	    exit('{"error" : "true"}');
+	    // if everything is ok, save the file somewhere
+	    if (file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/' . $file->name, $file->content))
+		exit('{"success" : "true", "id" : "' . $file->name . '"}');
 	}
+
+	// if there is an error this will be the output instead of "OK"
+	exit('{"error" : "true"}');
+    }
+
 }

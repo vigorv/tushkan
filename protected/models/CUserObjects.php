@@ -1,30 +1,28 @@
 <?php
 
 /**
- * ActiveRecord class for device
+ * ActiveRecord class for UserObjects
  * 
  * @property $id
- * @property $guid
- * @property $user_id
- * @property $device_type_id
  * @property $title
+ * @property $user_id
+ * @property $type_id
  * @property $active
+ * @property $parent_id
  */
-class CDevices extends CActiveRecord {
-
+class CUserObjects extends CActiveRecord {
+    
     /**
      *
      * @param string $className
-     * @return CDevices
+     * @return CUserObjects
      */
     public static function model($className = __CLASS__) {
 	return parent::model($className);
     }
 
     public function tableName() {
-	return '{{userdevices}}';
+	return '{{userobjects}}';
     }
 
 }
-
-?>

@@ -15,10 +15,10 @@ class ServersyncController extends Controller {
 	    return false;
 	}
 	$ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
-	
+
 	//zaglushka
 	//$ip = CServers::convertIpToLong('192.168.201.161');
-	
+
 	$this->server = CServers::model()->findByAttributes(array('ip' => $ip));
 	if ($this->server === null)
 	    die('Unknown Server ' . $_SERVER['REMOTE_ADDR']);
@@ -92,7 +92,7 @@ class ServersyncController extends Controller {
 	    die('bye bye');
 	exit;
     }
-
+    
     /**
      * actionCreateMetaFile
      * @param int $user_id
@@ -108,13 +108,13 @@ class ServersyncController extends Controller {
 		$files->user_id = $user_id;
 		$ext = pathinfo($files->title, PATHINFO_EXTENSION);
 		$files->type_id = Utils::getSectionIdByExt($ext);
-		if($files->type_id>0){
-		if ($files->save())
-		    $result = array('fid' => $files->id);
-		else
-		    $result = array('error' => "Can't save record");
-		} else 
-		    $result = array('error' => "Unsupported filetype");
+		if ($files->type_id > 0) {
+		    if ($files->save())
+			$result = array('fid' => $files->id);
+		    else
+			$result = array('error' => "Can't save record");
+		} else
+		    $result = array('error' => "Unsupported filetype ".$ext,'error_code'=> 1);
 	    } else
 		$result = array('error' => 'Bad input data');
 	    echo serialize($result);
@@ -162,7 +162,7 @@ class ServersyncController extends Controller {
 	    if (isset($input['modified']))
 		$file_location->modified = $input['modified'];
 	    if (isset($input['folder']))
-	    $file_location->folder = $input['folder'];
+		$file_location->folder = $input['folder'];
 	    $file_location->server_id = $this->server->id;
 	    if ($file_location->save())
 		$result = array('file_location_id' => $file_location->id);
@@ -192,6 +192,51 @@ class ServersyncController extends Controller {
 	echo serialize($result);
 	exit;
     }
+
+    public function actionCompleteConvertTask($data='') {
+	$input = @unserialize($data);
+	if (!($input === false)) {
+	    $cqueue = CConvertQueue::model()->findByAttributes(array('task_id' => (int) $data['job_id']));
+	    if ($cqueue) {
+
+		//CompleteConverTask
+		// 1. is for object? or is new converted object
+		if ($cqueue->obj_id > 0) { //Convert for exiting object
+		    $obj_id = $cqueue->obj_id;
+		}
+		// 2. is for file? or is new file
+		if ($cqueue->file_id > 0) {
+		    $file_id = $cqueue->file_id;
+		}
+		//Create variant
+		$file_variant = new CFilesvariants();
+		$file_variant->fsize = $input['fsize'];
+		$file_variant->fmd5 = $input['fmd5'];
+		$file_variant->preset_id = $cqueue->preset_id;
+		$file_variant->file_id = $file_id;
+
+		if ($file_variant->save()) {
+		    $file_loc = new CFilelocations();
+		    $file_loc->id = $file_variant->id;
+		    $file_loc->server_id = $this->server->id;
+		    $file_loc->fsize = $input['fsize'];
+		    $file_loc->fname = $input['fname'];
+		    //$file_loc->modified=now();
+		    if ($file_loc->save()) {
+			$result = array('success' => 'Location created');
+		    } else
+			$result = array('error' => 'Location not created');
+		} else
+		    $result = array('error' => 'file_variant not created');
+	    } else
+		$result = array('error' => 'Unknown task');
+	} else
+	    $result = array('error' => 'Bad input data');
+	echo serialize($result);
+	exit;
+    }
+    
+
 
     ///Deprecated Upload
 

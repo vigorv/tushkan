@@ -31,6 +31,9 @@ class PaysController extends Controller
 		{
 			$conditions = ' AND ' . implode(' AND ', $conditions);
 		}
+		else
+			$conditions = '';
+
 		$balance = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{balance}}')
@@ -49,8 +52,6 @@ class PaysController extends Controller
 			if (!empty($tSql))
 				$cmd->bindParam(':to', $tSql, PDO::PARAM_STR);
 		}
-		else
-			$conditions = '';
 		$debits = $cmd->queryAll();
 
 		$cmd = Yii::app()->db->createCommand()

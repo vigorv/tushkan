@@ -33,7 +33,7 @@ class PersonaldataParamsController extends Controller {
         $cmd->bindParam(':id', $id, PDO::PARAM_INT);
         $param = $cmd->queryRow();
 
-        $paramForm = new PersonalDataParamsForm();
+        $paramForm = new PersonaldataParamsForm();
         if (isset($_POST['PersonaldataParamsForm'])) {
             $paramForm->attributes = $_POST['PersonaldataParamsForm'];
 
@@ -70,7 +70,7 @@ class PersonaldataParamsController extends Controller {
             Yii::t('params', 'Add param'),
         );
 
-        $paramForm = new PersonalDataParamsForm();
+        $paramForm = new PersonaldataParamsForm();
         if (isset($_POST['PersonaldataParamsForm'])) {
             $paramForm->attributes = $_POST['PersonaldataParamsForm'];
 

@@ -1,5 +1,4 @@
 <?php
-
 class PersonaldataparamsController extends Controller {
 
     public function actionAdmin() {

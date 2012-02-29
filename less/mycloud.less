@@ -1,34 +1,42 @@
-@blue: #33feee;
-#win_shopers{
+@bg : gray;
 
+body{
+    background-color:gray;
 }
 
-#mainblock{
-    .mb_top{
-	li{
+#page {
+     background-color:lighten(@bg,40%);
+
+
+
+}
+    #m_panel{
+	width:100%;
+	height:40px;
+	background-color:lighten(@bg,40%);
+	ul{
 	    list-style:none;
-	    float:left;
-	    margin-left:2%;
+		float:left;
 	}
     }
 
-    .mb_content{
-        clear:left;
+    #m_goods{
+	width:100%;
+	height:50px;
+	background-color:@bg + #333;
     }
-    .topmenu{
-        min-height:10px;
+    
+    #m_lib{
+	width:100%;
+	height:100px;
+	background-color:@bg+#123;
     }
-    .items{
-        li{
-	float:left;
-	list-style:none;
-       }
+
+    #m_device{
+	height:100px;
+	width:100%;
     }
-    #ext{
+
+    #footer{
 	clear:left;
     }
-}
-
-#footer{
-    clear:left
-}

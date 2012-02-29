@@ -135,7 +135,7 @@ $media = Utils::getMediaList();
 		{
 			if (answer.success)
 			{
-				loadParams(currentTypeId, answer.id);
+				loadParams(currentTypeId, answer.fid);
 				$("#paramsform").dialog("open");
 			}
 			else

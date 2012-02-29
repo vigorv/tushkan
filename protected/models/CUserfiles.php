@@ -85,5 +85,16 @@ class CUserfiles extends CActiveRecord {
 		->limit($count, ($page-1) *$count)
 		->queryAll();
     }
+    
+    
+    public function getFileInfo($user_id,$fid){
+	return Yii::app()->db->createCommand()
+		->select('uf.id, uf.title, fv.fsize')
+		->from('{{userfiles}} uf')
+		->leftJoin('{{files_variants}} fv',' fv.file_id = uf.id and fv.preset_id =0 ')
+		->where('uf.object_id = 0 AND uf.id= '.$fid.' AND uf.user_id ='.$user_id)
+		->queryRow();
+		
+    }
 
 }

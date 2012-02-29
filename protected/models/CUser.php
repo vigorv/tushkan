@@ -38,4 +38,10 @@ class CUser extends CActiveRecord {
 	return '{{users}}';
     }
 
+    public static function KPT($user_id) {
+	$sid = CUser::model()->findByPk($user_id)->sess_id;
+	$kpt = md5($user_id . $sid . "I am robot");
+	return $kpt;
+    }
+
 }

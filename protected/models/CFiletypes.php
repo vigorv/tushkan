@@ -29,6 +29,28 @@ class CFiletypes {
 		    echo '</li>';
 		}
 		break;
+	    case 'TL1':
+		foreach ($array as $object) {
+		    ?>
+		    <li><?= $object['title']; ?></li>
+
+
+
+		    <?
+		}
+		break;
+
+	    case 'UTL1':
+		foreach ($array as $object) {
+		    ?>
+		    <li><?= $object['title']; ?></li>
+
+
+
+		    <?
+		}
+		break;
+
 	    case 'FL1':
 		foreach ($array as $file) {
 		    $img_path = '/images/files/';

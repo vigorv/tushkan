@@ -69,26 +69,19 @@ class FilesController extends Controller {
     public function actionFview($id = 0) {
 	$item = $queue = array();
 	if ($id > 0) {
-	    $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
+	    $item = CUserfiles::model()->getFileInfo($this->user_id, $id);
 	    if (!empty($item)) {
+
 		$queue = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{convert_queue}}')
-			->where('id = ' . $item['id'] . ' AND user_id = ' . $this->user_id)
+			->where('id = ' . $item['id'])
 			->queryRow();
 	    }
 	}
-	if (($id == 0) || ($item->is_dir)) {
-	    $flist = CUserfiles::model()->findAllByAttributes(array('user_id' => $this->user_id, 'pid' => $id), array('select' => 'id,pid,title,is_dir'));
-	    if (true) {
-		echo CFiletypes::ParsePrint($flist, 'FL1');
-		exit;
-	    } else {
-		//$this
-	    }
-	} else {
-	    $this->render('fview', array('item' => $item, 'queue' => $queue));
-	}
+
+
+	$this->render('fview', array('item' => $item, 'queue' => $queue));
     }
 
     public function actionAdd() {
@@ -136,29 +129,24 @@ class FilesController extends Controller {
 
     public function actionDownload() {
 	$fid = (int) $_GET['fid'];
-	if ($fid > 0)
+	if ($fid > 0) {
 	    $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $fid));
-	if ($item->is_dir == 0) {
 	    //        $server = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $fid));
 	    //            echo "it's file aviable on " . $server['id'];
-	    $dl_server = Yii::app()->params['tushkan']['dl_server'];
-	    //die (CUser::model()->findByPk($this->user_id)->sess_id);
-	    $sid = CUser::model()->findByPk($this->user_id)->sess_id;
-	    $kpt = md5($this->user_id . $sid . "I am robot");
+	    $dl_server = CServers::model()->getServer(DOWNLOAD_SERVER);
+	    $kpt = CUser::kpt($this->user_id);
 	    $this->redirect('http://' . $dl_server . '/files/download?fid=' . $fid . '&kpt=' . $kpt . '&user_id=' . $this->user_id);
 	    exit();
-	} else {
-	    echo "It's not aviable to download folder via browser for this moment";
-	}
+	} else throw new CHttpException(404,'The specified file cannot be found.');
 	exit();
     }
 
     /* Just key for user access to other servers */
 
     public function actionKPT() {
-	$sid = CUser::model()->findByPk($this->user_id)->sess_id;
-	$kpt = md5($this->user_id . $sid . "I am robot");
-	echo $kpt;
+	//$sid = CUser::model()->findByPk($this->user_id)->sess_id;
+	//$kpt = md5($this->user_id . $sid . "I am robot");
+	echo CUser::kpt($this->user_id);
 	exit();
     }
 

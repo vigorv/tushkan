@@ -114,17 +114,16 @@ class CUserfiles extends CActiveRecord {
 			->where('uf.user_id=' . $user_id . ' AND uf.id=' . $fid)
 			->queryRow();
     }
-    
-    public function getFileVariantUser($fid){
+
+    public function getFileVariantUser($fid) {
 	return Yii::app()->db->createCommand()
 			->select('fv.*')
 			->from('{{files_variants}} fv')
-			->where('fv.file_id='.$fid.' AND fv.preset_id = 0')
+			->where('fv.file_id=' . $fid . ' AND fv.preset_id = 0')
 			->queryRow();
-	
     }
 
-    public function getFileLocUser($variant_id,$zone=null,$stype=1) {
+    public function getFileLocUser($variant_id, $zone=null, $stype=1) {
 	$fileloc = Yii::app()->db->createCommand()
 		->select('fl.*,fs.*')
 		->from('{{filelocations}} fl')
@@ -135,9 +134,28 @@ class CUserfiles extends CActiveRecord {
 	if ($zone)
 	    $where[] = 'fs.zone_id=' . $zone;
 	$where[] = 'fl.id=' . $variant_id;
-	
+
 	$fileloc->where($where);
 	return $fileloc->queryAll();
+    }
+
+    /**
+     *  Remove only if file| not object
+     * @param int $user_id
+     * @param int $id 
+     */
+    public function RemoveFile($user_id, $fid) {
+	$file = $this->getFileMeta($user_id, $fid);
+	if (($file) && ($file['object_id'] == 0)) {
+	    $file_variants = CFilesvariants::model()->findAllByAttributes(array('file_id' => $file['id']));
+
+	    // TODO: DELETE BY mysql onDELETE
+	    foreach ($file_variants as $file_variant)
+		CFilelocations::model()->deleteAllByAttributes(array('id' => $file_variant['id']));
+	    CFilesvariants::model()->deleteAllByAttributes(array('file_id' => $file['id']));
+	    CUserfiles::model()->deleteByPk($fid);
+	} else
+	    return false;
     }
 
 }

@@ -32,10 +32,9 @@ class CFiletypes {
 	    case 'TL1':
 		foreach ($array as $object) {
 		    ?>
-		    <li><?= $object['title']; ?></li>
-
-
-
+		    <li><a href="/universe/oview/<?= $object['id']; ?>">
+		    	<img src=""/>
+			    <?= $object['title']; ?></a></li>
 		    <?
 		}
 		break;
@@ -43,7 +42,9 @@ class CFiletypes {
 	    case 'UTL1':
 		foreach ($array as $object) {
 		    ?>
-		    <li><?= $object['title']; ?></li>
+		      <li><a href="/files/fview/<?= $object['id']; ?>">
+		    	<img src=""/>
+			    <?= $object['title']; ?></a></li>
 
 
 

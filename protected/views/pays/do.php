@@ -5,10 +5,29 @@
 		if (!empty($postInfo['order_id']))
 		{
 			$order = ' №' . $postInfo['order_id'];
+			if (!empty($orderInfo))
+			{
+				//СЧИТАЕМ СУММУ ИЗ ЗАКАЗА
+				$orderSumma = 0;
+				foreach ($orderInfo as $o)
+				{
+					$orderSumma += $o['price'] * $o['cnt'];
+				}
+				$postInfo['summa'] = $orderSumma;
+				if (count($orderInfo) == 1)
+				{
+					//ЕСЛИ ОДНА ПОЗИЦИЯ В ЗАКАЗЕ ВЫВОДИМ ИНФУ О НЕЙ
+					$doing = Yii::t('pays', 'Buying');
+					if (!empty($orderInfo[0]['rent_id']))
+						$doing = Yii::t('pays', 'Renting');
+					$order = '';
+					$oInfo['title'] = $doing . ' "' . $orderInfo[0]['title'] . '"';
+				}
+			}
 		}
 		if (!empty($postInfo['summa']))
 		{
-			$summa = ' ' . Yii::t('pays', 'amount') . " " . $postInfo['summa'] . ' ' . Yii::t('pays', _CURRENCY_);
+			$summa = ' - ' . Yii::t('pays', 'amount') . " " . sprintf("%01.2f", $postInfo['summa']) . ' ' . Yii::t('pays', _CURRENCY_);
 		}
 	}
 	echo '<h2>' . $oInfo['title'] . $order . $summa . '</h2>';
@@ -37,9 +56,9 @@
 		if (<?php echo $jsCondition; ?>)
 		{
 <?php
-	if (!empty($order))
+	if (!empty($orderInfo[0]['id']))
 	{
-		echo 'order_id = ' . $postInfo['order_id'] . ';';
+		echo 'order_id = ' . $orderInfo[0]['id'] . ';';
 	}
 	else
 	{
@@ -69,9 +88,9 @@
         ?>
     </div>
 <?php
-	if (!empty($order))
+	if (!empty($orderInfo[0]['id']))
 	{
-		echo CHtml::hiddenField('order_id', $postInfo['order_id']);
+		echo CHtml::hiddenField('order_id', $orderInfo[0]['id']);
 	}
 
 	if (empty($summa))
@@ -90,6 +109,45 @@
 		echo CHtml::hiddenField('summa', $postInfo['summa']);
 	}
 ?>
-<?php echo CHtml::button(Yii::t('orders', 'Pay'), array('type' => 'submit')); ?>
 <?php echo CHtml::endForm(); ?>
 </div>
+<?php
+		$options = array();
+		$options[] = '<a id="dopayid">' . Yii::t('orders', 'Pay') . '</a>';
+		if (!empty($orderInfo[0]['id']))
+		{
+			$options[] = '<a id="dodiscardid">' . Yii::t('orders', 'Discard') . '</a>';
+		}
+		if (!empty($options))
+		{
+			echo implode(' ', $options);
+?>
+<script type="text/javascript">
+	$( "#dopayid" )
+				.button()
+				.click(function() {
+					document.startPayForm.onsubmit();
+					return false;
+	});
+<?php
+		if (!empty($orderInfo[0]['id']))
+		{
+?>
+	$( "#dodiscardid" )
+				.button()
+				.click(function() {
+					if (confirm('<?php echo Yii::t('common', 'Are you sure?');?>'))
+					{
+						oid = <?php echo $orderInfo[0]['id'];?>;
+						$.post('/orders/discard/' + oid, function(){
+							location.href = '/orders/view/' + oid;
+						});
+					}
+					return false;
+	});
+<?php
+		}
+?>
+</script>
+<?php
+		}

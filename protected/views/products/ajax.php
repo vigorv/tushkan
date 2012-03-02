@@ -9,21 +9,22 @@ switch ($subAction)
 			foreach($result['lst'] as $p)
 			{
 				$pid = $p['id'];
-				if (empty($p['ppvid']))
+				if (empty($p['vlid']))
 				{
-					$curParamId = -1;//ДЛЯ НОВЫХ ПАРАМЕТРОВ
+					$curValueId = 0;//ДЛЯ ЗНАЧЕНИЙ НОВЫХ ПАРАМЕТРОВ
 				}
 				else
 				{
-					$curParamId = $p['ppvid'];
+					$curValueId = $p['vlid'];
 				}
 				$title = Yii::t('params', $p['title']);
 				echo'
-				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][id]" type="hidden" value="' . $curParamId . '" />
+				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][id]" type="hidden" value="' . $pid . '" />
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][title]" type="hidden" value="' . $title . '" />
 				' . $title . ':<br />
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][value]" type="text" value="" class="text ui-widget-content ui-corner-all" />
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][variant_id]" type="hidden" value="' . $curVariantId . '" />
+				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][vlid]" type="hidden" value="' . $curValueId . '" />
 				<br />
 				';
 			}

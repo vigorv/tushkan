@@ -1,2 +1,7 @@
-.chess, .shortfilm { float: left; clear: right; margin:3px; }
-.shortfilm img { margin-right: 8px; margin-bottom: 5px; width: 100px; align: left; }
+.chess { float: left; clear: right; margin:3px; width:220px; }
+.chess img { margin-right: 8px; margin-bottom: 5px; }
+
+#productdetail { margin:3px; }
+#productdetail img { margin-right: 8px; margin-bottom: 5px; }
+
+#footer { clear: both; }

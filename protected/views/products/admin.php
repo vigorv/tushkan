@@ -9,17 +9,16 @@
 		foreach ($products as $p)
 		{
 			$href = Yii::app()->createUrl('/products/edit/' . $p['id']);
-			echo '<div class="shortproduct"><a href="' . $href . '">';
+			echo '<div class="chess"><a href="' . $href . '">';
 			if (!empty($p['filename']))
 				$poster = Yii::app()->params['tushkan']['postersURL'] . '/smallposter/' . $p['filename'];
 			else
 				$poster = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
-			echo '<img src="' . $poster . '" />';
+			echo '<img width="80" align="left" src="' . $poster . '" />';
 
-			echo $p['title'] . '</a>';
+			echo $p['title'] . '</a></div>';
 		}
 	}
-
 $pager = $this->beginWidget('CLinkPager');
 $pages->pageVar = 'page';
 $pages->params = array('srt' => 'title', 'dir' => 'asc');

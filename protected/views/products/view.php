@@ -1,7 +1,14 @@
 <?php
 if(!empty($info))
 {
+	echo'<pre>';
+	//print_r($info);
+	echo'</pre>';
 ?>
+<form name="quickpayform" method="post" action="/pays/do/3">
+	<input type="hidden" name="summa" value="" />
+	<input type="hidden" name="order_id" value="" />
+</form>
 <script type="text/javascript">
 	function doBuy(vid, prid)
 	{
@@ -9,7 +16,8 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				location.href="/orders/view/" + oid;
+				document.quickpayform.order_id.value = oid;
+				document.quickpayform.submit();
 			}
 		});
 		return false;
@@ -20,7 +28,8 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				location.href="/orders/view/" + oid;
+				document.quickpayform.order_id.value = oid;
+				document.quickpayform.submit();
 			}
 		});
 		return false;
@@ -162,14 +171,13 @@ if(!empty($info))
 		if (!empty($variant['rent_id']))
 			$actionRent = '<a href="#" onclick="return doRent(' . $variant['id'] . ', ' . $variant['rent_id'] . ')">в аренду</a> за ' . $variant['rprice'] . ' rur';
 
-		if (!empty($order['rent_id']) || !empty($order['price_id']))
+		if ($isOwned || $isRented || (empty($variant['rent_id']) && empty($variant['price_id'])))
 		{
-			$actionTocloud = 'добавить в пространство';
-			if ($userInfo['free_limit'] > 0)
+			if (!$inCloud)
+			{
+				$actionTocloud = 'добавить ко мне';
 				$actionTocloud = '<a href="#" onclick="return doCloud(' . $variant['id'] . ')">' . $actionTocloud . '</a>';
-			else
-				$actionTocloud = '<s>' . $actionTocloud . '</s>';
-			$actionTocloud .= ' <b>свободно ' . Utils::sizeFormat($userInfo['free_limit'] * 1024) . '</b>';
+			}
 		}
 		if (!empty($variant['rent_id']) || !empty($variant['price_id']))
 		{
@@ -182,7 +190,7 @@ if(!empty($info))
 			$actionDownload = '<a href="/universe/tview/id/' . $cloudId . '/do/download">скачать</a>';
 		}
 
-		if ($isOwned || $isRented)
+		if ($isOwned || $isRented || $inCloud)
 		{
 			if (!$inCloud)
 			{
@@ -220,12 +228,13 @@ if(!empty($info))
 					$actions[] = $actionRent;
 				if (!empty($actionTocart))
 					$actions[] = $actionTocart;
+				if (!empty($actionTocloud))
+					$actions[] = $actionTocloud;
 			}
 		}
-
 		if (!empty($actions))
 		{
-			$variantsParams[$curVariantId]['actions'] =  ' (' . implode(' | ', $actions) . ') ' . $rentDsc;
+			$variantsParams[$curVariantId]['actions'] =  'Действия: (' . implode(' | ', $actions) . ') ' . $rentDsc;
 		}
 	}
 
@@ -233,7 +242,7 @@ if(!empty($info))
 	{
 		foreach ($variantsParams as $vk => $vps)
 		{
-			echo '<div class="shortfilm">';
+			echo '<div id="productdetail">';
 			if (!empty($vps['poster']))
 			{
 				$poster = $vps['poster'];
@@ -243,29 +252,35 @@ if(!empty($info))
 			{
 				$poster = '/images/films/noposter.jpg';
 			}
-			echo '<img src="' . $poster . '" />';
+			echo '<img hspace="3" align="left" src="' . $poster . '" />';
 
-			echo '<ul>';
+			echo '<p>';
+			unset($vps['id']);
+			unset($vps['url']);
+			unset($vps['height']);
+			unset($vps['width']);
+			unset($vps['onlineurl']);
+
+			foreach ($vps as $param => $value)
+			{
+				if (empty($value)) continue;
+				if ($param == 'actions') continue;
+				if ($param == Yii::app()->params['tushkan']['fsizePrmName'])
+				{
+					$value = Utils::sizeFormat($value);
+				}
+				echo '<br />' . Yii::t('params', $param) . ': ' . $value;
+			}
+			echo'</p>';
 			if (!empty($vps['actions']))
 			{
 				$actions = '<p>' . $vps['actions'] . '</p>';
 				unset($vps['actions']);
 			}
 			else $actions = '';
-			unset($vps['id']);
-			unset($vps['url']);
-			unset($vps['onlineurl']);
-
-			foreach ($vps as $param => $value)
-			{
-				if ($param == Yii::app()->params['tushkan']['fsizePrmName'])
-				{
-					$value = Utils::sizeFormat($value);
-				}
-				echo '<li>' . Yii::t('params', $param) . ': ' . $value . '</li>';
-			}
-			echo'</ul>';
 			echo $actions;
+			if (!empty($dsc['description']))
+				echo '<p>' . $dsc['description'] . '</p>';
 			echo'</div>';
 		}
 	}

@@ -17,7 +17,7 @@ class UniverseController extends Controller {
     }
 
     public function accessRules() {
-	
+
     }
 
     public function actionError() {
@@ -282,7 +282,7 @@ class UniverseController extends Controller {
 			}
 		    }
 		    if (empty($price_id) && empty($rent_id)) {
-			$canAdd = true;
+				$canAdd = true;
 		    }
 
 		    if ($canAdd) {
@@ -297,9 +297,9 @@ class UniverseController extends Controller {
 
 			$sql = '
 							INSERT INTO {{typedfiles}}
-								(id, variant_id, user_id, title)
+								(id, variant_id, user_id, title, collection_id)
 							VALUES
-								(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '")
+								(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '", 0)
 						';
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
@@ -318,7 +318,7 @@ class UniverseController extends Controller {
      * @param integer $id - идентификатор объекта в ПП
      */
     public function actionTview($id = 0) {
-	$info = $params = array();
+	$dsc = $info = $params = array();
 	$subAction = 'view';
 	if (!empty($this->userInfo) && !empty($id)) {
 	    $cmd = Yii::app()->db->createCommand()
@@ -329,7 +329,7 @@ class UniverseController extends Controller {
 	    $info = $cmd->queryRow();
 	    if (!empty($info)) {
 		$prms = Yii::app()->db->createCommand()
-				->select('pv.id, pv.online_only, ptp.title, ppv.value, pr.id AS price_id, r.id AS rent_id')
+				->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, pr.id AS price_id, r.id AS rent_id')
 				->from('{{product_variants}} pv')
 				->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 				->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
@@ -339,6 +339,10 @@ class UniverseController extends Controller {
 				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
 		if (!empty($prms)) {
+			$dsc = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{product_descriptions}}')
+					->where('product_id = ' . $prms[0]['product_id'])->queryRow();
 		    $params = array();
 		    foreach ($prms as $p) {
 			$params[$p['title']] = $p['value'];
@@ -416,7 +420,7 @@ class UniverseController extends Controller {
 		}
 	    }
 	}
-	$this->render('tview', array('info' => $info, 'params' => $params, 'subAction' => $subAction));
+	$this->render('tview', array('info' => $info, 'params' => $params, 'dsc' => $dsc, 'subAction' => $subAction));
     }
 
     /**
@@ -470,4 +474,29 @@ class UniverseController extends Controller {
 	$this->render('oview', array('info' => $info, 'params' => $params, 'subAction' => $subAction));
     }
 
+    /**
+     * УДАЛИТЬ ОБЪЕКТ ИЗ ПП
+     *
+     * @param integer $id - идентификатор объекта в ПП
+     */
+    public function actionRemove($id = 0)
+    {
+    	$result = '';
+    	$cmd = Yii::app()->db->createCommand()
+    		->select('id, variant_id')
+    		->from('{{typedfiles}} tf')
+    		->where('id = :id AND user_id = ' . Yii::app()->user->getId());
+    	$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+    	$tInfo = $cmd->queryRow();
+    	if (!empty($tInfo))
+    	{
+    		$sql = 'DELETE FROM {{typedfiles}} WHERE id = ' . $tInfo['id'];
+    		Yii::app()->db->createCommand($sql)->execute();
+    		//УДАЛЯЕМ ВОЗМОЖНУЮ ИНФУ ОБ АРЕНДЕ
+    		$sql = 'DELETE FROM {{actual_rents}} WHERE variant_id = ' . $tInfo['variant_id'] . ' AND user_id = ' . Yii::app()->user->getId();
+    		Yii::app()->db->createCommand($sql)->execute();
+    		$result = 'ok';
+    	}
+		$this->render('remove', array('result' => $result));
+    }
 }

@@ -140,11 +140,12 @@
 				foreach ($params[$vk] as $pid => $param)
 				{
 					echo'
-					<input name="ProductForm[params][' . $vk . '][' . $pid . '][id]" type="hidden" value="-1" />
+					<input name="ProductForm[params][' . $vk . '][' . $pid . '][id]" type="hidden" value="' . $pid . '" />
 					<input name="ProductForm[params][' . $vk . '][' . $pid . '][title]" type="hidden" value="' . $param['title'] . '" />
 					' . Yii::t('params', $param['title']) . ':<br />
 					<input name="ProductForm[params][' . $vk . '][' . $pid . '][value]" type="text" value="' . $param['value'] . '" class="text ui-widget-content ui-corner-all" />
 					<input name="ProductForm[params][' . $vk . '][' . $pid . '][variant_id]" type="hidden" value="' . $param['variant_id'] . '" />
+					<input name="ProductForm[params][' . $vk . '][' . $pid . '][vlid]" type="hidden" value="' . $param['vlid'] . '" />
 					<br />
 					';
 				}

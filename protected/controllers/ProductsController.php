@@ -27,24 +27,20 @@ class ProductsController extends Controller
 	public function actionPartner($id = 0)
 	{
 		//ПОСТРАНИЧНУЮ НАКЛАДЫВАЕМ НА ЭТУ ВЫБОРКУ
+		$paramIds = array(10, 12, 13, 14);
 		$cmd = Yii::app()->db->createCommand()
-			->select('p.id, p.title AS ptitle, prt.title AS prttitle')
+			->select('p.id, p.title AS ptitle, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
 			->from('{{products}} p')
 			->join('{{partners}} prt', 'prt.id=p.partner_id')
-			->where('p.partner_id = :id AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower);
+			->join('{{product_variants}} pv', 'pv.product_id=p.id')
+			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+			->where('p.partner_id = :id AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower)
+			->order('pv.id ASC');
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$pst = $cmd->queryAll();
 
 		$lst = array();
-		if (!empty($pst))
-		{
-			$pIds = array();
-			foreach($pst as $p)
-			{
-				$pIds[$p['id']] = $p['id'];
-			}
-		}
-		else
+		if (empty($pst))
 		{
 			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
 			Yii::app()->request->redirect('/universe/error');
@@ -75,6 +71,12 @@ class ProductsController extends Controller
 				->where('pv.product_id = ' . $productInfo['id'])
 				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
+
+			$dsc = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{product_descriptions}}')
+					->where('product_id = ' . $productInfo['id'])->queryRow();
+
 			if (!empty($userId))
 			{
 				$actualRents = Yii::app()->db->createCommand()
@@ -100,114 +102,8 @@ class ProductsController extends Controller
 			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
 			Yii::app()->request->redirect('/universe/error');
 		}
-		$this->render('/products/view', array('info' => $info, 'productInfo' => $productInfo, 'orders' => $orders,
+		$this->render('/products/view', array('info' => $info, 'dsc' => $dsc, 'productInfo' => $productInfo, 'orders' => $orders,
 				'actualRents' => $actualRents, 'typedFiles' => $typedFiles, 'userInfo' => $this->userInfo));
-	}
-
-	/**
-	 * действие показа онлайн для варианта исполнения продукта
-	 *
-	 * @param integer $id - идентификатор варианта продукта
-	 */
-	public function actionOnline($id)
-	{
-		$cmd = Yii::app()->db->createCommand()
-			->select('*')
-			->from('{{product_variants}}')
-			->where('id = :id');
-		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-		$variantInfo = $cmd->queryRow();
-		$params = array();
-		if (!empty($variantInfo))
-		{
-			$isOwned = false;
-			/**
-			 * проверяем возможность бесплатного просмотра
-			 * у варианта должна быть цена аренды или покупки
-			 */
-			$priceInfo = Yii::app()->db->createCommand()
-				->select('id')
-				->from('{{prices}}')
-				->where('variant_id = ' . $variantInfo['id'])
-				->queryRow();
-			$rentInfo = Yii::app()->db->createCommand()
-				->select('id')
-				->from('{{rents}}')
-				->where('variant_id = ' . $variantInfo['id'])
-				->queryRow();
-			$isOwned = (empty($priceInfo) && empty($rentInfo));//ЕСЛИ НЕТ НИ ЦЕНЫ АРЕНДЫ, НИ ПОКУПКИ - ДОСТУПЕН БЕСПЛАТНО
-
-			$userId = Yii::app()->user->getId();
-			if (!$isOwned && !empty($userId))
-			{
-				/*
-					в случае аренды стартуем аренду (поле start таблицы actual_rents)
-					не забыть учесть, что товар может быть арендован многократно
-					в этом случае новую аренду не стартуем до тех пора пока не истечет предыдущая аренда
-				*/
-				$rents = Yii::app()->db->createCommand()
-					->select('*')
-					->from('{{actual_rents}}')
-					->where('variant_id = ' . $variantInfo['id'] . ' AND user_id = ' . $userId)
-					->order('start DESC')//СНАЧАЛА ИСПОЛЬЗУЕМ СТАРТОВАВШУЮ АРЕНДУ
-					->queryAll();
-				foreach($rents as $r)
-				{
-					if (empty($r['period']))
-					{
-						//БЕЗВРЕМЕННАЯ АРЕНДА (КУПЛЕНО)
-						$isOwned = true;
-						break;
-					}
-					else
-					{
-						$isOwned = true;
-						if (strtotime($r['start']) == 0)
-						{
-							$sql = 'UPDATE {{actual_rents}} SET start="' . date('Y-m-d H:i:s') . '" WHERE id=' . $r['id'];
-							Yii::app()->db->createCommand($sql)->execute();
-							break;
-						}
-						else
-						{
-							if (strtotime($r['start']) + Utils::parsePeriod($r['period'], $r['start']) - time() <= 0)
-							{
-								$isOwned = false;
-								//СРОК АРЕНДЫ ИСТЕК
-								$sql = 'DELETE FROM {{actual_rents}} WHERE id=' . $r['id'];
-								Yii::app()->db->createCommand($sql)->execute();
-
-								//УДАЛЯЕМ ИЗ ЛИЧНОГО ПРОСТРАНСТВА
-								$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $r['variant_id'] . ' AND user_id = ' . $r['user_id'];
-								Yii::app()->db->createCommand($sql)->execute();
-							}
-						}
-					}
-				}
-			}
-
-			if($isOwned)
-			{
-				//ВЫБОРКА ЗНАЧЕНИЙ ПАРАМЕТРОВ ВАРИАНТА
-				$params = Yii::app()->db->createCommand()
-					->select('ppv.param_id, ppv.value, ptp.title')
-					->from('{{product_param_values}} ppv')
-			        ->join('{{product_type_params}} ptp', 'ppv.param_id=ptp.id')
-					->where('ppv.variant_id = ' . $variantInfo['id'])->queryAll();
-			}
-		}
-		$this->render('/products/online', array('params' => $params));
-	}
-
-	/**
-	 * действие скачивания для варианта исполнения продукта
-	 *
-	 * @param integer $id - идентификатор варианта продукта
-	 */
-	public function actionDownload($id = 0)
-	{
-        $this->layout = '/layouts/testui';
-		$this->render('download');
 	}
 
 /**
@@ -228,7 +124,7 @@ class ProductsController extends Controller
         $count = $cmd->queryScalar();
         $pages = new CPagination($count);
 
-        $perPage = 2;
+        $perPage = 20;
         if (!empty($_GET['perpage']))
           $perPage = $_GET['perpage'];
         $pages->pageSize = $perPage;
@@ -289,12 +185,12 @@ class ProductsController extends Controller
         	$info['description'] = '';
 
 		$variantsInfo = Yii::app()->db->createCommand()
-			->select('pv.id, pv.online_only, pv.type_id, pv.active, ptp.id AS pid, ptp.title, ppv.value')
+			->select('pv.id, pv.online_only, pv.type_id, pv.active, ptp.id AS pid, ptp.title, ppv.id AS vlid, ppv.value')
 			->from('{{product_variants}} pv')
-	        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
-	        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
+	        ->join('{{product_types_type_params}} pttp', 'pttp.type_id=pv.type_id')
+	        ->join('{{product_type_params}} ptp', 'ptp.id=pttp.param_id')
+			->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id=ptp.id')
 			->where('pv.product_id = ' . $info['id'])
-			->group('ppv.id')
 			->order('pv.id ASC, ptp.srt DESC')->queryAll();
 		//ПРИВОДИМ ДАННЫЕ ВАРИАНТОВ И ИХ ПАРМЕТРОВ К СТРУКТУРЕ, ПРИХОДЯЩЕЙ С POST-ФОРМЫ
 		$variants = $params = array();
@@ -308,7 +204,8 @@ class ProductsController extends Controller
 			$params[$vInfo['id']][$vInfo['pid']]['id'] = $vInfo['pid'];
 			$params[$vInfo['id']][$vInfo['pid']]['title'] = $vInfo['title'];
 			$params[$vInfo['id']][$vInfo['pid']]['value'] = $vInfo['value'];
-			$params[$vInfo['id']][$vInfo['pid']]['variant_id'] = $vInfo['pid'];
+			$params[$vInfo['id']][$vInfo['pid']]['variant_id'] = $vInfo['id'];
+			$params[$vInfo['id']][$vInfo['pid']]['vlid'] = $vInfo['vlid'];
 		}
 
         $types = Yii::app()->db->createCommand()
@@ -411,7 +308,7 @@ class ProductsController extends Controller
 
                 $products->save();
                 Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
-                $this->redirect('/films/edit/' . $products->id);
+                $this->redirect('/products/edit/' . $products->id);
             }
             else
             {

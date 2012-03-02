@@ -35,7 +35,7 @@ class ProductsController extends Controller
 			->join('{{product_variants}} pv', 'pv.product_id=p.id')
 			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
 			->where('p.partner_id = :id AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower)
-			->order('pv.id ASC1');
+			->order('pv.id ASC');
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$pst = $cmd->queryAll();
 

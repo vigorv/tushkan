@@ -42,7 +42,7 @@ class AccessFilter extends CFilter
 			case "PagesController":
 				//$access = ($userPower >= _IS_USER_);
 			break;
-			case "ProductController":
+			case "ProductsController":
 				if (($filterChain->action->id == 'admin') || ($filterChain->action->id == 'edit') || ($filterChain->action->id == 'form'))
 					$access = ($userPower >= _IS_MODERATOR_);
 				if (($filterChain->action->id == 'tocloud'))
@@ -61,11 +61,12 @@ class AccessFilter extends CFilter
 			case "PersonaldataparamsController":
 			case "ParamsController":
 			case "TypesController":
+			case "PaysystemsController":
 			case "AdminController":
 				$access = ($userPower >= _IS_MODERATOR_);
 			break;
 
-			case "UserController":
+			case "UsersController":
 				$access = ($userPower >= _IS_ADMIN_);
 			break;
 

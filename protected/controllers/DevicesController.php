@@ -3,7 +3,7 @@
 class DevicesController extends Controller {
 
     public function actionAdmin() {
-        
+
     }
 
     public function actionAdd() {
@@ -27,7 +27,6 @@ class DevicesController extends Controller {
     public function actionRemove() {
         echo "remove";
     }
-
 }
 
 ?>

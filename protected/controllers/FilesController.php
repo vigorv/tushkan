@@ -149,7 +149,7 @@ class FilesController extends Controller {
 	echo CUser::kpt($this->user_id);
 	exit();
     }
-
+/*Deprecated
     public function actionCreate($fid=0) {
 	$model = new FilesCreateForm();
 	if (isset($_POST['FilesCreateForm'])) {
@@ -166,7 +166,7 @@ class FilesController extends Controller {
 // displays the login form
 	$this->render('create', array('model' => $model, 'pid' => (int) $fid));
     }
-
+*/
     public function actionTypes($fid) {
 	$this->renders('types');
     }

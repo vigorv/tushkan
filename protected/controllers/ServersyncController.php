@@ -51,36 +51,23 @@ class ServersyncController extends Controller {
 		$stype = (int) $data['stype'];
 		$user_ip = (int) $data['user_ip'];
 		$zone = CZones::model()->GetZoneByIp($user_ip);
-		$filemeta = Yii::app()->db->createCommand()
-			->select('uf.*')
-			->from('{{userfiles}} uf')
-			->where('uf.user_id=' . $user_id . ' AND uf.id=' . $fid)
-			->limit(1)
-			->queryAll();
-		if (count($filemeta)) {
-		    $response['title'] = $filemeta[0]['title'];
-		    $fileloc = Yii::app()->db->createCommand()
-			    ->select('fl.*,fs.*')
-			    ->from('{{filelocations}} fl')
-			    ->join('{{fileservers}} fs', 'fl.server_id = fs.id');
-		    $where = array('and');
+		$filemeta = CUserfiles::model()->getFileMeta($user_id, $fid);
+		if ($filemeta) {
+		    $response['title'] = $filemeta['title'];
+		    $variant = CUserfiles::model()->getFileVariantUser($fid);
+		    if ($variant) {
+			$filedata = CUserfiles::model()->getFileLocUser($variant['id'], $zone);
 
-		    if ($stype)
-			$where[] = 'fs.stype=' . $stype;
-		    if ($zone)
-			$where[] = 'fs.zone_id=' . $zone;
-		    $where[] = 'fl.id=' . $fid;
-		    $where[] = 'fl.user_id=' . $user_id;
-		    $fileloc->where($where);
-		    $filedata = $fileloc->queryAll();
-		    foreach ($filedata as $file) {
-			$fdata = array();
-			$fdata['ip'] = $file['ip'];
-			$fdata['port'] = $file['port'];
-			$fdata['name'] = $file['fname'];
-			$fdata['size'] = $file['fsize'];
-			$response['filedata'][] = $fdata;
-		    }
+			foreach ($filedata as $file) {
+			    $fdata = array();
+			    $fdata['ip'] = $file['ip'];
+			    $fdata['port'] = $file['port'];
+			    $fdata['name'] = $file['fname'];
+			    $fdata['size'] = $file['fsize'];
+			    $response['filedata'][] = $fdata;
+			}
+		    } else 
+			$response['error'] = 'no variants';
 		} else {
 		    $response['error'] = 'unknown file';
 		}

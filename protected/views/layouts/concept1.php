@@ -9,8 +9,8 @@
         <!--[if lt IE 8]>
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
         <![endif]-->
-	
-         <link rel="stylesheet/less" type="text/css" href="/less/mycloud.less">
+
+	<link rel="stylesheet/less" type="text/css" href="/less/mycloud.less"/>
 
 
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
@@ -19,7 +19,8 @@
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.hotkeys.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/less-1.2.1.min.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.cookie.js');
-	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jstree/jquery.jstree.js');
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.form.js');
+//	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jstree/jquery.jstree.js');
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery-ui/css/pepper-grinder/jquery-ui-1.8.16.custom.css");
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery-ui/js/jquery-ui-1.8.16.custom.min.js");
 	?>
@@ -28,6 +29,9 @@
     <body>
         <div class="container" id="page">
 
+	    <div id="m_panel">
+		
+	    </div>
 
 	    <div class="notify_area">
 		<?php if (Yii::app()->user->hasFlash('success')): ?>
@@ -43,10 +47,18 @@
 	    </div>
 
 
+	    <div id="m_goods">
+		
+	    </div>
 
 	    <div id="content">
 		<?php echo $content; ?>
 	    </div>
+
+	    <script langauge="javascript">
+		$('#m_panel').load('/universe/panel');
+		$('#m_goods').load('/universe/goods');
+	    </script>
 
 	    <div id="footer">
 		Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>

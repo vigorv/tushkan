@@ -22,9 +22,15 @@ define("_PD_RADIO_", "radio");
 
 define("_PD_GROUP_COMMON_", 0);
 
-define("_MB_", 1024*1024);
+define("_MB_", 1024 * 1024);
 
 class Utils {
+
+    static $mtypes = array(
+	"v" => 1,
+	"a" => 2,
+	"p" => 3,
+	"d" => 4);
 
     /**
      * парсинг выражения записи периода времени
@@ -280,10 +286,14 @@ class Utils {
 	switch ($name) {
 	    case 'video': return 1;
 	    case 'audio': return 2;
-	    case 'photo': return 3;
+	    case 'photo': return 3;	    
 	    case 'docs': return 4;
 	    default: return 0;
 	}
+    }
+
+    public static function getSectionIdByAlias($al) {
+	return Utils::$mtypes[$al];
     }
 
     /**
@@ -296,9 +306,15 @@ class Utils {
 	    1 => array(
 		'id' => 1,
 		'title' => Yii::t('common', 'Video'),
-		'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp', 'jpg'),
+		'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp'),
 		'link' => '/universe/index?section=video'
 	    ),
+	    3 => array(
+		'id'=>3,
+		'title' => Yii::t('common', 'Photo'),
+		'exts'=>array('jpg','jpeg','png'),		
+	    )
+	    
 		/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
 		  2 => array(
 		  'id'	=> 2,

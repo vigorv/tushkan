@@ -92,7 +92,7 @@ class ServersyncController extends Controller {
 	    die('bye bye');
 	exit;
     }
-    
+
     /**
      * actionCreateMetaFile
      * @param int $user_id
@@ -114,7 +114,7 @@ class ServersyncController extends Controller {
 		    else
 			$result = array('error' => "Can't save record");
 		} else
-		    $result = array('error' => "Unsupported filetype ".$ext,'error_code'=> 1);
+		    $result = array('error' => "Unsupported filetype " . $ext, 'error_code' => 1);
 	    } else
 		$result = array('error' => 'Bad input data');
 	    echo serialize($result);
@@ -200,34 +200,32 @@ class ServersyncController extends Controller {
 	    if ($cqueue) {
 
 		//CompleteConverTask
-		// 1. is for object? or is new converted object
-		if ($cqueue->obj_id > 0) { //Convert for exiting object
-		    $obj_id = $cqueue->obj_id;
-		}
-		// 2. is for file? or is new file
+		// 1. For What file is
 		if ($cqueue->file_id > 0) {
 		    $file_id = $cqueue->file_id;
-		}
-		//Create variant
-		$file_variant = new CFilesvariants();
-		$file_variant->fsize = $input['fsize'];
-		$file_variant->fmd5 = $input['fmd5'];
-		$file_variant->preset_id = $cqueue->preset_id;
-		$file_variant->file_id = $file_id;
+		    //Create variant
+		    $file_variant = new CFilesvariants();
+		    $file_variant->fsize = $input['fsize'];
+		    $file_variant->fmd5 = $input['fmd5'];
+		    $file_variant->preset_id = $cqueue->preset_id;
+		    $file_variant->file_id = $file_id;
 
-		if ($file_variant->save()) {
-		    $file_loc = new CFilelocations();
-		    $file_loc->id = $file_variant->id;
-		    $file_loc->server_id = $this->server->id;
-		    $file_loc->fsize = $input['fsize'];
-		    $file_loc->fname = $input['fname'];
-		    //$file_loc->modified=now();
-		    if ($file_loc->save()) {
-			$result = array('success' => 'Location created');
+		    if ($file_variant->save()) {
+			$file_loc = new CFilelocations();
+			$file_loc->id = $file_variant->id;
+			$file_loc->server_id = $this->server->id;
+			$file_loc->fsize = $input['fsize'];
+			$file_loc->fname = $input['fname'];
+			//$file_loc->modified=now();
+			if ($file_loc->save()) {
+			    $result = array('success' => 'Location created');
+			    $cqueue->delete();
+			} else
+			    $result = array('error' => 'Location not created');
 		    } else
-			$result = array('error' => 'Location not created');
+			$result = array('error' => 'file_variant not created');
 		} else
-		    $result = array('error' => 'file_variant not created');
+		    $result = array('error' => 'unknown file');
 	    } else
 		$result = array('error' => 'Unknown task');
 	} else
@@ -235,8 +233,6 @@ class ServersyncController extends Controller {
 	echo serialize($result);
 	exit;
     }
-    
-
 
     ///Deprecated Upload
 

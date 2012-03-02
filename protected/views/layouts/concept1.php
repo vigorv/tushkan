@@ -9,12 +9,15 @@
         <!--[if lt IE 8]>
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
         <![endif]-->
+	
+         <link rel="stylesheet/less" type="text/css" href="/less/mycloud.less">
+
 
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<?php
-	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/scss/mycloud.sass");
 	Yii::app()->getClientScript()->registerCoreScript('jquery');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.hotkeys.js');
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/less-1.2.1.min.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.cookie.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jstree/jquery.jstree.js');
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery-ui/css/pepper-grinder/jquery-ui-1.8.16.custom.css");
@@ -24,17 +27,7 @@
     </head>
     <body>
         <div class="container" id="page">
-	    <div id="status_panel">
-		<div id="mail">
 
-		</div>
-		<div id="balance">
-
-		</div>
-		<div id="space">
-
-		</div>
-	    </div>
 
 	    <div class="notify_area">
 		<?php if (Yii::app()->user->hasFlash('success')): ?>
@@ -49,14 +42,7 @@
 		<?php endif ?>
 	    </div>
 
-	    <div id="win_shopers">
-		<div id="win_mover">
-		</div>
-		<div id="win_items">
 
-		</div>
-
-	    </div>
 
 	    <div id="content">
 		<?php echo $content; ?>

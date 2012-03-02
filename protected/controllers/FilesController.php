@@ -15,63 +15,6 @@ class FilesController extends Controller {
 
     /**
      *
-     * @param int $pid        Parent id
-     * @param str $title      ViewName
-     * @param int $is_dir   1|0 is directory
-     */
-    public function FCreate($pid, $title, $is_dir) {
-	$files = new CUserfiles();
-	$files->title = $title;
-	$files->pid = $pid;
-	$files->is_dir = $is_dir;
-	$files->user_id = $this->user_id;
-	$files->save();
-    }
-
-    /**
-     * Move to folder $pid
-     * @param type $id
-     * @param type $pid
-     */
-    public function FMove($id, $pid) {
-//  TO DO :check
-	CUserfiles::model()->updateByPk(array('user_id' => $this->user_id, 'id' => $id), 'pid=' . $pid);
-	echo "OK";
-    }
-
-    /**
-     *
-     * @param type $id
-     * @param type $file
-     * @return type
-     */
-    public function FRemove($id, $file=null) {
-	if ($file == null)
-	    $file = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
-	if ($file == null)
-	    die("unknown file");
-	if ($file->is_dir) {
-	    $filelist = CUserfiles::model()->findAllByAttributes(array('user_id' => $this->user_id, 'pid' => $file->id));
-	    foreach ($filelist as $file) {
-		$this->fremove($id, $file);
-	    }
-	}
-
-	$files = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $file->id));
-	foreach ($files as $fileloc) {
-	    // CServers::model()->sendComand('delete', $files->server_id, array('fname' => $files->fname, 'folder' => $files->folder))
-	    $fileloc->delete();
-	    //echo "deleted location\n";
-	}
-	if ($file <> null) {
-	    $file->delete();
-	}
-	//   echo "deleted meta\n";
-	return true;
-    }
-
-    /**
-     *
      * @param type $id
      */
     public function actionFOpen($id=0) {
@@ -126,26 +69,19 @@ class FilesController extends Controller {
     public function actionFview($id = 0) {
 	$item = $queue = array();
 	if ($id > 0) {
-	    $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $id));
+	    $item = CUserfiles::model()->getFileInfo($this->user_id, $id);
 	    if (!empty($item)) {
+
 		$queue = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{convert_queue}}')
-			->where('id = ' . $item['id'] . ' AND user_id = ' . $this->user_id)
+			->where('id = ' . $item['id'])
 			->queryRow();
 	    }
 	}
-	if (($id == 0) || ($item->is_dir)) {
-	    $flist = CUserfiles::model()->findAllByAttributes(array('user_id' => $this->user_id, 'pid' => $id), array('select' => 'id,pid,title,is_dir'));
-	    if (true) {
-		echo CFiletypes::ParsePrint($flist, 'FL1');
-		exit;
-	    } else {
-		//$this
-	    }
-	} else {
-	    $this->render('fview', array('item' => $item, 'queue' => $queue));
-	}
+
+
+	$this->render('fview', array('item' => $item, 'queue' => $queue));
     }
 
     public function actionAdd() {
@@ -186,35 +122,31 @@ class FilesController extends Controller {
     }
 
     public function actionIndex() {
-	$up_server = CServers::model()->getServer(UPLOAD_SERVER);
-	$this->render('view', array('user_id' => $this->user_id, 'up_server' => $up_server));
+	$items = CUserfiles::model()->getFileListUnt($this->user_id);
+
+	$this->render('view', array('files' => $items));
     }
 
     public function actionDownload() {
 	$fid = (int) $_GET['fid'];
-	if ($fid > 0)
+	if ($fid > 0) {
 	    $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $fid));
-	if ($item->is_dir == 0) {
 	    //        $server = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $fid));
 	    //            echo "it's file aviable on " . $server['id'];
-	    $dl_server = Yii::app()->params['tushkan']['dl_server'];
-	    //die (CUser::model()->findByPk($this->user_id)->sess_id);
-	    $sid = CUser::model()->findByPk($this->user_id)->sess_id;
-	    $kpt = md5($this->user_id . $sid . "I am robot");
+	    $dl_server = CServers::model()->getServer(DOWNLOAD_SERVER);
+	    $kpt = CUser::kpt($this->user_id);
 	    $this->redirect('http://' . $dl_server . '/files/download?fid=' . $fid . '&kpt=' . $kpt . '&user_id=' . $this->user_id);
 	    exit();
-	} else {
-	    echo "It's not aviable to download folder via browser for this moment";
-	}
+	} else throw new CHttpException(404,'The specified file cannot be found.');
 	exit();
     }
 
     /* Just key for user access to other servers */
 
     public function actionKPT() {
-	$sid = CUser::model()->findByPk($this->user_id)->sess_id;
-	$kpt = md5($this->user_id . $sid . "I am robot");
-	echo $kpt;
+	//$sid = CUser::model()->findByPk($this->user_id)->sess_id;
+	//$kpt = md5($this->user_id . $sid . "I am robot");
+	echo CUser::kpt($this->user_id);
 	exit();
     }
 
@@ -250,7 +182,6 @@ class FilesController extends Controller {
 	echo "OK";
     }
 
-
     /**
      * Действие обработчика мультифайловой загрузки
      *
@@ -263,33 +194,30 @@ class FilesController extends Controller {
      * ИЛИ возвращаем JSON
      *
      */
-    public function actionReceivefile()
-    {
-		// e.g. url:"page.php?upload=true" as handler property
-	    $headers = getallheaders();
-	    if (
-	        // basic checks
-	        isset(
-	            $headers['Content-Type'],
-	            $headers['Content-Length'],
-	            $headers['X-File-Size'],
-	            $headers['X-File-Name']
-	        ) &&
-	        $headers['Content-Type'] === 'multipart/form-data' &&
-	        $headers['Content-Length'] === $headers['X-File-Size']
-	    ){
-	        // create the object and assign property
-	        $file = new stdClass;
-	        $file->name = basename($headers['X-File-Name']);
-	        $file->size = $headers['X-File-Size'];
-	        $file->content = file_get_contents("php://input");
+    public function actionReceivefile() {
+	// e.g. url:"page.php?upload=true" as handler property
+	$headers = getallheaders();
+	if (
+	// basic checks
+		isset(
+			$headers['Content-Type'], $headers['Content-Length'], $headers['X-File-Size'], $headers['X-File-Name']
+		) &&
+		$headers['Content-Type'] === 'multipart/form-data' &&
+		$headers['Content-Length'] === $headers['X-File-Size']
+	) {
+	    // create the object and assign property
+	    $file = new stdClass;
+	    $file->name = basename($headers['X-File-Name']);
+	    $file->size = $headers['X-File-Size'];
+	    $file->content = file_get_contents("php://input");
 
-	        // if everything is ok, save the file somewhere
-	        if(file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/' . $file->name, $file->content))
-	            exit('{"success" : "true", "id" : "' . $file->name . '"}');
-	    }
-
-	    // if there is an error this will be the output instead of "OK"
-	    exit('{"error" : "true"}');
+	    // if everything is ok, save the file somewhere
+	    if (file_put_contents($_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/' . $file->name, $file->content))
+		exit('{"success" : "true", "id" : "' . $file->name . '"}');
 	}
+
+	// if there is an error this will be the output instead of "OK"
+	exit('{"error" : "true"}');
+    }
+
 }

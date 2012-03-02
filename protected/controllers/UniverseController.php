@@ -2,6 +2,17 @@
 
 class UniverseController extends Controller {
 
+    var $user_id;
+
+    public function beforeAction($action) {
+	parent::beforeAction($action);
+	$this->user_id = Yii::app()->user->id;
+	if ($this->user_id)
+	    return true;
+	else
+	    Yii::app()->request->redirect('/register/login');
+    }
+
     public function accessRules() {
 
     }
@@ -19,31 +30,34 @@ class UniverseController extends Controller {
 
     public function actionIndex2($section='') {
 	$this->layout = 'concept1';
+	/*
+	  $type_id = Utils::getSectionIdByName($section);
 
+	  if ($type_id) {
+	  $mb_content_items = Yii::app()->db->createCommand()
+	  ->select('id,  title')
+	  ->from('{{userfiles}}')
+	  ->where('type_id=' . $type_id)
+	  ->queryAll();
+	  } else
+	  $mb_content_items = Yii::app()->db->createCommand()
+	  ->select('id, title')
+	  ->from('{{userlocks}} ul')
+	  ->join('{{userfiles}} uf', ' ((uf.id =ul.lock_id) AND (ul.type=1))');
 
-	$type_id = Utils::getSectionIdByName($section);
+	  $media = Utils::getMediaList();
+	  $this->render('mainblock', array(
+	  'mb_top_items' => array(
+	  array('caption' => $media[1]['title'], 'link' => $media[1]['link']),
+	  array('caption' => 'Музыка', 'link' => '/universe/index?section=music'),
+	  array('caption' => 'Фото', 'link' => '/universe/index?section=music'),
+	  array('caption' => 'Документы', 'link' => '/universe/index?section=music')
+	  ),
+	  'section' => $section, 'mb_content_items' => $mb_content_items));
+	 * 
+	 */
 
-	if ($type_id) {
-	    $mb_content_items = Yii::app()->db->createCommand()
-		    ->select('id,  title')
-		    ->from('{{userfiles}}')
-		    ->where('type_id=' . $type_id)
-		    ->queryAll();
-	} else
-	    $mb_content_items = Yii::app()->db->createCommand()
-		    ->select('id, title')
-		    ->from('{{userlocks}} ul')
-		    ->join('{{userfiles}} uf', ' ((uf.id =ul.lock_id) AND (ul.type=1))');
-
-	$media = Utils::getMediaList();
-	$this->render('mainblock', array(
-	    'mb_top_items' => array(
-		array('caption' => $media[1]['title'], 'link' => $media[1]['link']),
-		array('caption' => 'Музыка', 'link' => '/universe/index?section=music'),
-		array('caption' => 'Фото', 'link' => '/universe/index?section=music'),
-		array('caption' => 'Документы', 'link' => '/universe/index?section=music')
-	    ),
-	    'section' => $section, 'mb_content_items' => $mb_content_items));
+	$this->render('main');
     }
 
     public function actionIndex() {
@@ -190,141 +204,32 @@ class UniverseController extends Controller {
 	$this->render('steps');
     }
 
-    public function actionExt() {
-	if (isset($_GET['goods_add'])) {
-
-	}
-
-	$this->render('steps');
+    public function actionPanel() {
+	$this->render('status_panel');
     }
 
-    /**
-     * обработчик ответа от конвертора
-     * переносит сконвертированный файл в типизированные объекты
-     * входные параметры передаются в $_POST
-     * 		result
-     * 		task_id
-     * 		server_id
-     * 		folder
-     * 		filename
-     * 		fsize
-     * 		type_id
-     *
-     */
-    public function actionTypify() {
-//*ЗАГЛУШКА
-	$result = 0;
-	$task_id = 1;
-	$server_id = 1;
-	$folder = 1;
-	$filename = 'generated_filename.avi';
-	$fsize = 1000000000;
-	$type_id = 1;
-//*///КОНЕЦ ЗАГЛУШКИ
-	/*
-	  if (!empty($_POST['']))
-	  {
-	  $convertInfo = unserialize($_POST['']);
+    public function actionGoods() {
+	$this->render('goods');
+    }
 
-	  $result		= $convertInfo['result'];
-	  $task_id	= $convertInfo['task_id'];
-	  $server_id	= $convertInfo['server_id'];
-	  $folder		= $convertInfo['folder'];
-	  $filename	= $convertInfo['filename'];
-	  $fsize		= $convertInfo['fsize'];
-	  $type_id	= $convertInfo['type_id'];
-	  }
-	  // */
-	if (!empty($task_id)) {
-	    $cmd = Yii::app()->db->createCommand()
-		    ->select('*')
-		    ->from('{{convert_queue}}')
-		    ->where('task_id = :id');
-	    $cmd->bindParam(':id', $task_id, PDO::PARAM_INT);
-	    $queue = $cmd->queryRow();
-	    if (!empty($queue)) {//ЕСЛИ ЕСТЬ ИНФО О ЗАДАНИИ
-//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
-		if (!empty($result)) {
-//ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
-		} else {
-//ЧТЕНИЕ ИНФО О ФАЙЛЕ
-		    $cmd = Yii::app()->db->createCommand()
-			    ->select('*')
-			    ->from('{{userfiles}}')
-			    ->where('id = ' . $queue['id']);
-		    $fileInfo = $cmd->queryRow();
-//ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
-		    $cmd = Yii::app()->db->createCommand()
-			    ->select('*')
-			    ->from('{{filelocations}}')
-			    ->where('id = ' . $queue['id']);
-		    $locInfo = $cmd->queryRow();
-//ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
-//СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
-		    $objInfo = array(
-			'id' => $fileInfo['id'],
-			'user_id' => $fileInfo['user_id'],
-			'title' => $fileInfo['title'],
-			'type_id' => intval($type_id),
-		    );
-		    $sql = 'INSERT INTO {{typedfiles}} (id, variant_id, user_id, fsize, title, userobject_id)
-			    		VALUES (null, 0, ' . $objInfo['user_id'] . ', :fsize, "' . $objInfo['title'] . '", ' . $objInfo['id'] . ')';
-		    $cmd = Yii::app()->db->createCommand($sql);
-		    $cmd->bindParam(':fsize', $fsize, PDO::PARAM_LOB);
-		    $cmd->execute();
-
-		    $sql = 'INSERT INTO {{usertobjects}} (id, user_id, title, type_id)
-			    		VALUES (' . $objInfo['id'] . ', ' . $objInfo['user_id'] . ', "' . $objInfo['title'] . '", ' . $objInfo['type_id'] . ')';
-		    Yii::app()->db->createCommand($sql)->execute();
-
-//ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
-		    $cmd = Yii::app()->db->createCommand()
-			    ->select('ptp.id, ptp.title')
-			    ->from('{{product_type_params}} ptp')
-			    ->join('{{product_types_type_params}} pttp', 'ptp.id = pttp.param_id')
-			    ->where('pttp.type_id = :id');
-		    $cmd->bindParam(':id', $type_id, PDO::PARAM_INT);
-		    $params = $cmd->queryAll();
-
-		    $height = 200;
-		    $width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
-//ВООБЩЕ ПАРАМЕТРЫ ДОЛЖНЫ ПРИХОДИТЬ ОТДЕЛЬНО. К ОБСУЖДЕНИЮ: ОТКУДА?
-		    if (!empty($params)) {
-//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
-			foreach ($params as $p) {
-			    if (!empty($$p['title'])) {
-				$p_id = $p['id'];
-				$p_vl = $$p['title'];
-				$sql = 'INSERT INTO {{tobjects_param_values}} (id, param_id, value, userobject_id)
-						    		VALUES (null, ' . $p_id . ',
-						    		"' . $p_vl . '", ' . $objInfo['id'] . ')';
-				Yii::app()->db->createCommand($sql)->execute();
-			    }
-			}
-		    }
-
-//СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
-		    $objLocInfo = array(
-			'id' => $locInfo['id'],
-			'user_id' => $locInfo['user_id'],
-			'server_id' => intval($server_id),
-			'state' => 0, // ?? ЧТО СЮДА ПРОПИСАТЬ ??
-			'fsize' => $fsize,
-			'fname' => $filename,
-			'folder' => $folder,
-		    );
-		    $sql = 'INSERT INTO {{userobjectlocations}} (id, user_id, server_id, state, fsize, fname, folder)
-			    		VALUES (' . $locInfo['id'] . ', ' . $locInfo['user_id'] . ', ' . $locInfo['server_id'] . ',
-			    		' . $locInfo['state'] . ', ' . $locInfo['fsize'] . ', "' . $locInfo['fname'] . '", ' . $locInfo['folder'] . ')';
-		    Yii::app()->db->createCommand($sql)->execute();
-
-//ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
-		    $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
-		    Yii::app()->db->createCommand($sql)->execute();
-		}
-	    }
+    public function actionLibrary($lib='') {
+	switch ($lib) {
+	    case 'v':
+	    case 'm':
+	    case 'd':
+		$type_id = Utils::getSectionIdByAlias($lib);
+		$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
+		$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
+		$this->render('library',array('mb_content_items'=>$mb_content_items,
+		    'mb_content_items_unt'=>$mb_content_items_unt));
+		break;
+	    default:
+		$this->render('library');
+		return;
 	}
     }
+    
+    
 
     /**
      * добавить в пространство вариант продукта с витрины

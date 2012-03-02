@@ -11,7 +11,7 @@
  * @property $parent_id
  */
 class CUserObjects extends CActiveRecord {
-    
+
     /**
      *
      * @param string $className
@@ -23,6 +23,20 @@ class CUserObjects extends CActiveRecord {
 
     public function tableName() {
 	return '{{userobjects}}';
+    }
+
+    public function getList($user_id, $type_id=-1, $page=1, $count=100) {
+	$offset = ($page - 1) * $count;
+	if ($type_id >= 0) {
+	    $type_str = ' AND uo.type_id=' . $type_id;
+	} else
+	    $type_str = '';
+	return Yii::app()->db->createCommand()
+			->select('uo.title,uo.id')
+			->from('{{userobjects}} uo')
+			->where('uo.user_id =' . $user_id . $type_str)
+			->limit($count, $offset)
+			->queryAll();
     }
 
 }

@@ -79,22 +79,83 @@ class CUserfiles extends CActiveRecord {
      */
     public function getFileListUnt($user_id, $page=1, $count=100) {
 	return Yii::app()->db->createCommand()
-		->select('uf.id, uf.title')
-		->from('{{userfiles}} uf')
-		->where('uf.user_id ='. $user_id.' AND uf.object_id = 0')
-		->limit($count, ($page-1) *$count)
-		->queryAll();
+			->select('uf.id, uf.title')
+			->from('{{userfiles}} uf')
+			->where('uf.user_id =' . $user_id . ' AND uf.object_id = 0')
+			->limit($count, ($page - 1) * $count)
+			->queryAll();
     }
-    
-    
-    public function getFileInfo($user_id,$fid){
+
+    /**
+     *
+     * @param int $user_id
+     * @param int $fid
+     * @return mixed 
+     */
+    public function getFileInfo($user_id, $fid) {
 	return Yii::app()->db->createCommand()
-		->select('uf.id, uf.title, fv.fsize')
-		->from('{{userfiles}} uf')
-		->leftJoin('{{files_variants}} fv',' fv.file_id = uf.id and fv.preset_id =0 ')
-		->where('uf.object_id = 0 AND uf.id= '.$fid.' AND uf.user_id ='.$user_id)
-		->queryRow();
-		
+			->select('uf.id, uf.title, fv.fsize')
+			->from('{{userfiles}} uf')
+			->leftJoin('{{files_variants}} fv', ' fv.file_id = uf.id and fv.preset_id =0 ')
+			->where('uf.object_id = 0 AND uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
+			->queryRow();
+    }
+
+    /**
+     *
+     * @param int $user_id
+     * @param int $fid
+     * @return mixed 
+     */
+    public function getFileMeta($user_id, $fid) {
+	return Yii::app()->db->createCommand()
+			->select('uf.*')
+			->from('{{userfiles}} uf')
+			->where('uf.user_id=' . $user_id . ' AND uf.id=' . $fid)
+			->queryRow();
+    }
+
+    public function getFileVariantUser($fid) {
+	return Yii::app()->db->createCommand()
+			->select('fv.*')
+			->from('{{files_variants}} fv')
+			->where('fv.file_id=' . $fid . ' AND fv.preset_id = 0')
+			->queryRow();
+    }
+
+    public function getFileLocUser($variant_id, $zone=null, $stype=1) {
+	$fileloc = Yii::app()->db->createCommand()
+		->select('fl.*,fs.*')
+		->from('{{filelocations}} fl')
+		->join('{{fileservers}} fs', 'fl.server_id = fs.id');
+	$where = array('and');
+	if ($stype)
+	    $where[] = 'fs.stype=' . $stype;
+	if ($zone)
+	    $where[] = 'fs.zone_id=' . $zone;
+	$where[] = 'fl.id=' . $variant_id;
+
+	$fileloc->where($where);
+	return $fileloc->queryAll();
+    }
+
+    /**
+     *  Remove only if file| not object
+     * @param int $user_id
+     * @param int $id 
+     */
+    public function RemoveFile($user_id, $fid) {
+	$file = $this->getFileMeta($user_id, $fid);
+	if (($file) && ($file['object_id'] == 0)) {
+	    $file_variants = CFilesvariants::model()->findAllByAttributes(array('file_id' => $file['id']));
+
+	    // TODO: DELETE BY mysql onDELETE
+	    foreach ($file_variants as $file_variant)
+		CFilelocations::model()->deleteAllByAttributes(array('id' => $file_variant['id']));
+	    CFilesvariants::model()->deleteAllByAttributes(array('file_id' => $file['id']));
+	    CUserfiles::model()->deleteByPk($fid);
+	} else
+	    return false;
     }
 
 }

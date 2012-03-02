@@ -137,7 +137,8 @@ class FilesController extends Controller {
 	    $kpt = CUser::kpt($this->user_id);
 	    $this->redirect('http://' . $dl_server . '/files/download?fid=' . $fid . '&kpt=' . $kpt . '&user_id=' . $this->user_id);
 	    exit();
-	} else throw new CHttpException(404,'The specified file cannot be found.');
+	} else
+	    throw new CHttpException(404, 'The specified file cannot be found.');
 	exit();
     }
 
@@ -149,24 +150,26 @@ class FilesController extends Controller {
 	echo CUser::kpt($this->user_id);
 	exit();
     }
-/*Deprecated
-    public function actionCreate($fid=0) {
-	$model = new FilesCreateForm();
-	if (isset($_POST['FilesCreateForm'])) {
-// collects user input data
-	    $model->attributes = $_POST['FilesCreateForm'];
-// validates user input and redirect to previous page if validated
-	    echo "Validating";
-	    if ($model->validate()) {
-		$files = new CUserfiles();
-		$files->attributes = $model->attributes;
-		echo "OK. Let's Create";
-	    }
-	}
-// displays the login form
-	$this->render('create', array('model' => $model, 'pid' => (int) $fid));
-    }
-*/
+
+    /* Deprecated
+      public function actionCreate($fid=0) {
+      $model = new FilesCreateForm();
+      if (isset($_POST['FilesCreateForm'])) {
+      // collects user input data
+      $model->attributes = $_POST['FilesCreateForm'];
+      // validates user input and redirect to previous page if validated
+      echo "Validating";
+      if ($model->validate()) {
+      $files = new CUserfiles();
+      $files->attributes = $model->attributes;
+      echo "OK. Let's Create";
+      }
+      }
+      // displays the login form
+      $this->render('create', array('model' => $model, 'pid' => (int) $fid));
+      }
+     */
+
     public function actionTypes($fid) {
 	$this->renders('types');
     }
@@ -178,7 +181,7 @@ class FilesController extends Controller {
 	$id = (int) $_POST['id'];
 	if ($id < 1)
 	    die("unknown file");
-	$this->fremove($id);
+	CUserfiles::model()->RemoveFile($this->user_id, $id);
 	echo "OK";
     }
 

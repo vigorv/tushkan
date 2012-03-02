@@ -4,4 +4,5 @@
 #productdetail { margin:3px; }
 #productdetail img { margin-right: 8px; margin-bottom: 5px; }
 
+.divider { height:1px; width:100%; clear: both; }
 #footer { clear: both; }

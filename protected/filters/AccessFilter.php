@@ -34,6 +34,7 @@ class AccessFilter extends CFilter
 		switch (get_class($filterChain->controller))
 		{
 			case "OrdersController":
+			case "DevicesController":
 			case "UniverseController":
 				$access = ($userPower >= _IS_USER_);
 				if ($filterChain->action->id == 'typify')

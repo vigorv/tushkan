@@ -189,7 +189,7 @@ class UniverseController extends Controller {
     }
 
     public function actionLibrary($lib='') {
-	$this->layout = 'concept1';	
+	$this->layout = 'concept1';
 	switch ($lib) {
 	    case 'v':
 	    case 'a':
@@ -205,10 +205,10 @@ class UniverseController extends Controller {
 		$this->render('library');
 		return;
 	}
-	
+
     }
-    
-    
+
+
 
     /**
      * добавить в пространство вариант продукта с витрины

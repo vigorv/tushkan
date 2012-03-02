@@ -24,6 +24,10 @@ define("_PD_GROUP_COMMON_", 0);
 
 define("_MB_", 1024 * 1024);
 
+define("_DT_MOBILE_", 0);
+define("_DT_PAD_", 1);
+define("_DT_STORAGE_", 2);
+
 class Utils {
 
     static $mtypes = array(
@@ -286,7 +290,7 @@ class Utils {
 	switch ($name) {
 	    case 'video': return 1;
 	    case 'audio': return 2;
-	    case 'photo': return 3;	    
+	    case 'photo': return 3;
 	    case 'docs': return 4;
 	    default: return 0;
 	}
@@ -312,9 +316,9 @@ class Utils {
 	    3 => array(
 		'id'=>3,
 		'title' => Yii::t('common', 'Photo'),
-		'exts'=>array('jpg','jpeg','png'),		
+		'exts'=>array('jpg','jpeg','png'),
 	    )
-	    
+
 		/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
 		  2 => array(
 		  'id'	=> 2,
@@ -364,4 +368,13 @@ class Utils {
 	);
     }
 
+	public function getDeviceTypes()
+	{
+		$types = array(
+			_DT_MOBILE_ => array("id" => _DT_MOBILE_, "title" => Yii::t('common', 'Mobile')),
+			_DT_PAD_ => array("id" => _DT_PAD_, "title" => Yii::t('common', 'Pad')),
+			_DT_STORAGE_ => array("id" => _DT_STORAGE_, "title" => Yii::t('common', 'Storage')),
+		);
+		return $types;
+	}
 }

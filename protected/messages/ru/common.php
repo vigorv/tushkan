@@ -40,6 +40,8 @@ return array (
   'About'					=> 'О нас',
   'Search'					=> 'Поиск',
   'FAQ'						=> 'ЧАВО',
+  'Devices'					=> 'Устройства',
+  'Device types'			=> 'Типы устройств',
   'Profile'					=> 'Профиль',
   'Total'					=> 'Всего',
   'Close'					=> 'Закрыть',

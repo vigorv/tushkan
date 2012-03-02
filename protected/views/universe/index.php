@@ -30,7 +30,7 @@
 
 			if (!empty($params))
 			{
-				echo '<div class="shortfilm"><a href="/universe/tview/' . $f['id'] . '">';
+				echo '<div class="chess"><a href="/universe/tview/' . $f['id'] . '">';
 				if (!empty($params['poster']))
 				{
 					$poster = $params['poster'];
@@ -40,7 +40,7 @@
 				{
 					$poster = '/images/films/noposter.jpg';
 				}
-				echo '<img width="50" src="' . $poster . '" />';
+				echo '<img align="left" width="80" src="' . $poster . '" />';
 				echo '<b>' . $f['title'] . '</b>';
 				echo '</a></div>';
 			}

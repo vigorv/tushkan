@@ -89,10 +89,22 @@ class PaysController extends Controller
 			->from('{{balance}}')
 			->where('user_id = ' . Yii::app()->user->getId())
 			->queryRow();
-		$postInfo = array();
+		$orderInfo = $postInfo = array();
 		if (!empty($_POST))
 		{
 			$postInfo = $_POST;
+			if (!empty($postInfo['order_id']))
+			{
+				$cmd = Yii::app()->db->createCommand()
+					->select('o.id, p.title, oi.variant_id, oi.price_id, oi.rent_id, oi.price, oi.cnt')
+					->from('{{orders}} o')
+					->join('{{order_items}} oi', 'oi.order_id=o.id')
+					->leftJoin('{{product_variants}} pv', 'oi.variant_id=pv.id')
+					->leftJoin('{{products}} p', 'pv.product_id=p.id')
+					->where('o.id = :id AND o.state = 0 AND o.user_id = ' . Yii::app()->user->getId());
+				$cmd->bindParam(':id', $postInfo['order_id'], PDO::PARAM_INT);
+				$orderInfo = $cmd->queryAll();
+			}
 		}
 
 		$cmd = Yii::app()->db->createCommand()
@@ -108,7 +120,7 @@ class PaysController extends Controller
 			Yii::app()->user->setFlash('error', Yii::t('pays', 'Payment initialisation error.'));
 			$this->redirect('/universe/error');
 		}
-		$this->render('/pays/do', array('lst' => $lst, 'oInfo' => $oInfo, 'balance' => $balance, 'postInfo' => $postInfo));
+		$this->render('/pays/do', array('lst' => $lst, 'oInfo' => $oInfo, 'balance' => $balance, 'postInfo' => $postInfo, 'orderInfo' => $orderInfo));
 	}
 
 	/**
@@ -451,11 +463,15 @@ class PaysController extends Controller
 		Yii::app()->db->createCommand($sql)->query();
 
 		//ПРОПИСЫВАЕМ ИНФУ О ВСЕХ ТОВАРАХ ЗАКАЗА КАК ПРИОБРЕТЕННЫХ(АРЕНДОВАННЫХ)
-		$items = Yii::app()->db->createCommand()
-			->select('*')
-			->from('{{order_items}}')
-			->where('order_id = ' . $payInfo['order_id'])
-			->queryAll();
+		$cmd = Yii::app()->db->createCommand()
+			->select('o.id, p.title, oi.variant_id, oi.price_id, oi.rent_id')
+			->from('{{orders}} o')
+			->join('{{order_items}} oi', 'oi.order_id=o.id')
+			->leftJoin('{{product_variants}} pv', 'oi.variant_id=pv.id')
+			->leftJoin('{{products}} p', 'pv.product_id=p.id')
+			->where('o.id = :id AND o.user_id = ' . Yii::app()->user->getId());
+		$cmd->bindParam(':id', $payInfo['order_id'], PDO::PARAM_INT);
+		$items = $cmd->queryAll();
 		if (!empty($items))
 		{
 			foreach ($items as $i)
@@ -474,7 +490,24 @@ class PaysController extends Controller
 						INSERT INTO {{actual_rents}}
 							(id, variant_id, start, period, user_id)
 						VALUES
-							(null, ' . $i['variant_id'] . ', 0, "' . $period . '", ' . $payInfo['user_id'] . ')
+							(null, ' . $i['variant_id'] . ', 0, "' . $period . '", ' . Yii::app()->user->getId() . ')
+					';
+					Yii::app()->db->createCommand($sql)->query();
+				}
+
+				//СОХРАНЯЕМ ВСЕ ПОЗИЦИИ В ПП
+				$existInfo = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{typedfiles}}')
+					->where('variant_id = ' . $i['variant_id'] . ' AND user_id = ' . Yii::app()->user->getId())
+					->queryRow();
+				if (empty($existInfo))
+				{
+					$sql = '
+						INSERT INTO {{typedfiles}}
+							(id, variant_id, user_id, title, collection_id)
+						VALUES
+							(null, ' . $i['variant_id'] . ', ' . Yii::app()->user->getId() . ', "' . $i["title"] . '", 0)
 					';
 					Yii::app()->db->createCommand($sql)->query();
 				}

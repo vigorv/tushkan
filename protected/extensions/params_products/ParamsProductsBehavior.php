@@ -55,7 +55,7 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 						foreach ($this->params[$vk] as $pid => $param)
 						{
 							//СОХРАНЯЕМ ПАРАМЕТРЫ ТЕКУЩЕГО ВАРИАНТА
-							if ($param['id'] < 0)
+							if (empty($param['vlid']))
 							{
 								//ДОБАВЛЯЕМ НОВЫЙ ПАРАМЕТР
 								$param['variant_id'] = $variant['id'];
@@ -73,7 +73,7 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 								//ОБНОВЛЯЕМ ЗНАЧЕНИЕ ПАРАМЕТРА
 								$sql = 'UPDATE {{product_param_values}} SET value = :value WHERE id = :id';
 								$cmd = Yii::app()->db->createCommand($sql);
-								$cmd->bindParam(":id", $param['id'], PDO::PARAM_INT);
+								$cmd->bindParam(":id", $param['vlid'], PDO::PARAM_INT);
 								$cmd->bindParam(":value", $param['value'], PDO::PARAM_STR);
 								$cmd->execute();
 							}

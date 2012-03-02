@@ -9,5 +9,6 @@ return array(
 	'Pay'		=> 'Оплатить',
 
 	'Order not found' => 'Заказ не найден',
+	'Order deleted' => 'Заказ удален',
 	'Orders not found' => 'Заказы не найдены',
 );

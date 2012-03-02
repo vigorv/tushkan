@@ -2,6 +2,9 @@
 <?php
 if (!empty($info))
 {
+	echo'<pre>';
+	//print_r($dsc);
+	echo'</pre>';
 	echo '<h3>' . $info['title'] . '</h3>';
 ?>
 <script type="text/javascript">
@@ -9,13 +12,15 @@ if (!empty($info))
 	{
 		if (confirm('<?php echo Yii::t('common', 'Are you sure?'); ?>'))
 		{
-
+			$.post('/universe/remove/' + oid, function(){
+				location.href='/universe';
+			});
 		}
 		return false;
 	}
 </script>
 <?php
-	echo '<div class="shortfilm">';
+	echo '<div id="productdetail">';
 	if (!empty($params['poster']))
 	{
 		$poster = $params['poster'];
@@ -25,7 +30,7 @@ if (!empty($info))
 	{
 		$poster = '/images/films/noposter.jpg';
 	}
-	echo '<img src="' . $poster . '" />';
+	echo '<img align="left" src="' . $poster . '" />';
 
 	$fk = 0;
 	$actions = array();
@@ -51,17 +56,20 @@ if (!empty($info))
 	else
 		$links[$fk] = '';
 	unset($params['url']);
+	unset($params['width']);
+	unset($params['height']);
 
-	echo '<ul>';
+	echo '<p>';
 	foreach ($params as $param => $value)
 	{
+		if (empty($value)) continue;
 		if ($param == Yii::app()->params['tushkan']['fsizePrmName'])
 		{
 			$value = Utils::sizeFormat($value);
 		}
-		echo '<li>' . Yii::t('params', $param) . ': ' . $value . '</li>';
+		echo '<br />' . Yii::t('params', $param) . ': ' . $value . '</li>';
 	}
-	echo'</ul>';
+	echo'</p>';
 	$rentDsc = '';
 	if (!empty($actions))
 	{
@@ -84,6 +92,9 @@ if (!empty($info))
 		}
 		echo '<p>' . implode(' | ', $actions) . ' ' . $rentDsc . '</p>';
 	}
+	if (!empty($dsc['description']))
+		echo '<p>' . $dsc['description'] . '</p>';
+
 	echo'</div>';
 
 

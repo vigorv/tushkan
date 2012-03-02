@@ -270,4 +270,38 @@ class OrdersController extends Controller
 		}
 		$this->render('/orders/rent', array('info' => $info));
 	}
+
+	/**
+	 * удалить из корзины неоплаченный заказ
+	 *
+	 * @param integer $id
+	 */
+	public function actionDiscard($id = 0)
+	{
+		$result = '';
+		$cmd = Yii::app()->db->createCommand()
+			->select('o.id AS oid, oi.id AS iid')
+			->from('{{orders}} o')
+			->join('{{order_items}} oi', 'oi.order_id=o.id')
+			->where('o.id = :id AND o.state = 0 AND o.user_id = ' . Yii::app()->user->getId());
+		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+		$orderInfo = $cmd->queryAll();
+		if (!empty($orderInfo))
+		{
+			$result = 'ok';
+			foreach ($orderInfo as $o)
+			{
+				$oid = $o['oid'];
+				$sql = 'DELETE FROM {{order_items}} WHERE id = ' . $o['iid'];
+				Yii::app()->db->createCommand($sql)->execute();
+			}
+			if (!empty($oid))
+			{
+				$sql = 'DELETE FROM {{orders}} WHERE id = ' . $oid;
+				Yii::app()->db->createCommand($sql)->execute();
+			}
+		}
+
+		$this->render('/orders/discard', array('result' => $result));
+	}
 }

@@ -6,6 +6,15 @@
 class ProductsController extends Controller
 {
 	/**
+	 * ПОЛУЧИТЬ МАССИВ ПАРАМЕТРОВ, НЕОБХОДИМЫХ ДЛЯ КРАТКОЙ ИНФЫ О ПРОДУКТЕ
+	 *
+	 * @return mixed
+	 */
+	public function getShortParamsIds()
+	{
+		return array(10, 12, 13, 14);
+	}
+	/**
 	 * вывод списка витрин
 	 *
 	 */
@@ -16,7 +25,31 @@ class ProductsController extends Controller
 			->from('{{partners}}')
 			->where('active <= ' . $this->userPower)
 			->queryAll();
-		$this->render('/products/index', array('lst' => $lst));
+
+		$searchCondition = '';
+		if (!empty($_GET['search']))
+		{
+			$searchCondition = ' AND p.title LIKE :search';
+			$search = '%' . $_GET['search'] . '%';
+		}
+		$paramIds = $this->getShortParamsIds();
+		$cmd = Yii::app()->db->createCommand()
+			->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+			->from('{{products}} p')
+			->join('{{partners}} prt', 'p.partner_id=prt.id')
+			->join('{{product_variants}} pv', 'pv.product_id=p.id')
+			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+			->where('p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition)
+			->order('pv.id ASC');
+		if (!empty($searchCondition))
+		{
+			$cmd->bindParam(':search', $search, PDO::PARAM_STR);
+		}
+		$pst = $cmd->queryAll();
+
+		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
+
+		$this->render('/products/index', array('lst' => $lst, 'pstContent' => $pstContent));
 	}
 
 	/**
@@ -26,26 +59,36 @@ class ProductsController extends Controller
 	 */
 	public function actionPartner($id = 0)
 	{
-		//ПОСТРАНИЧНУЮ НАКЛАДЫВАЕМ НА ЭТУ ВЫБОРКУ
-		$paramIds = array(10, 12, 13, 14);
 		$cmd = Yii::app()->db->createCommand()
-			->select('p.id, p.title AS ptitle, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
-			->from('{{products}} p')
-			->join('{{partners}} prt', 'prt.id=p.partner_id')
-			->join('{{product_variants}} pv', 'pv.product_id=p.id')
-			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-			->where('p.partner_id = :id AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower)
-			->order('pv.id ASC');
+			->select('*')
+			->from('{{partners}}')
+			->where('id = :id AND active <= ' . $this->userPower);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-		$pst = $cmd->queryAll();
+		$pInfo = $cmd->queryRow();
+		$pst = array();
 
-		$lst = array();
-		if (empty($pst))
+		if (!empty($pInfo))
+		{
+			$paramIds = $this->getShortParamsIds();
+			$cmd = Yii::app()->db->createCommand()
+				->select('p.id, p.title AS ptitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+				->from('{{products}} p')
+				->join('{{product_variants}} pv', 'pv.product_id=p.id')
+				->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower)
+				->order('pv.id ASC');
+			$pst = $cmd->queryAll();
+		}
+
+		if (empty($pst) && empty($pInfo))
 		{
 			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
 			Yii::app()->request->redirect('/universe/error');
 		}
-		$this->render('/products/partner', array('pst' => $pst));
+
+		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
+
+		$this->render('/products/partner', array('pInfo' => $pInfo, 'pstContent' => $pstContent));
 	}
 
 	public function actionView($id)

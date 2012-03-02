@@ -4,6 +4,9 @@ class UniverseController extends Controller {
 
     var $user_id;
 
+    //public $panel;
+    //public $goods;
+
     public function beforeAction($action) {
 	parent::beforeAction($action);
 	$this->user_id = Yii::app()->user->id;
@@ -30,34 +33,7 @@ class UniverseController extends Controller {
 
     public function actionIndex2($section='') {
 	$this->layout = 'concept1';
-	/*
-	  $type_id = Utils::getSectionIdByName($section);
-
-	  if ($type_id) {
-	  $mb_content_items = Yii::app()->db->createCommand()
-	  ->select('id,  title')
-	  ->from('{{userfiles}}')
-	  ->where('type_id=' . $type_id)
-	  ->queryAll();
-	  } else
-	  $mb_content_items = Yii::app()->db->createCommand()
-	  ->select('id, title')
-	  ->from('{{userlocks}} ul')
-	  ->join('{{userfiles}} uf', ' ((uf.id =ul.lock_id) AND (ul.type=1))');
-
-	  $media = Utils::getMediaList();
-	  $this->render('mainblock', array(
-	  'mb_top_items' => array(
-	  array('caption' => $media[1]['title'], 'link' => $media[1]['link']),
-	  array('caption' => 'Музыка', 'link' => '/universe/index?section=music'),
-	  array('caption' => 'Фото', 'link' => '/universe/index?section=music'),
-	  array('caption' => 'Документы', 'link' => '/universe/index?section=music')
-	  ),
-	  'section' => $section, 'mb_content_items' => $mb_content_items));
-	 * 
-	 */
-
-	$this->render('main');
+	$this->render('library');
     }
 
     public function actionIndex() {
@@ -213,10 +189,12 @@ class UniverseController extends Controller {
     }
 
     public function actionLibrary($lib='') {
+	$this->layout = 'concept1';	
 	switch ($lib) {
 	    case 'v':
-	    case 'm':
+	    case 'a':
 	    case 'd':
+	    case 'p':
 		$type_id = Utils::getSectionIdByAlias($lib);
 		$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
 		$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
@@ -227,6 +205,7 @@ class UniverseController extends Controller {
 		$this->render('library');
 		return;
 	}
+	
     }
     
     

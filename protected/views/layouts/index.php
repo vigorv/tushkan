@@ -51,9 +51,6 @@
                         array('label' => Yii::t('orders', 'Orders'),
                             'url' => array('/orders'), 'visible' => !Yii::app()->user->isGuest
                         ),
-                        array('label' => Yii::t('devices', 'Devices'),
-                            'url' => array('/devices'), 'visible' => !Yii::app()->user->isGuest
-                        ),
                         array('label' => Yii::t('common', 'Login'), 'url' => array('/register/login'), 'visible' => Yii::app()->user->isGuest),
                         array('label' => Yii::t('common', 'Logout') . ' (' . Yii::app()->user->name . ')',
                             'url' => array('/register/logout'), 'visible' => !Yii::app()->user->isGuest

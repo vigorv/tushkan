@@ -28,6 +28,7 @@ return array (
   'New password'		=> 'Новый пароль',
   'Account bans'		=> 'Блокировки аккаунта',
 
+  'Delete for recycle'		=> 'Удален в корзину',
   'Visible for admins'		=> 'Видим администраторам',
   'Visible for moderators'	=> 'Видим модераторам',
   'Visible for users'		=> 'Видим пользователям',

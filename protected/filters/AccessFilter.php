@@ -4,6 +4,7 @@
  *
  */
 
+define('_IN_BASKET_',		100);
 define('_IS_ADMIN_',		70);
 define('_IS_MODERATOR_',	60);
 define('_IS_USER_',			10);
@@ -34,6 +35,7 @@ class AccessFilter extends CFilter
 		switch (get_class($filterChain->controller))
 		{
 			case "OrdersController":
+			case "DevicesController":
 			case "UniverseController":
 				$access = ($userPower >= _IS_USER_);
 				if ($filterChain->action->id == 'typify')

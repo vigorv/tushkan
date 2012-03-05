@@ -74,23 +74,16 @@
 	}
 ?>
     </div>
-    <div id="section_content" class="block_content">
-
-    </div>
-    <div id="section_files" class="block_content">
-
-    </div>
-    <div id="device_content" class="block_content">
-
-    </div>
-    <div id="upload_block" class="block_content">
-
-    </div>
+    <div id="section_content" class="block_content"></div>
+    <div id="section_files" class="block_content"></div>
+    <div id="upload_block" class="block_content"></div>
+    <div id="device_content" class="block_content"></div>
 </div>
 <script langauge="javascript">
     //$('#user_content').load('users/view');
   //$('#device_content').load('devices/view');
     //$('#section_content').load('sections/view')
 //   $('#section_files').load('files')
-   $('#upload_block').load('/universe/upload')
+   $('#upload_block').load('/universe/upload');
+   $('#device_content').load('/devices/index');
 </script>

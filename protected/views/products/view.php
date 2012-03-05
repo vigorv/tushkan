@@ -203,7 +203,8 @@ if(!empty($info))
 					$actions[] = $actionOnline;
 				else
 				{
-					$actions[] = $actionDownload;
+					if (!$isRented)
+						$actions[] = $actionDownload;
 					$actions[] = $actionOnline;
 				}
 			}

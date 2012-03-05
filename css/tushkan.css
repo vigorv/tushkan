@@ -1,7 +1,9 @@
-.chess { float: left; clear: right; margin:3px; width:220px; }
+.chess, .glue { float: left; clear: right; margin:3px; width:180px; }
+.chess { width:220px; }
 .chess img { margin-right: 8px; margin-bottom: 5px; }
 
 #productdetail { margin:3px; }
 #productdetail img { margin-right: 8px; margin-bottom: 5px; }
 
+.divider { height:1px; width:100%; clear: both; }
 #footer { clear: both; }

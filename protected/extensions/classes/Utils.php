@@ -24,6 +24,11 @@ define("_PD_GROUP_COMMON_", 0);
 
 define("_MB_", 1024 * 1024);
 
+define("_DT_MOBILE_", 0);
+define("_DT_PAD_", 1);
+define("_DT_TVSET_", 2);
+define("_DT_PLAYER_", 3);
+
 class Utils {
 
     static $mtypes = array(
@@ -250,6 +255,7 @@ class Utils {
 	    _IS_USER_ => Yii::t('users', 'Visible for users'),
 	    _IS_MODERATOR_ => Yii::t('users', 'Visible for moderators'),
 	    _IS_ADMIN_ => Yii::t('users', 'Visible for admins'),
+	    _IN_BASKET_ => Yii::t('users', 'Delete for recycle'),
 	);
     }
 
@@ -286,7 +292,7 @@ class Utils {
 	switch ($name) {
 	    case 'video': return 1;
 	    case 'audio': return 2;
-	    case 'photo': return 3;	    
+	    case 'photo': return 3;
 	    case 'docs': return 4;
 	    default: return 0;
 	}
@@ -312,9 +318,9 @@ class Utils {
 	    3 => array(
 		'id'=>3,
 		'title' => Yii::t('common', 'Photo'),
-		'exts'=>array('jpg','jpeg','png'),		
+		'exts'=>array('jpg','jpeg','png'),
 	    )
-	    
+
 		/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
 		  2 => array(
 		  'id'	=> 2,
@@ -364,4 +370,14 @@ class Utils {
 	);
     }
 
+	public function getDeviceTypes()
+	{
+		$types = array(
+			_DT_MOBILE_ => array("id" => _DT_MOBILE_, "title" => Yii::t('common', 'Mobile')),
+			_DT_PAD_ => array("id" => _DT_PAD_, "title" => Yii::t('common', 'Pad')),
+			_DT_TVSET_ => array("id" => _DT_TVSET_, "title" => Yii::t('common', 'TVset')),
+			_DT_PLAYER_ => array("id" => _DT_PLAYER_, "title" => Yii::t('common', 'Player')),
+		);
+		return $types;
+	}
 }

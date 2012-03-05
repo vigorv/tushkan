@@ -302,10 +302,11 @@ class UniverseController extends Controller {
 									INSERT INTO {{typedfiles}}
 										(id, variant_id, user_id, title, collection_id)
 									VALUES
-										(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '", 0)
+										(null, :id, ' . $this->userInfo['id'] . ', :title, 0)
 								';
 					$cmd = Yii::app()->db->createCommand($sql);
 					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+					$cmd->bindParam(':title', $title, PDO::PARAM_STR);
 					$cmd->execute();
 					$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
 			    }

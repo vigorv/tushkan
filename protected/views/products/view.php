@@ -51,7 +51,7 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				location.href="/universe/tview/" + oid;
+				//location.href="/universe/tview/" + oid;
 			}
 		});
 		return false;

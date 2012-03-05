@@ -224,7 +224,7 @@ class UniverseController extends Controller {
 		    ->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, oi.price_id, oi.rent_id')
 		    ->from('{{product_variants}} pv')
 		    ->join('{{orders}} o', 'o.user_id = ' . $this->userInfo['id'] . ' AND o.state = ' . _ORDER_PAYED_)
-		    ->join('{{order_items}} oi', 'oi.variant_id')
+		    ->join('{{order_items}} oi', 'oi.variant_id=pv.id')
 		    ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		    ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 		    ->where('pv.id = :id')

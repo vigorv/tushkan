@@ -133,10 +133,10 @@ $media = Utils::getMediaList();
 
 		if (answer != null)
 		{
-			if (answer.success)
+			if ((answer.success) && (currentTypeId != <?php echo _VIDEO_ASIS_;?>))
 			{
 				var fid= answer.fid;
-				alert(fid);
+alert(fid);
 				loadParams(currentTypeId, fid);
 				$("#paramsform").dialog("open");
 			}

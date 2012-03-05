@@ -233,14 +233,16 @@ class UniverseController extends Controller {
 	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
 	    $prms = $cmd->queryAll();
 	    if (!empty($prms)) {
-		$params = array();
-		foreach ($prms as $p) {
-		    $params[$p['title']] = $p['value'];
-		    if (!empty($p['price_id']))
-			$price_id = $p['price_id'];
-		    if (!empty($p['rent_id']))
-			$rent_id = $p['rent_id'];
-		}
+			$params = array();
+			foreach ($prms as $p) {
+			    $params[$p['title']] = $p['value'];
+			    if (!empty($p['price_id']))
+				$price_id = $p['price_id'];
+			    if (!empty($p['rent_id']))
+				$rent_id = $p['rent_id'];
+			}
+	    }
+
 
 		$cmd = Yii::app()->db->createCommand()
 			->select('id')
@@ -312,7 +314,6 @@ class UniverseController extends Controller {
 			    }
 		    }
 		}
-	    }
 	}
 	$this->render('tadd', array('result' => $result));
     }

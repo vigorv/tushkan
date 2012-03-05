@@ -335,7 +335,7 @@ class UniverseController extends Controller {
 				->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 				->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 				->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
-				->where('pv.id = ' . $info['variant_id'])
+				->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . $this->userPower)
 				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
 		if (!empty($prms)) {

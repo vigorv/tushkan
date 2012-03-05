@@ -4,6 +4,7 @@
  *
  */
 
+define('_IN_BASKET_',		100);
 define('_IS_ADMIN_',		70);
 define('_IS_MODERATOR_',	60);
 define('_IS_USER_',			10);

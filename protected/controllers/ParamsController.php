@@ -50,6 +50,8 @@ class ParamsController extends Controller {
                 }
                 if (empty($params->srt))
                 	$params->srt = 0;
+                if (empty($params->tp))
+                	$params->tp = 'text';
                 $params->id = $param['id'];
                 $params->isNewRecord = false;
                 $params->save();
@@ -84,6 +86,8 @@ class ParamsController extends Controller {
                 }
                 if (empty($params->srt))
                 	$params->srt = 0;
+                if (empty($params->tp))
+                	$params->tp = 'text';
                 $params->save();
                 Yii::app()->user->setFlash('success', Yii::t('params', 'Param saved'));
             }

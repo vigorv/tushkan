@@ -115,7 +115,10 @@
 	{
 		if (empty($info['name']))
 			$info['name'] = Yii::t('users', 'Username not specified');
-		$pNames = array('name' => 'text', 'email' => 'text', 'pwd' => 'password');
+		$pNames = array(
+			'name' => 'text',
+			//'email' => 'text',
+			'pwd' => 'password');
 		echo '<h3>' . Yii::t('params', 'Main parameters') . '</h3>';
 		foreach ($pNames as $nm => $tp)
 		{

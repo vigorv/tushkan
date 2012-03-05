@@ -187,7 +187,7 @@ $media = Utils::getMediaList();
     border: 1px solid #BBB;
     background-color: #FFF;
     padding: 0;
-    margin-top: 20px;
+    margin-bottom: 15px;
 }
 .gradusnik span {
     display: block;
@@ -211,7 +211,19 @@ $media = Utils::getMediaList();
 		<div class="form" id="wizardform" title="<?php echo Yii::t('common', 'Upload a file');?>">
 				<div class="wizardpage" id="wizardpage1clone" style="display: none">
 					<h3><?php echo Yii::t('common', 'Choose a file');?></h3>
-					<input type="file" rel="fileInput" />
+					<input type="file" rel="fileInput" /><br />
+					<?php echo Yii::t('common', 'Supported types');?>:
+<?php
+	$z = '';
+	foreach ($media as $m)
+	{
+		foreach($m['exts'] as $e)
+		{
+			echo $z . ' ' . $e;
+			$z = ',';
+		}
+	}
+?>
 				</div>
 				<div class="wizardpage" id="wizardpage1"></div>
 				<input type="hidden" name="wizardForm[uploadresults]" />
@@ -232,11 +244,12 @@ $media = Utils::getMediaList();
 				<div class="wizardpage" id="wizardpage3clone" style="display: none;">
 					<h4><?php echo Yii::t('common', 'Upload process');?></h4>
 
+					<?php echo Yii::t('common', 'Total');?>
 					<div class="gradusnik" rel="totalBar"><span></span></div>
 
+					<?php echo Yii::t('common', 'Current progress');?>
 					<div class="gradusnik" rel="progressBar"><span></span></div>
 
-					<br />
 					<div rel="infoDiv">
 						<button rel="doUploadbutton"><?php echo Yii::t('common', 'Upload');?></button><br />
 						<div rel="fileList"></div>

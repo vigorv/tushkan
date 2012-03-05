@@ -111,7 +111,7 @@ class ProductsController extends Controller
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 		        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 		        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
-				->where('pv.product_id = ' . $productInfo['id'])
+				->where('pv.product_id = ' . $productInfo['id'] . ' AND pv.active <= ' . $this->userPower . ' AND ptp.active <= ' . $this->userPower)
 				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
 

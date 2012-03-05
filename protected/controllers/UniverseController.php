@@ -281,30 +281,34 @@ class UniverseController extends Controller {
 				}
 			}
 		    }
+
 		    if (empty($price_id) && empty($rent_id)) {
 				$canAdd = true;
 		    }
 
 		    if ($canAdd) {
-			$productInfo = Yii::app()->db->createCommand()
-				->select('title')
-				->from('{{products}}')
-				->where('id = ' . $prms[0]['product_id'])
-				->queryRow();
-			$title = '';
-			if (!empty($productInfo['title']))
-			    $title = $productInfo['title'];
+				$cmd = Yii::app()->db->createCommand()
+					->select('p.title')
+					->from('{{products}} p')
+					->join('{{product_variants}} pv', 'pv.product_id = p.id')
+					->where('pv.id = :id');
+				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$productInfo = $cmd->queryRow();
+				if (!empty($productInfo))
+				{
+				    $title = $productInfo['title'];
 
-			$sql = '
-							INSERT INTO {{typedfiles}}
-								(id, variant_id, user_id, title, collection_id)
-							VALUES
-								(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '", 0)
-						';
-			$cmd = Yii::app()->db->createCommand($sql);
-			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-			$cmd->execute();
-			$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
+					$sql = '
+									INSERT INTO {{typedfiles}}
+										(id, variant_id, user_id, title, collection_id)
+									VALUES
+										(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '", 0)
+								';
+					$cmd = Yii::app()->db->createCommand($sql);
+					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+					$cmd->execute();
+					$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
+			    }
 		    }
 		}
 	    }

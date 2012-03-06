@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
         <![endif]-->
 
-	 <link rel="stylesheet" type="text/css"  href="/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css"  href="/css/bootstrap.min.css"/>
 
 	<link rel="stylesheet/less" type="text/css" href="/less/mycloud.less"/>	
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
@@ -21,6 +21,7 @@
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.form.js');
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery-ui/css/pepper-grinder/jquery-ui-1.8.16.custom.css");
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery-ui/js/jquery-ui-1.8.16.custom.min.js");
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.address-1.4.min.js');
 	?>
 	<script src="/js/bootstrap.min.js"></script>
 	<script src="/js/less-1.2.2.min.js"></script>
@@ -50,15 +51,36 @@
 
 	    <div id="m_goods" class="clearblockfix">
 
-	    </div>
+	    </div>  
 
 	    <div id="content">
 		<?php echo $content; ?>
 	    </div>
 
 	    <script langauge="javascript">
-		$('#m_panel').load('/universe/panel');
-		$('#m_goods').load('/universe/goods');
+		$.address.change(function(event) {  
+		    console.log(event);
+		    $('#content').load(event.value, function(){
+			$('#content a').click(function(){			 
+			    $.address.value($(this).attr('href'));  
+			    return false;
+			});
+
+		    });  
+		});  
+					
+		$('#m_panel').load('/universe/panel',function(){
+		    $('#m_panel a').click(function() {  
+			$.address.value($(this).attr('href'));  
+			return false;
+		    });  		       
+		});
+		$('#m_goods').load('/universe/goods',function(){
+		    $('#m_goods  a').click(function() {  
+			$.address.value($(this).attr('href'));  
+			return false;
+		    });  
+		});		
 	    </script>
 
 	    <div id="footer">

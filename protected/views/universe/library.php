@@ -24,26 +24,63 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     <div class="lib_content">
         <div class="top_menu">
     	<a href="#content" onClick="return BackAction()">Back</a>
-    	<h4></h4>
+<?php
+	$userProducts = $productsInfo['tFiles'];
+	$productParams = $productsInfo['fParams'];
+	if (!empty($userProducts))
+	{
+		echo '<h4>Видео с витрин</h4>';
+		foreach ($userProducts as $f)
+		{
+			$curVariantId = $f['variant_id'];
+			$params = array();
+			foreach($productParams as $p)
+			{
+				if ($p['id'] == $curVariantId)
+				{
+					$params[$p['title']] = $p['value'];
+				}
+			}
+
+			if (!empty($params))
+			{
+				echo '<div class="chess"><a href="/universe/tview/' . $f['id'] . '">';
+				if (!empty($params['poster']))
+				{
+					$poster = $params['poster'];
+					unset($params['poster']);
+				}
+				else
+				{
+					$poster = '/images/films/noposter.jpg';
+				}
+				echo '<img align="left" width="80" src="' . $poster . '" />';
+				echo '<b>' . $f['title'] . '</b>';
+				echo '</a></div>';
+			}
+		}
+		echo '<div class="divider"></div>';
+	}
+?>
         </div>
-        <div class="filters">   
+        <div class="filters">
 
         </div>
         <div class="items">
     	TypedItems
-    	<ul>	
+    	<ul>
 		<?= CFiletypes::ParsePrint($mb_content_items, 'TL1'); ?>
     	</ul>
         </div>
         <div class="ext">
-    	<div class="items_add">	    
+    	<div class="items_add">
     	    <input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple /><br/>
     	    <input type="button" value="Choose file(s)..."  onClick="ChooseFile('FileUpload')"/>
     	    <ul id="UploadFilelist">
 
 
     	    </ul>
-    	    <input type="button" onclick="return UploadFiles('FileUpload')" value="Upload"/>	    
+    	    <input type="button" onclick="return UploadFiles('FileUpload')" value="Upload"/>
     	    <div  id="progressBar" class="progress striped active animated">
     		<div class="bar" style="width: 0%"></div>
     	    </div>
@@ -58,18 +95,18 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     	</div>
 
 
-        </div>	
+        </div>
     </div>
 
 
 
     <script langauge="javascript">
-                    
-        var pBar= $("#progressBar div.bar");                                                                         
-        var unt =$("#items_unt");
-        var ufs  = $("#UploadFilelist");                    		
 
-                                                                                	
+        var pBar= $("#progressBar div.bar");
+        var unt =$("#items_unt");
+        var ufs  = $("#UploadFilelist");
+
+
         function detectTypeId()
         {
     	$("#fileList").text(''); z = '';
@@ -107,37 +144,37 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     	var extension = filename.substr(dot + 1, filename.length);
     	return extension;
         }
-                                                                                                	
+
         function uploadComplete(smsg,msg)
         {
     	var successCount=0;
     	function parseAnswer(element, index, array){
     	    answer = $.parseJSON(element);
-                                                	    
+
     	    if (answer != null){
     		if (answer.success){
-    		    var fid= answer.fid;                                		
+    		    var fid= answer.fid;
     		    successCount++;
     		    ufs.html('');
-            		    
+
     		    //alert(fid);
     		    //loadParams(currentTypeId, fid);
     		    //$("#paramsform").dialog("open");
     		} else{
     		    //upload failed
     		}
-                                        		
+
     	    }else{
     		//alert('bad JSON in uploader answer')
     	    }
-    	}                        
+    	}
     	smsg.forEach(parseAnswer);
     	if (successCount>0)
-    	    $("#items_unt ul").load('/files/AjaxUntypedList');                   	            
-                                                    	
+    	    $("#items_unt ul").load('/files/AjaxUntypedList');
+
         }
-                                                                                                	
-                                                                                                	
+
+
         function size(bytes){   // simple function to show a friendly size
     	var i = 0;
     	while(1023 < bytes){
@@ -148,7 +185,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
         };
 
         var kpt = '';
-                                                                                    	
+
         function startUpload(files,preset)
         {
     	$.ajax({type: "GET", url: '/files/KPT', async: false, success: function(data){ kpt = data;}});
@@ -164,9 +201,9 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     		$(pBar).width("0%");
     	    },
     	    onprogress:function(rpe){
-    		/* 
-    		 * 
-    		 * 
+    		/*
+    		 *
+    		 *
          infoDiv.innerHTML = [
         "<?php echo Yii::t('common', 'Uploading'); ?>: " + this.file.fileName,
         "<?php echo Yii::t('common', 'Sent'); ?>: " + size(rpe.loaded) + " <?php echo Yii::t('common', 'of'); ?> " + size(rpe.total),
@@ -182,7 +219,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 
     	    // fired when last file has been uploaded
     	    onload:function(rpe, xhr){
-                                                                		
+
     		//progressBar.style.width = totalBar.style.width = progressWidth + "px";
     		uploadComplete(this.rtexts);
     		//"Server Response: " + xhr.responseText +
@@ -195,36 +232,36 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     	    }
     	});
         }
-                                                                                                	
-                                                                                                	
-                                                                                                	
+
+
+
         function UploadFiles(ifiles) {
     	infiles = document.getElementById(ifiles);
-                                                                                	
+
     	startUpload(infiles.files,'none');
     	//self.clear;
     	$(infiles).replaceWith('<input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple style="display:hidden" />');
         }
-                                                                                	 
+
         function UploadFilelistChange(e){
     	ufs.html('');
     	for (var x = 0; x < e.files.length; x++) {
     	    ufs.append('<li>'+e.files[x].name+'</li>');
-    	}     	     
+    	}
         }
-                                                                    	
+
         function ChooseFile(ifiles){
     	infiles = document.getElementById(ifiles);
-    	infiles.click();    	
+    	infiles.click();
         }
-                	
-        function BackAction(){		
+
+        function BackAction(){
     	cont.load(cl_history[cl_history.length-2]);
     	if (cl_history.length>1)
     	    cl_history.pop();
     	return false;
-        }	
-                                                                                                	
+        }
+
     </script>
 
 <?php endif; ?>

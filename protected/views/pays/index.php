@@ -1,10 +1,10 @@
-<form action="/pays/index" method="get">
+<form id="payPeriodForm" action="/pays/index" method="get" onsubmit="return doSubmit(this);">
 <h3><?php echo Yii::t('common', 'Over a period');?>
 	<a href="/pays/index/from/<?php echo date('Y-m-d', time() - 3600*24*7);?>"><?php echo Yii::t('common', 'week');?></a> |
 	<a href="/pays/index/from/<?php echo date('Y-m-d', time() - 3600*24*30);?>"><?php echo Yii::t('common', 'month');?></a>
 	<?php echo Yii::t('common', 'from');?>: <input id="dpfrom" name="from" value="<?php echo $from;?>" type="text" onchange="return showSubmit()" />
 	<?php echo Yii::t('common', 'to');?>: <input id="dpto" name="to" value="<?php echo $to;?>" type="text" onchange="return showSubmit()" />
-	<input type="submit" id="periodSubmit" value="<?php echo Yii::t('common', 'Submit');?>" />
+	<button class="btn" type="submit" id="periodSubmit"><?php echo Yii::t('common', 'Submit');?></button>
 </h3>
 </form>
 <?php
@@ -37,15 +37,30 @@
 	}
 ?>
 <script type="text/javascript">
+	function doSubmit(form)
+	{
+        url = $(form).attr( 'action' );
+	    $.get( url, { from: $("#dpfrom").val(), to: $("#dpto").val()}, function(html){
+	    	$("#content").html(html);
+			$('#content a').click(function(){
+			    $.address.value($(this).attr('href'));
+			    return false;
+	    	});
+	    });
+		return false;
+	}
+
 	function showSubmit()
 	{
 		if ($('#dpfrom').val() || $('#dpto').val())
 		{
-			$( "#periodSubmit" ).button({disabled: false});
+			//$( "#periodSubmit" ).button({disabled: false});
+			$( "#periodSubmit" ).attr("disabled", false);
 		}
 		else
 		{
-			$( "#periodSubmit" ).button({disabled: true});
+			//$( "#periodSubmit" ).button({disabled: true});
+			$( "#periodSubmit" ).attr("disabled", true);
 		}
 		return true;
 	}

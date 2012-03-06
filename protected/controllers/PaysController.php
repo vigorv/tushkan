@@ -337,7 +337,7 @@ class PaysController extends Controller
 	 */
 	public function actionOk($id = 0)
 	{
-		$this->layout = '/layouts/index';
+		//$this->layout = '/layouts/index';
 		$resultMsg = Yii::t('pays', 'Payment processed successfully');
 
 		if (!empty($id))
@@ -361,7 +361,7 @@ class PaysController extends Controller
 	 */
 	public function actionFail($id = 0)
 	{
-		$this->layout = '/layouts/index';
+		//$this->layout = '/layouts/index';
 		$resultMsg = Yii::t('pays', 'Payment failed');
 		if (!empty($id))
 		{

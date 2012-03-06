@@ -100,9 +100,12 @@ if (!empty($info))
 
 
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.js");
-	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer-3.2.4.min.js");
-	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.css");
+
+//	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer-3.2.4.min.js");
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer326/flowplayer-3.2.6.min.js");
+
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 
 	$playerCode = '
 	<div id="flowplayerdiv" style="display: none">
@@ -128,7 +131,8 @@ if (!empty($info))
 			function addVideo(num, path) {
 				document.getElementById("ipad" + num).href=path;
 				document.getElementById("video" + num).style.display="";
-				$f("ipad" + num, "/js/flowplayer/flowplayer-3.2.5.swf",
+				//$f("ipad" + num, "/js/flowplayer/flowplayer-3.2.5.swf",
+				$f("ipad" + num, "/js/flowplayer326/flowplayer-3.2.7.swf",
 									{plugins: {
 										h264streaming: {
 											url: "/js/flowplayer/flowplayer.pseudostreaming-3.2.5.swf"

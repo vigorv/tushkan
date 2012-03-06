@@ -67,9 +67,9 @@
 ?>
 			$.post("/pays/payment/" + sid, { order_id: order_id, user_id: "<?php echo Yii::app()->user->getId();?>", summa: summa, operation_id: "<?php echo $oInfo['id']; ?>" }, function(data){
 				if (data == '_PS_PAYED_')
-					location.href = '/pays/ok/' + sid;
+					$("#content").load('/pays/ok/' + sid);
 				else
-					location.href = '/pays/fail/' + sid;
+					$("#content").load('/pays/fail/' + sid);
 			});
 		}
 		else
@@ -113,10 +113,10 @@
 </div>
 <?php
 		$options = array();
-		$options[] = '<a id="dopayid">' . Yii::t('orders', 'Pay') . '</a>';
+		$options[] = '<button class="btn" id="dopayid">' . Yii::t('orders', 'Pay') . '</button>';
 		if (!empty($orderInfo[0]['id']))
 		{
-			$options[] = '<a id="dodiscardid">' . Yii::t('orders', 'Discard') . '</a>';
+			$options[] = '<button class="btn" id="dodiscardid">' . Yii::t('orders', 'Discard') . '</button>';
 		}
 		if (!empty($options))
 		{

@@ -96,6 +96,15 @@ class UniverseController extends Controller {
 	      ->order('fv.id ASC, ptp.srt DESC')->queryAll();
 	     */
 	}
+
+//ВЫБОРКА НЕТИПИЗИРОВАННЫХ ФАЙЛОВ
+/*
+	$uFiles = Yii::app()->db->createCommand()
+		->select('uf.id, uf.title, uf.type_id')
+		->from('{{userfiles}} uf')
+		->where('uf.object_id = 0 AND uf.user_id = ' . $this->userInfo['id'])
+		->queryAll();
+*/
 	$this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
 	    'uploadServer' => $uploadServer, 'quality' => $quality,
 	    'types' => $types, 'tObjects' => $tObjects, 'oParams' => $oParams));

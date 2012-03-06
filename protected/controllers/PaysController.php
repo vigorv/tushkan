@@ -229,9 +229,10 @@ class PaysController extends Controller
 					);
 					$payInfo['hash'] = $hash;
 					$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);
+					$res = $cmd->query();
 				}
-				$res = $cmd->query();
-				if ($res)
+
+				if (!empty($res))
 				{
 					$lastId = Yii::app()->db->getLastInsertID('{{payments}}');
 					$payInfo['payment_id'] = $lastId;

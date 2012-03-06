@@ -39,7 +39,7 @@ class CloudTaskManager {
 	$zone = 0;
 	$server = CServers::model()->getServerFull(TASK_SERVER, $zone);
 	$server_addr = Cservers::model()->convertIpToString($server['ip']) . ':' . $server['port'];
-	$file = CUserfiles::model()->getFileloc($fid, $user_id, $zone);
+	$file = CUserfiles::model()->getFileloc($fid, $user_id, $zone,0);
 
 	$preset_id = CPresets::model()->getPresetID($preset_name);
 
@@ -54,8 +54,14 @@ class CloudTaskManager {
 			'fsize' => $file[0]['fsize'],
 			'ip' => Cservers::model()->convertIpToString($file[0]['ip'])));
 	    if ($task_id > 0) {
-		$sql = 'INSERT INTO {{convert_queue}} (id, user_id, task_id,server_id,preset_id) VALUES (' . $fid . ', ' . $user_id . ', ' . $task_id . ',' . $server['id'] . ',' . $preset_id . ')';
-		return Yii::app()->db->createCommand($sql)->execute();
+		$queue = new CConvertQueue();
+		$queue->id=$fid;
+		$queue->task_id=$task_id;
+		$queue->server_id=$server['id'];
+		$queue->preset_id=$preset_id;
+		//$sql = 'INSERT INTO {{convert_queue}} (id,  task_id,server_id,preset_id) VALUES (' . $fid . ', ' . $user_id . ', ' . $task_id . ',' . $server['id'] . ',' . $preset_id . ')';
+		//return Yii::app()->db->createCommand($sql)->execute();
+		return $queue->save();
 	    }
 	}
 	return false;
@@ -102,9 +108,10 @@ class CloudTaskManager {
      */
     public function GetTaskForFile($fid, $user_id) {
 	$cmd = Yii::app()->db->createCommand()
-		->select('*')
-		->from('{{convert_queue}}')
-		->where('id = ' . $fid . ' AND user_id = ' . $user_id);
+		->select('cq.*,uf.user_id')
+		->from('{{convert_queue}} cq')
+		->join('{{userfiles}} uf', 'cq.id = uf.id AND uf.user_id = ' . $user_id)
+		->where(' cq.id = ' . $fid );
 	return $cmd->queryRow();
     }
 

@@ -36,19 +36,33 @@ class CUserfiles extends CActiveRecord {
     }
 
     /**
-     *
-     * @param type $fid
-     * @param type $user_id
-     * @param type $zone_id
+     *  Serversync getFileloc for $file_id , $user_id ,$zone_id 
+     * @param int $fid
+     * @param int $user_id
+     * @param int $zone_id
      * @return type 
      */
-    public function getFileloc($fid, $user_id, $zone_id, $stype=1) {
+    public function getFileloc($fid, $user_id, $zone_id, $preset_id, $stype=1) {
 	return Yii::app()->db->createCommand()
-			->select('f.server_id,f.fname,fs.ip, f.fsize')
-			->from('{{filelocations}} f')
-			->join('{{fileservers}} fs', 'fs.id=f.server_id and fs.zone_id=' . $zone_id)
-			->join('{{userfiles}} uf', 'uf.fsize = f.fsize and uf.id = f.id and uf.user_id = f.user_id')
-			->where('f.id =' . $fid . ' AND f.user_id=' . $user_id . ' AND fs.stype=' . $stype)
+			->select('fl.server_id,fl.fname,fs.ip, fl.fsize')
+			->from('{{filelocations}} fl')
+			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id . ' AND fs.stype=' . $stype)
+			->join('{{files_variants}} fv', 'fv.id = fl.id AND fv.preset_id=' . $preset_id . ' AND fl.fsize = fv.fsize AND fv.file_id=' . $fid)
+			->join('{{userfiles}} uf', ' uf.id = fv.file_id and uf.user_id =' . $user_id)
+			->queryAll();
+    }
+
+    /**
+     * Get  variants wich has locations
+     * @param int $fid
+     * @param int $zone_id 
+     */
+    public function GetVarWithLoc($fid, $zone_id) {
+	return Yii::app()->db->createCommand()
+			->select('fv.id, fv.fsize , fv.preset_id')
+			->from('{{filelocations}} fl')
+			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id . ' AND fs.stype=1')
+			->join('{{files_variants}} fv', 'fv.id = fl.id AND fl.fsize = fv.fsize AND fv.file_id=' . $fid)
 			->queryAll();
     }
 
@@ -157,5 +171,41 @@ class CUserfiles extends CActiveRecord {
 	} else
 	    return false;
     }
+
+   
+    /**
+     *Remove all untypes files
+     * @param type $user_id
+     * @return type 
+     */
+    public function RemoveAllFiles($user_id) {
+	$file_variants = Yii::app()->db->createCommand()
+		->select('fv.id')
+		->from('{{files_variants}} fv')
+		->join('{{userfiles}} uf', 'uf.user_id =' . $user_id . ' AND uf.object_id = 0')
+		->queryAll();
+	foreach ($file_variants as $file_variant) {
+	    CFilelocations::model()->deleteAllByAttributes(array('id' => $file_variant['id']));
+	    CFilesvariants::model()->deleteAllByAttributes(array('id' => $file_variant['id']));
+	}
+	Yii::app()->db->createCommand()
+			->delete('{{userfiles}}','user_id =' . $user_id . ' AND object_id = 0');
+			
+	return;
+    }
+    
+    /**
+     * 
+     */
+    
+    public function getFilesLike($user_id,$like){
+	return Yii::app()->db->createCommand()
+			->select('uf.id, uf.title, fv.fsize')
+			->from('{{userfiles}} uf')
+			->leftJoin('{{files_variants}} fv', ' fv.file_id = uf.id and fv.preset_id =0 ')
+			->where('uf.object_id = 0 AND uf.title LIKE= "%' . $like . '%" AND uf.user_id =' . $user_id)
+			->queryRow();
+    }
+    
 
 }

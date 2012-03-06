@@ -120,7 +120,7 @@ class ApiController extends Controller {
 	    $data = $_POST['data'];
 	}else
 	    echo "ERROR: no data";
-    }
+    }  
 
 }
 

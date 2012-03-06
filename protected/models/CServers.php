@@ -61,7 +61,8 @@ class CServers extends CActiveRecord {
 	$sdata = serialize($data);
 	$hash = '';
 	$link = 'http://' . $addr . '/' . $action . '?hash=' . $hash . '&data=' . $sdata;	
-	$result= file_get_contents($link);
+	$result= @file_get_contents($link);
+	Yii::log($result,CLOGGER::LEVEL_TRACE,'snow');
 	return $result;
     }
 

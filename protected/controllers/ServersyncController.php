@@ -11,6 +11,7 @@ class ServersyncController extends Controller {
 	$shash = $_GET['shash'];
 	$hash_local = md5(date('%h%d') . 'where am i');
 	if ($shash <> $hash_local) {
+	    //var_dump($shash);
 	    echo 'bye';
 	    return false;
 	}

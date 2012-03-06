@@ -17,7 +17,7 @@ class UniverseController extends Controller {
     }
 
     public function accessRules() {
-
+	
     }
 
     public function actionError() {
@@ -31,12 +31,13 @@ class UniverseController extends Controller {
 	}
     }
 
-    public function actionIndex2($section='') {
-	$this->layout = 'concept1';
+    public function actionIndex($section='') {
+	if (!(Yii::app()->request->isAjaxRequest))
+	    $this->layout = 'concept1';
 	$this->render('library');
     }
 
-    public function actionIndex() {
+    public function actionIndexOld() {
 //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
 	$tFiles = Yii::app()->db->createCommand()
 		->select('id, variant_id, title')
@@ -190,15 +191,33 @@ class UniverseController extends Controller {
     }
 
     public function actionPanel() {
-	$this->render('status_panel');
+	$userInfo =	CUser::model()->getUserInfo($this->user_id);
+	$this->render('status_panel',array('userInfo'=>$userInfo));
     }
 
-    public function actionGoods() {
-	$this->render('goods');
+    public function actionGoods($text='') {
+	$search = filter_var($text, FILTER_SANITIZE_STRING);
+	$lst = array();
+	$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
+	$pstContent = $this->renderPartial('/products/top', array('pst' => $pst), true);
+	$this->render('goods', array('lst' => $lst, 'pstContent' => $pstContent));
+    }
+
+    public function actionSearch($text='') {
+	$search = filter_var($text, FILTER_SANITIZE_STRING);
+	$lst = array();
+	$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
+	$pstContent = $this->renderPartial('/products/top', array('pst' => $pst), true);
+
+	$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
+	//$objContent = $this->renderPartial('/universe/objects',array('obj'=>$obj));
+	$unt = CUserfiles::model()->getFilesLike($this->user_id, $search);
+	$untContent = $this->renderPartial('/files/untyped', array('unt' => $unt));
+	$this->render('search', array('pstContent' => $pstContent));
     }
 
     public function actionLibrary($lib='') {
-	$this->layout = 'concept1';
+	//$this->layout = 'concept1';
 	switch ($lib) {
 	    case 'v':
 	    case 'a':
@@ -207,17 +226,14 @@ class UniverseController extends Controller {
 		$type_id = Utils::getSectionIdByAlias($lib);
 		$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
 		$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
-		$this->render('library',array('mb_content_items'=>$mb_content_items,
-		    'mb_content_items_unt'=>$mb_content_items_unt));
+		$this->render('library', array('mb_content_items' => $mb_content_items,
+		    'mb_content_items_unt' => $mb_content_items_unt));
 		break;
 	    default:
 		$this->render('library');
 		return;
 	}
-
     }
-
-
 
     /**
      * добавить в пространство вариант продукта с витрины
@@ -242,87 +258,86 @@ class UniverseController extends Controller {
 	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
 	    $prms = $cmd->queryAll();
 	    if (!empty($prms)) {
-			$params = array();
-			foreach ($prms as $p) {
-			    $params[$p['title']] = $p['value'];
-			    if (!empty($p['price_id']))
-				$price_id = $p['price_id'];
-			    if (!empty($p['rent_id']))
-				$rent_id = $p['rent_id'];
-			}
+		$params = array();
+		foreach ($prms as $p) {
+		    $params[$p['title']] = $p['value'];
+		    if (!empty($p['price_id']))
+			$price_id = $p['price_id'];
+		    if (!empty($p['rent_id']))
+			$rent_id = $p['rent_id'];
+		}
 	    }
 
 
-		$cmd = Yii::app()->db->createCommand()
-			->select('id')
-			->from('{{typedfiles}}')
-			->where('variant_id = :id AND user_id = ' . $this->userInfo['id']);
-		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-		$alreadyInCloud = $cmd->queryRow();
-		if ($alreadyInCloud) {
-		    $result = $alreadyInCloud['id'];
+	    $cmd = Yii::app()->db->createCommand()
+		    ->select('id')
+		    ->from('{{typedfiles}}')
+		    ->where('variant_id = :id AND user_id = ' . $this->userInfo['id']);
+	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
+	    $alreadyInCloud = $cmd->queryRow();
+	    if ($alreadyInCloud) {
+		$result = $alreadyInCloud['id'];
+	    } else {
+		$canAdd = false;
+		if (!empty($price_id)) {
+		    $canAdd = true;
 		} else {
-		    $canAdd = false;
-		    if (!empty($price_id)) {
-			$canAdd = true;
-		    } else {
-			if (!empty($rent_id)) {
-			    $cmd = Yii::app()->db->createCommand()
-				    ->select('*')
-				    ->from('{{actual_rents}}')
-				    ->where('user_id = ' . $this->userInfo['id'] . ' AND variant_id = :id')
-				    ->order('start DESC');
-			    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
-			    $actualRents = $cmd->queryAll();
-			    if (!empty($actualRents))
-				foreach ($actualRents as $a) {
-				    $start = strtotime($a['start']);
-				    if ($start > 0) {
-					$less = $start + Utils::parsePeriod($a['period'], $a['start']) - time();
-					if ($less) {
-					    //АРЕНДА ЕЩЕ НЕ ИСТЕКЛА - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
-					    $canAdd = true;
-					    break;
-					}
-				    } else {
-					//АРЕНДА ЕЩЕ НЕ НАЧАЛАСЬ - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
+		    if (!empty($rent_id)) {
+			$cmd = Yii::app()->db->createCommand()
+				->select('*')
+				->from('{{actual_rents}}')
+				->where('user_id = ' . $this->userInfo['id'] . ' AND variant_id = :id')
+				->order('start DESC');
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$actualRents = $cmd->queryAll();
+			if (!empty($actualRents))
+			    foreach ($actualRents as $a) {
+				$start = strtotime($a['start']);
+				if ($start > 0) {
+				    $less = $start + Utils::parsePeriod($a['period'], $a['start']) - time();
+				    if ($less) {
+					//АРЕНДА ЕЩЕ НЕ ИСТЕКЛА - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
 					$canAdd = true;
 					break;
 				    }
+				} else {
+				    //АРЕНДА ЕЩЕ НЕ НАЧАЛАСЬ - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
+				    $canAdd = true;
+				    break;
 				}
-			}
+			    }
 		    }
+		}
 
-		    if (empty($price_id) && empty($rent_id)) {
-				$canAdd = true;
-		    }
+		if (empty($price_id) && empty($rent_id)) {
+		    $canAdd = true;
+		}
 
-		    if ($canAdd) {
-				$cmd = Yii::app()->db->createCommand()
-					->select('p.title')
-					->from('{{products}} p')
-					->join('{{product_variants}} pv', 'pv.product_id = p.id')
-					->where('pv.id = :id');
-				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-				$productInfo = $cmd->queryRow();
-				if (!empty($productInfo))
-				{
-				    $title = $productInfo['title'];
+		if ($canAdd) {
+		    $cmd = Yii::app()->db->createCommand()
+			    ->select('p.title')
+			    ->from('{{products}} p')
+			    ->join('{{product_variants}} pv', 'pv.product_id = p.id')
+			    ->where('pv.id = :id');
+		    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
+		    $productInfo = $cmd->queryRow();
+		    if (!empty($productInfo)) {
+			$title = $productInfo['title'];
 
-					$sql = '
+			$sql = '
 									INSERT INTO {{typedfiles}}
 										(id, variant_id, user_id, title, collection_id)
 									VALUES
 										(null, :id, ' . $this->userInfo['id'] . ', :title, 0)
 								';
-					$cmd = Yii::app()->db->createCommand($sql);
-					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-					$cmd->bindParam(':title', $title, PDO::PARAM_STR);
-					$cmd->execute();
-					$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
-			    }
+			$cmd = Yii::app()->db->createCommand($sql);
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$cmd->bindParam(':title', $title, PDO::PARAM_STR);
+			$cmd->execute();
+			$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
 		    }
 		}
+	    }
 	}
 	$this->render('tadd', array('result' => $result));
     }
@@ -354,10 +369,10 @@ class UniverseController extends Controller {
 				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
 		if (!empty($prms)) {
-			$dsc = Yii::app()->db->createCommand()
-					->select('*')
-					->from('{{product_descriptions}}')
-					->where('product_id = ' . $prms[0]['product_id'])->queryRow();
+		    $dsc = Yii::app()->db->createCommand()
+				    ->select('*')
+				    ->from('{{product_descriptions}}')
+				    ->where('product_id = ' . $prms[0]['product_id'])->queryRow();
 		    $params = array();
 		    foreach ($prms as $p) {
 			$params[$p['title']] = $p['value'];
@@ -494,24 +509,23 @@ class UniverseController extends Controller {
      *
      * @param integer $id - идентификатор объекта в ПП
      */
-    public function actionRemove($id = 0)
-    {
-    	$result = '';
-    	$cmd = Yii::app()->db->createCommand()
-    		->select('id, variant_id')
-    		->from('{{typedfiles}} tf')
-    		->where('id = :id AND user_id = ' . Yii::app()->user->getId());
-    	$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-    	$tInfo = $cmd->queryRow();
-    	if (!empty($tInfo))
-    	{
-    		$sql = 'DELETE FROM {{typedfiles}} WHERE id = ' . $tInfo['id'];
-    		Yii::app()->db->createCommand($sql)->execute();
-    		//УДАЛЯЕМ ВОЗМОЖНУЮ ИНФУ ОБ АРЕНДЕ
-    		$sql = 'DELETE FROM {{actual_rents}} WHERE variant_id = ' . $tInfo['variant_id'] . ' AND user_id = ' . Yii::app()->user->getId();
-    		Yii::app()->db->createCommand($sql)->execute();
-    		$result = 'ok';
-    	}
-		$this->render('remove', array('result' => $result));
+    public function actionRemove($id = 0) {
+	$result = '';
+	$cmd = Yii::app()->db->createCommand()
+		->select('id, variant_id')
+		->from('{{typedfiles}} tf')
+		->where('id = :id AND user_id = ' . Yii::app()->user->getId());
+	$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+	$tInfo = $cmd->queryRow();
+	if (!empty($tInfo)) {
+	    $sql = 'DELETE FROM {{typedfiles}} WHERE id = ' . $tInfo['id'];
+	    Yii::app()->db->createCommand($sql)->execute();
+	    //УДАЛЯЕМ ВОЗМОЖНУЮ ИНФУ ОБ АРЕНДЕ
+	    $sql = 'DELETE FROM {{actual_rents}} WHERE variant_id = ' . $tInfo['variant_id'] . ' AND user_id = ' . Yii::app()->user->getId();
+	    Yii::app()->db->createCommand($sql)->execute();
+	    $result = 'ok';
+	}
+	$this->render('remove', array('result' => $result));
     }
+
 }

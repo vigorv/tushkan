@@ -31,13 +31,13 @@ class UniverseController extends Controller {
 	}
     }
 
-    public function actionIndex2($section='') {
+    public function actionIndex($section='') {
 	if (!(Yii::app()->request->isAjaxRequest))
 	    $this->layout = 'concept1';
 	$this->render('library');
     }
 
-    public function actionIndex() {
+    public function actionIndexOld() {
 //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
 	$tFiles = Yii::app()->db->createCommand()
 		->select('id, variant_id, title')

@@ -10,17 +10,6 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
         <li><a href="/universe/library?lib=p">Photo</a></li>
         <li><a href="/universe/library?lib=d">Docs</a></li>
     </ul>
-    <script langauge="javascript">
-        var cl_history = new Array();
-        cl_history.push('/universe/index2');
-        var cont = $("#content");
-        $("#m_goods").show();
-        $("#lib_menu a").click(function(){
-    	cont.load(this.href);
-    	cl_history.push(this.href);    
-    	return false;
-        });
-    </script>
 <?php else: ?>
     <?php if (isset($mb_top_items)): ?>
 	<div class="lib_top">
@@ -48,7 +37,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
         </div>
         <div class="ext">
     	<div class="items_add">	    
-    	    <input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple style="display:hidden" /><br/>
+    	    <input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple /><br/>
     	    <input type="button" value="Choose file(s)..."  onClick="ChooseFile('FileUpload')"/>
     	    <ul id="UploadFilelist">
 
@@ -80,18 +69,6 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
         var unt =$("#items_unt");
         var ufs  = $("#UploadFilelist");                    		
 
-        $("#m_goods").show();
-
-            	
-                		
-        $("#items_unt a").click(function(){   
-    	unt.load(this.href);
-    	cl_history.push(this.href);    
-    	return false;
-        });
-                                        	
-                				
-                                        	
                                                                                 	
         function detectTypeId()
         {

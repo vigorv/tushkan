@@ -11,7 +11,7 @@ if (!empty($item)) {
     	    {
 
     	    }
-    	      //location.href = '/files/fview/<?php echo $item['id']; ?>';
+    	    //location.href = '/files/fview/<?php echo $item['id']; ?>';
     	});
     	return false;
         }
@@ -20,9 +20,18 @@ if (!empty($item)) {
     echo '<h3>Файл: ' . $item['title'] . '</h3>';
     echo '<p>Размер: ' . Utils::sizeFormat($item['fsize']) . '</p>';
     $actions = array();
-    $actions[] = '<a href="/files/download?fid=' . $item['id'] . '" >' . Yii::t('files', 'download') . '</a>';
+    $d_link=true;
+    if ($d_link) {
+	$actions[] = '<a href="/files/download?fid=' . $item['id'] . '" >' . Yii::t('files', 'download') . '</a>';
+	$actions[]='
+	    <form method="post" action="/files/remove">
+	    <input type="hidden" name="id" value="'.$item['id'].'"/>
+	    <input type="submit" value="Delete File" />
+	    </form>
+	    ';
+    }
     if (empty($queue)) {
-	$actions[] = '<a href="#" onclick="return queue(\'add\');">типизировать</a>';
+	$actions[] = '<a href="#" onclick="return queue(\'add\');">типизировать</a>';	
     } else {
 	echo '<p>Состояние: добавление в пространство<br />';
 	echo 'Текущая операция: конвертирование<br />';

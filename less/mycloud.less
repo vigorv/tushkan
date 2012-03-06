@@ -4,29 +4,33 @@ body{
     background-color:gray;
 }
 
+.clearblockfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+
 #page {
      background-color:lighten(@bg,40%);
-
-
-
 }
+
     #m_panel{
 	width:100%;
 	height:40px;
 	background-color:lighten(@bg,40%);
-	ul{
+	>ul{	    
+	    float:left;
 	    list-style:none;
-		float:left;
 	}
+	
     }
 
-    #m_goods{
-	width:100%;
-	height:50px;
-	background-color:@bg + #333;
-    }
-    
+
     #m_lib{
+	clear:left;
 	width:100%;
 	height:100px;
 	background-color:@bg+#123;
@@ -38,9 +42,28 @@ body{
 	width:100%;
     }
 
-    #footer{
+    #content{
+	padding:10px;
 	clear:left;
     }
+    #footer{
+	clear:left;
+	padding:10px;
+    }
+
+#lib_menu{
+    >li{
+      list-style:none;
+      display:block;
+      width:300px;
+      height:50px;
+      display:inline-block;
+      vertical-align:middle;
+      align:center;
+    }
+
+}
+
 
 .lib_content {
 .items > ul{
@@ -60,21 +83,68 @@ body{
 }
  .ext{
     clear:left;
- .items_unt > ul{
-    
-    list-style:none;
-    >li{
-	img{
-	     width:45px;
-	     height:50px;
-	     border: 1px solid white;
+   #items_unt{ 
+     
+     max-width:70%;
+     >ul{
+	float:none;
+	list-style:none;
+	>li{
+	    img{
+		 width:45px;
+		 height:50px;
+		border: 1px solid white;
+	    }
+	    display:inline-block;
+	    vertical-align:top;
+	    margin-left:10px;
+	    width:50px;
+	    height:auto;
+	    overflow:hidden;
+	    .selected {
+		word-wrap:break-word;
+	    }
 	}
-	float:left;
-	margin-left:10px;
-	width:50px;
-	height:75px;
-	overflow:hidden;
     }
- }
+    }
+    .items_add{
+	margin-right:5px;
+	float:right;
+	.input-file{
+	    height:22px;
+	    width:90px;
+	    overflow:hidden;
+	    display:block;	    
+	}
+	#FileUpload{
+	   height:0;
+	   display:hidden;
+	   opacity: 0;
+	   -moz-opacity: 0;
+	    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	}
+
+    }
 }
 }
+
+
+
+
+    #m_goods, #search_result_goods{
+	clear:left;
+	height:auto;
+	padding:10px;
+	background-color:@bg + #333;
+	
+	.chess{
+	    text-align:center;
+	    max-width:100px;
+	    display:inline-block;
+	    vertical-align:top;
+	    overflow:hidden;
+	    margin-left:5px;
+	    clear: right;
+	    margin: 3px;
+	}
+    }

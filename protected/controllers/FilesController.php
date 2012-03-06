@@ -159,7 +159,12 @@ class FilesController extends Controller {
     /* AJAX LISTS */
 
     public function actionAjaxUntypedList($page=1, $per_page=100) {
-//if (Yii::app()->request->isAjaxRequest) {
+	if (!Yii::app()->request->isAjaxRequest) {
+	    echo '<form method="post" action="/files/removeAll">
+		<input type="submit" name="removeAll" value="delete ALL"/>
+		</form>
+';
+	}
 	$page = abs((int) $page);
 	$per_page = abs((int) $per_page);
 	$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id, $page, $per_page);
@@ -222,6 +227,16 @@ class FilesController extends Controller {
 	CUserfiles::model()->RemoveFile($this->user_id, $id);
 
 	echo "OK";
+    }
+    
+    /**
+     * remove All untyped files
+     */
+    public function actionRemoveAll(){
+	if (!isset($_POST['removeAll']))
+	    die('what?');
+	CUserfiles::model()->RemoveAllFiles($this->user_id);
+	
     }
 
     /**

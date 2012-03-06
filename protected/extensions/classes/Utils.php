@@ -320,7 +320,6 @@ class Utils {
 		'title' => Yii::t('common', 'Photo'),
 		'exts'=>array('jpg','jpeg','png'),
 	    )
-
 		/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
 		  2 => array(
 		  'id'	=> 2,

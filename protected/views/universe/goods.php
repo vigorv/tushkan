@@ -1,11 +1,11 @@
-<div id="goods_main">
-    <ul>
-	<li>
-	    Item1
-	</li>
-	<li>
-	    Item2
-	</li>
-    </ul>
-  
-</div>
+<?php echo $pstContent; ?>
+
+
+
+<script langauge="javascript">
+    
+    $('a.ajaxc').click(function(){
+	cont.load(this.href);
+	return false;	 
+    });
+</script>

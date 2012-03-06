@@ -73,7 +73,7 @@ function sendMultipleFiles(handler){
     handler.current = 0;
     handler.total = 0;
     handler.sent = 0;
-    handler.rtexts = '';
+    handler.rtexts = new Array();
     while(handler.current < length)
 	handler.total += handler.files[handler.current++].fileSize;
     handler.current = 0;
@@ -82,13 +82,13 @@ function sendMultipleFiles(handler){
 	sendFile(handler).onload = function(rpe, xhr){
 	    if(++handler.current < length){
 		handler.sent += handler.files[handler.current - 1].fileSize;
-		handler.rtexts += xhr.responseText;
+		handler.rtexts.push(xhr.responseText);
 		handler.file = handler.files[handler.current];
 		sendFile(handler).onload = arguments.callee;
 	    }
 	    else
 	    {
-		handler.rtexts += xhr.responseText;
+		handler.rtexts.push(xhr.responseText);
 		if(onload) {
 		    handler.onload = onload;
 		    handler.onload(rpe, xhr);

@@ -71,16 +71,10 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     	    <ul id="UploadFilelist">
 
     	    </ul>
-    	    <<<<<<< HEAD
-    	    <input type="button" onclick="return UploadFiles('FileUpload')" value="Upload"/>	    
-    	    =======
     	    <input type="button" onclick="return UploadFiles('FileUpload')" value="Upload"/>
     	    <div  id="progressBar" class="progress striped active animated">
     		<div class="bar" style="width: 0%"></div>
     	    </div>
-
-
-    	    >>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     	</div>
     	<div id="items_unt">
     	    UntypedItems
@@ -95,24 +89,13 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
 
 
 
-    <script langauge="javascript">
-    <<<<<<< HEAD
-                                
+    <script langauge="javascript">                                
     var progressB= $("#progressBar");
     var progressL = $("#progressList");
     var pBar=progressB.children();                                                                         
-        =======
-
-        var pBar= $("#progressBar div.bar");
-        >>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     var unt =$("#items_unt");
     var ufs  = $("#UploadFilelist");
 
-
-    <<<<<<< HEAD
-                                                                                            	
-        =======
-        >>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     function detectTypeId()
     {
         $("#fileList").text(''); z = '';
@@ -150,21 +133,13 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
         var extension = filename.substr(dot + 1, filename.length);
         return extension;
     }
-    <<<<<<< HEAD
-                                                                                                            	
-        =======
 
-        >>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     function uploadComplete(smsg,msg)
     {
         var successCount=0;
         function parseAnswer(element, index, array){
     	answer = $.parseJSON(element);
-    <<<<<<< HEAD
-                                                            	    
-    	    =======
 
-    	    >>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     	if (answer != null){
     	    if (answer.success){
     		var fid= answer.fid;
@@ -172,11 +147,7 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     		$(pBar).html('<p>Success: '+successCount+'</p>');
     		progressL.append('<li>Success: '+ index+'</li>')
     		ufs.html('');
-    <<<<<<< HEAD
-                        		    
-    		    =======
 
-    		    >>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     		//alert(fid);
     		//loadParams(currentTypeId, fid);
     		//$("#paramsform").dialog("open");
@@ -186,30 +157,16 @@ Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl .
     		$(pBar).html('<p>Errors</p>');
     		//upload failed
     	    }
-    <<<<<<< HEAD
-                                                    		
-    		=======
 
-    		>>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     	}else{
     	    //alert('bad JSON in uploader answer')
     	}
         }
         smsg.forEach(parseAnswer);
         if (successCount>0)
-    <<<<<<< HEAD
     	$("#items_unt ul").load('/files/AjaxUntypedList');                   	            
                                                                 	
     }
-                                                                                                            	
-                                                                                                            	
-        =======
-        $("#items_unt ul").load('/files/AjaxUntypedList');
-
-    }
-
-
-    >>>>>>> 47039371675e183baa72ba21c46a3f99999720a6
     function size(bytes){   // simple function to show a friendly size
     var i = 0;
     while(1023 < bytes){

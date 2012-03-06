@@ -182,30 +182,29 @@ class UniverseController extends Controller {
     }
 
     public function actionPanel() {
-	$userInfo =
-		$this->render('status_panel');
+	$userInfo =	CUser::model()->getUserInfo($this->user_id);
+	$this->render('status_panel',array('userInfo'=>$userInfo));
     }
 
     public function actionGoods($text='') {
-	$search = filter_var($text,FILTER_SANITIZE_STRING);
+	$search = filter_var($text, FILTER_SANITIZE_STRING);
 	$lst = array();
-	$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower,$search);
+	$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
 	$pstContent = $this->renderPartial('/products/top', array('pst' => $pst), true);
 	$this->render('goods', array('lst' => $lst, 'pstContent' => $pstContent));
     }
-    
-    
-    public function actionSearch($text=''){
-	$search = filter_var($text,FILTER_SANITIZE_STRING);
-		$lst = array();
-	$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower,$search);
+
+    public function actionSearch($text='') {
+	$search = filter_var($text, FILTER_SANITIZE_STRING);
+	$lst = array();
+	$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
 	$pstContent = $this->renderPartial('/products/top', array('pst' => $pst), true);
-	
-	$obj = CUserObjects::model()->getObjectsLike($this->user_id,$test);
+
+	$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
 	//$objContent = $this->renderPartial('/universe/objects',array('obj'=>$obj));
-	$unt = CUserfiles::model()->getFilesLike($this->user_id,$test);
-	$untContent = $this->renderPartial('/files/untyped',array('unt'=>$unt));
-	$this->render('search',array('pstContent'=>$pstContent));
+	$unt = CUserfiles::model()->getFilesLike($this->user_id, $search);
+	$untContent = $this->renderPartial('/files/untyped', array('unt' => $unt));
+	$this->render('search', array('pstContent' => $pstContent));
     }
 
     public function actionLibrary($lib='') {
@@ -250,87 +249,86 @@ class UniverseController extends Controller {
 	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
 	    $prms = $cmd->queryAll();
 	    if (!empty($prms)) {
-			$params = array();
-			foreach ($prms as $p) {
-			    $params[$p['title']] = $p['value'];
-			    if (!empty($p['price_id']))
-				$price_id = $p['price_id'];
-			    if (!empty($p['rent_id']))
-				$rent_id = $p['rent_id'];
-			}
+		$params = array();
+		foreach ($prms as $p) {
+		    $params[$p['title']] = $p['value'];
+		    if (!empty($p['price_id']))
+			$price_id = $p['price_id'];
+		    if (!empty($p['rent_id']))
+			$rent_id = $p['rent_id'];
+		}
 	    }
 
 
-		$cmd = Yii::app()->db->createCommand()
-			->select('id')
-			->from('{{typedfiles}}')
-			->where('variant_id = :id AND user_id = ' . $this->userInfo['id']);
-		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-		$alreadyInCloud = $cmd->queryRow();
-		if ($alreadyInCloud) {
-		    $result = $alreadyInCloud['id'];
+	    $cmd = Yii::app()->db->createCommand()
+		    ->select('id')
+		    ->from('{{typedfiles}}')
+		    ->where('variant_id = :id AND user_id = ' . $this->userInfo['id']);
+	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
+	    $alreadyInCloud = $cmd->queryRow();
+	    if ($alreadyInCloud) {
+		$result = $alreadyInCloud['id'];
+	    } else {
+		$canAdd = false;
+		if (!empty($price_id)) {
+		    $canAdd = true;
 		} else {
-		    $canAdd = false;
-		    if (!empty($price_id)) {
-			$canAdd = true;
-		    } else {
-			if (!empty($rent_id)) {
-			    $cmd = Yii::app()->db->createCommand()
-				    ->select('*')
-				    ->from('{{actual_rents}}')
-				    ->where('user_id = ' . $this->userInfo['id'] . ' AND variant_id = :id')
-				    ->order('start DESC');
-			    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
-			    $actualRents = $cmd->queryAll();
-			    if (!empty($actualRents))
-				foreach ($actualRents as $a) {
-				    $start = strtotime($a['start']);
-				    if ($start > 0) {
-					$less = $start + Utils::parsePeriod($a['period'], $a['start']) - time();
-					if ($less) {
-					    //АРЕНДА ЕЩЕ НЕ ИСТЕКЛА - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
-					    $canAdd = true;
-					    break;
-					}
-				    } else {
-					//АРЕНДА ЕЩЕ НЕ НАЧАЛАСЬ - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
+		    if (!empty($rent_id)) {
+			$cmd = Yii::app()->db->createCommand()
+				->select('*')
+				->from('{{actual_rents}}')
+				->where('user_id = ' . $this->userInfo['id'] . ' AND variant_id = :id')
+				->order('start DESC');
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$actualRents = $cmd->queryAll();
+			if (!empty($actualRents))
+			    foreach ($actualRents as $a) {
+				$start = strtotime($a['start']);
+				if ($start > 0) {
+				    $less = $start + Utils::parsePeriod($a['period'], $a['start']) - time();
+				    if ($less) {
+					//АРЕНДА ЕЩЕ НЕ ИСТЕКЛА - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
 					$canAdd = true;
 					break;
 				    }
+				} else {
+				    //АРЕНДА ЕЩЕ НЕ НАЧАЛАСЬ - ДОБАВИТЬ В ПРОСТРАНСТВО МОЖНО
+				    $canAdd = true;
+				    break;
 				}
-			}
+			    }
 		    }
+		}
 
-		    if (empty($price_id) && empty($rent_id)) {
-			$canAdd = true;
-		    }
+		if (empty($price_id) && empty($rent_id)) {
+		    $canAdd = true;
+		}
 
-		    if ($canAdd) {
-				$cmd = Yii::app()->db->createCommand()
-					->select('p.title')
-					->from('{{products}} p')
-					->join('{{product_variants}} pv', 'pv.product_id = p.id')
-					->where('pv.id = :id');
-				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-				$productInfo = $cmd->queryRow();
-				if (!empty($productInfo))
-				{
-				    $title = $productInfo['title'];
+		if ($canAdd) {
+		    $cmd = Yii::app()->db->createCommand()
+			    ->select('p.title')
+			    ->from('{{products}} p')
+			    ->join('{{product_variants}} pv', 'pv.product_id = p.id')
+			    ->where('pv.id = :id');
+		    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
+		    $productInfo = $cmd->queryRow();
+		    if (!empty($productInfo)) {
+			$title = $productInfo['title'];
 
-					$sql = '
+			$sql = '
 									INSERT INTO {{typedfiles}}
 										(id, variant_id, user_id, title, collection_id)
 									VALUES
 										(null, :id, ' . $this->userInfo['id'] . ', :title, 0)
 								';
-					$cmd = Yii::app()->db->createCommand($sql);
-					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-					$cmd->bindParam(':title', $title, PDO::PARAM_STR);
-					$cmd->execute();
-					$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
-			    }
+			$cmd = Yii::app()->db->createCommand($sql);
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$cmd->bindParam(':title', $title, PDO::PARAM_STR);
+			$cmd->execute();
+			$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
 		    }
 		}
+	    }
 	}
 	$this->render('tadd', array('result' => $result));
     }

@@ -42,7 +42,7 @@ class CProduct extends CActiveRecord {
      *
      * @param type $paramIds
      * @param type $userPower
-     * @param string $search 
+     * @param string $search
      */
     public function getProductList($paramIds, $userPower, $search='') {
 	$searchCondition = '';
@@ -62,4 +62,29 @@ class CProduct extends CActiveRecord {
 	return $cmd->queryAll();
     }
 
+    public function getUserProducts($userId)
+    {
+	    //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
+		$tFiles = Yii::app()->db->createCommand()
+			->select('id, variant_id, title')
+			->from('{{typedfiles}}')
+			->where('variant_id > 0 AND user_id = ' . $userId)
+			->queryAll();
+		$fParams = array();
+		if (!empty($tFiles)) {
+		    $tfIds = array();
+		    foreach ($tFiles as $tf) {
+			$tfIds[$tf['variant_id']] = $tf['variant_id'];
+		    }
+		    $fParams = Yii::app()->db->createCommand()
+				    ->select('pv.id, ptp.title, ppv.value')
+				    ->from('{{product_variants}} pv')
+				    ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
+				    ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
+				    ->where('pv.id IN (' . implode(', ', $tfIds) . ')')
+				    ->group('ppv.id')
+				    ->order('pv.id ASC, ptp.srt DESC')->queryAll();
+		}
+		return array("tFiles" => $tFiles, "fParams" => $fParams);
+    }
 }

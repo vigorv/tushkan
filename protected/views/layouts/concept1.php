@@ -12,7 +12,9 @@
 
 	<link rel="stylesheet" type="text/css"  href="/css/bootstrap.min.css"/>
 
-	<link rel="stylesheet/less" type="text/css" href="/less/mycloud.less"/>	
+	<link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/tushkan.css" />
+
+	<link rel="stylesheet/less" type="text/css" href="/less/mycloud.less"/>
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	<?php
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery-1.7.1.min.js');
@@ -51,7 +53,7 @@
 
 	    <div id="m_goods" class="clearblockfix">
 
-	    </div>  
+	    </div>
 
 	    <div id="content">
 		<?php echo $content; ?>
@@ -60,11 +62,10 @@
 	    <script langauge="javascript">
 		$.address.change(function(event) {  
 		    $('#content').load(event.value, function(){
-			$('#content a').click(function(){			 
-			    $.address.value($(this).attr('href'));  
+			$('#content a').click(function(){
+			    $.address.value($(this).attr('href'));
 			    return false;
 			});
-
 		    });  
 		    return false;
 		});  
@@ -75,22 +76,22 @@
 			if (lnk=="#") return false;
 			$.address.value(lnk);  
 			return false;
-		    });  		       
+		    });
 		});
 		$('#m_goods').load('/universe/goods',function(){
-		    $('#m_goods  a').click(function() {  
-			$.address.value($(this).attr('href'));  
+		    $('#m_goods  a').click(function() {
+			$.address.value($(this).attr('href'));
 			return false;
-		    });  
-		});		
+		    });
+		});
 	    </script>
 
 
-		<div id="footer">
-		    Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>
-		    All Rights Reserved.<br/>
-		    <?php //echo Yii::powered();     ?>
-		</div><!-- footer -->
+	    <div id="footer">
+		Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>
+		All Rights Reserved.<br/>
+		<?php //echo Yii::powered();     ?>
+	    </div><!-- footer -->
 
         </div><!-- page -->
 

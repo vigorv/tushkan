@@ -22,7 +22,7 @@
 		echo '<p>Списания';
 		foreach ($debits as $d)
 		{
-			echo '<br />' . $d['created'] . ' - op: ' . $d['operation_id'] . ', sum: ' . sprintf("%01.2f", $d['summa']);
+			echo '<br />' . $d['created'] . ' - ' . $operations[$d['operation_id']] . ', ' . Yii::t('orders', 'Sum') . ': ' . sprintf("%01.2f", $d['summa']) . ' ' . Yii::t('pays', _CURRENCY_);
 		}
 		echo '</p>';
 	}
@@ -31,7 +31,7 @@
 		echo '<p>Пополнения';
 		foreach ($incs as $i)
 		{
-			echo '<br />' . $i['created'] . ' - op: ' . $i['operation_id'] . ', sum: ' . sprintf("%01.2f", $i['summa']);
+			echo '<br />' . $i['created'] . ' - ' . $operations[$i['operation_id']] . ', ' . Yii::t('orders', 'Sum') . ': ' . sprintf("%01.2f", $i['summa']) . ' ' . Yii::t('pays', _CURRENCY_);
 		}
 		echo '</p>';
 	}

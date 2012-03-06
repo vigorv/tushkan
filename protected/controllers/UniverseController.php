@@ -241,7 +241,7 @@ class UniverseController extends Controller {
 		    ->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, oi.price_id, oi.rent_id')
 		    ->from('{{product_variants}} pv')
 		    ->join('{{orders}} o', 'o.user_id = ' . $this->userInfo['id'] . ' AND o.state = ' . _ORDER_PAYED_)
-		    ->join('{{order_items}} oi', 'oi.variant_id')
+		    ->join('{{order_items}} oi', 'oi.variant_id=pv.id')
 		    ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		    ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 		    ->where('pv.id = :id')
@@ -250,14 +250,16 @@ class UniverseController extends Controller {
 	    $cmd->bindParam(':id', $id, PDO::PARAM_INT);
 	    $prms = $cmd->queryAll();
 	    if (!empty($prms)) {
-		$params = array();
-		foreach ($prms as $p) {
-		    $params[$p['title']] = $p['value'];
-		    if (!empty($p['price_id']))
-			$price_id = $p['price_id'];
-		    if (!empty($p['rent_id']))
-			$rent_id = $p['rent_id'];
-		}
+			$params = array();
+			foreach ($prms as $p) {
+			    $params[$p['title']] = $p['value'];
+			    if (!empty($p['price_id']))
+				$price_id = $p['price_id'];
+			    if (!empty($p['rent_id']))
+				$rent_id = $p['rent_id'];
+			}
+	    }
+
 
 		$cmd = Yii::app()->db->createCommand()
 			->select('id')
@@ -298,33 +300,37 @@ class UniverseController extends Controller {
 				}
 			}
 		    }
+
 		    if (empty($price_id) && empty($rent_id)) {
 			$canAdd = true;
 		    }
 
 		    if ($canAdd) {
-			$productInfo = Yii::app()->db->createCommand()
-				->select('title')
-				->from('{{products}}')
-				->where('id = ' . $prms[0]['product_id'])
-				->queryRow();
-			$title = '';
-			if (!empty($productInfo['title']))
-			    $title = $productInfo['title'];
+				$cmd = Yii::app()->db->createCommand()
+					->select('p.title')
+					->from('{{products}} p')
+					->join('{{product_variants}} pv', 'pv.product_id = p.id')
+					->where('pv.id = :id');
+				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$productInfo = $cmd->queryRow();
+				if (!empty($productInfo))
+				{
+				    $title = $productInfo['title'];
 
-			$sql = '
-							INSERT INTO {{typedfiles}}
-								(id, variant_id, user_id, title, collection_id)
-							VALUES
-								(null, :id, ' . $this->userInfo['id'] . ', "' . $title . '", 0)
-						';
-			$cmd = Yii::app()->db->createCommand($sql);
-			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-			$cmd->execute();
-			$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
+					$sql = '
+									INSERT INTO {{typedfiles}}
+										(id, variant_id, user_id, title, collection_id)
+									VALUES
+										(null, :id, ' . $this->userInfo['id'] . ', :title, 0)
+								';
+					$cmd = Yii::app()->db->createCommand($sql);
+					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+					$cmd->bindParam(':title', $title, PDO::PARAM_STR);
+					$cmd->execute();
+					$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
+			    }
 		    }
 		}
-	    }
 	}
 	$this->render('tadd', array('result' => $result));
     }

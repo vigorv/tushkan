@@ -34,6 +34,12 @@ class PaysController extends Controller
 		else
 			$conditions = '';
 
+		$operations = Yii::app()->db->createCommand()
+			->select('id, title')
+			->from('{{balanceoperations}}')
+			->queryAll();
+		$operations = Utils::arrayToKeyValues($operations, "id", "title");
+
 		$balance = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{balance}}')
@@ -68,7 +74,7 @@ class PaysController extends Controller
 		}
 		$incs = $cmd->queryAll();
 
-		$this->render('/pays/index', array('balance' => $balance, 'debits' => $debits, 'incs' => $incs, 'from' => $from, 'to' => $to));
+		$this->render('/pays/index', array('balance' => $balance, 'debits' => $debits, 'incs' => $incs, 'from' => $from, 'to' => $to, 'operations' => $operations));
 	}
 
 	/**

@@ -7,6 +7,7 @@ return array(
 	'Buy'		=> 'Купить',
 	'Discard'	=> 'Отказаться',
 	'Pay'		=> 'Оплатить',
+	'Sum'		=> 'Сумма',
 
 	'Order not found' => 'Заказ не найден',
 	'Order deleted' => 'Заказ удален',

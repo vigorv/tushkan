@@ -135,7 +135,7 @@ if (!empty($info))
 
 			function addVideo(num, path) {
 //alert(path);
-				document.getElementById("ipad" + num).href=path;
+				document.getElementById("ipad"+num).href=path;
 				document.getElementById("video" + num).style.display="";
 				$f("ipad", "/js/flowplayer/flowplayer-3.2.5.swf",
 				//$f("ipad" + num, "/js/flowplayer326/flowplayer-3.2.7.swf",
@@ -155,8 +155,12 @@ if (!empty($info))
 										// remove default canvas gradient
 										backgroundGradient: "none",
 										backgroundColor: "#000000"
-									}
-						}
+									},
+									playlist: [
+										{ url: path, scaling: "fit" }
+									]
+										}
+
 					).ipad();
 				return false;
 			}

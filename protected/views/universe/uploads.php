@@ -2,20 +2,27 @@
 $uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
 $user_id = Yii::app()->user->id;
 ?>
-<div class="well">
-	Supported File Types:<br/>
-	avi,mkv,mp4,flv
-</div>
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span9">
+			<i class="btn"> Choose file(s)...</i><input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple />
+			<div class="clearfix"></div>
+			<ul id="UploadFileList">
 
-<i class="btn"> Choose file(s)...</i><input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple />
-<div class="clearfix"></div>
-<ul id="UploadFileList">
-
-</ul>
-<div class="clearfix"></div>
-<button class="btn" onClick="return UploadFiles('FileUpload')" >Upload</button>
-<div  id="progresstotal" class="progress striped active animated">
-	<div class="bar" style="width: 0%"><p>Total</p></div>
+			</ul>
+			<div class="clearfix"></div>
+			<button class="btn" onClick="return UploadFiles('FileUpload')" >Upload</button>
+			<div  id="progresstotal" class="progress striped active animated">
+				<div class="bar" style="width: 0%"><p>Total</p></div>
+			</div>
+		</div>
+		<div class="span3">
+			<div class="well">
+				Supported File Types:<br/>
+				avi,mkv,mp4,flv
+			</div>
+		</div>
+	</div>
 </div>
 
 <script language="javascript">
@@ -164,11 +171,11 @@ $user_id = Yii::app()->user->id;
 			// if something is wrong ... (from native instance or because of size)
 			onerror:function(rpe){
 				//progressB.removeClass('progress').addClass('progress-danger');
-							str="#progressBar"+this.current;					
-							prB = ufs.find(str);
-							pr = prB.children();
-							$(prB).addClass('progress-danger');
-							$(pr).html('Connection error');
+				str="#progressBar"+this.current;					
+				prB = ufs.find(str);
+				pr = prB.children();
+				$(prB).addClass('progress-danger');
+				$(pr).html('Connection error');
 				//progressL.html('Troubles ' )
 				//$(pBar).html("Error");
 				//uploadComplete("The file " + this.file.fileName + " is too big [" + size(this.file.fileSize) + "]");

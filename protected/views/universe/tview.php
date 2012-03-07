@@ -41,7 +41,7 @@ if (!empty($info))
 		$onlineLinks[$fk] = $params['onlineurl'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
-		$onlineHref = '<a id="autostart" alt="" title="" rel="#video' . $fk . '" style="display:none;">video</a>';
+		$onlineHref = '<p id="autostart" alt="" title="" href="#video' . $fk . '"></p>';
 	}
 	else
 		$onlineLinks[$fk] = '';
@@ -109,11 +109,10 @@ if (!empty($info))
 
 	$playerCode = '
 	<div id="flowplayerdiv" style="display: none">
-	<h4><a href="#" onclick="document.getElementById(\'flowplayerdiv\').style.display=\'none\'; return false;">выключить проигрыватель</a></h4>
-		<a href="#"
+		<p href="#"
 			style="display:block;width:95%;height:297px"
-			id="ipad0">
-		</a>
+			id="ipad">
+		</p>
 	</div>
 
 		<script>
@@ -124,12 +123,11 @@ if (!empty($info))
 			        "overlayShow":  true,
 			        "overlayOpacity": 0.8,
 			        "showNavArrows": false,
-					//"onComplete": function() { $("#video' . $fk . ' p").trigger("click"); return false; }
+					"onComplete": function() { $("#video' . $fk . ' p").trigger("click"); return false; }
 				});
 			});
 
 			function addVideo(num, path) {
-alert(num);
 				document.getElementById("ipad" + num).href=path;
 				document.getElementById("video" + num).style.display="";
 				//$f("ipad" + num, "/js/flowplayer/flowplayer-3.2.5.swf",

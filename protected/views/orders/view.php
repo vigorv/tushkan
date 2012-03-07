@@ -49,7 +49,7 @@
 					{
 						oid = document.payOrderForm.order_id.value;
 						$.post('/orders/discard/' + oid, function(){
-							location.href = '/orders/view/' + oid;
+							$.address.value( '/orders/view/' + oid);
 						});
 					}
 					return false;

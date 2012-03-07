@@ -60,20 +60,21 @@
 	    </div>
 
 	    <script langauge="javascript">
-		$.address.change(function(event) {
-		    console.log(event);
+		$.address.change(function(event) {  
 		    $('#content').load(event.value, function(){
 			$('#content a').click(function(){
 			    $.address.value($(this).attr('href'));
 			    return false;
 			});
-
-		    });
-		});
-
+		    });  
+		    return false;
+		});  
+					
 		$('#m_panel').load('/universe/panel',function(){
-		    $('#m_panel a').click(function() {
-			$.address.value($(this).attr('href'));
+		    $('#m_panel a').click(function() {  
+			lnk= $(this).attr('href');
+			if (lnk=="#") return false;
+			$.address.value(lnk);  
 			return false;
 		    });
 		});
@@ -84,6 +85,7 @@
 		    });
 		});
 	    </script>
+
 
 	    <div id="footer">
 		Copyright &copy; <?php echo date('Y'); ?> <?php echo CHtml::encode(Yii::app()->name); ?><br/>

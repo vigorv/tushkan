@@ -26,6 +26,19 @@ class CPartners extends CActiveRecord {
 	return '{{partners}}';
     }
 
+    /**
+     * 
+     */
+    
+    public function getPartnerList(){
+	return Yii::app()->db->createCommand()
+		->select('title,id')
+		->from('{{partners}}')
+		->where('active=1')
+		->queryAll();
+    }
+    
+
 }
 
 ?>

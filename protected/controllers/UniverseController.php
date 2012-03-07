@@ -192,7 +192,8 @@ class UniverseController extends Controller {
 
     public function actionPanel() {
 	$userInfo =	CUser::model()->getUserInfo($this->user_id);
-	$this->render('status_panel',array('userInfo'=>$userInfo));
+	$partners = CPartners::model()->getPartnerList();
+	$this->render('status_panel',array('userInfo'=>$userInfo,'partners'=>$partners));
     }
 
     public function actionGoods($text='') {
@@ -212,7 +213,7 @@ class UniverseController extends Controller {
 	$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
 	//$objContent = $this->renderPartial('/universe/objects',array('obj'=>$obj));
 	$unt = CUserfiles::model()->getFilesLike($this->user_id, $search);
-	$untContent = $this->renderPartial('/files/untyped', array('unt' => $unt));
+	$untContent = $this->renderPartial('/files/untyped_list', array('unt' => $unt));
 	$this->render('search', array('pstContent' => $pstContent));
     }
 
@@ -235,6 +236,17 @@ class UniverseController extends Controller {
 		$this->render('library');
 		return;
 	}
+    }
+    
+    public function actionDevices(){
+			$tst = Utils::getDeviceTypes();
+		$dst = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{userdevices}}')
+			->where('user_id = ' . Yii::app()->user->getId())
+			->queryAll();
+		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
+	
     }
 
     /**

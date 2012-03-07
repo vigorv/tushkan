@@ -41,7 +41,7 @@ if (!empty($info))
 		$onlineLinks[$fk] = $params['onlineurl'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
-		$onlineHref = '<a id="autostart" alt="" title="" rel="#video' . $fk . '" style="display:none;"></a>';
+		$onlineHref = '<a id="autostart" alt="" title="" rel="#video' . $fk . '" style="display:none;">video</a>';
 	}
 	else
 		$onlineLinks[$fk] = '';
@@ -124,7 +124,7 @@ if (!empty($info))
 			        "overlayShow":  true,
 			        "overlayOpacity": 0.8,
 			        "showNavArrows": false,
-					"onComplete": function() { $("#video' . $fk . ' p").trigger("click"); return false; }
+					//"onComplete": function() { $("#video' . $fk . ' p").trigger("click"); return false; }
 				});
 			});
 

@@ -127,9 +127,9 @@
 					<div id="' . $nm . '_static">
 			';
 			if ($tp == 'password')
-				echo '<span id="' . $nm . '_static_value">***********</span> <a id="' . $nm . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>';
+				echo '<span id="' . $nm . '_static_value">***********</span> <button class="btn" id="' . $nm . '" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</button>';
 			else
-				echo '<span id="' . $nm . '_static_value">' . $info[$nm] . '</span> <a id="' . $nm . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</a>';
+				echo '<span id="' . $nm . '_static_value">' . $info[$nm] . '</span> <button class="btn"  id="' . $nm . '" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</button>';
 			echo'
 					</div>
 					<div id="' . $nm . '_edit" style="display: none">
@@ -176,13 +176,13 @@
 				switch ($pd['tp'])
 				{
 					case "password":
-						echo '<span id="' . $nmId . '_static_value">***********</span> <a id="' . $nmId . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</a>';
+						echo '<span id="' . $nmId . '_static_value">***********</span> <button class="btn" id="' . $nmId . '" href="#" onclick="return editPassword(this);">' . Yii::t('common', 'Edit') . '</button>';
 					break;
 					case "text":
-						echo '<span id="' . $nmId . '_static_value">' . $pd['text_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</a>';
+						echo '<span id="' . $nmId . '_static_value">' . $pd['text_value'] . '</span> <button class="btn" id="' . $nmId . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</button>';
 					break;
 					case "textarea":
-						echo '<span id="' . $nmId . '_static_value">' . $pd['textarea_value'] . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</a>';
+						echo '<span id="' . $nmId . '_static_value">' . $pd['textarea_value'] . '</span> <button class="btn" id="' . $nmId . '" href="#" onclick="return editText(this, 1);">' . Yii::t('common', 'Edit') . '</button>';
 					break;
 					case "checkbox":
 						$chkStr = $pd['int_value'];
@@ -190,7 +190,7 @@
 							$chkStr = Yii::t('common', 'Yes');
 						else
 							$chkStr = Yii::t('common', 'No');
-						echo '<span id="' . $nmId . '_static_value">' . $chkStr . '</span> <a id="' . $nmId . '" href="#" onclick="return editText(this, 0);">' . Yii::t('common', 'Edit') . '</a>';
+						echo '<span id="' . $nmId . '_static_value">' . $chkStr . '</span> <button class="btn" id="' . $nmId . '" href="#" onclick="return editText(this, 0);">' . Yii::t('common', 'Edit') . '</button>';
 					break;
 				}
 				echo'

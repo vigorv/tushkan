@@ -31,7 +31,7 @@
 	{
 	    $.post('/devices/remove/' + $(this).attr('rel'), function(data){
 		if (data == 'ok')
-		    $('#device_content').load('/devices/index');
+		    $('#m_devices').load('/universe/devices');
 	    });
 	}
     });
@@ -40,7 +40,7 @@
     .click(function() {
 	$.post('/devices/add/' + $(this).attr('rel'), function(data){
 	    if (data == 'ok')
-		$('#device_content').load('/devices/index');
+		$('#m_devices').load('/universe/devices');
 	});
     });
 </script>

@@ -13,7 +13,7 @@ if (!empty($info))
 		if (confirm('<?php echo Yii::t('common', 'Are you sure?'); ?>'))
 		{
 			$.post('/universe/remove/' + oid, function(){
-				location.href='/universe';
+				$.address.value('/universe');
 			});
 		}
 		return false;

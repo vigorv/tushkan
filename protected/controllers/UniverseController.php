@@ -248,7 +248,8 @@ class UniverseController extends Controller {
 				->from('{{userdevices}}')
 				->where('user_id = ' . Yii::app()->user->getId())
 				->queryAll();
-		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
+		//$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
+		$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));
 	}
 
 

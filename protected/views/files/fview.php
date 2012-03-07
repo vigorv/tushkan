@@ -14,7 +14,9 @@ if (!empty($item)) {
 	    	    }
 	    	    if (result == 'ok')
 	    	    {
-					$("#content").load("/files/fview/<?php echo $item['id']; ?>");
+	    	    	$.address.value("/files/fview/<?php echo $item['id']; ?>");
+
+					//$("#content").load("/files/fview/<?php echo $item['id']; ?>");
 	    	    }
 	    	    else
 	    	    {
@@ -43,7 +45,8 @@ if (!empty($item)) {
         		return false;
         	}
 	    	$.post('/files/remove', {id: <?php echo $item['id']; ?>}, function(){
-	    		$("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
+	    		$.address.value("<?php echo $mediaList[$item['type_id']]['link']; ?>");
+	    		//$("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
 	    	});
 	    	return false;
         }

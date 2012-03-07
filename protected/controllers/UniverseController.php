@@ -496,9 +496,10 @@ class UniverseController extends Controller {
 
 				$cmd = Yii::app()->db->createCommand()
 						->select('fv.id, fv.file_id, fl.fname')
-						->from('{{files_variants}} fv')
+						->from('{{userfiles}} uf')
+						->join('{{files_variants}} fv', 'uf.id=fv.file_id')
 						->join('{{filelocations}} fl', 'fl.id=fv.id')
-						->where('fv.file_id = :id')
+						->where('uf.object_id = :id')
 						->group('fl.id');
 				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 				$files = $cmd->queryAll();

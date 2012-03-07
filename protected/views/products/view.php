@@ -40,7 +40,7 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				location.href="/orders/view/" + oid;
+				$.address.value("/orders/view/" + oid);
 			}
 		});
 		return false;
@@ -51,7 +51,7 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				location.href="/universe/tview/" + oid;
+				$.address.value("/universe/tview/" + oid);
 			}
 		});
 		return false;

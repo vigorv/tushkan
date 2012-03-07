@@ -16,8 +16,11 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				document.quickpayform.order_id.value = oid;
-				document.quickpayform.submit();
+				//document.quickpayform.order_id.value = oid;
+				//document.quickpayform.submit();
+				$.post("/pays/do/3", {order_id: oid}, function(data){
+					$("#content").html(data);
+				});
 			}
 		});
 		return false;
@@ -28,8 +31,11 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				document.quickpayform.order_id.value = oid;
-				document.quickpayform.submit();
+//				document.quickpayform.order_id.value = oid;
+//				document.quickpayform.submit();
+				$.post("/pays/do/3", {order_id: oid}, function(data){
+					$("#content").html(data);
+				});
 			}
 		});
 		return false;

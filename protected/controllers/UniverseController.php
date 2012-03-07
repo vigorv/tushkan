@@ -17,7 +17,7 @@ class UniverseController extends Controller {
 	}
 
 	public function accessRules() {
-		
+
 	}
 
 	public function actionError() {
@@ -196,16 +196,16 @@ class UniverseController extends Controller {
 		$this->render('status_panel', array('userInfo' => $userInfo, 'partners' => $partners));
 	}
 
-	
-	
+
+
 	public function actionGoodsTop($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
 		$lst = array();
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
-		$this->render('/products/top', array('pst' => $pst));		
+		$this->render('/products/top', array('pst' => $pst));
 	}
 
-	
+
 
 	public function actionSearch($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
@@ -248,11 +248,12 @@ class UniverseController extends Controller {
 				->from('{{userdevices}}')
 				->where('user_id = ' . Yii::app()->user->getId())
 				->queryAll();
-		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
+		//$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
+		$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));
 	}
 
-	
-	
+
+
 	/**
 	 * добавить в пространство вариант продукта с витрины
 	 *
@@ -477,33 +478,32 @@ class UniverseController extends Controller {
 	 * @param integer $id - идентификатор объекта в ПП
 	 */
 	public function actionOview($id = 0) {
-		$info = $params = array();
+		$prms = $params = $files = array();
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
 			$cmd = Yii::app()->db->createCommand()
-					->select('uo.id, uo.title, ptp.title, uopv.value')
+					->select('uo.id, uo.title AS uotitle, ptp.title AS ptptitle, uopv.value')
 					->from('{{userobjects}} uo')
-					->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uf.id')
+					->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uo.id')
 					->join('{{product_type_params}} ptp', 'ptp.id=uopv.param_id')
-					->where('uo.id = :id AND uo.user_id = ' . $this->userInfo['id'])
-					->group('uopv.id');
+					->where('uo.id = :id AND uo.user_id = ' . $this->userInfo['id']);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-			$info = $cmd->queryAll();
-			if (!empty($info)) {
+			$prms = $cmd->queryAll();
+			if (!empty($prms)) {
+				$params = array();
+				foreach ($prms as $p) {
+					$params[$p['ptptitle']] = $p['value'];
+				}
+
 				$cmd = Yii::app()->db->createCommand()
 						->select('fv.id, fv.file_id, fl.fname')
-						->from('{{filevariants}} fv')
+						->from('{{userfiles}} uf')
+						->join('{{files_variants}} fv', 'uf.id=fv.file_id')
 						->join('{{filelocations}} fl', 'fl.id=fv.id')
-						->where('fv.file_id = :id')
+						->where('uf.object_id = :id')
 						->group('fl.id');
 				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-				$prms = $cmd->queryAll();
-				if (!empty($prms)) {
-					$params = array();
-					foreach ($prms as $p) {
-						$params[$p['title']] = $p['value'];
-					}
-				}
+				$files = $cmd->queryAll();
 
 				$subAction = 'view';
 				if (!empty($_GET['do']) && !empty($_GET['vid'])) {//ДОЛЖНО БЫТЬ УКАЗАНО ДЕЙСТВИЕ И ВАРИАНТ
@@ -519,7 +519,7 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-		$this->render('oview', array('info' => $info, 'params' => $params, 'subAction' => $subAction));
+		$this->render('oview', array('prms' => $prms, 'params' => $params, 'files' => $files, 'subAction' => $subAction));
 	}
 
 	/**

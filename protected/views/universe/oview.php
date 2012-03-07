@@ -1,8 +1,7 @@
-<h2>Universe</h2>
 <?php
-if (!empty($info))
+if (!empty($prms))
 {
-	echo '<h3>' . $info['title'] . '</h3>';
+	echo '<h3>' . $prms[0]['uotitle'] . '</h3>';
 ?>
 <script type="text/javascript">
 	function doRemove(oid)
@@ -15,7 +14,7 @@ if (!empty($info))
 	}
 </script>
 <?php
-	echo '<div class="shortfilm">';
+	echo '<div class="chess">';
 	if (!empty($params['poster']))
 	{
 		$poster = $params['poster'];
@@ -29,15 +28,15 @@ if (!empty($info))
 
 	$fk = 0;
 	$actions = array();
-	$actions[] = '<a href="#" onclick="return doRemove(' . $info['id'] . ')">удалить из пространства</a>';
+	$actions[] = '<a href="#" onclick="return doRemove(' . $prms[0]['id'] . ')">удалить из пространства</a>';
 	$onlineHref = '';
-		$onlineLinks[$fk] = $locInfo['filename'];
+		$onlineLinks[$fk] = '/files/download?fid=' . $files[0]['id'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<a href="/universe/oview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
+		$actions[] = '<a href="/universe/oview/id/' . $prms[0]['id'] . '/do/online">смотреть онлайн</a>';
 		$onlineHref = '<a id="autostart" rel="video" alt="" title="" href="#video' . $fk . '"></a>';
 	unset($params['onlineurl']);
 
-	$links[$fk] = $locInfo['filename'];
+	$links[$fk] = '/files/download?fid=' . $files[0]['id'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a alt="" title="" href="' . $links[$fk] . '">скачать</a>';
 	unset($params['url']);
@@ -45,6 +44,7 @@ if (!empty($info))
 	echo '<ul>';
 	foreach ($params as $param => $value)
 	{
+		if (empty($value)) continue;
 		if ($param == Yii::app()->params['tushkan']['fsizePrmName'])
 		{
 			$value = Utils::sizeFormat($value);

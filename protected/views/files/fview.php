@@ -14,7 +14,9 @@ if (!empty($item)) {
 	    	    }
 	    	    if (result == 'ok')
 	    	    {
-					$("#content").load("/files/fview/<?php echo $item['id']; ?>");
+	    	    	$.address.value("/files/fview/<?php echo $item['id']; ?>");
+
+					//$("#content").load("/files/fview/<?php echo $item['id']; ?>");
 	    	    }
 	    	    else
 	    	    {
@@ -43,7 +45,8 @@ if (!empty($item)) {
         		return false;
         	}
 	    	$.post('/files/remove', {id: <?php echo $item['id']; ?>}, function(){
-	    		$("#content").load("/files/fview/<?php echo $item['id']; ?>");
+	    		$.address.value("<?php echo $mediaList[$item['type_id']]['link']; ?>");
+	    		//$("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
 	    	});
 	    	return false;
         }
@@ -63,17 +66,17 @@ if (!empty($item)) {
 		$actions[]='<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
 
     }
-    if (empty($item['preset_id'])) {
-		$actions[] = '<button class="btn" href="#" onclick="return queue(\'add\');">конвертировать</button>';
+    if (empty($queue)) {
+		$actions[] = '<button class="btn" onclick="return queue(\'add\');">конвертировать</button>';
     } else {
-    	if (empty($queue))
-			$actions[] = '<button class="btn" href="#" onclick="return queue(\'add\');">типизировать</button>';
+    	if (empty($item['preset_id']))
+			$actions[] = '<button class="btn" onclick="return doType();">типизировать</button>';
 		else
 		{
 			echo '<p>Состояние: добавление в пространство<br />';
 			echo 'Текущая операция: конвертирование<br />';
 		//echo 'Процент завершения: ' . rand(0, 100) . '%</p>';
-		//$actions[] = '<button class="btn" href="#" onclick="return queue(\'cancel\');">отменить операцию</button>';
+			$actions[] = '<button class="btn" href="#" onclick="return queue(\'cancel\');">отменить операцию</button>';
 		}
     }
 

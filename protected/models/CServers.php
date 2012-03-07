@@ -30,7 +30,7 @@ class CServers extends CActiveRecord {
     /**
      *
      * @param string $className
-     * @return CActiveRecord
+     * @return CServers
      */
     public static function model($className = __CLASS__) {
 	return parent::model($className);

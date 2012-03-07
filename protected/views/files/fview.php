@@ -59,8 +59,9 @@ if (!empty($item)) {
     $actions = array();
     $d_link=true;
     if ($d_link) {
-		$actions[] = '<button class="btn" href="/files/download?fid=' . $item['id'] . '" >' . Yii::t('files', 'download') . '</button>';
-		$actions[] = '<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
+		$actions[] = '<button class="btn"  onclick="document.location='."'/files/download?fid=" . $item['id'] . "'". '" >' . Yii::t('files', 'download') . '</button>';
+		$actions[]='<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
+
     }
     if (empty($item['preset_id'])) {
 		$actions[] = '<button class="btn" onclick="return queue(\'add\');">конвертировать</button>';

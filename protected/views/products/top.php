@@ -24,10 +24,10 @@ if (!empty($pst)) {
 	    $poster = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
 	$prms = array($info['12'], $info['13'], $info['14']);
 	echo '<div class="chess">
-				<img width="80" src="' . $poster . '" />
+				<img width="80px" src="' . $poster . '" />
 				    <div style="clear:left">
 				<a href="/products/view/' . $info['id'] . '">' . $info['title'] . '</a>
-				<br />' . implode(', ', $prms) . '
+
 				    </div>
 			</div>';
     }

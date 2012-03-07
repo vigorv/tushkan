@@ -308,27 +308,51 @@ class Utils {
      * @return mixed
      */
     public function getMediaList() {
-	return array(
-	    1 => array(
-		'id' => 1,
-		'title' => Yii::t('common', 'Video'),
-		'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp'),
-		'link' => '/universe/index?section=video'
-	    ),
-	    3 => array(
-		'id'=>3,
-		'title' => Yii::t('common', 'Photo'),
-		'exts'=>array('jpg','jpeg','png'),
-	    )
-		/* ПОКА ПОДДЕРЖИВАЕМ ТОЛЬКО ВИДЕО
-		  2 => array(
-		  'id'	=> 2,
-		  'title'	=> Yii::t('common', 'Audio'),
-		  'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma')
-		  'link'	=> '/universe/index?section=music'
-		  ),
-		  // */
-	);
+    	$aliases = Utils::$mtypes;
+    	$lst = array();
+    	foreach ($aliases as $a => $id)
+    	{
+    		switch ($a)
+    		{
+    			case "v":
+				    $lst[$id] = array(
+						'id' => $id,
+						'alias' => $a,
+						'title' => Yii::t('common', 'Video'),
+						'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp'),
+						'link' => '/universe/library?lib=' . $a,
+				    );
+				break;
+    			case "a":
+				    $lst[$id] = array(
+						'id' => $id,
+						'alias' => $a,
+						'title' => Yii::t('common', 'Audio'),
+						'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma'),
+						'link' => '/universe/library?lib=' . $a,
+				    );
+				break;
+    			case "p":
+				    $lst[$id] = array(
+						'id' => $id,
+						'alias' => $a,
+						'title' => Yii::t('common', 'Photo'),
+						'exts'=>array('jpg','jpeg','png'),
+						'link' => '/universe/library?lib=' . $a,
+				    );
+				break;
+    			case "d":
+				    $lst[$id] = array(
+						'id' => $id,
+						'alias' => $a,
+						'title' => Yii::t('common', 'Docs'),
+						'exts' => array('txt', 'doc'),
+						'link' => '/universe/library?lib=' . $a,
+				    );
+				break;
+    		}
+    	}
+		return $lst;
     }
 
     /**

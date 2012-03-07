@@ -17,7 +17,7 @@ class UniverseController extends Controller {
 	}
 
 	public function accessRules() {
-		
+
 	}
 
 	public function actionError() {
@@ -196,16 +196,16 @@ class UniverseController extends Controller {
 		$this->render('status_panel', array('userInfo' => $userInfo, 'partners' => $partners));
 	}
 
-	
-	
+
+
 	public function actionGoodsTop($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
 		$lst = array();
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
-		$this->render('/products/top', array('pst' => $pst));		
+		$this->render('/products/top', array('pst' => $pst));
 	}
 
-	
+
 
 	public function actionSearch($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
@@ -251,8 +251,8 @@ class UniverseController extends Controller {
 		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
 	}
 
-	
-	
+
+
 	/**
 	 * добавить в пространство вариант продукта с витрины
 	 *
@@ -483,7 +483,7 @@ class UniverseController extends Controller {
 			$cmd = Yii::app()->db->createCommand()
 					->select('uo.id, uo.title, ptp.title, uopv.value')
 					->from('{{userobjects}} uo')
-					->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uf.id')
+					->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uo.id')
 					->join('{{product_type_params}} ptp', 'ptp.id=uopv.param_id')
 					->where('uo.id = :id AND uo.user_id = ' . $this->userInfo['id'])
 					->group('uopv.id');

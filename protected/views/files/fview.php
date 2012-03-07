@@ -43,7 +43,7 @@ if (!empty($item)) {
         		return false;
         	}
 	    	$.post('/files/remove', {id: <?php echo $item['id']; ?>}, function(){
-	    		$("#content").load("/files/fview/<?php echo $item['id']; ?>");
+	    		$("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
 	    	});
 	    	return false;
         }

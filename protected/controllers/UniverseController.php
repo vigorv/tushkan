@@ -492,7 +492,7 @@ class UniverseController extends Controller {
 			if (!empty($info)) {
 				$cmd = Yii::app()->db->createCommand()
 						->select('fv.id, fv.file_id, fl.fname')
-						->from('{{filevariants}} fv')
+						->from('{{files_variants}} fv')
 						->join('{{filelocations}} fl', 'fl.id=fv.id')
 						->where('fv.file_id = :id')
 						->group('fl.id');

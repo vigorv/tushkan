@@ -36,11 +36,11 @@ class CUserfiles extends CActiveRecord {
     }
 
     /**
-     *  Serversync getFileloc for $file_id , $user_id ,$zone_id 
+     *  Serversync getFileloc for $file_id , $user_id ,$zone_id
      * @param int $fid
      * @param int $user_id
      * @param int $zone_id
-     * @return type 
+     * @return type
      */
     public function getFileloc($fid, $user_id, $zone_id, $preset_id, $stype=1) {
 	return Yii::app()->db->createCommand()
@@ -55,7 +55,7 @@ class CUserfiles extends CActiveRecord {
     /**
      * Get  variants wich has locations
      * @param int $fid
-     * @param int $zone_id 
+     * @param int $zone_id
      */
     public function GetVarWithLoc($fid, $zone_id) {
 	return Yii::app()->db->createCommand()
@@ -88,7 +88,7 @@ class CUserfiles extends CActiveRecord {
      *
      * @param int $user_id
      * @param int $page
-     * @param int $count 
+     * @param int $count
      * @return array
      */
     public function getFileListUnt($user_id, $page=1, $count=100) {
@@ -104,11 +104,11 @@ class CUserfiles extends CActiveRecord {
      *
      * @param int $user_id
      * @param int $fid
-     * @return mixed 
+     * @return mixed
      */
     public function getFileInfo($user_id, $fid) {
 	return Yii::app()->db->createCommand()
-			->select('uf.id, uf.title, fv.fsize')
+			->select('uf.id, uf.title, fv.fsize, uf.type_id')
 			->from('{{userfiles}} uf')
 			->leftJoin('{{files_variants}} fv', ' fv.file_id = uf.id and fv.preset_id =0 ')
 			->where('uf.object_id = 0 AND uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
@@ -119,7 +119,7 @@ class CUserfiles extends CActiveRecord {
      *
      * @param int $user_id
      * @param int $fid
-     * @return mixed 
+     * @return mixed
      */
     public function getFileMeta($user_id, $fid) {
 	return Yii::app()->db->createCommand()
@@ -156,7 +156,7 @@ class CUserfiles extends CActiveRecord {
     /**
      *  Remove only if file| not object
      * @param int $user_id
-     * @param int $id 
+     * @param int $id
      */
     public function RemoveFile($user_id, $fid) {
 	$file = $this->getFileMeta($user_id, $fid);
@@ -172,11 +172,11 @@ class CUserfiles extends CActiveRecord {
 	    return false;
     }
 
-   
+
     /**
      *Remove all untypes files
      * @param type $user_id
-     * @return type 
+     * @return type
      */
     public function RemoveAllFiles($user_id) {
 	$file_variants = Yii::app()->db->createCommand()
@@ -190,14 +190,14 @@ class CUserfiles extends CActiveRecord {
 	}
 	Yii::app()->db->createCommand()
 			->delete('{{userfiles}}','user_id =' . $user_id . ' AND object_id = 0');
-			
+
 	return;
     }
-    
+
     /**
-     * 
+     *
      */
-    
+
     public function getFilesLike($user_id,$like){
 	return Yii::app()->db->createCommand()
 			->select('uf.id, uf.title, fv.fsize')
@@ -206,6 +206,6 @@ class CUserfiles extends CActiveRecord {
 			->where('uf.object_id = 0 AND uf.title LIKE= "%' . $like . '%" AND uf.user_id =' . $user_id)
 			->queryRow();
     }
-    
+
 
 }

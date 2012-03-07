@@ -34,6 +34,7 @@ switch ($subAction)
 	case "wizardtypeparams":
 		if (!empty($result['lst']))
 		{
+			echo '<form id="wizardParamsFormId" method="post" action="/universe/postuploadparams">';
 			$rNote = '';
 			foreach($result['lst'] as $p)
 			{
@@ -53,6 +54,7 @@ switch ($subAction)
 				';
 			}
 			echo $rNote;
+			echo '<div class="divider"></div><button class="btn" type="submit">' . Yii::t('common', 'Submit') . '</button></form>';
 		}
 	break;
 }

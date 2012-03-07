@@ -2,9 +2,9 @@
 <?php
 if (!empty($info))
 {
-	echo'<pre>';
+	//echo'<pre>';
 	//print_r($dsc);
-	echo'</pre>';
+	//echo'</pre>';
 	echo '<h3>' . $info['title'] . '</h3>';
 ?>
 <script type="text/javascript">
@@ -41,7 +41,7 @@ if (!empty($info))
 		$onlineLinks[$fk] = $params['onlineurl'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
-		$onlineHref = '<a id="autostart" rel="video" alt="" title="" href="#video' . $fk . '"></a>';
+		$onlineHref = '<a id="autostart" alt="" title="" rel="#video' . $fk . '" style="display:none;"></a>';
 	}
 	else
 		$onlineLinks[$fk] = '';
@@ -112,23 +112,24 @@ if (!empty($info))
 	<h4><a href="#" onclick="document.getElementById(\'flowplayerdiv\').style.display=\'none\'; return false;">выключить проигрыватель</a></h4>
 		<a href="#"
 			style="display:block;width:95%;height:297px"
-			id="ipad">
+			id="ipad0">
 		</a>
 	</div>
 
 		<script>
 			$(document).ready(function() {
-				$("a[rel=video]").fancybox({
+				$("#autostart").fancybox({
 			        "zoomSpeedIn":  0,
 			        "zoomSpeedOut": 0,
 			        "overlayShow":  true,
 			        "overlayOpacity": 0.8,
 			        "showNavArrows": false,
-					"onComplete": function() { $(this.href + " a").trigger("click"); return false; }
+					"onComplete": function() { $("#video' . $fk . ' p").trigger("click"); return false; }
 				});
 			});
 
 			function addVideo(num, path) {
+alert(num);
 				document.getElementById("ipad" + num).href=path;
 				document.getElementById("video" + num).style.display="";
 				//$f("ipad" + num, "/js/flowplayer/flowplayer-3.2.5.swf",
@@ -151,13 +152,13 @@ if (!empty($info))
 										backgroundColor: "#000000"
 									}
 						}
-							).ipad();
+					).ipad();
 				return false;
 			}
 		</script>
 	<div style="display: none">
 		<div id="video' . $fk . '">
-			<a style="width:640px; height:480px; display:block" id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></a>
+			<p style="width:640px; height:480px; display:block" id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></p>
 		</div>
 	</div>
 		' . $onlineHref . '

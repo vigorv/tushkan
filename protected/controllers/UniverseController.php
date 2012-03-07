@@ -202,7 +202,7 @@ class UniverseController extends Controller {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
 		$lst = array();
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
-		$this->render('/products/top', array('pst' => $pst), true);		
+		$this->render('/products/top', array('pst' => $pst));		
 	}
 
 	

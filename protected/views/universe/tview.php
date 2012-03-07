@@ -41,7 +41,7 @@ if (!empty($info))
 		$onlineLinks[$fk] = $params['onlineurl'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
-		$onlineHref = '<p id="autostart" alt="" title="" href="#video' . $fk . '"></p>';
+		$onlineHref = '<p id="autostart" alt="" title="" rel="#video' . $fk . '"></p>';
 	}
 	else
 		$onlineLinks[$fk] = '';
@@ -102,21 +102,27 @@ if (!empty($info))
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.js");
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.css");
 
-//	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer-3.2.4.min.js");
-	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer326/flowplayer-3.2.6.min.js");
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer-3.2.4.min.js");
+//	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer326/flowplayer-3.2.6.min.js");
 
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 
 	$playerCode = '
-	<div id="flowplayerdiv" style="display: none">
-		<p href="#"
-			style="display:block;width:95%;height:297px"
-			id="ipad">
-		</p>
+	<div id="flowplayerdiv" class="modal" style="width:640px; height:480px; display: none">
+		<div class="modal-body">
+		<a href="#"  style="width:610px; height:450px; display:block" id="ipad"></a>
+		</div>
 	</div>
 
-		<script>
+		<script type="text/javascript">
+			$("#flowplayerdiv").on("show", function () {
+				$("#video' . $fk . ' p").trigger("click");
+			});
 			$(document).ready(function() {
+				$("#autostart").click(function(){
+				   $("#flowplayerdiv").modal("show");
+			});
+				return;
 				$("#autostart").fancybox({
 			        "zoomSpeedIn":  0,
 			        "zoomSpeedOut": 0,
@@ -128,10 +134,11 @@ if (!empty($info))
 			});
 
 			function addVideo(num, path) {
+//alert(path);
 				document.getElementById("ipad" + num).href=path;
 				document.getElementById("video" + num).style.display="";
-				//$f("ipad" + num, "/js/flowplayer/flowplayer-3.2.5.swf",
-				$f("ipad" + num, "/js/flowplayer326/flowplayer-3.2.7.swf",
+				$f("ipad", "/js/flowplayer/flowplayer-3.2.5.swf",
+				//$f("ipad" + num, "/js/flowplayer326/flowplayer-3.2.7.swf",
 									{plugins: {
 										h264streaming: {
 											url: "/js/flowplayer/flowplayer.pseudostreaming-3.2.5.swf"
@@ -156,7 +163,7 @@ if (!empty($info))
 		</script>
 	<div style="display: none">
 		<div id="video' . $fk . '">
-			<p style="width:640px; height:480px; display:block" id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></p>
+			<p id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></p>
 		</div>
 	</div>
 		' . $onlineHref . '

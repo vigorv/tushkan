@@ -16,8 +16,11 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				document.quickpayform.order_id.value = oid;
-				document.quickpayform.submit();
+				//document.quickpayform.order_id.value = oid;
+				//document.quickpayform.submit();
+				$.post("/pays/do/3", {order_id: oid}, function(data){
+					$("#content").html(data);
+				});
 			}
 		});
 		return false;
@@ -28,8 +31,11 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				document.quickpayform.order_id.value = oid;
-				document.quickpayform.submit();
+//				document.quickpayform.order_id.value = oid;
+//				document.quickpayform.submit();
+				$.post("/pays/do/3", {order_id: oid}, function(data){
+					$("#content").html(data);
+				});
 			}
 		});
 		return false;
@@ -40,7 +46,7 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				location.href="/orders/view/" + oid;
+				$.address.value("/orders/view/" + oid);
 			}
 		});
 		return false;
@@ -51,7 +57,7 @@ if(!empty($info))
 			oid = parseInt(data);
 			if (oid > 0)
 			{
-				location.href="/universe/tview/" + oid;
+				$.address.value("/universe/tview/" + oid);
 			}
 		});
 		return false;

@@ -6,17 +6,15 @@ if (!empty($item)) {
         function queue(subaction)
         {
 	    	$.post('/files/queue', {id: <?php echo $item['id']; ?>, subaction: subaction}, function(data){
-	    	    tid = parseInt(data);
-	    	    if (tid > 0)
+	    		result = '';
+	    	    if (data)
 	    	    {
-					$.post("/products/ajax", {typeId: <?php echo $item['type_id']; ?>, action: "wizardtypeparams"}, function(html){
-						$("#content").html(html);
-						$("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[fileId]" value="<?php echo $item['id']; ?>" />');
-						$("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[typeId]" value="<?php echo $item['type_id']; ?>" />');
-						$("#wizardParamsFormId").ajaxForm(function() {
-							$("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
-						});
-					});
+	    			answer = $.parseJSON(data);
+	    			result = answer.result;
+	    	    }
+	    	    if (result == 'ok')
+	    	    {
+					$("#content").load("/files/fview/<?php echo $item['id']; ?>");
 	    	    }
 	    	    else
 	    	    {
@@ -24,6 +22,18 @@ if (!empty($item)) {
 	    	    }
 	    	});
 	    	return false;
+        }
+
+        function doType()
+        {
+			$.post("/products/ajax", {typeId: <?php echo $item['type_id']; ?>, action: "wizardtypeparams"}, function(html){
+				$("#content").html(html);
+				$("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[fileId]" value="<?php echo $item['id']; ?>" />');
+				$("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[typeId]" value="<?php echo $item['type_id']; ?>" />');
+				$("#wizardParamsFormId").ajaxForm(function() {
+					$("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
+				});
+			});
         }
 
         function doDelete()
@@ -40,15 +50,6 @@ if (!empty($item)) {
 
         function ajaxFormSubmit(f)
         {
-        	url = f.action;
-        	inputs = $("#" + f.id + " input");
-        	if (inputs)
-        	{
-	        	for (i = 0; i < inputs.length; i++)
-	        	{
-	        		alert(inputs[i].name);
-	        	}
-        	}
 			return false;
         }
     </script>
@@ -59,15 +60,20 @@ if (!empty($item)) {
     $d_link=true;
     if ($d_link) {
 		$actions[] = '<button class="btn" href="/files/download?fid=' . $item['id'] . '" >' . Yii::t('files', 'download') . '</button>';
-		$actions[]='<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
+		$actions[] = '<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
     }
-    if (empty($queue)) {
-		$actions[] = '<button class="btn" href="#" onclick="return queue(\'add\');">типизировать</button>';
+    if (empty($item['preset_id'])) {
+		$actions[] = '<button class="btn" href="#" onclick="return queue(\'add\');">конвертировать</button>';
     } else {
-		echo '<p>Состояние: добавление в пространство<br />';
-		echo 'Текущая операция: конвертирование<br />';
+    	if (empty($queue))
+			$actions[] = '<button class="btn" href="#" onclick="return queue(\'add\');">типизировать</button>';
+		else
+		{
+			echo '<p>Состояние: добавление в пространство<br />';
+			echo 'Текущая операция: конвертирование<br />';
 		//echo 'Процент завершения: ' . rand(0, 100) . '%</p>';
-		$actions[] = '<button class="btn" href="#" onclick="return queue(\'cancel\');">отменить операцию</button>';
+		//$actions[] = '<button class="btn" href="#" onclick="return queue(\'cancel\');">отменить операцию</button>';
+		}
     }
 
     if (!empty($actions)) {

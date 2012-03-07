@@ -51,17 +51,21 @@ class FilesController extends Controller {
 		    if (empty($queue)) {
 			$task_id = CloudTaskManager::model()->CreateFileTask(1, $fid, $this->user_id, 'x480');
 			if ($task_id) {
-			    echo "ADD:ok";
+				$answer = array('operation' => 'ADD', 'result' => 'ok');
 			} else
-			    echo "ADD:bad";
+				$answer = array('operation' => 'ADD', 'result' => 'bad');
 		    }
 		    break;
 		case "cancel":
 		    if (!empty($queue)) {
-			$result = CloudTaskManager::model()->AbortFileTaskQueue($queue);
-			echo "CANCEL:ok";
+				$result = CloudTaskManager::model()->AbortFileTaskQueue($queue);
+				$answer = array('operation' => 'CANCEL', 'result' => 'ok');
 		    }
 		    break;
+	    }
+	    if (!empty($answer))
+	    {
+	    	echo json_encode($answer);
 	    }
 	}
 	$this->render('fview', array('task_id' => $task_id));
@@ -228,7 +232,7 @@ class FilesController extends Controller {
 
 	echo "OK";
     }
-    
+
     /**
      * remove All untyped files
      */
@@ -236,7 +240,7 @@ class FilesController extends Controller {
 	if (!isset($_POST['removeAll']))
 	    die('what?');
 	CUserfiles::model()->RemoveAllFiles($this->user_id);
-	
+
     }
 
     /**

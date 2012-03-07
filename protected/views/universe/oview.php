@@ -1,8 +1,7 @@
-<h2>Universe</h2>
 <?php
-if (!empty($info))
+if (!empty($prms))
 {
-	echo '<h3>' . $info['title'] . '</h3>';
+	echo '<h3>' . $prms['uotitle'] . '</h3>';
 ?>
 <script type="text/javascript">
 	function doRemove(oid)
@@ -15,7 +14,7 @@ if (!empty($info))
 	}
 </script>
 <?php
-	echo '<div class="shortfilm">';
+	echo '<div class="chess">';
 	if (!empty($params['poster']))
 	{
 		$poster = $params['poster'];

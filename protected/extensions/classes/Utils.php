@@ -282,23 +282,7 @@ class Utils {
 	return $res;
     }
 
-    /**
-     * getSectionIdByName($name)
-     *
-     * @param string $name
-     * @return mixed
-     */
-    public static function getSectionIdByName($name) {
-	switch ($name) {
-	    case 'video': return 1;
-	    case 'audio': return 2;
-	    case 'photo': return 3;
-	    case 'docs': return 4;
-	    default: return 0;
-	}
-    }
-
-    public static function getSectionIdByAlias($al) {
+     public static function getSectionIdByAlias($al) {
 	return Utils::$mtypes[$al];
     }
 

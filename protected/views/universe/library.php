@@ -2,13 +2,25 @@
 $uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
 $user_id = Yii::app()->user->id;
 Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/multiuploader.js");
+$path_img ='/images/128x128/';
 ?>
 <?php if (!isset($mb_content_items)): ?>
 	<ul id ="lib_menu">
-		<li><a href="/universe/library?lib=v">Video</a></li>
-		<li><a href="/universe/library?lib=a">Audio</a></li>
-		<li><a href="/universe/library?lib=p">Photo</a></li>
-		<li><a href="/universe/library?lib=d">Docs</a></li>
+		<li>	
+			<img src="<?=$path_img;?>/filesystems/video.png"/>
+			<a href="/universe/library?lib=v">Video</a>
+		</li>
+		<li>
+			<img src="<?=$path_img;?>/filesystems/music.png"/>
+			<a href="/universe/library?lib=a">Audio</a>
+		</li>
+		<li>
+			<img src="<?=$path_img;?>/apps/package_graphics.png"/>
+			<a href="/universe/library?lib=p">Photo</a>
+		</li>
+		<li>	<img src="<?=$path_img;?>/apps/kwrite.png"/>
+			<a href="/universe/library?lib=d">Docs</a>
+		</li>
 	</ul>
 <?php else: ?>
 	<?php if (isset($mb_top_items)): ?>

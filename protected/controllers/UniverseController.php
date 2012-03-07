@@ -477,7 +477,7 @@ class UniverseController extends Controller {
 	 * @param integer $id - идентификатор объекта в ПП
 	 */
 	public function actionOview($id = 0) {
-		$info = $params = array();
+		$prms = $params = $files = array();
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
 			$cmd = Yii::app()->db->createCommand()

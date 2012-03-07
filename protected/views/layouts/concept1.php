@@ -51,7 +51,7 @@
 			</div>
 
 			<div id="m_uploads" class="clearblockfix">
-				<? $this->renderPartial('/universe/uploads');?>
+				<? $this->renderPartial('/universe/uploads'); ?>
 			</div>
 			<div id="m_goods" class="clearblockfix">
 
@@ -60,10 +60,11 @@
 			<div id="content">
 				<?php echo $content; ?>
 			</div>
-			
-			<div id="m_devices">
-				
+
+			<div id="m_devices" class="well">
+
 			</div>
+
 
 			<script langauge="javascript">
 				$.address.change(function(event) {  
@@ -85,12 +86,12 @@
 					});
 				});
 				
-					$('#m_uploads a').click(function() {  
-						lnk= $(this).attr('href');
-						if (lnk=="#") return false;
-						$.address.value(lnk);  
-						return false;
-					});
+				$('#m_uploads a').click(function() {  
+					lnk= $(this).attr('href');
+					if (lnk=="#") return false;
+					$.address.value(lnk);  
+					return false;
+				});
 				
 				
 				
@@ -100,8 +101,9 @@
 						return false;
 					});
 				});
-					$('#m_devices').load('/universe/devices');</script>
+				$('#m_devices').load('/universe/devices');
 			</script>
+
 
 
 			<div id="footer">

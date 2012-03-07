@@ -40,7 +40,7 @@ class CFiletypes {
 				break;
 
 			case 'UTL1':
-				$img_path = '/images/64x64/mimetypes';
+				$img_path = '/images/64x64/mimetypes/';
 				foreach ($array as $object) {
 					$ftype = pathinfo($object['title'], PATHINFO_EXTENSION);
 					switch ($ftype) {

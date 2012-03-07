@@ -78,7 +78,7 @@
 			return false;
 		    });
 		});
-		$('#m_goods').load('/universe/goods',function(){
+		$('#m_goods').load('/universe/goodsTop',function(){
 		    $('#m_goods  a').click(function() {
 			$.address.value($(this).attr('href'));
 			return false;

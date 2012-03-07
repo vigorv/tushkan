@@ -22,8 +22,11 @@ body{
 	background-color:lighten(@bg,40%);
 	padding-top:5px;
 	>ul{	    
-	    float:left;
 	    list-style:none;
+		>li{
+			float:left;
+			margin-left:5px;
+		}
 	}
 	#progressBar{
 		
@@ -53,19 +56,14 @@ body{
 	padding:10px;
     }
 
-    #m_device{
-	height:100px;
-	width:100%;
-    }
 
-    #content{
-	padding:10px;
+
+    #m_devices, #content, #footer{
+	padding:0px;
+	margin: 10px;
 	clear:left;
     }
-    #footer{
-	clear:left;
-	padding:10px;
-    }
+    
 
 #lib_menu{
     text-align:center;    
@@ -87,40 +85,38 @@ body{
 
 
 .lib_content {
-.items > ul{
+ #items_t>ul{
     list-style:none;
+    float:none;
+    margin:10px 5px 5px 0;
     >li{
 	img{
 	     width:45px;
 	     height:50px;
 	     border: 1px solid white;
 	}
-	float:left;
+	display:inline-block;
+	vertical-align:top;
 	margin-left:10px;
 	width:50px;
 	height:70px;
 	overflow:hidden;
     }
 }
- .ext{
-    clear:left;
+ 
    #items_unt{ 
-     background-color:@bg+#454;
-     
+     clear:left;
      >ul{
 	float:none;
 	list-style:none;
-	margin:10px 5px;
+	margin:10px 5px 5px 0;
 	>li{
 	    img{
-		 width:32px;
-		 height:32px;
-		border: 1px solid white;
 	    }
 	    display:inline-block;
 	    vertical-align:top;
-	    margin-right:20px;
-	    width:70px;
+	    margin-left:10px;
+	    width:40px;
 	    height:auto;
 	    overflow:hidden;
 	    .selected {
@@ -128,19 +124,9 @@ body{
 	    }
 	}
     }
-    }
-    .items_add{
-	margin-right:5px;
-	float:right;
-	.input-file{
-	    height:22px;
-	    width:90px;
-	    overflow:hidden;
-	    display:block;	    
-	}	
-    }
+    }   
 }
-}
+
     #m_uploads{
 	padding:10px;
 	#FileUpload{
@@ -191,3 +177,7 @@ body{
 	    margin: 3px;
 	}
     }
+
+	#m_devices{
+		padding:10px;
+	}

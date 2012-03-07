@@ -485,16 +485,13 @@ class UniverseController extends Controller {
 					->from('{{userobjects}} uo')
 					->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uo.id')
 					->join('{{product_type_params}} ptp', 'ptp.id=uopv.param_id')
-					->where('uo.id = :id AND uo.user_id = ' . $this->userInfo['id'])
-					->group('uopv.id');
+					->where('uo.id = :id AND uo.user_id = ' . $this->userInfo['id']);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$prms = $cmd->queryAll();
 			if (!empty($prms)) {
-				if (!empty($prms)) {
-					$params = array();
-					foreach ($prms as $p) {
-						$params[$p['ptptitle']] = $p['value'];
-					}
+				$params = array();
+				foreach ($prms as $p) {
+					$params[$p['ptptitle']] = $p['value'];
 				}
 
 				$cmd = Yii::app()->db->createCommand()

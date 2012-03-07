@@ -38,7 +38,7 @@ $space_percent = $space_busy * 100 / (int) $userInfo['free_limit'];
 	<ul class="dropdown-menu">
 	    <li><a href="/products/index"><?=Yii::t('common','All');?><li></a></li>
 	    <?php foreach ($partners as $partner): ?>
-    	    <li>  <a href="/products/list/<?= $partner['id']; ?>"><?= $partner['title']; ?></a></li>
+    	    <li>  <a href="/products/partner/<?= $partner['id']; ?>"><?= $partner['title']; ?></a></li>
 	    <?php endforeach; ?>
 	</ul></li>
 </ul>

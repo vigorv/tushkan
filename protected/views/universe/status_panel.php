@@ -2,6 +2,11 @@
 $space_busy = (int) $userInfo['size_limit'] - (int) $userInfo['free_limit'];
 $space_percent = $space_busy * 100 / (int) $userInfo['free_limit'];
 ?>
+<ul>
+	<li>
+	<a href="/"><i class="icon-home icon-white"></i><?=Yii::t('common','Main');?></a>
+	</li>
+</ul>
 <ul id="mail">
     <li class="dropdown">
 	<a class="dropdown-toggle" data-toggle="dropdown" href="#"><?= Yii::t('common', 'Email'); ?>: <?= @$userInfo['email']; ?></a>
@@ -42,34 +47,16 @@ $space_percent = $space_busy * 100 / (int) $userInfo['free_limit'];
 	    <?php endforeach; ?>
 	</ul></li>
 </ul>
-<ul id="uploads">
-    <li  class="dropdown">
-	<a  class="dropdown-toggle" data-toggle="dropdown" href="#">
-	    <div  id="progressBar" class="progress striped active animated">
-		<div class="bar" style="width: 100%">
-		    <p>Upload</p></div>
-	    </div>
-	</a>
-	<ul  id="progressList" class="dropdown-menu">
 
-	</ul>
-    </li>
-</ul>
 <ul id="search">
     <input id="i_search" type="text" placeholder="Global search..." />
     <input type="button" value="Search" onClick="SearchEverywhere($(i_search).val());"/>   
 </ul>
-
-
-
+<div class="clearfix"></div>
 <script langauge="javascript">
-    
-    
+        
     $('.dropdown-toggle').dropdown();
-   
-    
-    
-    
+         
     var cont= $("#content");
     $('#i_search').keypress(function(e){
 	if(e.which == 13){

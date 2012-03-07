@@ -19,21 +19,23 @@ body{
 
     #m_panel{
 	width:100%;
-	height:40px;
 	background-color:lighten(@bg,40%);
 	padding-top:5px;
 	>ul{	    
 	    float:left;
 	    list-style:none;
 	}
-	.bar p {
-	    overflow:visible;
-	    color: white;
-	    text-align: center;
-	    min-width:20px;
-	    padding:0 2px;
-	    text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
-	}
+	#progressBar{
+		
+		.bar p {
+			overflow:visible;
+			color: white;
+			text-align: center;
+			min-width:20px;
+			padding:0 2px;
+			text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.25);
+		}
+	}	
 	#search{
 	    float:right;
 	    
@@ -103,21 +105,22 @@ body{
  .ext{
     clear:left;
    #items_unt{ 
+     background-color:@bg+#454;
      
-     max-width:70%;
      >ul{
 	float:none;
 	list-style:none;
+	margin:10px 5px;
 	>li{
 	    img{
-		 width:45px;
-		 height:50px;
+		 width:32px;
+		 height:32px;
 		border: 1px solid white;
 	    }
 	    display:inline-block;
 	    vertical-align:top;
-	    margin-left:10px;
-	    width:50px;
+	    margin-right:20px;
+	    width:70px;
 	    height:auto;
 	    overflow:hidden;
 	    .selected {
@@ -134,19 +137,40 @@ body{
 	    width:90px;
 	    overflow:hidden;
 	    display:block;	    
-	}
-	#FileUpload{
-	   height:0;
-	   display:hidden;
-	   opacity: 0;
-	   -moz-opacity: 0;
-	    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-	}
-
+	}	
     }
 }
 }
+    #m_uploads{
+	padding:10px;
+	#FileUpload{
+	   height:28px;
+	   width:103px;
+	   margin-left:-103px;
+	   opacity: 0;
+	   -moz-opacity: 0;
+	    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	  
+	}
+	#UploadFileList{	
+		float:left;
+		>li{	
+			margin-bottom:2px;
+			list-style:none;			
+			clear:left;
+			>div{
+			margin:0 5px;
+			float:left;
+			width:100px;
+			}
+		}
+	}
+	#progresstotal{
+		display:none;
+	}
+	
 
+    }
 
 
 

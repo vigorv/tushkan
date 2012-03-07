@@ -251,6 +251,8 @@ class UniverseController extends Controller {
 		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
 	}
 
+	
+	
 	/**
 	 * добавить в пространство вариант продукта с витрины
 	 *

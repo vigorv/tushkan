@@ -53,7 +53,7 @@ sendFile = (function(toString, maxSize){
 
 	xhr.open("post", handler.url, true);
 	xhr.setRequestHeader("If-Modified-Since", "Mon, 26 Jul 1997 05:00:00 GMT");
-	xhr.setRequestHeader("Origin", "http://mycloud.anka.ws");
+	//xhr.setRequestHeader("Origin", "http://mycloud.anka.ws");
 	xhr.setRequestHeader("Cache-Control", "no-cache");
 	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 	xhr.setRequestHeader("X-File-Name", handler.file.fileName);

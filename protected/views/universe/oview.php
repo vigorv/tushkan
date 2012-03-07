@@ -30,13 +30,13 @@ if (!empty($prms))
 	$actions = array();
 	$actions[] = '<a href="#" onclick="return doRemove(' . $prms[0]['id'] . ')">удалить из пространства</a>';
 	$onlineHref = '';
-		$onlineLinks[$fk] = $files[0]['fname'];
+		$onlineLinks[$fk] = '/files/download?fid=' . $files[0]['id'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/oview/id/' . $prms[0]['id'] . '/do/online">смотреть онлайн</a>';
 		$onlineHref = '<a id="autostart" rel="video" alt="" title="" href="#video' . $fk . '"></a>';
 	unset($params['onlineurl']);
 
-	$links[$fk] = $files[0]['fname'];
+	$links[$fk] = '/files/download?fid=' . $files[0]['id'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a alt="" title="" href="' . $links[$fk] . '">скачать</a>';
 	unset($params['url']);
@@ -44,6 +44,7 @@ if (!empty($prms))
 	echo '<ul>';
 	foreach ($params as $param => $value)
 	{
+		if (empty($value)) continue;
 		if ($param == Yii::app()->params['tushkan']['fsizePrmName'])
 		{
 			$value = Utils::sizeFormat($value);

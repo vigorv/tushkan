@@ -73,7 +73,7 @@ if (!empty($item)) {
 			echo '<p>Состояние: добавление в пространство<br />';
 			echo 'Текущая операция: конвертирование<br />';
 		//echo 'Процент завершения: ' . rand(0, 100) . '%</p>';
-		//$actions[] = '<button class="btn" href="#" onclick="return queue(\'cancel\');">отменить операцию</button>';
+			$actions[] = '<button class="btn" href="#" onclick="return queue(\'cancel\');">отменить операцию</button>';
 		}
     }
 

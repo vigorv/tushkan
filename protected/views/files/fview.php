@@ -63,10 +63,10 @@ if (!empty($item)) {
 		$actions[]='<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
 
     }
-    if (empty($item['preset_id'])) {
+    if (empty($queue)) {
 		$actions[] = '<button class="btn" onclick="return queue(\'add\');">конвертировать</button>';
     } else {
-    	if (empty($queue))
+    	if (empty($item['preset_id']))
 			$actions[] = '<button class="btn" onclick="return doType();">типизировать</button>';
 		else
 		{

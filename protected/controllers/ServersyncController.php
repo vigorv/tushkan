@@ -18,12 +18,12 @@ class ServersyncController extends Controller {
 	$ip = CServers::convertIpToLong($_SERVER['REMOTE_ADDR']);
 
 	//zaglushka
-	//$ip = CServers::convertIpToLong('192.168.201.161');
+	//$ip = CServers::convertIpToLong('192.168.201.163');
 
 	$this->server = CServers::model()->findByAttributes(array('ip' => $ip));
 	if ($this->server === null)
 	    die('Unknown Server ' . $_SERVER['REMOTE_ADDR']);
-
+		Yii::log(print_r($_GET,true),CLOGGER::LEVEL_TRACE,'snow');
 	return true;
     }
 

@@ -40,8 +40,8 @@ class CProduct extends CActiveRecord {
 
     /**
      *
-     * @param type $paramIds
-     * @param type $userPower
+     * @param int $paramIds
+     * @param int $userPower
      * @param string $search
      */
     public function getProductList($paramIds, $userPower, $search='') {
@@ -58,11 +58,12 @@ class CProduct extends CActiveRecord {
 		->join('{{product_variants}} pv', 'pv.product_id=p.id')
 		->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
 		->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
-		->order('pv.id ASC');
+		->order('pv.id ASC')
+		->limit(100);
 	return $cmd->queryAll();
     }
 
-    public function getUserProducts($userId)
+    public function getUserProducts($userId,$type_id=0)
     {
 	    //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
 		$tFiles = Yii::app()->db->createCommand()
@@ -71,6 +72,9 @@ class CProduct extends CActiveRecord {
 			->where('variant_id > 0 AND user_id = ' . $userId)
 			->queryAll();
 		$fParams = array();
+		$types_str='';
+		if ($type_id)
+			$types_str=' AND pv.type_id ='.$type_id;
 		if (!empty($tFiles)) {
 		    $tfIds = array();
 		    foreach ($tFiles as $tf) {
@@ -81,7 +85,7 @@ class CProduct extends CActiveRecord {
 				    ->from('{{product_variants}} pv')
 				    ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 				    ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
-				    ->where('pv.id IN (' . implode(', ', $tfIds) . ')')
+				    ->where('pv.id IN (' . implode(', ', $tfIds) . ')'.$types_str)
 				    ->group('ppv.id')
 				    ->order('pv.id ASC, ptp.srt DESC')->queryAll();
 		}

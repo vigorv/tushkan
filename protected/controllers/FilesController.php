@@ -54,7 +54,9 @@ class FilesController extends Controller {
 				$answer = array('operation' => 'ADD', 'result' => 'ok');
 			} else
 				$answer = array('operation' => 'ADD', 'result' => 'bad');
-		    }
+		    } else {
+				$answer = array('operation' => 'ADD', 'result'=>'Task Exists');
+			}
 		    break;
 		case "cancel":
 		    if (!empty($queue)) {
@@ -66,6 +68,7 @@ class FilesController extends Controller {
 	    if (!empty($answer))
 	    {
 	    	echo json_encode($answer);
+		return;
 	    }
 	}
 	$this->render('fview', array('task_id' => $task_id));

@@ -17,7 +17,8 @@ class RegisterController extends Controller {
 
     public function actionConfirm($hash = '') {
     	$info = array(); $subAction = '';
-        $this->layout = '/layouts/start';
+        if (!(Yii::app()->request->isAjaxRequest))
+		$this->layout = '/layouts/start';
 		if (!empty($hash))
 		{
         	$cmd = Yii::app()->db->createCommand()
@@ -111,6 +112,7 @@ class RegisterController extends Controller {
 	 * @param string $hash
 	 */
     public function actionForget($hash = '') {
+		if (!(Yii::app()->request->isAjaxRequest))
         $this->layout = '/layouts/start';
     	$subAction = ''; $info = array();
 		if (!empty($hash))
@@ -221,6 +223,7 @@ class RegisterController extends Controller {
 	public function actionQuick()
 	{
         $registered = false;
+		if (!(Yii::app()->request->isAjaxRequest))
         $this->layout = '/layouts/start';
         $model = new RegisterForm();
         $model->setScenario('quick');
@@ -386,6 +389,7 @@ class RegisterController extends Controller {
      * Displays the login page
      */
     public function actionLogin() {
+		if (!(Yii::app()->request->isAjaxRequest))
     	$this->layout = '/layouts/start';
         $this->breadcrumbs = array(
             Yii::t('common', 'Login')

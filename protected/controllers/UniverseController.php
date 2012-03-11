@@ -5,7 +5,9 @@ class UniverseController extends Controller {
 	var $user_id;
 
 	//public $panel;
-	//public $goods;
+	//public $goods
+	//
+	var $layout = 'concept1';
 
 	public function beforeAction($action) {
 		parent::beforeAction($action);
@@ -31,9 +33,7 @@ class UniverseController extends Controller {
 		}
 	}
 
-	public function actionIndex($section='') {
-		if (!(Yii::app()->request->isAjaxRequest))
-			$this->layout = 'concept1';
+	public function actionIndex($section='') {			
 		$this->render('library');
 	}
 
@@ -166,7 +166,7 @@ class UniverseController extends Controller {
 			}
 		}
 	}
-
+	
 	/**
 	 * действие формы загрузки файла
 	 *
@@ -204,6 +204,40 @@ class UniverseController extends Controller {
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
 		$this->render('/products/top', array('pst' => $pst));
 	}
+	
+	public function actionProducts(){
+		
+		$lst = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{partners}}')
+			->where('active <= ' . $this->userPower)
+			->queryAll();
+
+		$searchCondition = '';
+		if (!empty($_GET['search']))
+		{
+			$searchCondition = ' AND p.title LIKE :search';
+			$search = '%' . $_GET['search'] . '%';
+		}
+		$paramIds = CProduct::getShortParamsIds();
+		$cmd = Yii::app()->db->createCommand()
+			->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+			->from('{{products}} p')
+			->join('{{partners}} prt', 'p.partner_id=prt.id')
+			->join('{{product_variants}} pv', 'pv.product_id=p.id')
+			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+			->where('p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition)
+			->order('pv.id ASC');
+		if (!empty($searchCondition))
+		{
+			$cmd->bindParam(':search', $search, PDO::PARAM_STR);
+		}
+		$pst = $cmd->queryAll();
+
+		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
+
+		$this->render('/universe/products', array('lst' => $lst, 'pstContent' => $pstContent));
+	}
 
 
 
@@ -214,10 +248,9 @@ class UniverseController extends Controller {
 		$pstContent = $this->renderPartial('/products/top', array('pst' => $pst), true);
 
 		$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
-		//$objContent = $this->renderPartial('/universe/objects',array('obj'=>$obj));
 		$unt = CUserfiles::model()->getFilesLike($this->user_id, $search);
-		$untContent = $this->renderPartial('/files/untyped_list', array('unt' => $unt));
-		$this->render('search', array('pstContent' => $pstContent));
+		
+		$this->render('search', array('pstContent' => $pstContent,'unt'=>$unt,'obj'=>$obj));
 	}
 
 	public function actionLibrary($lib='') {
@@ -227,13 +260,15 @@ class UniverseController extends Controller {
 			case 'a':
 			case 'd':
 			case 'p':
+			
+			
 				$type_id = Utils::getSectionIdByAlias($lib);
-				$productsInfo = CProduct::getUserProducts($this->user_id);
+				$productsInfo = CProduct::getUserProducts($this->user_id,$type_id);
 				$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
 				$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
 				$this->render('library', array('mb_content_items' => $mb_content_items,
 					'productsInfo' => $productsInfo,
-					'mb_content_items_unt' => $mb_content_items_unt));
+					'mb_content_items_unt' => $mb_content_items_unt,'nav_lib'=>$lib));
 				break;
 			default:
 				$this->render('library');

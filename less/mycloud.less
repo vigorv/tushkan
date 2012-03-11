@@ -1,7 +1,7 @@
 @bg : gray;
 
 body{
-    background-color:gray;
+	background-color:gray;
 }
 
 .clearblockfix:after {
@@ -14,18 +14,21 @@ body{
 }
 
 #page {
-     background-color:lighten(@bg,40%);
+	background-color:lighten(@bg,40%);
 }
 
-    #m_panel{
-	width:100%;
+#m_panel{
+	
 	background-color:lighten(@bg,40%);
 	padding-top:5px;
 	>ul{	    
-	    list-style:none;
+		
+		padding:0 5px;
+		margin:0 10px;
+		list-style:none;
 		>li{
 			float:left;
-			margin-left:5px;
+			margin-left:2px;
 		}
 	}
 	#progressBar{
@@ -40,107 +43,128 @@ body{
 		}
 	}	
 	#search{
-	    float:right;
-	    
-	    margin-right:10px;
+		margin-right:5px;
+		#i_search{
+						width:auto;
+			}
 	}
 	
-    }
+}
 
 
-    #m_lib{
+#m_lib{
 	clear:left;
 	width:100%;
 	height:100px;
 	background-color:@bg+#123;
 	padding:10px;
-    }
+}
 
 
 
-    #m_devices, #content, #footer{
+#m_devices, #content, #footer{
 	padding:0px;
 	margin: 10px;
 	clear:left;
-    }
-    
+}
+
 
 #lib_menu{
-    text-align:center;    
-    margin:auto;
-    >li{      
-	img{
-		display:block;
+	text-align:center;    
+	margin:auto;
+	>li{      
+		img{
+			display:block;
+		}
+		a{	
+			
+		}
+		list-style:none;
+		margin-left:5px;
+		margin-bottom:10px;
+		vertical-align:middle;
+		text-align:center;      
+		display:inline-block;
+		vertical-align:middle;
+		align:center;
 	}
-	a{	
-		
-	}
-      list-style:none;
-      margin-left:5px;
-      margin-bottom:10px;
-      vertical-align:middle;
-      text-align:center;      
-      display:inline-block;
-      vertical-align:middle;
-      align:center;
-    }
-
+	
 }
 
 
-.lib_content {
- #items_t>ul{
-    list-style:none;
-    float:none;
-    margin:10px 5px 5px 0;
-    >li{
-	img{
-	     width:45px;
-	     height:50px;
-	     border: 1px solid white;
-	}
-	display:inline-block;
-	vertical-align:top;
-	margin-left:10px;
-	width:50px;
-	height:70px;
-	overflow:hidden;
-    }
-}
- 
-   #items_unt{ 
-     clear:left;
-     >ul{
-	float:none;
+
+#items_t>ul{
 	list-style:none;
+	float:none;
 	margin:10px 5px 5px 0;
 	>li{
-	    img{
-	    }
-	    display:inline-block;
-	    vertical-align:top;
-	    margin-left:10px;
-	    width:40px;
-	    height:auto;
-	    overflow:hidden;
-	    .selected {
-		word-wrap:break-word;
-	    }
+		img{
+			width:45px;
+			height:50px;
+			border: 1px solid white;
+		}
+		display:inline-block;
+		vertical-align:top;
+		margin-left:10px;
+		width:50px;
+		height:70px;
+		overflow:hidden;
 	}
-    }
-    }   
 }
 
-    #m_uploads{
-	padding:10px;
+#items_unt{ 
+	clear:left;
+	>ul{
+		float:none;
+		list-style:none;
+		margin:10px 5px 5px 0;
+		>li{	
+			text-align:center;
+			border:1px dotted gray;
+			display:inline-block;
+			vertical-align:top;
+			margin:0 0 10px 5px;
+			padding:2px;
+			
+			height:auto;
+			overflow:hidden;
+			.selected {
+				
+			}
+			span{
+				
+				width:64px;
+				height:1.2em;
+				font-size:12px;
+				display:block;
+				word-wrap:break-word;
+				overflow:hidden;
+			}
+		}
+	}
+}   
+
+
+
+#m_uploads{
+	>div{
+		margin:10px;
+	}
+	.closed{
+		display:none;
+		
+	}
+	.open{
+		display:block;
+	}
 	#FileUpload{
-	   height:28px;
-	   width:103px;
-	   margin-left:-103px;
-	   opacity: 0;
-	   -moz-opacity: 0;
-	    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
-	  
+		height:28px;
+		width:103px;
+		margin-left:-103px;
+		opacity: 0;
+		-moz-opacity: 0;
+		filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+		
 	}
 	#UploadFileList{	
 		float:left;
@@ -149,9 +173,9 @@ body{
 			list-style:none;			
 			clear:left;
 			>div{
-			margin:0 5px;
-			float:left;
-			width:100px;
+				margin:0 5px;
+				float:left;
+				width:100px;
 			}
 		}
 	}
@@ -159,29 +183,30 @@ body{
 		display:none;
 	}
 	
+	
+}
 
-    }
 
 
 
-    #m_goods, #search_result_goods{
+#m_goods, #search_result_goods{
 	clear:left;
 	height:auto;
-	padding:10px;
+	padding:5px;
 	background-color:@bg + #333;
 	
 	.chess{
-	    text-align:center;
-	    max-width:100px;
-	    display:inline-block;
-	    vertical-align:top;
-	    overflow:hidden;
-	    margin-left:5px;
-	    clear: right;
-	    margin: 3px;
+		text-align:center;
+		max-width:100px;
+		display:inline-block;
+		vertical-align:top;
+		overflow:hidden;
+		margin-left:5px;
+		clear: right;
+		margin: 3px;
 	}
-    }
+}
 
-	#m_devices{
-		padding:10px;
-	}
+#m_devices{
+	padding:10px;
+}

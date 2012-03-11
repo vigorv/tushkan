@@ -81,6 +81,7 @@ if (!empty($prms))
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 
 	$playerCode = '
+		' . $onlineHref . '
 	<div id="flowplayerdiv" class="modal" style="width:640px; height:580px; display: none">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">×</a>
@@ -95,23 +96,11 @@ if (!empty($prms))
 			$("#flowplayerdiv").on("show", function () {
 				$("#video' . $fk . ' p").trigger("click");
 			});
-			$(document).ready(function() {
-				$("#autostart").click(function(){
-				   $("#flowplayerdiv").modal("show");
-				   $(".close").click(function(){
-				   		$("#flowplayerdiv").modal("hide");
-				   });
-			});
-			return;
-
-				$("#autostart").fancybox({
-			        "zoomSpeedIn":  0,
-			        "zoomSpeedOut": 0,
-			        "overlayShow":  true,
-			        "overlayOpacity": 0.8,
-			        "showNavArrows": false,
-					"onComplete": function() { $("#video' . $fk . ' p").trigger("click"); return false; }
-				});
+			$("#autostart").click(function(){
+			   $("#flowplayerdiv").modal("show");
+			   $(".close").click(function(){
+			   		$("#flowplayerdiv").modal("hide");
+			   });
 			});
 
 			function addVideo(num, path) {
@@ -151,7 +140,6 @@ alert(path);
 			<p id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></p>
 		</div>
 	</div>
-		' . $onlineHref . '
 	';
 
 	echo $playerCode;

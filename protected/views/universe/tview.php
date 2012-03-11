@@ -19,6 +19,12 @@ if (!empty($info))
 		}
 		return false;
 	}
+
+	function doRedirect(url)
+	{
+		location.href=url;
+		return false;
+	}
 </script>
 <?php
 	echo '<div id="productdetail">';
@@ -35,13 +41,13 @@ if (!empty($info))
 
 	$fk = 0;
 	$actions = array();
-	$actions[] = '<a href="#" onclick="return doRemove(' . $info['id'] . ')">удалить из пространства</a>';
+	$actions[] = '<button class="btn" onclick="return doRemove(' . $info['id'] . ')">удалить из пространства</button>';
 	$onlineHref = '';
 	if (!empty($params['onlineurl']))
 	{
 		$onlineLinks[$fk] = $params['onlineurl'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
+		$actions[] = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online\'); return false;">смотреть онлайн</button>';
 		$onlineHref = '<p id="autostart" rel="#video' . $fk . '"></p>';
 	}
 	else
@@ -52,7 +58,7 @@ if (!empty($info))
 	{
 		$links[$fk] = $params['url'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<a alt="" title="" href="' . $links[$fk] . '">скачать</a>';
+		$actions[] = '<button class="btn" onclick="return doRedirect(\'' . $links[$fk] . '\');">скачать</button>';
 	}
 	else
 		$links[$fk] = '';
@@ -91,7 +97,7 @@ if (!empty($info))
 				}
 			}
 		}
-		echo '<p>' . implode(' | ', $actions) . ' ' . $rentDsc . '</p>';
+		echo '<p>' . implode(' ', $actions) . ' ' . $rentDsc . '</p>';
 	}
 	if (!empty($dsc['description']))
 		echo '<p>' . $dsc['description'] . '</p>';

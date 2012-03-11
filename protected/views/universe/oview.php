@@ -19,6 +19,12 @@ if (!empty($prms))
 		}
 		return false;
 	}
+
+	function doRedirect(url)
+	{
+		location.href=url;
+		return false;
+	}
 </script>
 <?php
 	echo '<div class="chess">';
@@ -35,17 +41,17 @@ if (!empty($prms))
 
 	$fk = 0;
 	$actions = array();
-	$actions[] = '<a href="#" onclick="return doRemove(' . $prms[0]['id'] . ')">удалить из пространства</a>';
+	$actions[] = '<button class="btn" onclick="return doRemove(' . $prms[0]['id'] . ')">удалить из пространства</button>';
 	$onlineHref = '';
 		$onlineLinks[$fk] = '/files/download?fid=' . $files[0]['id'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<a href="/universe/oview/id/' . $prms[0]['id'] . '/do/online">смотреть онлайн</a>';
+		$actions[] = '<button class="btn" onclick="$.address.value(\'/universe/oview/id/' . $prms[0]['id'] . '/do/online\'); return false;">смотреть онлайн</button>';
 		$onlineHref = '<p id="autostart" rel="#video' . $fk . '"></p>';
 	unset($params['onlineurl']);
 
 	$links[$fk] = '/files/download?fid=' . $files[0]['id'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<a alt="" title="" href="' . $links[$fk] . '">скачать</a>';
+		$actions[] = '<button class="btn" onclick="return doRedirect(\'' . $links[$fk] . '\');">скачать</button>';
 	unset($params['url']);
 
 	echo '<ul>';
@@ -61,7 +67,7 @@ if (!empty($prms))
 	echo'</ul>';
 	if (!empty($actions))
 	{
-		echo '<p>' . implode(' | ', $actions) . '</p>';
+		echo '<p>' . implode(' ', $actions) . '</p>';
 	}
 	echo'</div>';
 
@@ -109,7 +115,7 @@ if (!empty($prms))
 			});
 
 			function addVideo(num, path) {
-//alert(path);
+alert(path);
 				document.getElementById("ipad"+num).href=path;
 				document.getElementById("video" + num).style.display="";
 				$f("ipad", "/js/flowplayer/flowplayer-3.2.5.swf",

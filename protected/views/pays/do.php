@@ -79,14 +79,15 @@
 		return false;
 	}
 </script>
-<div class="form">
-<?php echo CHtml::beginForm('/pays/payment/', "post", array('name' => 'startPayForm', 'onsubmit' => 'return pay();')); ?>
-    <div class="row">
+<div>
+	
+<?php echo CHtml::beginForm('/pays/payment/', "post", array('name' => 'startPayForm', 'onsubmit' => 'return pay();' ,'class'=>'form-horizontal')); ?>
+    <fieldset>
         <?php echo CHtml::label('Выбрать платежную систему', 'paysystem_id'); ?>
         <?php
         	echo CHtml::dropdownlist('paysystem_id', 0, $select);
         ?>
-    </div>
+    
 <?php
 	if (!empty($orderInfo[0]['id']))
 	{
@@ -96,12 +97,12 @@
 	if (empty($summa))
 	{
 ?>
-    <div class="row">
+
 <?php
 		echo CHtml::label(Yii::t('pays', 'Amount'), 'summa', array("required" => 1));
 		echo CHtml::textField('summa');
 ?>
-    </div>
+
 <?php
 	}
 	else
@@ -109,6 +110,7 @@
 		echo CHtml::hiddenField('summa', $postInfo['summa']);
 	}
 ?>
+   </fieldset>
 <?php echo CHtml::endForm(); ?>
 </div>
 <?php

@@ -5,7 +5,8 @@ if (!empty($info))
 	//echo'<pre>';
 	//print_r($dsc);
 	//echo'</pre>';
-	echo '<h3>' . $info['title'] . '</h3>';
+	$title = $info['title'];
+	echo '<h3>' . $title . '</h3>';
 ?>
 <script type="text/javascript">
 	function doRemove(oid)
@@ -41,7 +42,7 @@ if (!empty($info))
 		$onlineLinks[$fk] = $params['onlineurl'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/tview/id/' . $info['id'] . '/do/online">смотреть онлайн</a>';
-		$onlineHref = '<p id="autostart" alt="" title="" rel="#video' . $fk . '"></p>';
+		$onlineHref = '<p id="autostart" rel="#video' . $fk . '"></p>';
 	}
 	else
 		$onlineLinks[$fk] = '';
@@ -98,7 +99,6 @@ if (!empty($info))
 	echo'</div>';
 
 
-
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.js");
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.css");
 
@@ -108,9 +108,13 @@ if (!empty($info))
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 
 	$playerCode = '
-	<div id="flowplayerdiv" class="modal" style="width:640px; height:480px; display: none">
-		<div class="modal-body">
-		<a href="#"  style="width:610px; height:450px; display:block" id="ipad"></a>
+	<div id="flowplayerdiv" class="modal" style="width:640px; height:580px; display: none">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">×</a>
+			' . $title . '
+		</div>
+		<div class="modal-body" style="width:610px; height:420px; display:block">
+		<a href="#" id="ipad"></a>
 		</div>
 	</div>
 
@@ -121,8 +125,12 @@ if (!empty($info))
 			$(document).ready(function() {
 				$("#autostart").click(function(){
 				   $("#flowplayerdiv").modal("show");
+				   $(".close").click(function(){
+				   		$("#flowplayerdiv").modal("hide");
+				   });
 			});
-				return;
+			return;
+
 				$("#autostart").fancybox({
 			        "zoomSpeedIn":  0,
 			        "zoomSpeedOut": 0,

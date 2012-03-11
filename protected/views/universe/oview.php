@@ -33,7 +33,7 @@ if (!empty($prms))
 		$onlineLinks[$fk] = '/files/download?fid=' . $files[0]['id'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<a href="/universe/oview/id/' . $prms[0]['id'] . '/do/online">смотреть онлайн</a>';
-		$onlineHref = '<a id="autostart" rel="video" alt="" title="" href="#video' . $fk . '"></a>';
+		$onlineHref = '<p id="autostart" rel="#video' . $fk . '"></p>';
 	unset($params['onlineurl']);
 
 	$links[$fk] = '/files/download?fid=' . $files[0]['id'];
@@ -59,37 +59,54 @@ if (!empty($prms))
 	echo'</div>';
 
 
-
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.js");
-	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer-3.2.4.min.js");
-	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 	Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery.fancybox-1.3.4/fancybox/jquery.fancybox-1.3.4.css");
 
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer-3.2.4.min.js");
+//	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer326/flowplayer-3.2.6.min.js");
+
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
+
 	$playerCode = '
-	<div id="flowplayerdiv" style="display: none">
-	<h4><a href="#" onclick="document.getElementById(\'flowplayerdiv\').style.display=\'none\'; return false;">выключить проигрыватель</a></h4>
-		<a href="#"
-			style="display:block;width:95%;height:297px"
-			id="ipad">
-		</a>
+	<div id="flowplayerdiv" class="modal" style="width:640px; height:580px; display: none">
+		<div class="modal-header">
+			<a class="close" data-dismiss="modal">×</a>
+			' . $title . '
+		</div>
+		<div class="modal-body" style="width:610px; height:420px; display:block">
+		<a href="#" id="ipad"></a>
+		</div>
 	</div>
 
-		<script>
+		<script type="text/javascript">
+			$("#flowplayerdiv").on("show", function () {
+				$("#video' . $fk . ' p").trigger("click");
+			});
 			$(document).ready(function() {
-				$("a[rel=video]").fancybox({
+				$("#autostart").click(function(){
+				   $("#flowplayerdiv").modal("show");
+				   $(".close").click(function(){
+				   		$("#flowplayerdiv").modal("hide");
+				   });
+			});
+			return;
+
+				$("#autostart").fancybox({
 			        "zoomSpeedIn":  0,
 			        "zoomSpeedOut": 0,
 			        "overlayShow":  true,
 			        "overlayOpacity": 0.8,
 			        "showNavArrows": false,
-					"onComplete": function() { $(this.href + " a").trigger("click"); return false; }
+					"onComplete": function() { $("#video' . $fk . ' p").trigger("click"); return false; }
 				});
 			});
 
 			function addVideo(num, path) {
-				document.getElementById("ipad" + num).href=path;
+//alert(path);
+				document.getElementById("ipad"+num).href=path;
 				document.getElementById("video" + num).style.display="";
-				$f("ipad" + num, "/js/flowplayer/flowplayer-3.2.5.swf",
+				$f("ipad", "/js/flowplayer/flowplayer-3.2.5.swf",
+				//$f("ipad" + num, "/js/flowplayer326/flowplayer-3.2.7.swf",
 									{plugins: {
 										h264streaming: {
 											url: "/js/flowplayer/flowplayer.pseudostreaming-3.2.5.swf"
@@ -106,15 +123,19 @@ if (!empty($prms))
 										// remove default canvas gradient
 										backgroundGradient: "none",
 										backgroundColor: "#000000"
-									}
-						}
-							).ipad();
+									},
+									playlist: [
+										{ url: path, scaling: "fit" }
+									]
+										}
+
+					).ipad();
 				return false;
 			}
 		</script>
 	<div style="display: none">
 		<div id="video' . $fk . '">
-			<a style="width:640px; height:480px; display:block" id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></a>
+			<p id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></p>
 		</div>
 	</div>
 		' . $onlineHref . '
@@ -127,7 +148,7 @@ if (!empty($prms))
 	if ($subAction == 'online')
 	{
 ?>
-	$(document).ready(function() {
+$(document).ready(function() {
 		$('#autostart').trigger('click');
 	});
 <?php

@@ -47,16 +47,30 @@ class CFiletypes {
 						case 'txt':
 							$img = 'txt.png';
 							break;
+						case 'png':
 						case 'jpg':
 							$img = 'image_jpeg.png';
+							break;
+						case 'm4a':
+						case 'mp3':
+						case 'flac':
+							$img = 'audio_mp4.png';
+							break;
+						case 'm4v':
+						case 'avi':
+						case 'mkv':
+						case 'flv':
+						case '3gp':
+						case 'mp4':
+							$img = 'video_mp4.png';
 							break;
 						default:
 							$img = 'unknown.png';
 					}
 					?>
 					<li><a href="/files/fview/<?= $object['id']; ?>">
-							<img width="32px" height="32px" src="<?=$img_path . $img ?> " /><br/>
-							<?= $object['title']; ?></a></li>
+							<img  src="<?= $img_path . $img ?> " />
+							<span><?= $object['title']; ?></span></a></li>
 
 
 

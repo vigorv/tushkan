@@ -3,8 +3,8 @@ if (!empty($prms))
 {
 	foreach ($prms as $key => $value)
 	{
-		if ($key == 'title')
-			$title = $value;
+		if ($value['ptptitle'] == 'title')
+			$title = $value['value'];
 	}
 	if (empty($title))
 		$title = $prms[0]['uotitle'];

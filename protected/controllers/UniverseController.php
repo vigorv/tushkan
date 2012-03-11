@@ -541,7 +541,7 @@ class UniverseController extends Controller {
 				$files = $cmd->queryAll();
 
 				$subAction = 'view';
-				if (!empty($_GET['do']) && !empty($_GET['vid'])) {//ДОЛЖНО БЫТЬ УКАЗАНО ДЕЙСТВИЕ И ВАРИАНТ
+				if (!empty($_GET['do'])) {//ДОЛЖНО БЫТЬ УКАЗАНО ДЕЙСТВИЕ И ВАРИАНТ
 					$subAction = $_GET['do'];
 				}
 

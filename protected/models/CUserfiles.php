@@ -198,13 +198,15 @@ class CUserfiles extends CActiveRecord {
      *
      */
 
-    public function getFilesLike($user_id,$like){
+    public function getFilesLike($user_id,$like, $page=1, $per_page=10){
+		$offset = ($page - 1) * $per_page;
 	return Yii::app()->db->createCommand()
 			->select('uf.id, uf.title, fv.fsize')
 			->from('{{userfiles}} uf')
 			->leftJoin('{{files_variants}} fv', ' fv.file_id = uf.id and fv.preset_id =0 ')
 			->where('uf.object_id = 0 AND uf.title LIKE "%' . $like . '%" AND uf.user_id =' . $user_id)
-			->queryRow();
+			->limit($per_page, $offset)
+			->queryAll();
     }
 
 

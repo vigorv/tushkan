@@ -104,7 +104,7 @@ if (!empty($prms))
 			});
 
 			function addVideo(num, path) {
-alert(path);
+//alert(path);
 				document.getElementById("ipad"+num).href=path;
 				document.getElementById("video" + num).style.display="";
 				$f("ipad", "/js/flowplayer/flowplayer-3.2.5.swf",

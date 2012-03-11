@@ -1,7 +1,14 @@
 <?php
 if (!empty($prms))
 {
-	echo '<h3>' . $prms[0]['uotitle'] . '</h3>';
+	foreach ($prms as $key => $value)
+	{
+		if ($key == 'title')
+			$title = $value;
+	}
+	if (empty($title))
+		$title = $prms[0]['uotitle'];
+	echo '<h3>' . $title . '</h3>';
 ?>
 <script type="text/javascript">
 	function doRemove(oid)

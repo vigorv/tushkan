@@ -65,7 +65,8 @@ switch ($subAction)
 ?><script type="text/javascript">$("[rel='addtocloud']").click = function(){alert('add to cloud test <?php echo serialize($info); ?>');}</script>
 <?php
 		}
-?><img rel="addtocloud" src="cloud.png" /><?php
+?><script type="text/javascript">alert('called');</script><?php
+//<img rel="addtocloud" src="cloud.png" />
 	break;
 
 	case "addtoqueue":

@@ -417,4 +417,137 @@ class ProductsController extends Controller
 
         $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
 	}
+
+	public function actionCloudaction()
+	{
+		$result = 'bad original ID';
+		$subAction = 'cloudaction';
+		$info = array('originalId' => 0, 'originalVariantId' => 0, 'userId' => 0);
+		if (!empty($_POST['original_id']))
+		{
+			$info['originalId'] = $_POST['original_id'];
+			if (!empty($_POST['original_variant_id']))
+			{
+				$info['originalVariantId'] = $_POST['original_variant_id'];
+			}
+			$result = 'user not registered';
+			if (!empty($this->userInfo['id']))
+			{
+				$result = 'ok';
+				$info['userId'] = $this->userInfo['id'];
+			}
+		}
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, $info => 'info'));
+	}
+
+	/**
+	 * действие добавления в очередь конвертера задания по действию пользователя
+	 *
+	 * выполняется методом POST c параметрами
+	 * original_id, partner_id, original_variant_id, user_id,
+	 * hash - актуальный хэш пользователя
+	 *
+	 */
+	public function actionAddtoqueue()
+	{
+		$result = 'bad original ID';
+		$subAction = 'addtoqueue';
+		$variantExists = 0;
+		if (!empty($_POST['original_id']))
+		{
+			$originalId = $_POST['original_id'];
+			$result = 'user not registered';
+			if (!empty($_POST['user_id']) && !empty($_POST['hash']))
+			{
+				$userId = $_POST['user_id'];
+				$hash = $_POST['hash'];
+				$cmd = Yii::app()->db->createCommand()
+					->select('id')
+					->from('{{users}}')
+					->where('id = :id AND sess_id = :hash');
+				$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
+				$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);
+				$userExists = $cmd->queryRow();
+				if ($userExists)
+				{
+					if (!empty($_POST['original_variant_id']))
+					{
+						$originalVariantId = $_POST['original_variant_id'];
+						//ПРОВЕРЯЕМ, ЕСТЬ ЛИ УЖЕ ВАРИАНТ В ПП
+						$cmd = Yii::app()->db->createCommand()
+							->select('tf.id')
+							->from('{{products}} p')
+							->join('{{product_variants}} pv', 'p.id = pv.id')
+							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
+							->where('pv.original_id = :originalId AND tf.user_id = :userId');
+						$cmd->bindParam(':originalId', $originalVariantId, PDO::PARAM_INT);
+						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
+						$variantExists = $cmd->queryRow();
+					}
+					else
+					{
+						$originalVariantId = 0;//ПО УМОЛЧАНИЮ ДОБАВИМ ВСЕ ВАРИАНТЫ ПРОДУКТА В ПП
+						//ПРОВЕРЯЕМ КОМПРЕССОРОМ ЕСТЬ ЛИ НЕДОБАВЛЕННЫЕ ВАРИАНТЫ ПРОДУКТА
+
+						//ВЫДАЕМ ОДИН ИЗ ВАРИАНТОВ ПРОДУКТА В ПП
+						$cmd = Yii::app()->db->createCommand()
+							->select('tf.id')
+							->from('{{products}} p')
+							->join('{{product_variants}} pv', 'p.id = pv.id')
+							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
+							->where('p.id = :originalId AND tf.user_id = :userId');
+						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
+						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
+						$variantExists = $cmd->queryRow();
+					}
+
+					$result = 'ok';
+					if (empty($originalVariantId) || !$variantExists)
+					{
+						//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
+						//original_id, partner_id, user_id, original_variant_id
+						$queue = array(
+							'id'			=> null,
+							'product_id'	=> 0,
+							'original_id'	=> $originalId,
+							'task_id'		=> 0,
+							'cmd_id'		=> 0,
+							'info'			=> "",
+							'priority'		=> 100,
+							'state'			=> 0,
+							'station_id'	=> 0,
+							'partner_id'	=> $partnerId,
+							'user_id'		=> $userId,
+							'original_variant_id'	=> $originalVariantId,
+						);
+						$cmd = Yii::app()->db->createCommand()
+							->insert('{{income_queue}}', $queue);
+					}
+				}
+			}
+		}
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'variantExists' => $variantExists));
+	}
+
+	/**
+	 * метод вызывается конвертером для добавления продукта в витрины и в ПП пользователя
+	 *
+	 * @param integer $id - идентификатор очереди
+	 */
+	public function actionAddfromqueue($id = 0)
+	{
+		$this->layout = '/layouts/ajax';
+		if (empty($id))
+		{
+			$sql = 'SELECT * FROM {{income_queue}} WHERE id=:id AND state>7'; // ИЩЕМ ОБЪЕКТ В ОЧЕРЕДИ ГОТОВЫХ К ДОБАВЛЕНИЮ (_CMD_ADD_) ОБЪЕКТОВ
+			$cmd = Yii::app()->db->createCommand($sql);
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$cmdInfo = $cmd->queryAll();
+			if (!empty($cmdInfo) && !empty($cmdInfo[0]['user_id']))
+			{
+
+			}
+		}
+		Yii::app()->end();
+	}
 }

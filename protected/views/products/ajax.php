@@ -57,4 +57,32 @@ switch ($subAction)
 			echo '<div class="divider"></div><button class="btn" type="submit">' . Yii::t('common', 'Submit') . '</button></form>';
 		}
 	break;
+
+	case "cloudaction":
+		//ВЫДАЕМ JS КОД ДЛЯ ИСПОЛНЕНИЯ
+		if (!empty($info['userId']))
+		{
+?>
+	<script type="text/javascript">
+		$("[rel='addtocloud']").click = function(){
+			alert('add to cloud test <?php echo serialize($info); ?>');
+		}
+	</script>
+<?php
+		}
+?>
+		<img rel="addtocloud" src="cloud.png" />
+<?php
+	break;
+
+	case "addtoqueue":
+		//РЕЗУЛЬТАТ ДОБАВЛЕНИЯ ПРОДУКТА В ОЧЕРЕДЬ НА ИМПОРТ В ПП
+		if (!empty($variantExists))
+		{
+			//ВЫВОД ИДЕНТИФИКАТОРА ВАРИАНТА ТИПИЗИРОВАННОГО ОБЪЕКТВ ПП
+			echo $variantExists;
+		}
+		else
+			echo $result;
+	break;
 }

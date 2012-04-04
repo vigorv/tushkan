@@ -58,17 +58,6 @@ switch ($subAction)
 		}
 	break;
 
-	case "cloudaction":
-		//ВЫДАЕМ JS КОД ДЛЯ ИСПОЛНЕНИЯ
-		if (!empty($info['userId']))
-		{
-?><script type="text/javascript">$("[rel='addtocloud']").click = function(){alert('add to cloud test <?php echo serialize($info); ?>');}</script>
-<?php
-		}
-?><script type="text/javascript">alert('called');</script><?php
-//<img rel="addtocloud" src="cloud.png" />
-	break;
-
 	case "addtoqueue":
 		//РЕЗУЛЬТАТ ДОБАВЛЕНИЯ ПРОДУКТА В ОЧЕРЕДЬ НА ИМПОРТ В ПП
 		if (!empty($variantExists))

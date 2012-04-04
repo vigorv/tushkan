@@ -435,28 +435,6 @@ class ProductsController extends Controller
 		Yii::app()->end();
 	}
 
-	public function actionCloudaction()
-	{
-		$result = 'bad original ID';
-		$subAction = 'cloudaction';
-		$info = array('originalId' => 0, 'originalVariantId' => 0, 'userId' => 0);
-		if (!empty($_POST['original_id']))
-		{
-			$info['originalId'] = $_POST['original_id'];
-			if (!empty($_POST['original_variant_id']))
-			{
-				$info['originalVariantId'] = $_POST['original_variant_id'];
-			}
-			$result = 'user not registered';
-			if (!empty($this->userInfo['id']))
-			{
-				$result = 'ok';
-				$info['userId'] = $this->userInfo['id'];
-			}
-		}
-        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, $info => 'info'));
-	}
-
 	/**
 	 * действие добавления в очередь конвертера задания по действию пользователя
 	 *
@@ -466,17 +444,18 @@ class ProductsController extends Controller
 	 */
 	public function actionAddtoqueue()
 	{
-		$result = 'bad original ID';
+		$this->layout = '/layouts/ajax';
+		$result = 'bad original ID or bad partner ID';
 		$subAction = 'addtoqueue';
 		$variantExists = 0;
-		if (!empty($_POST['original_id']))
+		if (!empty($_GET['original_id']) && !empty($_GET['partner_id']))
 		{
-			$originalId = $_POST['original_id'];
+			$partnerId = $_GET['partner_id'];
+			$originalId = $_GET['original_id'];
 			$result = 'user not registered';
 			if (!empty($this->userInfo['id']))
 			{
 				$userId = $this->userInfo['id'];
-				$hash = $_POST['hash'];
 				$cmd = Yii::app()->db->createCommand()
 					->select('id')
 					->from('{{users}}')
@@ -485,9 +464,9 @@ class ProductsController extends Controller
 				$userExists = $cmd->queryRow();
 				if ($userExists)
 				{
-					if (!empty($_POST['original_variant_id']))
+					if (!empty($_GET['original_variant_id']))
 					{
-						$originalVariantId = $_POST['original_variant_id'];
+						$originalVariantId = $_GET['original_variant_id'];
 						//ПРОВЕРЯЕМ, ЕСТЬ ЛИ УЖЕ ВАРИАНТ В ПП
 						$cmd = Yii::app()->db->createCommand()
 							->select('tf.id')

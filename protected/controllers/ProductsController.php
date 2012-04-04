@@ -418,6 +418,23 @@ class ProductsController extends Controller
         $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
 	}
 
+	/**
+	 * выдать картинку-статус на основе исходных данных GET запроса
+	 *
+		$_GET['pid'] - id партнера
+		$_GET['oid'] - id продукта
+		$_GET['vid'] - id варианта продукта
+	 */
+	public function actionCloudimg()
+	{
+		header ("Content-type: image/png");
+		$im = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'] . "/images/cloud.png");
+		imagepng($im);
+		imagedestroy($im);
+
+		Yii::app()->end();
+	}
+
 	public function actionCloudaction()
 	{
 		$result = 'bad original ID';
@@ -444,8 +461,7 @@ class ProductsController extends Controller
 	 * действие добавления в очередь конвертера задания по действию пользователя
 	 *
 	 * выполняется методом POST c параметрами
-	 * original_id, partner_id, original_variant_id, user_id,
-	 * hash - актуальный хэш пользователя
+	 * original_id, partner_id, original_variant_id
 	 *
 	 */
 	public function actionAddtoqueue()
@@ -457,16 +473,15 @@ class ProductsController extends Controller
 		{
 			$originalId = $_POST['original_id'];
 			$result = 'user not registered';
-			if (!empty($_POST['user_id']) && !empty($_POST['hash']))
+			if (!empty($this->userInfo['id']))
 			{
-				$userId = $_POST['user_id'];
+				$userId = $this->userInfo['id'];
 				$hash = $_POST['hash'];
 				$cmd = Yii::app()->db->createCommand()
 					->select('id')
 					->from('{{users}}')
-					->where('id = :id AND sess_id = :hash');
+					->where('id = :id');
 				$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
-				$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);
 				$userExists = $cmd->queryRow();
 				if ($userExists)
 				{

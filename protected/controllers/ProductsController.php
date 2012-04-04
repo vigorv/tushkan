@@ -444,10 +444,12 @@ class ProductsController extends Controller
 	 */
 	public function actionAddtoqueue()
 	{
+//die('ffffffffffff');
 		$this->layout = '/layouts/ajax';
 		$result = 'bad original ID or bad partner ID';
 		$subAction = 'addtoqueue';
 		$variantExists = 0;
+
 		if (!empty($_GET['original_id']) && !empty($_GET['partner_id']))
 		{
 			$partnerId = $_GET['partner_id'];
@@ -514,13 +516,20 @@ class ProductsController extends Controller
 							'user_id'		=> $userId,
 							'original_variant_id'	=> $originalVariantId,
 						);
-						$cmd = Yii::app()->db->createCommand()
-							->insert('{{income_queue}}', $queue);
+						$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
 					}
 				}
 			}
 		}
-        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'variantExists' => $variantExists));
+		//РЕЗУЛЬТАТ ДОБАВЛЕНИЯ ПРОДУКТА В ОЧЕРЕДЬ НА ИМПОРТ В ПП
+		if (!empty($variantExists))
+		{
+			//ВЫВОД ИДЕНТИФИКАТОРА ВАРИАНТА ТИПИЗИРОВАННОГО ОБЪЕКТВ ПП
+			echo $variantExists;
+		}
+		else
+			echo $result;
+		Yii::app()->end();
 	}
 
 	/**

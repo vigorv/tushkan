@@ -57,15 +57,4 @@ switch ($subAction)
 			echo '<div class="divider"></div><button class="btn" type="submit">' . Yii::t('common', 'Submit') . '</button></form>';
 		}
 	break;
-
-	case "addtoqueue":
-		//РЕЗУЛЬТАТ ДОБАВЛЕНИЯ ПРОДУКТА В ОЧЕРЕДЬ НА ИМПОРТ В ПП
-		if (!empty($variantExists))
-		{
-			//ВЫВОД ИДЕНТИФИКАТОРА ВАРИАНТА ТИПИЗИРОВАННОГО ОБЪЕКТВ ПП
-			echo $variantExists;
-		}
-		else
-			echo $result;
-	break;
 }

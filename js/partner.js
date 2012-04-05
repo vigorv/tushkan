@@ -6,8 +6,9 @@ function addToCloud(img, pid, oid, vid)
 	imgObject = img;
 
 	iFrameResult = "";
-	f = $(".cloudframe");
-	f.contents().find("body").text("");
+	var f = document.getElementById(img.id + "frame");
+    f.contentWindow.document.body.innerHTML = '';
+
 	f.attr("src", cloudUrl + "/products/addtoqueue/partner_id/" + pid + "/original_id/" + oid + "/original_variant_id/" + vid);
 	cloudFrameResult();
 
@@ -24,14 +25,14 @@ function addToCloud(img, pid, oid, vid)
 	return false;
 }
 
-function cloudFrameResult()
+function cloudFrameResult(id)
 {
-	f = $(".cloudframe");
-	iFrameResult = f.contents().find("body");
+	var f = document.getElementById(id + "frame");
+	var iFrameResult = myIFrame.contentWindow.document.body.innerHTML;
 	if (iFrameResult)
 	{
 		alert(iFrameResult);
 		return;
 	}
-	window.setTimeout("cloudFrameResult()", 500);
+	window.setTimeout("cloudFrameResult('" + id + "')", 500);
 }

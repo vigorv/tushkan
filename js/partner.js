@@ -24,6 +24,7 @@ function addToCloud(img, pid, oid, vid)
 
 function cloudFrameResult(f)
 {
+	return;
 	var iFrameResult = f.contentWindow.document.body.innerHTML;
 	if (iFrameResult)
 	{

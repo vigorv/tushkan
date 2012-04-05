@@ -530,7 +530,7 @@ class ProductsController extends Controller
 		echo $result;
 
 		echo '<script type="text/javascript">
-			var iFrameResult = "' . $result . '";
+			parent.iFrameResult = "' . $result . '";
 		</script>
 		';
 

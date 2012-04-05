@@ -529,7 +529,7 @@ class ProductsController extends Controller
 		}
 		echo $result;
 
-		Yii::app()->end();
+		//Yii::app()->end();
 	}
 
 	/**

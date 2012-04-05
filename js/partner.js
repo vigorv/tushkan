@@ -5,12 +5,14 @@ function addToCloud(img, pid, oid, vid)
 {
 	imgObject = img;
 
+	alert(img.id);
+
 	iFrameResult = "";
 	var f = document.getElementById(img.id + "frame");
     f.contentWindow.document.body.innerHTML = '';
 
 	f.src = cloudUrl + "/products/addtoqueue/partner_id/" + pid + "/original_id/" + oid + "/original_variant_id/" + vid;
-	cloudFrameResult();
+	cloudFrameResult(img.id);
 
 //	$.get(cloudUrl + "/products/addtoqueue", {partner_id: pid, original_id: oid, original_variant_id: vid}, function(answer){
 		//id = parseInt(answer);

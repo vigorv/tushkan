@@ -5,14 +5,9 @@ function addToCloud(img, pid, oid, vid)
 {
 	imgObject = img;
 
-	alert(img.id);
-
 	iFrameResult = "";
-	var f = document.getElementById(img.id + "frame");
-    f.contentWindow.document.body.innerHTML = '';
-
-	f.src = cloudUrl + "/products/addtoqueue/partner_id/" + pid + "/original_id/" + oid + "/original_variant_id/" + vid;
-	cloudFrameResult(img.id);
+	f = $("#" + img.id + "frame")
+	f.attr("src", cloudUrl + "/products/addtoqueue/partner_id/" + pid + "/original_id/" + oid + "/original_variant_id/" + vid);
 
 //	$.get(cloudUrl + "/products/addtoqueue", {partner_id: pid, original_id: oid, original_variant_id: vid}, function(answer){
 		//id = parseInt(answer);
@@ -27,14 +22,13 @@ function addToCloud(img, pid, oid, vid)
 	return false;
 }
 
-function cloudFrameResult(id)
+function cloudFrameResult(f)
 {
-	var f = document.getElementById(id + "frame");
 	var iFrameResult = f.contentWindow.document.body.innerHTML;
 	if (iFrameResult)
 	{
 		alert(iFrameResult);
 		return;
 	}
-	window.setTimeout("cloudFrameResult('" + id + "')", 500);
+//	window.setTimeout("cloudFrameResult('" + id + "')", 500);
 }

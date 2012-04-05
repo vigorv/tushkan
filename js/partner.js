@@ -33,5 +33,5 @@ function cloudFrameResult()
 		alert(iFrameResult);
 		return;
 	}
-	window.setTimeOut("cloudFrameResult()", 500);
+	window.setTimeout("cloudFrameResult()", 500);
 }

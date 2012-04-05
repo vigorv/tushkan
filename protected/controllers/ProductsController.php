@@ -525,10 +525,16 @@ class ProductsController extends Controller
 		if (!empty($variantExists))
 		{
 			//ВЫВОД ИДЕНТИФИКАТОРА ВАРИАНТА ТИПИЗИРОВАННОГО ОБЪЕКТВ ПП
-			echo $variantExists;
+			$result = $variantExists;
 		}
-		else
-			echo $result;
+		echo $result;
+
+		echo '<script type="text/javascript">
+			var iFrameResult = "' . $result . '";
+		</script>
+		';
+
+
 		Yii::app()->end();
 	}
 

@@ -7,7 +7,7 @@ function addToCloud(img, pid, oid, vid)
 
 	iFrameResult = "";
 	f = $(".cloudframe");
-	f.text("");
+	f.contents().find("body").text("");
 	f.attr("src", cloudUrl + "/products/addtoqueue/partner_id/" + pid + "/original_id/" + oid + "/original_variant_id/" + vid);
 	cloudFrameResult();
 
@@ -27,7 +27,7 @@ function addToCloud(img, pid, oid, vid)
 function cloudFrameResult()
 {
 	f = $(".cloudframe");
-	iFrameResult = f.text();
+	iFrameResult = f.contents().find("body");
 	if (iFrameResult)
 	{
 		alert(iFrameResult);

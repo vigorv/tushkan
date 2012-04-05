@@ -9,7 +9,7 @@ function addToCloud(img, pid, oid, vid)
 	var f = document.getElementById(img.id + "frame");
     f.contentWindow.document.body.innerHTML = '';
 
-	f.attr("src", cloudUrl + "/products/addtoqueue/partner_id/" + pid + "/original_id/" + oid + "/original_variant_id/" + vid);
+	f.src = cloudUrl + "/products/addtoqueue/partner_id/" + pid + "/original_id/" + oid + "/original_variant_id/" + vid;
 	cloudFrameResult();
 
 //	$.get(cloudUrl + "/products/addtoqueue", {partner_id: pid, original_id: oid, original_variant_id: vid}, function(answer){

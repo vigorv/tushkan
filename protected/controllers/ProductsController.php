@@ -529,12 +529,6 @@ class ProductsController extends Controller
 		}
 		echo $result;
 
-		echo '<script type="text/javascript">
-			parent.iFrameResult = "' . $result . '";
-		</script>
-		';
-
-
 		Yii::app()->end();
 	}
 

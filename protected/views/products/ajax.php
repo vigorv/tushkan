@@ -57,4 +57,50 @@ switch ($subAction)
 			echo '<div class="divider"></div><button class="btn" type="submit">' . Yii::t('common', 'Submit') . '</button></form>';
 		}
 	break;
+
+	case "addtocloud":
+		//ВЫВОД ИКОНКМ СОГЛАСНО СОСТОЯНИЮ ПРОДУКТА
+		if (($result == 'ok') || ($result == 'queue') || (intval($result) > 0))
+		{
+			$state = $result;
+			$partnerId = $get['pid'];
+			$originalId = $get['oid'];
+			if (!empty($get['vid']))
+			{
+				$originalVariantId = $get['vid'];
+			}
+			if (intval($result) > 0)
+			{
+				$state = 'universe';
+			}
+		}
+		else
+			$state = 'error';
+
+		switch ($state)
+		{
+			case "universe":
+				$ahref = '<a href="/universe/tview/' . $result . '" title="' . $state . '">';
+			break;
+
+			case "error":
+				$ahref = '';
+			break;
+			case "queue":
+				$ahref = '';
+			break;
+			case "ok":
+				$ahref = '<a href="' . $href . '" title="' . $state . '">';
+			break;
+		}
+
+		echo '
+		<html>
+			<head></head>
+			<body style="background-color: white">
+				' . $ahref . '<img width="20" src="/images/cloud_' . $state . '.png" alt="' . $state . '" /></a>
+			</body>
+		</html>
+		';
+	break;
 }

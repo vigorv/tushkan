@@ -419,41 +419,21 @@ class ProductsController extends Controller
 	}
 
 	/**
-	 * выдать картинку-статус на основе исходных данных GET запроса
+	 * проверяем состояние очереди по параметрам запроса на добавление
 	 *
+	 * выполняется методом POST c параметрами
 		$_GET['pid'] - id партнера
 		$_GET['oid'] - id продукта
 		$_GET['vid'] - id варианта продукта
-	 */
-	public function actionCloudimg()
-	{
-		header ("Content-type: image/png");
-		$im = imagecreatefrompng($_SERVER['DOCUMENT_ROOT'] . "/images/cloud.png");
-		imagepng($im);
-		imagedestroy($im);
-
-		Yii::app()->end();
-	}
-
-	/**
-	 * действие добавления в очередь конвертера задания по действию пользователя
-	 *
-	 * выполняется методом POST c параметрами
-	 * original_id, partner_id, original_variant_id
 	 *
 	 */
-	public function actionAddtoqueue()
+	public function checkQueue()
 	{
-//die('ffffffffffff');
-		$this->layout = '/layouts/ajax';
 		$result = 'bad original ID or bad partner ID';
-		$subAction = 'addtoqueue';
-		$variantExists = 0;
-
-		if (!empty($_GET['original_id']) && !empty($_GET['partner_id']))
+		if (!empty($_GET['oid']) && !empty($_GET['pid']))
 		{
-			$partnerId = $_GET['partner_id'];
-			$originalId = $_GET['original_id'];
+			$partnerId = $_GET['pid'];
+			$originalId = $_GET['oid'];
 			$result = 'user not registered';
 			if (!empty($this->userInfo['id']))
 			{
@@ -466,9 +446,115 @@ class ProductsController extends Controller
 				$userExists = $cmd->queryRow();
 				if ($userExists)
 				{
-					if (!empty($_GET['original_variant_id']))
+					if (!empty($_GET['vid']))
 					{
-						$originalVariantId = $_GET['original_variant_id'];
+						$originalVariantId = $_GET['vid'];
+						//ПРОВЕРЯЕМ, ЕСТЬ ЛИ УЖЕ ВАРИАНТ В ПП
+						$cmd = Yii::app()->db->createCommand()
+							->select('tf.id')
+							->from('{{products}} p')
+							->join('{{product_variants}} pv', 'p.id = pv.id')
+							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
+							->where('pv.original_id = :originalId AND tf.user_id = :userId');
+						$cmd->bindParam(':originalId', $originalVariantId, PDO::PARAM_INT);
+						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
+						$variantExists = $cmd->queryRow();
+					}
+					else
+					{
+						$originalVariantId = 0;//ПО УМОЛЧАНИЮ ДОБАВИМ ВСЕ ВАРИАНТЫ ПРОДУКТА В ПП
+						//ПРОВЕРЯЕМ КОМПРЕССОРОМ ЕСТЬ ЛИ НЕДОБАВЛЕННЫЕ ВАРИАНТЫ ПРОДУКТА
+
+						//ВЫДАЕМ ОДИН ИЗ ВАРИАНТОВ ПРОДУКТА В ПП
+						$cmd = Yii::app()->db->createCommand()
+							->select('tf.id')
+							->from('{{products}} p')
+							->join('{{product_variants}} pv', 'p.id = pv.id')
+							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
+							->where('p.id = :originalId AND tf.user_id = :userId');
+						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
+						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
+						$variantExists = $cmd->queryRow();
+					}
+
+					$result = 'ok';
+					if (!empty($variantExists)
+						$result = $variantExists;
+					else
+					{
+						//ПОВЕРЯЕМ НАЛИЧИЕ В ОЧЕРЕДИ КОНВЕРТЕРА
+						$cmd = Yii::app()->db->createCommand()
+							->select('id')
+							->from('{{income_queue}}')
+							->where('user_id = :id AND parent_id=:pid AND original_id=:oid AND original_variant_id=:vid');
+						$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
+						$cmd->bindParam(':pid', $partnerId, PDO::PARAM_INT);
+						$cmd->bindParam(':oid', $originalId, PDO::PARAM_INT);
+						$cmd->bindParam(':vid', $originalVariantId, PDO::PARAM_INT);
+						$queueExists = $cmd->queryRow();
+						if ($queueExists)
+							$result = 'queue';
+					}
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
+	 * действие добавления в очередь конвертера задания по действию пользователя
+	 *
+	 * выполняется методом POST c параметрами
+		$_GET['pid'] - id партнера
+		$_GET['oid'] - id продукта
+		$_GET['vid'] - id варианта продукта
+	 *
+	 */
+	public function actionAddtocloud()
+	{
+		$this->layout = '/layouts/ajax';
+		$result = $this->checkQueue();
+		$subAction = 'addtocloud';
+		$variantExists = 0;
+
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
+	}
+
+	/**
+	 * действие добавления в очередь конвертера задания по действию пользователя
+	 *
+	 * выполняется методом POST c параметрами
+		$_GET['pid'] - id партнера
+		$_GET['oid'] - id продукта
+		$_GET['vid'] - id варианта продукта
+	 *
+	 */
+	public function actionAddtoqueue()
+	{
+		$this->layout = '/layouts/ajax';
+		$result = 'bad original ID or bad partner ID';
+		$subAction = 'addtocloud';
+		$variantExists = 0;
+
+		if (!empty($_GET['oid']) && !empty($_GET['pid']))
+		{
+			$partnerId = $_GET['pid'];
+			$originalId = $_GET['oid'];
+			$result = 'user not registered';
+			if (!empty($this->userInfo['id']))
+			{
+				$userId = $this->userInfo['id'];
+				$cmd = Yii::app()->db->createCommand()
+					->select('id')
+					->from('{{users}}')
+					->where('id = :id');
+				$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
+				$userExists = $cmd->queryRow();
+				if ($userExists)
+				{
+					if (!empty($_GET['vid']))
+					{
+						$originalVariantId = $_GET['vid'];
 						//ПРОВЕРЯЕМ, ЕСТЬ ЛИ УЖЕ ВАРИАНТ В ПП
 						$cmd = Yii::app()->db->createCommand()
 							->select('tf.id')
@@ -527,9 +613,8 @@ class ProductsController extends Controller
 			//ВЫВОД ИДЕНТИФИКАТОРА ВАРИАНТА ТИПИЗИРОВАННОГО ОБЪЕКТВ ПП
 			$result = $variantExists;
 		}
-		echo $result;
 
-		//Yii::app()->end();
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
 	}
 
 	/**

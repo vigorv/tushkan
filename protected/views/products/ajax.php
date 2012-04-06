@@ -63,11 +63,11 @@ switch ($subAction)
 		if (($result == 'ok') || ($result == 'queue') || (intval($result) > 0))
 		{
 			$state = $result;
-			$partnerId = $get['pid'];
-			$originalId = $get['oid'];
+			$partnerId = intval($get['pid']);
+			$originalId = intval($get['oid']);
 			if (!empty($get['vid']))
 			{
-				$originalVariantId = $get['vid'];
+				$originalVariantId = intval($get['vid']);
 			}
 			if (intval($result) > 0)
 			{
@@ -90,7 +90,7 @@ switch ($subAction)
 				$ahref = '';
 			break;
 			case "ok":
-				$ahref = '<a href="' . $href . '" title="' . $state . '">';
+				$ahref = '<a href="/products/addtoqueue/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId . '" title="' . $state . '">';
 			break;
 		}
 

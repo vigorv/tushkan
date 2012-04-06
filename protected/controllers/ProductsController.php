@@ -567,7 +567,7 @@ class ProductsController extends Controller
 			$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
 		}
 
-		$this->redirect('/products/addtocloud/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId);
+		Yii::app()->request->redirect('/products/addtocloud/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId);
 	}
 
 	/**

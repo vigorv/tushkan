@@ -517,7 +517,7 @@ class ProductsController extends Controller
 		$subAction = 'addtocloud';
 		$variantExists = 0;
 
-        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'get' => $_GET));
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'get' => $_REQUEST));
 	}
 
 	/**
@@ -567,7 +567,7 @@ class ProductsController extends Controller
 			$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
 		}
 
-		Yii::app()->request->redirect('/products/addtocloud/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId);
+		Yii::app()->request->redirect('/products/addtocloud/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId, true, 200);
 	}
 
 	/**

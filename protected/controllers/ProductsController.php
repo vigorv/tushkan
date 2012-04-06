@@ -550,6 +550,7 @@ class ProductsController extends Controller
 		{
 			//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
 			//original_id, partner_id, user_id, original_variant_id
+			$userId = $this->userInfo['id'];
 			$queue = array(
 				'id'			=> null,
 				'product_id'	=> 0,

@@ -517,7 +517,7 @@ class ProductsController extends Controller
 		$subAction = 'addtocloud';
 		$variantExists = 0;
 
-        $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'get' => $get));
 	}
 
 	/**

@@ -546,7 +546,7 @@ class ProductsController extends Controller
 			}
 		}
 
-		if (($result == 'ok') || empty($originalVariantId) || (intval($result) > 0)) && ($result <> 'queue'))
+		if ((($result == 'ok') || empty($originalVariantId) || (intval($result) > 0)) && ($result <> 'queue'))
 		{
 			//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
 			//original_id, partner_id, user_id, original_variant_id

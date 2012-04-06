@@ -486,7 +486,7 @@ class ProductsController extends Controller
 						$cmd = Yii::app()->db->createCommand()
 							->select('id')
 							->from('{{income_queue}}')
-							->where('user_id = :id AND parent_id=:pid AND original_id=:oid AND original_variant_id=:vid');
+							->where('user_id = :id AND partner_id=:pid AND original_id=:oid AND original_variant_id=:vid');
 						$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
 						$cmd->bindParam(':pid', $partnerId, PDO::PARAM_INT);
 						$cmd->bindParam(':oid', $originalId, PDO::PARAM_INT);

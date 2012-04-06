@@ -546,7 +546,7 @@ class ProductsController extends Controller
 			}
 		}
 
-		if ((empty($originalVariantId) || (intval($result) > 0)) && ($result <> 'queue'))
+		if (($result == 'ok') || empty($originalVariantId) || (intval($result) > 0)) && ($result <> 'queue'))
 		{
 			//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
 			//original_id, partner_id, user_id, original_variant_id
@@ -565,6 +565,7 @@ class ProductsController extends Controller
 				'original_variant_id'	=> $originalVariantId,
 			);
 			$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
+			$result = 'queue';
 		}
 
        $this->render('ajax', array('subAction' => 'addtocloud', 'result' => $result, 'get' => array('pid' => $partnerId, 'oid' => $originalId, 'vid' => $originalVariantId)));

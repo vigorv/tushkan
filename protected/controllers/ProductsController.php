@@ -532,89 +532,42 @@ class ProductsController extends Controller
 	public function actionAddtoqueue()
 	{
 		$this->layout = '/layouts/ajax';
-		$result = 'bad original ID or bad partner ID';
+		$result = $this->checkQueue();
 		$subAction = 'addtocloud';
-		$variantExists = 0;
 
-		if (!empty($_GET['oid']) && !empty($_GET['pid']))
+		if (($result == 'ok') || ($result == 'queue') || (intval($result) > 0))
 		{
-			$partnerId = $_GET['pid'];
-			$originalId = $_GET['oid'];
-			$result = 'user not registered';
-			if (!empty($this->userInfo['id']))
+			$state = $result;
+			$partnerId = intval($get['pid']);
+			$originalId = intval($get['oid']);
+			if (!empty($get['vid']))
 			{
-				$userId = $this->userInfo['id'];
-				$cmd = Yii::app()->db->createCommand()
-					->select('id')
-					->from('{{users}}')
-					->where('id = :id');
-				$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
-				$userExists = $cmd->queryRow();
-				if ($userExists)
-				{
-					if (!empty($_GET['vid']))
-					{
-						$originalVariantId = $_GET['vid'];
-						//ПРОВЕРЯЕМ, ЕСТЬ ЛИ УЖЕ ВАРИАНТ В ПП
-						$cmd = Yii::app()->db->createCommand()
-							->select('tf.id')
-							->from('{{products}} p')
-							->join('{{product_variants}} pv', 'p.id = pv.id')
-							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
-							->where('pv.original_id = :originalId AND tf.user_id = :userId');
-						$cmd->bindParam(':originalId', $originalVariantId, PDO::PARAM_INT);
-						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
-						$variantExists = $cmd->queryRow();
-					}
-					else
-					{
-						$originalVariantId = 0;//ПО УМОЛЧАНИЮ ДОБАВИМ ВСЕ ВАРИАНТЫ ПРОДУКТА В ПП
-						//ПРОВЕРЯЕМ КОМПРЕССОРОМ ЕСТЬ ЛИ НЕДОБАВЛЕННЫЕ ВАРИАНТЫ ПРОДУКТА
-
-						//ВЫДАЕМ ОДИН ИЗ ВАРИАНТОВ ПРОДУКТА В ПП
-						$cmd = Yii::app()->db->createCommand()
-							->select('tf.id')
-							->from('{{products}} p')
-							->join('{{product_variants}} pv', 'p.id = pv.id')
-							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
-							->where('p.id = :originalId AND tf.user_id = :userId');
-						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
-						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
-						$variantExists = $cmd->queryRow();
-					}
-
-					$result = 'ok';
-					if (empty($originalVariantId) || !$variantExists)
-					{
-						//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
-						//original_id, partner_id, user_id, original_variant_id
-						$queue = array(
-							'id'			=> null,
-							'product_id'	=> 0,
-							'original_id'	=> $originalId,
-							'task_id'		=> 0,
-							'cmd_id'		=> 0,
-							'info'			=> "",
-							'priority'		=> 100,
-							'state'			=> 0,
-							'station_id'	=> 0,
-							'partner_id'	=> $partnerId,
-							'user_id'		=> $userId,
-							'original_variant_id'	=> $originalVariantId,
-						);
-						$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
-					}
-				}
+				$originalVariantId = intval($get['vid']);
 			}
 		}
-		//РЕЗУЛЬТАТ ДОБАВЛЕНИЯ ПРОДУКТА В ОЧЕРЕДЬ НА ИМПОРТ В ПП
-		if (!empty($variantExists))
+
+		if ((empty($originalVariantId) || (intval($result) > 0)) && ($result <> 'queue'))
 		{
-			//ВЫВОД ИДЕНТИФИКАТОРА ВАРИАНТА ТИПИЗИРОВАННОГО ОБЪЕКТВ ПП
-			$result = $variantExists;
+			//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
+			//original_id, partner_id, user_id, original_variant_id
+			$queue = array(
+				'id'			=> null,
+				'product_id'	=> 0,
+				'original_id'	=> $originalId,
+				'task_id'		=> 0,
+				'cmd_id'		=> 0,
+				'info'			=> "",
+				'priority'		=> 100,
+				'state'			=> 0,
+				'station_id'	=> 0,
+				'partner_id'	=> $partnerId,
+				'user_id'		=> $userId,
+				'original_variant_id'	=> $originalVariantId,
+			);
+			$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
 		}
 
-        $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
+		$this->redirect('/products/addtocloud/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId);
 	}
 
 	/**

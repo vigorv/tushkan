@@ -538,11 +538,11 @@ class ProductsController extends Controller
 		if (($result == 'ok') || ($result == 'queue') || (intval($result) > 0))
 		{
 			$state = $result;
-			$partnerId = intval($get['pid']);
-			$originalId = intval($get['oid']);
-			if (!empty($get['vid']))
+			$partnerId = intval($_GET['pid']);
+			$originalId = intval($_GET['oid']);
+			if (!empty($_GET['vid']))
 			{
-				$originalVariantId = intval($get['vid']);
+				$originalVariantId = intval($_GET['vid']);
 			}
 		}
 

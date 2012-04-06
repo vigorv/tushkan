@@ -478,7 +478,7 @@ class ProductsController extends Controller
 					}
 
 					$result = 'ok';
-					if (!empty($variantExists)
+					if (!empty($variantExists))
 						$result = $variantExists;
 					else
 					{

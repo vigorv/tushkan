@@ -15,6 +15,7 @@ class AccessFilter extends CFilter
     {
     	$userGroupId = Yii::app()->user->getState('dmUserGroupId');
     	$userPower = Yii::app()->user->getState('dmUserPower');
+
     	if ((empty($userPower)) && (!empty($userGroupId)))
     	{
 	    	$groups = Yii::app()->db->createCommand()
@@ -80,6 +81,7 @@ class AccessFilter extends CFilter
 				}
 			break;
 		}
+
 		if (!$access)
 		{
 			Yii::app()->user->setFlash('error', Yii::t('common', 'Access denied. Authentication required'));
@@ -96,11 +98,38 @@ class AccessFilter extends CFilter
 				Yii::app()->request->redirect('/');
 			}
 		}
+
+		$access = $this->checkBans();
+
         return $access; // false — для случая, когда действие не должно быть выполнено
     }
 
     protected function postFilter($filterChain)
     {
         // код, выполняемый после выполнения действия
+    }
+
+    public function checkBans()
+    {
+return true;//ЗАГЛУШКА
+    	$userBans = Yii::app()->user->getState('userBans');
+		if (!empty($userBans))
+		{
+			$now = date('Y-m-d H:i:s');
+			foreach ($userBans as $b)
+			{
+				if (($now >= $b['start']) && ($now <= $b['finish']))
+				{
+					$readonly = empty($b['state']);
+				}
+
+				if ($readonly)
+				{
+					//ПРОВЕРЯЕМ ПО СПИКУ КОНТРОЛЛЕРОВ И ДЕЙСТВИЙ, ДОСТУПНЫХ В РЕЖИМЕ "ТОЛЬКО ДЛЯ ЧТЕНИЯ"
+				}
+			}
+			return false;
+		}
+		return true;
     }
 }

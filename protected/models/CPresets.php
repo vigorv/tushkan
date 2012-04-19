@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  */
 class CPresets {
 
@@ -22,36 +22,46 @@ class CPresets {
 	}
     }
 
+    public function getPresets() {
+    	$presets = array(
+    		'low'		=> array('id' => 1, 'title' => 'low'),
+    		'medium'	=> array('id' => 2, 'title' => 'medium'),
+    		'high'		=> array('id' => 3, 'title' => 'high'),
+    		'ultra'		=> array('id' => 4, 'title' => 'ultra'),
+    	);
+    	return $presets;
+    }
+
     public function getPresetID($name) {
-	switch ($name) {
-	    case 'high':
-	    case 'good':
-	    case 'normal':
-		return 0;
-	    case 'x480': return 1;
-	    default: return false;
-	}
+    	$presets = $this->getPresets();
+
+    	if (!empty($presets[$name]))
+    	{
+    		return $presets[$name]['id'];
+    	}
+    	else
+    		return 0;
     }
 
     /*
      * Presets
-     * 
+     *
      * Video
      *  High, Good,Normal
-     * 
+     *
      * Audio
      *  Flac, Mp3
-     * 
+     *
      * Photo
      *  png, jpg
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
-     * 
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
      */
 }

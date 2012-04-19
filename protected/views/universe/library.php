@@ -115,9 +115,18 @@ $nav_active=array(
 				<?= CFiletypes::ParsePrint($mb_content_items_unt, 'UTL1'); ?>
 			</ul>
 		</div>
+                <button onClick="DeleteAllUntyped();">Delete All Untyped</button>
 
 	</div>
 <script>
+    
+    function DeleteAllUntyped(){
+        $.post('/files/removeAll',{'removeAll':'True'},function(){
+            $("#items_unt ul").load('/files/AjaxUntypedList');             
+        });        
+    }
+    
+    
 	<?php /*
 	<!--
   $('#content_menu a').click(function(){

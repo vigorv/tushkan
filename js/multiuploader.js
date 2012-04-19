@@ -20,7 +20,6 @@ sendFile = (function(toString, maxSize){
 			fileSize = handler.file.size;
 		}
 		if(maxSize && maxSize < fileSize){
-			
 			if(isFunction(handler.onerror))
 				handler.onerror();
 			return;

@@ -72,9 +72,9 @@ if(!empty($info))
 		if ($curVariantId <> $variant['id'])
 		{
 			//ВЫВОДИМ ПАРАМЕТРЫ ПРЕДЫДУЩЕГО ВАРИАНТА ПРИ ПЕРЕХОДЕ К НОВОМУ
-			$curVariantId = $variant['id'];
 			$variantsParams[$curVariantId] = array();
 			$variantsParams[$curVariantId]['id'] = $curVariantId;
+			$curVariantId = $variant['id'];
 		}
 
 		$variantsParams[$curVariantId][$variant['title']] = $variant['value'];
@@ -247,6 +247,7 @@ if(!empty($info))
 
 	if (!empty($variantsParams))
 	{
+		//ВЫВОД ПАРАМЕТРОВ
 		foreach ($variantsParams as $vk => $vps)
 		{
 			echo '<div id="productdetail">';
@@ -279,6 +280,17 @@ if(!empty($info))
 				echo '<br />' . Yii::t('params', $param) . ': ' . $value;
 			}
 			echo'</p>';
+			if (!empty($dsc['description']))
+				echo '<p>' . $dsc['description'] . '</p>';
+			echo'</div>';
+			break;//ВЫВОДИМ ОДИН РАЗ
+		}
+
+		//ВЫВОД КАЧЕСТВ И ДЕЙСТВИЙ
+		$currentQuality = 0;
+		foreach ($variantsParams as $vk => $vps)
+		{
+			echo '<h4>' . $variant['qid'] . '</h4>';
 			if (!empty($vps['actions']))
 			{
 				$actions = '<p>' . $vps['actions'] . '</p>';
@@ -286,9 +298,7 @@ if(!empty($info))
 			}
 			else $actions = '';
 			echo $actions;
-			if (!empty($dsc['description']))
-				echo '<p>' . $dsc['description'] . '</p>';
-			echo'</div>';
+
 		}
 	}
 }

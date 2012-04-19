@@ -105,8 +105,9 @@ class ProductsController extends Controller
 		if (!empty($productInfo))
 		{
 			$info = Yii::app()->db->createCommand()
-				->select('pv.id, pv.online_only, ptp.title, ppv.value, pr.id AS price_id, pr.price AS pprice, r.id AS rent_id, r.price AS rprice')
+				->select('pv.id, pv.online_only, ptp.title, vq.id AS qid, ppv.value, pr.id AS price_id, pr.price AS pprice, r.id AS rent_id, r.price AS rprice')
 				->from('{{product_variants}} pv')
+		        ->join('{{variant_qualities}} vq', 'pv.id=vq.variant_id')
 		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 		        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
@@ -573,22 +574,353 @@ class ProductsController extends Controller
 	}
 
 	/**
-	 * метод вызывается конвертером для добавления продукта в витрины и в ПП пользователя
+	 * эмуляция добавления готового объекта в очередь (исключается операция конвертирования)
+	 * используется для тестирования действия добавления в витрины
+	 *
+	 * @param integer $id
+	 */
+	public function actionQueuemulate($id = 0)
+	{
+		$this->layout = '/layouts/ajax';
+		$cmd = Yii::app()->dbvxq->createCommand()
+			->select('f.id, f.title, f.title_en, f.description, f.year, f.dir, fv.id AS ovid, ff.md5, ff.file_name')
+			->from('{{films}} f')
+			->join('{{film_variants}} fv', 'fv.film_id = f.id')
+			->join('{{film_files}} ff', 'ff.film_variant_id = fv.id')
+			->where('f.id = :id');
+		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+		$filmInfo = $cmd->queryAll();
+		if (!empty($filmInfo))
+		{
+			$info = array(
+				'product_id'	=> 0,	//ДОБАВЛЯЕМ ФАЙЛЫ ПРОСТО НА КОНВЕРТИРОВАНИЕ (В ВИТРИНЫ ДОБАВЛЕНИЯ НЕ БУДЕТ)
+				'task_id'		=> 0,	//идентификатор задания в очереди заданий данного компрессора
+				'cmd_id'		=> 7,	//добавление объекта в витрины
+				'priority'		=> 0,
+				'state'			=> 0,
+				'station_id'	=> 0,
+				'partner_id'	=> 1,
+				'user_id'				=> 0,
+				'original_variant_id'	=> 0,
+				'date_start'	=> date('Y-m-d H:i:s')
+			);
+			$info['original_id'] = $filmInfo[0]['id'];
+			$inf = array();
+			$inf['tags'] = array(
+				"title"				=> $filmInfo[0]['title'],
+				"title_original"	=> $filmInfo[0]['title_en'],
+				"genres"			=> 'Action',
+				"description"		=> $filmInfo[0]['description'],
+				"year"				=> $filmInfo[0]['year'],
+				"poster"			=> '/poster.jpg'
+			);
+			$inf['md5s'] = array();
+			$inf['files'] = array();
+			$inf['ovids'] = array();
+			$inf['newfiles'] = array();
+			$inf["filepresets"] = array();
+			foreach ($filmInfo as $f)
+			{
+				$inf['md5s'][] = $f['md5'];
+				$inf['ovids'][] = $f['ovid'];
+
+				$letter = strtolower(substr($f['dir'], 0, 1));
+				if (($letter >= '0') && ($letter <= '9'))
+					$letter = '0-999';
+				$inf['files'][] = "/" . $letter . "/" . $f['dir'] . "/" . $f['file_name'];
+				$inf['newfiles'][] = "/" . $letter . "/" . $f['dir'] . "/" . $f['file_name'];;
+				$inf["filepresets"][] = array('low', 'medium');
+			}
+
+			$info['info'] = serialize($inf);
+
+			$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $info);
+		}
+	}
+
+	/**
+	 * метод вызывается конвертером для добавления продукта в витрины и в ПП пользователей
 	 *
 	 * @param integer $id - идентификатор очереди
 	 */
 	public function actionAddfromqueue($id = 0)
 	{
 		$this->layout = '/layouts/ajax';
-		if (empty($id))
+		if (!empty($id))
 		{
-			$sql = 'SELECT * FROM {{income_queue}} WHERE id=:id AND state>7'; // ИЩЕМ ОБЪЕКТ В ОЧЕРЕДИ ГОТОВЫХ К ДОБАВЛЕНИЮ (_CMD_ADD_) ОБЪЕКТОВ
+			//ВЫБИРАЕМ ОЧЕРЕДЬ
+			$sql = 'SELECT id, user_id, partner_id, original_id, original_variant_id, info FROM {{income_queue}} WHERE id=:id';
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-			$cmdInfo = $cmd->queryAll();
-			if (!empty($cmdInfo) && !empty($cmdInfo[0]['user_id']))
+			$cmdInfo = $cmd->queryRow();
+			if (!empty($cmdInfo))
 			{
+				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
+				$productInfo = Yii::app()->db->createCommand()
+					->select('p.id, pv.id AS pvid, p.original_id, pv.original_id AS pvoriginal_id')
+					->from('{{products}} p')
+					->join('{{product_variants}} pv', 'pv.product_id = p.id')
+					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $cmdInfo['original_id'])
+					->queryAll();
 
+				if (empty($productInfo))
+				{
+					$presets = CPresets::getPresets();
+					$partners = CPartners::getPartners();
+					$info = unserialize($cmdInfo['info']);
+					if (!empty($info['tags']) && !empty($info['newfiles']))
+					{
+						$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ
+						//(КАК ЕСЛИ БЫ ЭТО БЫЛ РЕЗУЛЬТАТ ВЫБОРКИ С ПОЛЯМИ id, pvid, original_id, pvoriginal_id)
+						$productInfoIndex = 0;
+						//ДОБАВЛЯЕМ ПРОДУКТ
+						$pInfo = array(
+							'title' 			=> strip_tags($info['tags']['title']),
+							'partner_id'		=> $cmdInfo['partner_id'],
+							'active'			=> 0, //ВИДИМ ВСЕМ
+							'srt'				=> 0,
+							'original_id'		=> $cmdInfo['original_id'],
+							'created'			=> date('Y-m-d H:i:s'),
+							'modified'			=> date('Y-m-d H:i:s'),
+						);
+						$pInfoTags = array(
+							'title_original'	=> strip_tags($info['tags']['title_original']),
+							'description'		=> mb_substr(strip_tags($info['tags']['description']), 0, 255),
+							'genres'			=> $info['tags']['genres'],
+							'year'				=> $info['tags']['year'],
+							'poster'			=> $partners[$cmdInfo['partner_id']]['url'] . $info['tags']['poster'],
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
+						$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');
+
+						$variantNames = array();
+						//ИЩЕМ ВСЕ КАЧЕСТВА ВСЕХ ФАЙЛОВ
+						for($i = 0; $i < count($info['newfiles']); $i++)
+						{
+							foreach ($info['filepresets'] as $presetName)
+							{
+								if (!in_array($presetName, $variantNames))
+								{
+									$variantNames[] = $presetName;
+								}
+							}
+						}
+
+						//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
+						for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
+						{
+							$vInfo = array(
+								'product_id'	=> $pInfo['id'],
+								'online_only'	=> 0,
+								//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
+								'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
+								'active'		=> 0,
+								'title'			=> $pInfo['title'],
+								'description'	=> $pInfoTags['description'],
+								'original_id'	=> $info['ovids'][$nfj],
+								'childs'		=> '' //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $vInfo);
+							$vInfo['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+							$newVariants[$info['ovids'][$nfj]] = $vInfo;
+
+							$productInfo[$productInfoIndex++] = array(
+								'id'			=> $pInfo['id'],
+								'pvid'			=> $vInfo['id'],
+								'original_id'	=> $pInfo['original_id'],
+								'pvoriginal_id'	=> $vInfo['original_id'],
+							);
+
+							//СОХРАНЯЕМ ВСЕ КАЧЕСТВА ЭТОГО ВАРИАНТА
+							foreach ($info['filepresets'][$nfj] as $fp)
+							{
+								$qInfo = array(
+									'variant_id'	=> $vInfo['id'],
+									'preset_id'		=> $presets[$fp]['id'],
+									'price_id'		=> 0,
+									'rent_id'		=> 0,
+								);
+								$cmd = Yii::app()->db->createCommand()->insert('{{variant_qualities}}', $qInfo);
+								$qInfo['id'] = Yii::app()->db->getLastInsertID('{{variant_qualities}}');
+
+								//СОХРАНЯЕМ ВСЕ ФАЙЛЫ ДАННОГО КАЧЕСТВА
+								$pathInfo = pathinfo($info['newfiles'][$nfj]);
+								$presetName = basename($pathInfo['dirname']);
+
+								$sz = 0;
+								if (!empty($info['newfilesizes'][$nfj]))
+									$sz = $info['newfilesizes'][$nfj];
+								$fInfo = array(
+									'size'					=> $sz,
+									'md5'					=> "",
+									'fname'					=> $info['newfiles'][$nfj],
+									'preset_id'				=> $presets[$fp]['id'],
+									'variant_quality_id'	=> $qInfo['id'],
+								);
+								$cmd = Yii::app()->db->createCommand()->insert('{{product_files}}', $fInfo);
+								$fInfo['id'] = Yii::app()->db->getLastInsertID('{{product_files}}');
+							}
+
+							//ДОБАВЛЯЕМ ПАРАМЕТРЫ ВАРИАНТА
+							$paramInfo = array(
+								'param_id'	=> 18,//18 - genres
+								'value'		=> $pInfoTags['genres'],
+								'variant_id'=> $vInfo['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+							$paramInfo = array(
+								'param_id'	=> 10,//10 - poster
+								'value'		=> $pInfoTags['poster'],
+								'variant_id'=> $vInfo['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+							$paramInfo = array(
+								'param_id'	=> 12,//12 - original name
+								'value'		=> $pInfoTags['title_original'],
+								'variant_id'=> $vInfo['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+							$paramInfo = array(
+								'param_id'	=> 19,//19 - description
+								'value'		=> $pInfoTags['description'],
+								'variant_id'=> $vInfo['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+							$paramInfo = array(
+								'param_id'	=> 13,//13 - year
+								'value'		=> $pInfoTags['year'],
+								'variant_id'=> $vInfo['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+						}
+						$dInfo = array(
+							'product_id'	=> $pInfo['id'],
+							'description'	=> $pInfoTags['description'],
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_descriptions}}', $dInfo);
+					}
+				}
+
+				//ДОБАВЛЕНИЕ В ПП ПОЛЬЗОВАТЕЛЕЙ
+				if (!empty($productInfo))
+				{
+					$oldIds = array();
+					$oldVariantIds = array();
+					foreach ($productInfo as $pInfo)
+					{
+						$oldIds[$pInfo['original_id']] = $pInfo['original_id'];
+						if (!empty($pInfo['pvoriginal_id']))
+						{
+							$oldVariantIds[$pInfo['pvoriginal_id']] = $pInfo['pvoriginal_id'];
+						}
+					}
+					$orCondition = array();
+					if (!empty($oldIds))
+					{
+						$orCondition[] = 'original_id IN (' . implode(',', $oldIds) . ')';
+					}
+					if (!empty($oldVariantIds))
+					{
+						$orCondition[] = 'original_variant_id IN (' . implode(',', $oldVariantIds) . ')';
+					}
+					$orCondition = implode(' OR ', $orCondition);
+
+					//ПРОДУКТ ДОБАВЛЕН, ИЩЕМ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ, СДЕЛАВШИХ ЗАЯВКУ НА ПРОДУКТ ИЛИ ВАРИАНТЫ ПРОДУКТА
+					$users = Yii::app()->db->createCommand()
+						->select('id, user_id, original_id, original_variant_id')
+						->from('{{income_queue}}')
+						->where('user_id > 0 AND partner_id = ' . $cmdInfo['partner_id'] . ' AND (' . $orCondition . ')')
+						->queryAll();
+					if (!empty($users))
+					{
+						$queueToDelete = array();
+						foreach ($users as $u)
+						{
+							$queueToDelete[$u['id']] = $u['id'];
+							//ПОВЕРЯЕМ ДОБАВЛЕНО В ПП ИЛИ НЕТ?
+							if (empty($u['original_variant_id']))
+							{
+								//ЗНАЧИТ В ПП ДОЛЖНЫ БЫТЬ ДОБАВЛЕНЫ ВСЕ ВАРИАНТЫ ПРОДУКТА
+								//ВЫБИРАЕМ УЖЕ ДОБАВЛЕННЫЕ В ПП ВАРИАНТЫ ПРОДУКТА
+								$addedVariants = Yii::app()->db->createCommand()
+									->select('tp.id, pv.id AS pvid, pv.original_id')
+									->from('{{typedfiles}} tp')
+									->join('{{product_variants}} pv', 'tp.variant_id=pv.id')
+									->join('{{products}} p', 'pv.product_id=p.id')
+									->where('tp.user_id=' . $u['user_id'] . ' AND p.original_id = ' . $u['original_id'])
+									->queryAll();
+								//ПРОВЕРЯЕМ ЕСТЬ ЛИ НЕ ДОБАВЛЕННЫЕ ВАРИАНТЫ (ВДРУГ ПОЯВИЛИСЬ НОВЫЕ)
+								foreach ($productInfo as $pInfo)
+								{
+									$already = false;
+									if (!empty($addedVariants))
+									{
+										foreach ($addedVariants as $av)
+										{
+											if ($av['original_id'] == $pInfo['pvoriginal_id'])
+											{
+												$already = true;
+												break;
+											}
+										}
+									}
+									if (!$already)
+									{
+										$tfInfo = array(
+											'variant_id'	=> $pInfo['pvid'],
+											'user_id'		=> $u['user_id'],
+											'title'			=> $info['tags']['title'],
+											'collection_id'	=> 0,
+										);
+										$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);
+									}
+								}
+							}
+							else
+							{
+								//ЗНАЧИТ В ПП ДОЛЖНЫ БЫТЬ ДОБАВЛЕН ДАННЫЙ ВАРИАНТ ПРОДУКТА
+								$variantExists = Yii::app()->db->createCommand()
+									->select('tp.id')
+									->from('{{typedfiles}} tp')
+									->join('{{product_variants}} pv', 'pv.id = tp.variant_id')
+									->whete('tp.user_id = ' . $u['user_id'] . ' AND pv.original_id = ' . $u['original_variant_id'])
+									->queryRow();
+								if (!$variantExists)
+								{
+									$vId = 0;
+									foreach ($productInfo as $pInfo)
+									{
+										if ($pInfo['pvoriginal_id'] == $u['original_variant_id'])
+										{
+											$vId = $pInfo['pvid'];
+											break;
+										}
+									}
+									if (!empty($vId))
+									{
+										$tfInfo = array(
+											'variant_id'	=> $vId,
+											'user_id'		=> $u['user_id'],
+											'title'			=> $info['tags']['title'],
+											'collection_id'	=> 0,
+										);
+										$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);
+									}
+								}
+							}
+						}
+						//УДАЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
+						//$sql = 'DELETE FROM {{income_queue}} WHERE id= IN (' . $queueToDelete . ')';
+						//Yii::app()->db->createCommand($sql)->execute();
+					}
+					//УДАЛЯЕМ ТЕКУЩЕЕ ЗАДАНИЕ
+					//$sql = 'DELETE FROM {{income_queue}} WHERE id=' . $cmdInfo['id'];
+					//Yii::app()->db->createCommand($sql)->execute();
+				}
 			}
 		}
 		Yii::app()->end();

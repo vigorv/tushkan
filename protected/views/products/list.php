@@ -4,6 +4,21 @@
 		$curId = 0; $infos = array();
 		foreach ($pst as $p)
 		{
+			$variantExists = false;
+			foreach ($infos as $k => $v)
+			{
+				if (($k <> $p['pvid']) && ($v['id'] == $p['id']))
+				{
+					$variantExists = true;
+					break;
+				}
+
+			}
+			if ($variantExists)
+			{
+				continue;//ОГРАНИЧИВАЕМ ВЫВОД ОДНИМ ВАРАНТОМ НА ПРОДУКТ
+			}
+
 			if ($p['pvid'] <> $curId)
 			{
 				$curId = $p['pvid'];
@@ -26,7 +41,7 @@
 			else
 				$poster = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
 
-			$prms = array($info['12'], $info['13'], $info['14']);
+			$prms = array($info['12'], $info['13']);//, $info['14']);
 			echo '<div class="chess">
 				<img width="80" align="left" src="' . $poster . '" />
 				' . $info['partner'] . '

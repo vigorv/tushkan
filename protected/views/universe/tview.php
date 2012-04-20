@@ -2,11 +2,16 @@
 <?php
 if (!empty($info))
 {
-	//echo'<pre>';
-	//print_r($dsc);
-	//echo'</pre>';
+/*
+	echo'<pre>';
+	print_r($qualities);
+	echo'</pre>';
+//*/
+	$presets = CPresets::getPresets();
+
 	$title = $info['title'];
 	echo '<h3>' . $title . '</h3>';
+
 ?>
 <script type="text/javascript">
 	function doRemove(oid)
@@ -66,6 +71,60 @@ if (!empty($info))
 	unset($params['width']);
 	unset($params['height']);
 
+	$action = array();
+	$qs = array();
+	foreach ($qualities as $q)
+	{
+		foreach ($presets as $p)
+		{
+			if ($p['id'] == $q['preset_id'])
+			{
+				$qs[$p['title']][] = array($q['fname'], $q['pfid']);
+				break;
+			}
+		}
+	}
+	$aContent = '';
+	$autoActionLink = '';
+	$currentQuality = '';
+/*
+	echo'<pre>';
+	print_r($qs);
+	echo'</pre>';
+exit;
+//*/
+
+	$fids = array();
+	$onlineLinks = array(0 => '');
+	foreach ($qs as $k => $val)
+	{
+		if ($k <> $currentQuality)
+		{
+			$num = 1;//ПОРЯДКОВЫЙ НОМЕР ФАЙЛА ДАННОГО КАЧКСТВА
+			$aContent .= '<h4>Качество "' . $k . '"</h4>';
+		}
+
+		foreach ($val as $v)
+		{
+$v[0] = 'http://92.63.192.12:83/l/little_caesar/270/little_caesar.mp4';//ОТЛАДКА
+			$fids[] = $v[1];
+			$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн файл ' . $num . '</button>';
+			$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать файл ' . $num . '</button>';
+			$onlineLinks[$v[1]] = $v[0];
+			if ($fid == $v[1])
+			{
+				$aContent .= '<p id="autostart" rel="#video' . $fid . '"></p>';
+			}
+			$aContent .= '<p>';
+			$aContent .= $online;
+			$aContent .= $download;
+			$aContent .= '</p>';
+			$num++;
+		}
+	}
+
+	echo $aContent;
+
 	echo '<p>';
 	foreach ($params as $param => $value)
 	{
@@ -114,7 +173,6 @@ if (!empty($info))
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 
 	$playerCode = '
-		' . $onlineHref . '
 	<div id="flowplayerdiv" class="modal" style="width:640px; height:580px; display: none">
 		<div class="modal-header">
 			<a class="close" data-dismiss="modal">×</a>
@@ -127,7 +185,7 @@ if (!empty($info))
 
 		<script type="text/javascript">
 			$("#flowplayerdiv").on("show", function () {
-				$("#video' . $fk . ' p").trigger("click");
+				$("#video' . $fid . ' p").trigger("click");
 			});
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
@@ -137,6 +195,7 @@ if (!empty($info))
 			});
 
 			function addVideo(num, path) {
+//alert(num);
 //alert(path);
 				document.getElementById("ipad"+num).href=path;
 				document.getElementById("video" + num).style.display="";
@@ -169,8 +228,8 @@ if (!empty($info))
 			}
 		</script>
 	<div style="display: none">
-		<div id="video' . $fk . '">
-			<p id="ipad' . $fk . '" onclick="return addVideo(' . $fk . ', \'' . $onlineLinks[$fk] . '\');"></p>
+		<div id="video' . $fid . '">
+			<p id="ipad' . $fid . '" onclick="return addVideo(' . $fid . ', \'' . $onlineLinks[$fid] . '\');"></p>
 		</div>
 	</div>
 	';

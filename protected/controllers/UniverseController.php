@@ -33,7 +33,7 @@ class UniverseController extends Controller {
 		}
 	}
 
-	public function actionIndex($section='') {			
+	public function actionIndex($section='') {
 		$this->render('library');
 	}
 
@@ -166,7 +166,7 @@ class UniverseController extends Controller {
 			}
 		}
 	}
-	
+
 	/**
 	 * действие формы загрузки файла
 	 *
@@ -204,9 +204,9 @@ class UniverseController extends Controller {
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
 		$this->render('/products/top', array('pst' => $pst));
 	}
-	
+
 	public function actionProducts(){
-		
+
 		$lst = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{partners}}')
@@ -249,7 +249,7 @@ class UniverseController extends Controller {
 
 		$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
 		$unt = CUserfiles::model()->getFilesLike($this->user_id, $search);
-		
+
 		$this->render('search', array('pstContent' => $pstContent,'unt'=>$unt,'obj'=>$obj));
 	}
 
@@ -260,8 +260,8 @@ class UniverseController extends Controller {
 			case 'a':
 			case 'd':
 			case 'p':
-			
-			
+
+
 				$type_id = Utils::getSectionIdByAlias($lib);
 				$productsInfo = CProduct::getUserProducts($this->user_id,$type_id);
 				$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
@@ -415,6 +415,7 @@ class UniverseController extends Controller {
 				$prms = Yii::app()->db->createCommand()
 								->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, pr.id AS price_id, r.id AS rent_id')
 								->from('{{product_variants}} pv')
+								->join('{{variant_qualities}} vq', 'pv.id=vq.variant_id')
 								->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 								->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 								->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
@@ -422,6 +423,7 @@ class UniverseController extends Controller {
 								->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . $this->userPower)
 								->group('ppv.id')
 								->order('pv.id ASC, ptp.srt DESC')->queryAll();
+				$vIds = array();
 				if (!empty($prms)) {
 					$dsc = Yii::app()->db->createCommand()
 									->select('*')
@@ -433,8 +435,19 @@ class UniverseController extends Controller {
 						$info['online_only'] = $p['online_only'];
 						$info['price_id'] = $p['price_id'];
 						$info['rent_id'] = $p['rent_id'];
+
+						$vIds[$p['id']] = $p['id'];
 					}
 				}
+
+				$qualities = array();
+				if (!empty($vIds))
+					$qualities = Yii::app()->db->createCommand()
+						->select('pf.id AS pfid, vq.variant_id, pf.preset_id, pf.fname')
+						->from('{{variant_qualities}} vq')
+						->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id')
+						->where('variant_id IN (' . implode(',', $vIds) . ')')
+						->queryAll();
 
 				$subAction = 'view';
 				if (!empty($_GET['do'])) {
@@ -472,7 +485,15 @@ class UniverseController extends Controller {
 				}
 
 				//ЕСЛИ НЕТ ЦЕН НИ ПОКУПКИ НИ АРЕНДЫ, ТО ДОСТУПНО И СКАЧКА И ОНЛАЙН
-
+				$neededQuality = ''; $fid = 0;
+				if (!empty($_GET['quality']))
+				{
+					$neededQuality = $_GET['quality'];
+				}
+				if (!empty($_GET['fid']))
+				{
+					$fid = $_GET['fid'];
+				}
 				switch ($subAction) {
 					case "download":
 						if ($info['online_only']) {
@@ -504,7 +525,9 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-		$this->render('tview', array('info' => $info, 'params' => $params, 'dsc' => $dsc, 'subAction' => $subAction));
+		$this->render('tview', array('info' => $info, 'params' => $params, 'dsc' => $dsc,
+			'qualities' => $qualities, 'fid' => $fid,
+			'subAction' => $subAction, 'neededQuality' => $neededQuality));
 	}
 
 	/**

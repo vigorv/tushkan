@@ -24,10 +24,11 @@ class CPresets {
 
     public function getPresets() {
     	$presets = array(
-    		'low'		=> array('id' => 1, 'title' => 'low'),
-    		'medium'	=> array('id' => 2, 'title' => 'medium'),
-    		'high'		=> array('id' => 3, 'title' => 'high'),
-    		'ultra'		=> array('id' => 4, 'title' => 'ultra'),
+    		'unknown'	=> array('id' => 1, 'title' => 'unknown'),
+    		'low'		=> array('id' => 2, 'title' => 'low'),
+    		'medium'	=> array('id' => 3, 'title' => 'medium'),
+    		'high'		=> array('id' => 4, 'title' => 'high'),
+    		'ultra'		=> array('id' => 5, 'title' => 'ultra'),
     	);
     	return $presets;
     }

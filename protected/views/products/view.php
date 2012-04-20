@@ -1,9 +1,7 @@
 <?php
 if(!empty($info))
 {
-	echo'<pre>';
-	//print_r($info);
-	echo'</pre>';
+	$presets = CPresets::getPresets();
 ?>
 <form name="quickpayform" method="post" action="/pays/do/3">
 	<input type="hidden" name="summa" value="" />
@@ -72,13 +70,15 @@ if(!empty($info))
 		if ($curVariantId <> $variant['id'])
 		{
 			//ВЫВОДИМ ПАРАМЕТРЫ ПРЕДЫДУЩЕГО ВАРИАНТА ПРИ ПЕРЕХОДЕ К НОВОМУ
+			$curVariantId = $variant['id'];
 			$variantsParams[$curVariantId] = array();
 			$variantsParams[$curVariantId]['id'] = $curVariantId;
-			$curVariantId = $variant['id'];
 		}
 
+		$variantsParams[$curVariantId]['sub_id'] = $variant['sub_id'];
+		$variantsParams[$curVariantId]['vtitle'] = $variant['vtitle'];
 		$variantsParams[$curVariantId][$variant['title']] = $variant['value'];
-		if (count($variantsParams[$curVariantId]) > 2)
+		if (count($variantsParams[$curVariantId]) > 4)
 		{
 			continue; //ПОЛНУЮ ИТЕРАЦИЮ (С ОПРЕДЕЛЕНИЕМ ДЕЙСТВИЙ) ДЛЯ ВАРИАНТА ДЕЛАЕМ ОДИН РАЗ
 		}
@@ -192,8 +192,25 @@ if(!empty($info))
 
 		if ($inCloud)
 		{
-			$actionOnline = '<a href="/universe/tview/id/' . $cloudId . '/do/online">смотреть</a>';
-			$actionDownload = '<a href="/universe/tview/id/' . $cloudId . '/do/download">скачать</a>';
+			//ИЩЕМ МАКИСММАЛЬНОЕ КАЧЕСТВО ДЛЯ ВАРИАНТА
+			$q = '';
+			foreach ($qualities as $quality)
+			{
+				if ($quality['variant_id'] == $variant['id'])
+				{
+					foreach ($presets as $p)
+					{
+						if ($p['id'] == $quality['preset_id'])
+						{
+							$q = $p['title'];
+							break;
+						}
+					}
+				}
+			}
+			$q = '/quality/' . $q;
+			$actionOnline = '<a href="/universe/tview/id/' . $cloudId . '/do/online' . $q . '">смотреть</a>';
+			$actionDownload = '<a href="/universe/tview/id/' . $cloudId . '/do/download' . $q . '">скачать</a>';
 		}
 
 		if ($isOwned || $isRented || $inCloud)
@@ -244,9 +261,50 @@ if(!empty($info))
 			$variantsParams[$curVariantId]['actions'] =  'Действия: (' . implode(' | ', $actions) . ') ' . $rentDsc;
 		}
 	}
-
+/*
+	echo'<pre>';
+	print_r($variantsParams);
+	echo'</pre>';
+exit;
+//*/
 	if (!empty($variantsParams))
 	{
+		$currentQuality = 0;
+		$aContent = '<table cellpadding="5">';
+		$num = 1;
+		foreach ($variantsParams as $vk => $vps)
+		{
+			if (!empty($vps['actions']))
+			{
+				$actions = $vps['actions'];
+				unset($vps['actions']);
+			}
+			else $actions = '';
+			$qs = array();
+			foreach ($qualities as $q)
+			{
+				if ($q['variant_id'] == $vps['id'])
+				{
+					foreach ($presets as $p)
+					{
+						if ($p['id'] == $q['preset_id'])
+						{
+							$qs[] = $p['title'];
+							break;
+						}
+					}
+				}
+			}
+			if (count($variantsParams) == 1)
+				$vps['vtitle'] = '';
+			else
+				$vps['vtitle'] .= $num++;
+			$aContent .= '<tr><td>' . $vps['vtitle'] . '</td><td>Качество: ' . implode(' / ', $qs) . '</td><td>' . $actions . '</td></tr>';
+		}
+		$aContent .= '</table>';
+		//ВЫВОД КАЧЕСТВ И ДЕЙСТВИЙ
+		echo $aContent;
+
 		//ВЫВОД ПАРАМЕТРОВ
 		foreach ($variantsParams as $vk => $vps)
 		{
@@ -268,6 +326,8 @@ if(!empty($info))
 			unset($vps['height']);
 			unset($vps['width']);
 			unset($vps['onlineurl']);
+			unset($vps['sub_id']);
+			unset($vps['vtitle']);
 
 			foreach ($vps as $param => $value)
 			{
@@ -284,21 +344,6 @@ if(!empty($info))
 				echo '<p>' . $dsc['description'] . '</p>';
 			echo'</div>';
 			break;//ВЫВОДИМ ОДИН РАЗ
-		}
-
-		//ВЫВОД КАЧЕСТВ И ДЕЙСТВИЙ
-		$currentQuality = 0;
-		foreach ($variantsParams as $vk => $vps)
-		{
-			echo '<h4>' . $variant['qid'] . '</h4>';
-			if (!empty($vps['actions']))
-			{
-				$actions = '<p>' . $vps['actions'] . '</p>';
-				unset($vps['actions']);
-			}
-			else $actions = '';
-			echo $actions;
-
 		}
 	}
 }

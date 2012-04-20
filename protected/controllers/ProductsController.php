@@ -105,9 +105,9 @@ class ProductsController extends Controller
 		if (!empty($productInfo))
 		{
 			$info = Yii::app()->db->createCommand()
-				->select('pv.id, pv.online_only, ptp.title, vq.id AS qid, ppv.value, pr.id AS price_id, pr.price AS pprice, r.id AS rent_id, r.price AS rprice')
+				->select('pv.id, pv.online_only, ptp.title, ppv.value, pv.sub_id, vs.title AS vtitle, pr.id AS price_id, pr.price AS pprice, r.id AS rent_id, r.price AS rprice')
 				->from('{{product_variants}} pv')
-		        ->join('{{variant_qualities}} vq', 'pv.id=vq.variant_id')
+		        ->join('{{variant_subs}} vs', 'pv.sub_id=vs.id')
 		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 		        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
@@ -120,6 +120,19 @@ class ProductsController extends Controller
 					->select('*')
 					->from('{{product_descriptions}}')
 					->where('product_id = ' . $productInfo['id'])->queryRow();
+
+			$vIds = array();
+			foreach($info as $i)
+			{
+				$vIds[$i['id']] = $i['id'];
+			}
+			$qualities = array();
+			if (!empty($vIds))
+				$qualities = Yii::app()->db->createCommand()
+					->select('id, variant_id, preset_id')
+					->from('{{variant_qualities}}')
+					->where('variant_id IN (' . implode(',', $vIds) . ')')
+					->queryAll();
 
 			if (!empty($userId))
 			{
@@ -146,7 +159,8 @@ class ProductsController extends Controller
 			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
 			Yii::app()->request->redirect('/universe/error');
 		}
-		$this->render('/products/view', array('info' => $info, 'dsc' => $dsc, 'productInfo' => $productInfo, 'orders' => $orders,
+		$this->render('/products/view', array('info' => $info, 'dsc' => $dsc, 'productInfo' => $productInfo,
+				'orders' => $orders, 'qualities' => $qualities,
 				'actualRents' => $actualRents, 'typedFiles' => $typedFiles, 'userInfo' => $this->userInfo));
 	}
 
@@ -605,14 +619,69 @@ class ProductsController extends Controller
 				'date_start'	=> date('Y-m-d H:i:s')
 			);
 			$info['original_id'] = $filmInfo[0]['id'];
+
+			$sql = 'SELECT file_name, type FROM film_pictures WHERE film_id = ' . $info['original_id'];
+			$genres = $smallPosters = $bigPosters = $posters = array();
+			$pictures = Yii::app()->dbvxq->createCommand($sql)->query();
+			define('_SL_', '/');
+			foreach ($pictures as $p)
+			{
+				switch ($p['type'])
+				{
+					case "poster":
+						$dir = _SL_ . 'posters';
+						$posters[] = $dir . _SL_ . basename($p['file_name']);
+					break;
+					case "smallposter":
+						$dir = _SL_ . 'smallposters';
+						$smallPosters[] = $dir . _SL_ . basename($p['file_name']);
+					break;
+					case "bigposter":
+						$dir = _SL_ . 'bigposters';
+						$bigPosters[] = $dir . _SL_ . basename($p['file_name']);
+					break;
+				}
+			}
+			if (empty($posters))
+			{
+				$posters = $smallPosters;
+			}
+			if (empty($posters))
+			{
+				$posters = $bigPosters;
+			}
+			$poster = '';
+			if (!empty($posters))
+			{
+				foreach ($posters as $p)
+				{
+					$poster = $p;
+					break;
+				}
+			}
+
+		//ОПРЕДЕЛЯЕМ СПИСОК ЖАНРОВ
+			$sql = '
+				SELECT g.title FROM genres AS g
+					INNER JOIN films_genres AS fg ON (fg.genre_id = g.id)
+				WHERE fg.film_id = ' . $info['original_id'] . '
+			';
+			$gst = Yii::app()->dbvxq->createCommand($sql)->query();
+			$genres = array();
+			foreach ($gst as $g)
+			{
+				$genres[] = $g['title'];
+			}
+			$genre = implode(', ', $genres);
+
 			$inf = array();
 			$inf['tags'] = array(
 				"title"				=> $filmInfo[0]['title'],
 				"title_original"	=> $filmInfo[0]['title_en'],
-				"genres"			=> 'Action',
+				"genres"			=> $genre,
 				"description"		=> $filmInfo[0]['description'],
 				"year"				=> $filmInfo[0]['year'],
-				"poster"			=> '/poster.jpg'
+				"poster"			=> "/img/catalog" . $poster,
 			);
 			$inf['md5s'] = array();
 			$inf['files'] = array();
@@ -621,6 +690,11 @@ class ProductsController extends Controller
 			$inf["filepresets"] = array();
 			foreach ($filmInfo as $f)
 			{
+				if (strpos($f['file_name'], '270/') !== false)//ВЕРСИЮ ДЛЯ МОБИЛЬНЫХ ПРОПУСКАЕМ
+				{
+					continue;
+				}
+
 				$inf['md5s'][] = $f['md5'];
 				$inf['ovids'][] = $f['ovid'];
 
@@ -685,26 +759,13 @@ class ProductsController extends Controller
 						);
 						$pInfoTags = array(
 							'title_original'	=> strip_tags($info['tags']['title_original']),
-							'description'		=> mb_substr(strip_tags($info['tags']['description']), 0, 255),
+							'description'		=> '',
 							'genres'			=> $info['tags']['genres'],
 							'year'				=> $info['tags']['year'],
 							'poster'			=> $partners[$cmdInfo['partner_id']]['url'] . $info['tags']['poster'],
 						);
 						$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
 						$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');
-
-						$variantNames = array();
-						//ИЩЕМ ВСЕ КАЧЕСТВА ВСЕХ ФАЙЛОВ
-						for($i = 0; $i < count($info['newfiles']); $i++)
-						{
-							foreach ($info['filepresets'] as $presetName)
-							{
-								if (!in_array($presetName, $variantNames))
-								{
-									$variantNames[] = $presetName;
-								}
-							}
-						}
 
 						//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
 						for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
@@ -718,7 +779,8 @@ class ProductsController extends Controller
 								'title'			=> $pInfo['title'],
 								'description'	=> $pInfoTags['description'],
 								'original_id'	=> $info['ovids'][$nfj],
-								'childs'		=> '' //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+								'childs'		=> '', //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+								'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
 							);
 							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $vInfo);
 							$vInfo['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
@@ -799,7 +861,7 @@ class ProductsController extends Controller
 						}
 						$dInfo = array(
 							'product_id'	=> $pInfo['id'],
-							'description'	=> $pInfoTags['description'],
+							'description'	=> strip_tags($info['tags']['description']),
 						);
 						$cmd = Yii::app()->db->createCommand()->insert('{{product_descriptions}}', $dInfo);
 					}

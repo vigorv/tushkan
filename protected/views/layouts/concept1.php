@@ -24,6 +24,7 @@
 		Yii::app()->getClientScript()->registerCssFile(Yii::app()->request->baseUrl . "/js/jquery-ui/css/pepper-grinder/jquery-ui-1.8.16.custom.css");
 		Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery-ui/js/jquery-ui-1.8.16.custom.min.js");
 		Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.address-1.4.min.js');
+		Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/multiuploader.js");
 		?>
 		<script src="/js/bootstrap.min.js"></script>
 		<script src="/js/less-1.2.2.min.js"></script>
@@ -61,30 +62,26 @@
 				<?php echo $content; ?>
 			</div>
 
-			<div id="m_devices" class="well">
+			<div id="m_devices" class=" well">
 
 			</div>
 
 
 			<script langauge="javascript">
 				$.address.change(function(event) {  
+					console.log(event.value);
 					$('#content').load(event.value, function(){
 						$('#content a').click(function(){
-							$.address.value($(this).attr('href'));
+							lnk= $(this).attr('href');
+							$.address.value(lnk);
 							return false;
 						});
 					});  
 					return false;
 				});  
 					
-				$('#m_panel').load('/universe/panel',function(){
-					$('#m_panel a').click(function() {  
-						lnk= $(this).attr('href');
-						if (lnk=="#") return false;
-						$.address.value(lnk);  
-						return false;
-					});
-				});
+				$('#m_panel').load('/universe/panel');
+				
 				
 				$('#m_uploads a').click(function() {  
 					lnk= $(this).attr('href');
@@ -102,6 +99,15 @@
 					});
 				});
 				$('#m_devices').load('/universe/devices');
+				
+				window.onbeforeunload = function (event) { return "Внимание! Ваши закачки прервутся после этого действия"}
+				
+				//$(window).unload(function(){ 
+//					if (window.confirm("Do you want to leave this page") == true){
+//						return true;
+//					} else return false;
+//					
+//				});
 			</script>
 
 

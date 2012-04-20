@@ -36,6 +36,10 @@ class Utils {
 	"a" => 2,
 	"p" => 3,
 	"d" => 4);
+    
+    static $convert_list = array(
+      "v" => array('Ultra','High','Medium','Low')  
+    );
 
     /**
      * парсинг выражения записи периода времени
@@ -387,4 +391,10 @@ class Utils {
 		);
 		return $types;
 	}
+                              
+        public static function isConvertCorrect($filename,$preset){
+            $ext = pathinfo($filename,PATHINFO_EXTENSION);
+            $section = Utils::getSectionIdByExt($ext);            
+            return Utils::$convert_list['$section'][$preset];                        
+        }
 }

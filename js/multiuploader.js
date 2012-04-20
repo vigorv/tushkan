@@ -11,7 +11,7 @@ var sendFile = 2 * 1024*1024*1024; // maximum allowed file size
 sendFile = (function(toString, maxSize){
 	var isFunction = function(Function){
 		return  toString.call(Function) === "[object Function]";
-	},
+	},		
 	split = "onabort.onerror.onloadstart.onprogress".split("."),
 	length = split.length;
 	return  function(handler){
@@ -26,37 +26,28 @@ sendFile = (function(toString, maxSize){
 		};
 		var xhr = new XMLHttpRequest,
 		upload = xhr.upload;
-		for(var
-			xhr = new XMLHttpRequest,
-			upload = xhr.upload,
-			i = 0;
-			i < length;
-			i++
-			)
-		upload[split[i]] = (function(event){
-			return  function(rpe){
-				if(isFunction(handler[event]))
-					handler[event].call(handler, rpe, xhr);
-			};
-		})(split[i]);
-		upload.onload = function(rpe){
-			if(handler.onreadystatechange === false){
+		for(i = 0; i < length; i++)
+			upload[split[i]] = (function(event){
+				return  function(rpe){
+					if(isFunction(handler[event]))
+						handler[event].call(handler,rpe,xhr);
+				};
+			})(split[i]);
+		xhr.onreadystatechange = function(rpe) {
+			if ((this.readyState == 4) ) {
 				if(isFunction(handler.onload))
-					handler.onload(rpe, xhr);
-			} else {
-				setTimeout(function(){
-					if(xhr.readyState === 4){
-						if(isFunction(handler.onload))
-							handler.onload(rpe, xhr);
-					} else
-						setTimeout(arguments.callee, 15);
-				}, 15);
-			}
+					handler.onload(rpe,this);
+			}	
 		};
+	
+		/*		upload.addEventListener("load", 
+			function(rpe){			
+					
+	 */
 		//	Access-Control-Request-Headers:Origin, X-Requested-With, Content-Disposition, X-File-Name, Content-Type
 		filename = handler.file.fileName;
 		if (filename == undefined) filename=handler.file.name;
-	
+		
 		xhr.open("post", handler.url, true);
 		xhr.setRequestHeader("If-Modified-Since", "Mon, 26 Jul 1997 05:00:00 GMT");
 		//xhr.setRequestHeader("Origin", "http://mycloud.anka.ws");
@@ -99,9 +90,11 @@ function sendMultipleFiles(handler){
 			if(++handler.current < length){
 				handler.sent += handler.files[handler.current - 1].fileSize;
 				//handler.rtexts.push(xhr.responseText);
-				if(onload) {
-					handler.onload = onload;
-					handler.onload(rpe, xhr);
+				if(xhr.status==200){
+					if(onload) {
+						handler.onload = onload;
+						handler.onload(rpe, xhr);
+					}
 				}
 				handler.file = handler.files[handler.current];
 				sendFile(handler).onload = arguments.callee;
@@ -109,9 +102,11 @@ function sendMultipleFiles(handler){
 			else
 			{
 				//handler.rtexts.push(xhr.responseText);
-				if(onload) {
-					handler.onload = onload;
-					handler.onload(rpe, xhr);
+				if(xhr.status==200){
+					if(onload) {
+						handler.onload = onload;
+						handler.onload(rpe, xhr);
+					}
 				}
 			}
 		};

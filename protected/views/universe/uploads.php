@@ -5,22 +5,22 @@ $user_id = Yii::app()->user->id;
 <div id="upload_container" class="container-fluid closed">
 	<div class="row-fluid">
 		<div class="span9">
-			<i class="btn"><?=Yii::t('users','Choose file(s)');?>...</i><input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple />
+			<i class="btn"><?= Yii::t('users', 'Choose file(s)'); ?>...</i><input  id="FileUpload" type="file" rel="fileInput" onChange="return UploadFilelistChange(this);" multiple />
 			<div class="clearfix"></div>
 			<ul id="tmp_ufs"></ul>
 			<ul id="UploadFileList">
 
 			</ul>
 			<div class="clearfix"></div>
-			<button class="btn" onClick="return UploadFiles('FileUpload')" ><?=Yii::t('common','Upload');?></button>
+			<button class="btn" onClick="return UploadFiles('FileUpload')" ><?= Yii::t('common', 'Upload'); ?></button>
 			<div  id="progresstotal" class="progress striped active animated">
 				<div class="bar" style="width: 0%"><p>Total</p></div>
 			</div>
 		</div>
 		<div class="span3">
 			<div class="well">
-				<?=Yii::t('users','Supported filetypes');?>:<br/>
-				<?=Yii::t('users','Video');?>(avi,mkv,mp4,flv)
+				<?= Yii::t('users', 'Supported filetypes'); ?>:<br/>
+				<?= Yii::t('users', 'Video'); ?>(avi,mkv,mp4,flv)
 			</div>
 		</div>
 	</div>
@@ -32,7 +32,7 @@ $user_id = Yii::app()->user->id;
     var unt =$("#items_unt");
     var ufs  = $("#UploadFileList");
 	var tmp_ufs=$('#tmp_ufs');
-	supportedExtensions = ['mkv','mp4','flv','avi'];
+	supportedExtensions = ['mkv','mp4','flv','avi',];
 	//supportedExtensions['mkv']=1;
 	//supportedExtensions['mp4']=1;
 	//supportedExtensions['flv']=1;
@@ -71,18 +71,22 @@ $user_id = Yii::app()->user->id;
 		sendMultipleFiles({
 			url: url,
 			files:files,
-			onloadstart:function(rpe){
-				//    		infoDiv.innerHTML = "<?php echo Yii::t('common', 'Init upload'); ?> ...";				
-				ufs.append('<li>'+this.file.name+'<div  id="progressBar_'+uqueue_id+'_'+this.current+'" class="progress striped active animated"><div class="bar" style="width: 0%"></div></div></li>');			
-				str='#progressBar_'+uqueue_id+'_'+this.current;					
-				
+			onloadstart:function(rpe,xhr){
+				//    		infoDiv.innerHTML = "<?php echo Yii::t('common', 'Init upload'); ?> ...";								
+				str='#progressBar_'+uqueue_id+'_'+this.current;	
+				prB = ufs.find(str);				
+				if($(prB).parent().find('.icon-remove').length==0) {
+					xhr.abort();			
+					prB.parent().append('<i class="icon-ok-sign"></i>')
+					return;
+				}
 				pr = $(ufs).find(str).children('div');
 				//console.log(pr);
 				$(pr).width("0%");
 				//console.log(pr);
 				$(pr).html("<p>0%</p>");
 			},
-			onprogress:function(rpe){
+			onprogress:function(rpe,xhr){
 				/*
 				 *
 				 *
@@ -101,7 +105,14 @@ $user_id = Yii::app()->user->id;
 				dstat  = (((rpe.loaded)  / this.file.size)*100 >> 0) + "%";
 				str='#progressBar_'+uqueue_id+'_'+this.current;		
 				
-				pr = ufs.find(str).children();
+				prB= ufs.find(str)
+				if($(prB).parent().find('.icon-remove').length==0) {
+						xhr.abort();
+						//prB.parent().append('<i class="icon-ok-sign"></i>')
+						return
+					return;
+				}
+				pr=(prB).children();
 
 				$(pr).width(dstat);
 				$(pr).html('<p>'+dstat+'</p>');
@@ -116,16 +127,18 @@ $user_id = Yii::app()->user->id;
 				var successCount=0;
 				//function parseAnswer(element, index, array){
 				answer = $.parseJSON(xhr.responseText);
-				//console.log(this.current);
+				console.log(xhr.responseText);
 				if (answer != null){
 					if (answer.success){
 						var fid= answer.fid;						
 						str='#progressBar_'+uqueue_id+'_'+(this.current-1);		
 						prB = ufs.find(str);
+						$(prB).parent().find('.icon-remove').remove();
 						$(prB).addClass('progress-success');
 						pr = $(prB).children();
 						$(pr).width("100%");
 						$(pr).html('<p>Success</p>');
+						$(prB).parent().append('<i class="icon-ok-sign"></i>')
 						//$(pBar).html('<p>Success: '+successCount+'</p>');
 						//progressL.append('<li>Success: '+ index+'</li>')
 						//ufs.html('');
@@ -137,6 +150,8 @@ $user_id = Yii::app()->user->id;
 						str='#progressBar_'+uqueue_id+'_'+(this.current-1);
 						prB = ufs.find(str);						
 						$(prB).addClass('progress-danger');	
+						$(prB).parent().find('.icon-remove').remove();
+						$(prB).parent().append('<i class="icon-ok-sign"></i>')
 						//console.log(prB);
 						pr = $(prB).children();
 						$(pr).width("100%");
@@ -147,6 +162,8 @@ $user_id = Yii::app()->user->id;
 					str='#progressBar_'+uqueue_id+'_'+(this.current-1);							
 					prB = ufs.find(str);
 					$(prB).addClass('progress-danger');
+						$(prB).parent().find('.icon-remove').remove();
+						$(prB).parent().append('<i class="icon-ok-sign"></i>')
 					pr = prB.children();
 					$(pr).width("100%");
 					$(pr).html("<p>bad answer</p>");
@@ -167,17 +184,33 @@ $user_id = Yii::app()->user->id;
 				prB = ufs.find(str);
 				pr = prB.children();
 				$(prB).addClass('progress-danger');
-				$(pr).html('<p>Connection error</p>');
+				$(pr).html('<p>Error</p>');
 				//progressL.html('Troubles ' )
 				//$(pBar).html("Error");
 				//uploadComplete("The file " + this.file.fileName + " is too big [" + size(this.file.fileSize) + "]");
 			}
 		});
     }
-                                                             	
+                                                             
+	function AbortUpload(qid,id){
+		prB = ufs.find('#progressBar_'+qid+'_'+id);
+		//if( prB.children().html() == 'wait' ){
+			$(prB).parent().find('.icon-remove').remove();
+			$(prB).children().html('aborted');
+			$(prB).addClass('progress-danger');
+			$(prB).parent().append('<i class="icon-ok-sign"></i>')
+			pr = prB.children();
+		
+			$(pr).width("100%");
+		//} 
+		return false;
+
+	}															 
+															 
+															 
     function UploadFiles(ifiles) {
 		tmp_ufs.html('');
-		uqueue_id = 	upload_queue_id;	
+		uqueue_id = upload_queue_id;	
 		upload_queue_id++;	
 		
 		UploadList=new Array();
@@ -186,8 +219,11 @@ $user_id = Yii::app()->user->id;
 			fname= e.files[x].name.toLowerCase();
 			ext = getFileExt(fname);
 			if ( $.inArray(ext,supportedExtensions)>-1)	{
-				UploadList.push(e.files[x]);
-
+				current =UploadList.push(e.files[x]);
+				ufs.append('<li>'+e.files[x].name+'<div  id="progressBar_'+uqueue_id+'_'+(current-1)+'" class="progress striped active animated"><div class="bar" style="width: 0%">wait</div></div>\n\
+				<a href="#" onClick="return AbortUpload('+uqueue_id+','+(current-1)+')" ><i class="icon-remove"></i></a></li>');			
+				//				console.log('push'+e.files[x]);
+				//				console.log(UploadList);
 			} 
 		}		
 		

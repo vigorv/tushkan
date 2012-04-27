@@ -621,7 +621,7 @@ class ProductsController extends Controller
 			$info['original_id'] = $filmInfo[0]['id'];
 
 			$sql = 'SELECT file_name, type FROM film_pictures WHERE film_id = ' . $info['original_id'];
-			$genres = $smallPosters = $bigPosters = $posters = array();
+			$genres = $countries = $smallPosters = $bigPosters = $posters = array();
 			$pictures = Yii::app()->dbvxq->createCommand($sql)->query();
 			define('_SL_', '/');
 			foreach ($pictures as $p)
@@ -674,11 +674,26 @@ class ProductsController extends Controller
 			}
 			$genre = implode(', ', $genres);
 
+		//ОПРЕДЕЛЯЕМ СПИСОК СТРАН
+			$sql = '
+				SELECT c.title FROM countries AS c
+					INNER JOIN countries_films AS cf ON (cf.country_id = c.id)
+				WHERE cf.film_id = ' . $info['original_id'] . '
+			';
+			$cst = Yii::app()->dbvxq->createCommand($sql)->query();
+			$countries = array();
+			foreach ($cst as $c)
+			{
+				$countries[] = $c['title'];
+			}
+			$country = implode(', ', $countries);
+
 			$inf = array();
 			$inf['tags'] = array(
 				"title"				=> $filmInfo[0]['title'],
 				"title_original"	=> $filmInfo[0]['title_en'],
 				"genres"			=> $genre,
+				"countries"			=> $country,
 				"description"		=> $filmInfo[0]['description'],
 				"year"				=> $filmInfo[0]['year'],
 				"poster"			=> "/img/catalog" . $poster,
@@ -761,6 +776,7 @@ class ProductsController extends Controller
 							'title_original'	=> strip_tags($info['tags']['title_original']),
 							'description'		=> '',
 							'genres'			=> $info['tags']['genres'],
+							'countries'			=> $info['tags']['countries'],
 							'year'				=> $info['tags']['year'],
 							'poster'			=> $partners[$cmdInfo['partner_id']]['url'] . $info['tags']['poster'],
 						);
@@ -855,6 +871,13 @@ class ProductsController extends Controller
 							$paramInfo = array(
 								'param_id'	=> 13,//13 - year
 								'value'		=> $pInfoTags['year'],
+								'variant_id'=> $vInfo['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+							$paramInfo = array(
+								'param_id'	=> 14,//14 - countries
+								'value'		=> $pInfoTags['countries'],
 								'variant_id'=> $vInfo['id'],
 							);
 							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);

@@ -1,11 +1,13 @@
 <?php
-
+$productLimit = 7;
 if (!empty($pst)) {
     $curId = 0;
     $infos = array();
    foreach ($pst as $p) {
 	if ($p['pvid'] <> $curId) {
 	    $curId = $p['pvid'];
+	    if ($productLimit-- < 0)
+	    	break;
 	}
 	$infos[$curId]['id'] = $p['id'];
 	$infos[$curId]['title'] = $p['ptitle'];

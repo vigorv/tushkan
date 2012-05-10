@@ -406,12 +406,17 @@ class UniverseController extends Controller {
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
 			$cmd = Yii::app()->db->createCommand()
-					->select('*')
-					->from('{{typedfiles}}')
-					->where('id = :id AND user_id = ' . $this->userInfo['id']);
+					->select('tf.id, tf.title, tf.variant_id, vq.preset_id')
+					->from('{{typedfiles}} tf')
+					->leftJoin('{{variant_qualities}} vq', 'tf.variant_quality_id=vq.id')
+					->where('tf.id = :id AND tf.user_id = ' . $this->userInfo['id']);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$info = $cmd->queryRow();
 			if (!empty($info)) {
+				if (!empty($info['preset_id']))
+					$presetCondition = ' AND vq.preset_id <= ' . (intval($info['preset_id']));
+				else
+					$presetCondition = '';
 				$prms = Yii::app()->db->createCommand()
 								->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, pr.id AS price_id, r.id AS rent_id')
 								->from('{{product_variants}} pv')
@@ -420,7 +425,7 @@ class UniverseController extends Controller {
 								->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 								->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 								->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
-								->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . $this->userPower)
+								->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . $this->userPower . $presetCondition)
 								->group('ppv.id')
 								->order('pv.id ASC, ptp.srt DESC')->queryAll();
 				$vIds = array();
@@ -446,7 +451,7 @@ class UniverseController extends Controller {
 						->select('pf.id AS pfid, vq.variant_id, pf.preset_id, pf.fname')
 						->from('{{variant_qualities}} vq')
 						->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id')
-						->where('variant_id IN (' . implode(',', $vIds) . ')')
+						->where('vq.variant_id IN (' . implode(',', $vIds) . ')' . $presetCondition)
 						->queryAll();
 
 				$subAction = 'view';

@@ -307,6 +307,25 @@ class RegisterController extends Controller {
 			$sql = 'UPDATE {{users}} SET free_limit = ' . $trial['size_limit'] . ' WHERE id = ' . $userInfo['id'];
 			Yii::app()->db->createCommand($sql)->execute();;
 
+			$already = Yii::app()->db->createCommand()
+				->select('user_id')
+				->from('{{balance}}')
+				->where('user_id = ' . $userInfo['id'])
+				->queryRow();
+
+//*
+//ПОСЛЕ ОКОНЧАНИЯ ТЕСТИРОВАНИЯ БЛОК ЗАКОММЕНТИРОВАТЬ
+			if (!$already)
+			{
+				$sum = 50;//ДЛЯ ТЕСТИРОВАНИЯ ВЫДАЕМ 50 монет
+				$now = date('Y-m-d H:i:s');
+				$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $sum));
+				$sql = 'INSERT INTO {{balance}} (user_id, balance, hash, modified) VALUES
+				(' . $userInfo['id'] . ', ' . $sum . ', "' . $hash . '", "' . $now . '")';
+				Yii::app()->db->createCommand($sql)->execute();
+				return true;
+			}
+//*/
 			return true;
         }
         return false;
@@ -810,7 +829,7 @@ class RegisterController extends Controller {
 				->where('id <> ' . $tid . ' AND active <= ' . $userPower . ' AND is_archive=0 AND is_option=0')
 				->queryAll();
 			$subscribes = Yii::app()->db->createCommand()
-				->select('us.paid_by, us.period, bo.title AS botitle, t.title AS ttitle')
+				->select('us.paid_by, us.period, bo.title AS botitle, t.title AS ttitle, t.price')
 				->from('{{user_subscribes}} us')
 				->join('{{balanceoperations}} bo', 'bo.id=us.operation_id')
 				->leftJoin('{{tariffs}} t', 't.id=us.tariff_id')

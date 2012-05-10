@@ -34,7 +34,7 @@ return array (
   'Visible for users'		=> 'Видим пользователям',
   'Visible for all'		=> 'Видим всем',
 
-	'Settings'			=> 'Настроки',
+	'Settings'			=> 'Настройки',
 	'Logout'			=> "Выйти",
 	"Payments history"		=> 'История платежей',
 	"Userspace"			=> 'Занятое пространство',

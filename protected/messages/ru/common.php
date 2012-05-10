@@ -29,6 +29,7 @@ return array (
   'Partner' 				=> 'Партнер',
   'Products' 				=> 'Продукты',
   'Tariffs' 				=> 'Тарифы',
+  'Tariff' 					=> 'Тариф',
   'Pages' 					=> 'Текстовые страницы',
   'Feedback'				=> 'Обратная связь',
   'Subject'					=> 'Тема',

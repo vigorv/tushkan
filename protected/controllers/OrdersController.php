@@ -49,8 +49,14 @@ class OrdersController extends Controller
 		{
 			$cmd = Yii::app()->db->createCommand()
 				->select('id, price')
-				->from('{{prices}}')
-				->where('id = :id');
+				->from('{{prices}}');
+			if (!empty($_POST['qvid']))
+			{
+				$cmd->where('id = :id AND variant_quality_id = :qvid');
+				$cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_INT);
+			}
+			else
+				$cmd->where('id = :id');
 			$cmd->bindParam(':id', $_POST['prid'], PDO::PARAM_INT);
 			$price = $cmd->queryRow();
 		}
@@ -82,11 +88,12 @@ class OrdersController extends Controller
 
 				//ДОБАВЛЯЕМ В ЗАКАЗ ЕДИНСТВЕННЫЙ ТОВАР
 				$sql = '
-					INSERT INTO {{order_items}} (id, variant_id, order_id, rent_id, price_id, price, cnt)
-					VALUES (null, :id, "' . $lastId . '", 0, ' . $price['id'] . ', ' . $price['price'] . ', 1)
+					INSERT INTO {{order_items}} (id, variant_id, order_id, rent_id, price_id, price, cnt, variant_quality_id)
+					VALUES (null, :id, "' . $lastId . '", 0, ' . $price['id'] . ', ' . $price['price'] . ', 1, :qvid)
 				';
 				$cmd = Yii::app()->db->createCommand($sql);
 				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_INT);
 				$cmd->query();
 
 				$info['oid'] = $lastId;//ДЛЯ ОТВЕТА О СОЗДАНИИ ЗАКАЗА
@@ -145,11 +152,12 @@ class OrdersController extends Controller
 
 				//ДОБАВЛЯЕМ В ЗАКАЗ ЕДИНСТВЕННЫЙ ТОВАР
 				$sql = '
-					INSERT INTO {{order_items}} (id, variant_id, order_id, price_id, rent_id, price, cnt)
-					VALUES (null, :id, "' . $lastId . '", 0, ' . $price['id'] . ', ' . $price['price'] . ', 1)
+					INSERT INTO {{order_items}} (id, variant_id, order_id, price_id, rent_id, price, cnt, variant_quality_id)
+					VALUES (null, :id, "' . $lastId . '", 0, ' . $price['id'] . ', ' . $price['price'] . ', 1, :qvid)
 				';
 				$cmd = Yii::app()->db->createCommand($sql);
 				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_INT);
 				$cmd->query();
 
 				$info['oid'] = $lastId;//ДЛЯ ОТВЕТА О СОЗДАНИИ ЗАКАЗА

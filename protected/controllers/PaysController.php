@@ -229,7 +229,7 @@ class PaysController extends Controller
 					);
 					$payInfo['hash'] = $hash;
 					$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);
-					$res = $cmd->query();
+					$res = $cmd->execute();
 				}
 
 				if (!empty($res))
@@ -240,8 +240,12 @@ class PaysController extends Controller
 					//ДОБАВИТЬ НАЗВАНИЕ ПЛАТЕЖА
 					if (!empty($id))
 					{
-						$this->initPaysystem($id);
-						$resultMsg = $this->Paysystem->start($payInfo);
+						if ($this->initPaysystem($id))
+						{
+							$resultMsg = $this->Paysystem->start($payInfo);
+						}
+						else
+							$resultMsg = 'error';
 					}
 					else
 					{
@@ -281,9 +285,10 @@ class PaysController extends Controller
 			if (!empty($this->balancePaymentInfo))
 			{
 				$result = $this->balancePayment($this->balancePaymentInfo);
+//var_dump($result);
+//exit;
 			}
 		}
-
 		if (!empty($result))
 		{
 			//МОЖЕТ БЫТЬ ВОЗВРАЩЕН ОТВЕТ ПО ОДНОМУ ПЛАТЕЖУ ИЛИ ПО СПИСКУ ПЛАТЕЖЕЙ
@@ -320,7 +325,8 @@ class PaysController extends Controller
 								->select('*')
 								->from('{{balanceoperations}}')
 								->where('id=' . $payInfo['operation_id'])->queryRow();
-							$this->$operationInfo['method']($payInfo);
+							if (!empty($operationInfo['method']))
+								$this->$operationInfo['method']($payInfo);
 						}
 					}
 				}
@@ -462,6 +468,8 @@ class PaysController extends Controller
 
 	public function orderPayment($payInfo)
 	{
+//var_dump($payInfo);
+//exit;
 		if (empty($payInfo['order_id']))
 			return;
 		$Order = new COrder();
@@ -471,7 +479,7 @@ class PaysController extends Controller
 
 		//ПРОПИСЫВАЕМ ИНФУ О ВСЕХ ТОВАРАХ ЗАКАЗА КАК ПРИОБРЕТЕННЫХ(АРЕНДОВАННЫХ)
 		$cmd = Yii::app()->db->createCommand()
-			->select('o.id, p.title, oi.variant_id, oi.price_id, oi.rent_id')
+			->select('o.id, p.title, oi.variant_id, oi.price_id, oi.rent_id, oi.variant_quality_id')
 			->from('{{orders}} o')
 			->join('{{order_items}} oi', 'oi.order_id=o.id')
 			->leftJoin('{{product_variants}} pv', 'oi.variant_id=pv.id')
@@ -493,16 +501,35 @@ class PaysController extends Controller
 					{
 						$period = $priceInfo['period'];
 					}
-					$sql = '
-						INSERT INTO {{actual_rents}}
-							(id, variant_id, start, period, user_id)
-						VALUES
-							(null, ' . $i['variant_id'] . ', 0, "' . $period . '", ' . Yii::app()->user->getId() . ')
-					';
-					Yii::app()->db->createCommand($sql)->query();
+
+					$existInfo = Yii::app()->db->createCommand()
+						->select('*')
+						->from('{{actual_rents}}')
+						->where('variant_id = ' . $i['variant_id'] . ' AND user_id = ' . Yii::app()->user->getId())
+						->queryRow();
+					if (empty($existInfo))
+					{
+						$sql = '
+							INSERT INTO {{actual_rents}}
+								(id, variant_id, start, period, user_id, variant_quality_id)
+							VALUES
+								(null, ' . $i['variant_id'] . ', 0, "' . $period . '", ' . Yii::app()->user->getId() . ', ' . $i['variant_quality_id'] . ')
+						';
+						Yii::app()->db->createCommand($sql)->execute();
+					}
+					else
+					{
+						if ($existInfo['variant_quality_id'] < $i['variant_quality_id'])
+						{
+							$sql = 'UPDATE {{actual_rents}} SET start = "0000-00-00 00:00:00", variant_quality_id = ' . $i['variant_quality_id'] . ' WHERE id = ' . $existInfo['id'];
+							Yii::app()->db->createCommand($sql)->execute();
+						}
+					}
 				}
 
 				//СОХРАНЯЕМ ВСЕ ПОЗИЦИИ В ПП
+
+				//ПРОВЕРЯЕМ НАЛИЧИЕ ВАРИАНТА В ПП
 				$existInfo = Yii::app()->db->createCommand()
 					->select('*')
 					->from('{{typedfiles}}')
@@ -512,11 +539,20 @@ class PaysController extends Controller
 				{
 					$sql = '
 						INSERT INTO {{typedfiles}}
-							(id, variant_id, user_id, title, collection_id)
+							(id, variant_id, user_id, title, collection_id, variant_quality_id)
 						VALUES
-							(null, ' . $i['variant_id'] . ', ' . Yii::app()->user->getId() . ', "' . $i["title"] . '", 0)
+							(null, ' . $i['variant_id'] . ', ' . Yii::app()->user->getId() . ', "' . $i["title"] . '", 0, ' . $i['variant_quality_id'] . ')
 					';
-					Yii::app()->db->createCommand($sql)->query();
+					Yii::app()->db->createCommand($sql)->execute();
+				}
+				else
+				{
+					//ЕСЛИ В ПП КАЧЕСТВО ВАРИАНТА ХУЖЕ НОВОГО
+					if ($existInfo['variant_quality_id'] < $i['variant_quality_id'])
+					{
+						$sql = 'UPDATE {{typedfiles}} SET variant_quality_id = ' . $i['variant_quality_id'] . ' WHERE id = ' . $existInfo['id'];
+						Yii::app()->db->createCommand($sql)->execute();
+					}
 				}
 			}
 		}

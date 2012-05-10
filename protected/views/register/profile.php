@@ -66,7 +66,11 @@ if (!empty($subscribes))
 			else
 				$paidByStr = 'неоплачен с';
 
-			echo '<li>' . $s['ttitle'] . ' (' . $s['botitle'] . ') ' . $paidByStr . ' ' . $s['paid_by'] . '</li>';
+			if ($s['price'] > 0)
+				$paidByStr = ' (' . $s['botitle'] . ') ' . $paidByStr . ' ' . $s['paid_by'];
+			else
+				$paidByStr = '';
+			echo '<li>' . Yii::t('common', 'Tariff') . ' ' . $s['ttitle'] . $paidByStr . '</li>';
 		}
 	}
 	echo '</ul>';

@@ -39,7 +39,9 @@
 	$( "#dopayid" )
 				.button()
 				.click(function() {
-					document.payOrderForm.submit();
+//					document.payOrderForm.submit();
+					oid = document.payOrderForm.order_id.value;
+					$("#content").load('/pays/do/3', {order_id: "<?php echo $info[0]['oid']; ?>", summa: "<?php echo $summa; ?>"});
 					return false;
 	});
 	$( "#dodiscardid" )

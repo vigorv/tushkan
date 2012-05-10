@@ -47,29 +47,33 @@ if (!empty($info))
 	$fk = 0;
 	$actions = array();
 	$actions[] = '<button class="btn" onclick="return doRemove(' . $info['id'] . ')">удалить из пространства</button>';
+/*
+//СТАРЫЙ ВАРИАНТ
 	$onlineHref = '';
 	if (!empty($params['onlineurl']))
 	{
 		$onlineLinks[$fk] = $params['onlineurl'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online\'); return false;">смотреть онлайн</button>';
+		//$actions[] = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online\'); return false;">смотреть онлайн</button>';
 		$onlineHref = '<p id="autostart" rel="#video' . $fk . '"></p>';
 	}
 	else
 		$onlineLinks[$fk] = '';
-	unset($params['onlineurl']);
 
 	if (!empty($params['url']) && !$info['online_only'])
 	{
 		$links[$fk] = $params['url'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
-		$actions[] = '<button class="btn" onclick="return doRedirect(\'' . $links[$fk] . '\');">скачать</button>';
+		//$actions[] = '<button class="btn" onclick="return doRedirect(\'' . $links[$fk] . '\');">скачать</button>';
 	}
 	else
 		$links[$fk] = '';
+//*/
+
 	unset($params['url']);
 	unset($params['width']);
 	unset($params['height']);
+	unset($params['onlineurl']);
 
 	$action = array();
 	$qs = array();
@@ -89,7 +93,7 @@ if (!empty($info))
 	$currentQuality = '';
 /*
 	echo'<pre>';
-	print_r($qs);
+	print_r($qualities);
 	echo'</pre>';
 exit;
 //*/
@@ -106,7 +110,10 @@ exit;
 
 		foreach ($val as $v)
 		{
-$v[0] = 'http://92.63.192.12:83/l/little_caesar/270/little_caesar.mp4';//ОТЛАДКА
+//$v[0] = 'http://92.63.192.12:83/l/little_caesar/270/little_caesar.mp4';//ОТЛАДКА
+$v[0] = 'http://92.63.192.12:83' . $v[0];
+			if (empty($fid)) $fid = $v[1];
+
 			$fids[] = $v[1];
 			$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн файл ' . $num . '</button>';
 			$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать файл ' . $num . '</button>';

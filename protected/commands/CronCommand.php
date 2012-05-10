@@ -235,8 +235,24 @@ echo "\r\n";
 					Yii::app()->db->createCommand($sql)->execute();
 
 					//УДАЛЯЕМ ИЗ ЛИЧНОГО ПРОСТРАНСТВА
-					$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $l['variant_id'] . ' AND user_id = ' . $l['user_id'];
-					Yii::app()->db->createCommand($sql)->execute();
+					if (!empty($l['variant_id']))
+					{
+						$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $l['variant_id'] . ' AND user_id = ' . $l['user_id'];
+						Yii::app()->db->createCommand($sql)->execute();
+					}
+					if (!empty($l['variant_quality_id']))
+					{
+						$vid = Yii::app()->db->createCommand()
+							->select('variant_id')
+							->from('{{variant_qualities}}')
+							->where('quality_id = ' . $l['variant_quality_id'])
+							->queryRow();
+						if (!empty($vid))
+						{
+							$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $vid['variant_id'] . ' AND user_id = ' . $l['user_id'];
+							Yii::app()->db->createCommand($sql)->execute();
+						}
+					}
 				}
 			}
 		}

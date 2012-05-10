@@ -129,9 +129,11 @@ class ProductsController extends Controller
 			$qualities = array();
 			if (!empty($vIds))
 				$qualities = Yii::app()->db->createCommand()
-					->select('id, variant_id, preset_id')
-					->from('{{variant_qualities}}')
-					->where('variant_id IN (' . implode(',', $vIds) . ')')
+					->select('vq.id, vq.variant_id, vq.preset_id, pr.id AS price_id, pr.price AS pprice, r.price AS rprice, r.id AS rent_id')
+					->from('{{variant_qualities}} vq')
+			        ->leftJoin('{{prices}} pr', 'pr.variant_quality_id=vq.id')
+			        ->leftJoin('{{rents}} r', 'r.variant_quality_id=vq.id')
+					->where('vq.variant_id IN (' . implode(',', $vIds) . ')')
 					->queryAll();
 
 			if (!empty($userId))
@@ -142,14 +144,16 @@ class ProductsController extends Controller
 					->where('user_id = ' . $userId)
 					->order('start DESC')->queryAll();
 				$typedFiles = Yii::app()->db->createCommand()
-					->select('*')
-					->from('{{typedfiles}}')
-					->where('variant_id > 0 AND user_id = ' . $userId)
+					->select('tf.id, tf.variant_id, tf.user_id, tf.title, tf.variant_quality_id, vq.preset_id')
+					->from('{{typedfiles}} tf')
+			        ->join('{{variant_qualities}} vq', 'vq.id=tf.variant_quality_id')
+					->where('tf.variant_id > 0 AND tf.user_id = ' . $userId)
 					->queryAll();
 				$orders = Yii::app()->db->createCommand()
-					->select('o.id AS oid, o.state, oi.id AS iid, oi.variant_id, oi.price_id, oi.rent_id, oi.price')
+					->select('o.id AS oid, o.state, oi.id AS iid, oi.variant_id, oi.price_id, oi.rent_id, oi.price, oi.variant_quality_id, vq.preset_id')
 					->from('{{orders}} o')
 			        ->join('{{order_items}} oi', 'o.id=oi.order_id')
+			        ->join('{{variant_qualities}} vq', 'vq.id=oi.variant_quality_id')
 					->where('o.user_id = ' . $userId)
 					->order('o.state DESC, o.created DESC')->queryAll();
 			}

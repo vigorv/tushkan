@@ -68,7 +68,7 @@
 
 
 			<script langauge="javascript">
-				$.address.change(function(event) {  
+				$.address.change(function(event) {
 					console.log(event.value);
 					$('#content').load(event.value, function(){
 						$('#content a').click(function(){
@@ -76,22 +76,22 @@
 							$.address.value(lnk);
 							return false;
 						});
-					});  
-					return false;
-				});  
-					
-				$('#m_panel').load('/universe/panel');
-				
-				
-				$('#m_uploads a').click(function() {  
-					lnk= $(this).attr('href');
-					if (lnk=="#") return false;
-					$.address.value(lnk);  
+					});
 					return false;
 				});
-				
-				
-				
+
+				$('#m_panel').load('/universe/panel');
+
+
+				$('#m_uploads a').click(function() {
+					lnk= $(this).attr('href');
+					if (lnk=="#") return false;
+					$.address.value(lnk);
+					return false;
+				});
+
+
+
 				$('#m_goods').load('/universe/goodsTop',function(){
 					$('#m_goods  a').click(function() {
 						$.address.value($(this).attr('href'));
@@ -99,14 +99,16 @@
 					});
 				});
 				$('#m_devices').load('/universe/devices');
-				
-				window.onbeforeunload = function (event) { return "Внимание! Ваши закачки прервутся после этого действия"}
-				
-				//$(window).unload(function(){ 
+
+				window.onbeforeunload = function (event) {
+					return "Внимание! Ваши закачки прервутся после этого действия";
+				}
+
+				//$(window).unload(function(){
 //					if (window.confirm("Do you want to leave this page") == true){
 //						return true;
 //					} else return false;
-//					
+//
 //				});
 			</script>
 

@@ -234,21 +234,22 @@ class OrdersController extends Controller
 				if (!empty($rPriceInfo))
 				{
 					$sql = '
-						INSERT INTO {{order_items}} (id, variant_id, order_id, price_id, rent_id, price, cnt)
-						VALUES (null, :id, "' . $info['oid'] . '", 0, ' . $rPriceInfo['id'] . ', ' . $rPriceInfo['price'] . ', 1)
+						INSERT INTO {{order_items}} (id, variant_id, order_id, price_id, rent_id, price, cnt, variant_quality_id)
+						VALUES (null, :id, "' . $info['oid'] . '", 0, ' . $rPriceInfo['id'] . ', ' . $rPriceInfo['price'] . ', 1, :qvid)
 					';
 				}
 				if (!empty($priceInfo))
 				{
 					$sql = '
-						INSERT INTO {{order_items}} (id, variant_id, order_id, price_id, rent_id, price, cnt)
-						VALUES (null, :id, "' . $info['oid'] . '", ' . $priceInfo['id'] . ', 0, ' . $priceInfo['price'] . ', 1)
+						INSERT INTO {{order_items}} (id, variant_id, order_id, price_id, rent_id, price, cnt, variant_quality_id)
+						VALUES (null, :id, "' . $info['oid'] . '", ' . $priceInfo['id'] . ', 0, ' . $priceInfo['price'] . ', 1, :qvid)
 					';
 				}
 				if (!empty($sql))
 				{
 					$cmd = Yii::app()->db->createCommand($sql);
 					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+					$cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_INT);
 					$cmd->query();
 					$sql = 'UPDATE {{orders}} SET icnt=icnt+1 WHERE id=' . $info['oid'];
 					Yii::app()->db->createCommand($sql)->query();

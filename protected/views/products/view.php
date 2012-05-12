@@ -208,8 +208,8 @@ function getViewActions($variant, $orders, $actualRents, $qualities, $typedFiles
 				$actions[] = $actionRent;
 			if (($preRented)&&(!empty($actionBuy)))
 				$actions[] = $actionBuy;
-			if (!empty($actionTocart))
-				$actions[] = $actionTocart;
+//			if (!empty($actionTocart))
+//				$actions[] = $actionTocart;
 		}
 		else
 		{
@@ -217,8 +217,8 @@ function getViewActions($variant, $orders, $actualRents, $qualities, $typedFiles
 				$actions[] = $actionBuy;
 			if (!empty($actionRent))
 				$actions[] = $actionRent;
-			if (!empty($actionTocart))
-				$actions[] = $actionTocart;
+//			if (!empty($actionTocart))
+//				$actions[] = $actionTocart;
 			if (!empty($actionTocloud))
 				$actions[] = $actionTocloud;
 		}

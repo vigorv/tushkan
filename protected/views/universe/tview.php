@@ -111,7 +111,8 @@ exit;
 		foreach ($val as $v)
 		{
 //$v[0] = 'http://92.63.192.12:83/l/little_caesar/270/little_caesar.mp4';//ОТЛАДКА
-$v[0] = 'http://92.63.192.12:83' . $v[0];
+//$v[0] = 'http://92.63.192.12:83' . $v[0];
+$v[0] = 'http://212.20.62.34:82' . $v[0];
 			if (empty($fid)) $fid = $v[1];
 
 			$fids[] = $v[1];

@@ -67,10 +67,11 @@
 ?>
 			$.post("/pays/payment/" + sid, { order_id: order_id, user_id: "<?php echo Yii::app()->user->getId();?>", summa: summa, operation_id: "<?php echo $oInfo['id']; ?>" }, function(data){
 				if (data == '_PS_PAYED_')
-					$("#content").load('/pays/ok/' + sid);
+					$("#content").load('/pays/ok/' + sid, {order_id: order_id});
 				else
-					$("#content").load('/pays/fail/' + sid);
+					$("#content").load('/pays/fail/' + sid, {order_id: order_id});
 			});
+			updateActualBalance();
 		}
 		else
 		{
@@ -80,14 +81,14 @@
 	}
 </script>
 <div>
-	
+
 <?php echo CHtml::beginForm('/pays/payment/', "post", array('name' => 'startPayForm', 'onsubmit' => 'return pay();' ,'class'=>'form-horizontal')); ?>
     <fieldset>
         <?php echo CHtml::label('Выбрать платежную систему', 'paysystem_id'); ?>
         <?php
         	echo CHtml::dropdownlist('paysystem_id', 0, $select);
         ?>
-    
+
 <?php
 	if (!empty($orderInfo[0]['id']))
 	{
@@ -141,9 +142,9 @@
 					if (confirm('<?php echo Yii::t('common', 'Are you sure?');?>'))
 					{
 						oid = <?php echo $orderInfo[0]['id'];?>;
-						$.post('/orders/discard/' + oid, function(){
-							location.href = '/orders/view/' + oid;
-						});
+						//$.post('/orders/discard/' + oid, function(){
+							$('#content').load('/orders/discard/' + oid);
+						//});
 					}
 					return false;
 	});

@@ -2,10 +2,9 @@
 $space_busy = (int) $userInfo['size_limit'] - (int) $userInfo['free_limit'];
 if (empty($userInfo['free_limit'])) $userInfo['free_limit'] = 1;
 $space_percent = $space_busy * 100 / (int) $userInfo['free_limit'];
-isset($userInfo['balance']) ? $balance = $userInfo['balance'] : $balance=0;
+
+isset($userInfo['balance']) ? $balance = sprintf("%01.2f", $userInfo['balance']) : $balance=0;
 $balance.=' руб';
-
-
 ?>
 <ul>
 	<li>
@@ -23,12 +22,25 @@ $balance.=' руб';
 
     <li  id="balance"  class="dropdown">
 		<a class="dropdown-toggle btn btn-small" data-toggle="dropdown" href="#" >
-			<i class="icon-plane"></i> <?= Yii::t('users', 'Account balance'); ?>:  <?= $balance?></a>
+			<i class="icon-plane"></i> <span id="balance_id"><?= Yii::t('users', 'Account balance'); ?>: <?= $balance?></span></a>
 		<ul class="dropdown-menu">
 			<li><a class="l_ajax" href="/pays/do/1" ><?= Yii::t('users', 'Fill up balance'); ?></a></li>
 			<li><a  class="l_ajax"href="/pays" ><?= Yii::t('users', 'Payments history'); ?></a></li>
 			<li><a  class="l_ajax"href="/orders" ><?= Yii::t('orders', 'Orders'); ?></a></li>
 		</ul></li>
+<script type="text/javascript">
+<!--
+	function updateActualBalance()
+	{
+		$.post('/pays/actualbalance', function(data){
+			if (data)
+			{
+				$("#balance_id").html(data);
+			}
+		})
+	}
+-->
+</script>
 	<li>
 		<a class="btn btn-small" href="#"  onClick="$('#upload_container').slideToggle();return false;">
 			<i class="icon-upload"></i><?=Yii::t('users','Uploads');?>

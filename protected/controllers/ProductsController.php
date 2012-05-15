@@ -146,7 +146,7 @@ class ProductsController extends Controller
 				$typedFiles = Yii::app()->db->createCommand()
 					->select('tf.id, tf.variant_id, tf.user_id, tf.title, tf.variant_quality_id, vq.preset_id')
 					->from('{{typedfiles}} tf')
-			        ->join('{{variant_qualities}} vq', 'vq.id=tf.variant_quality_id')
+			        ->leftJoin('{{variant_qualities}} vq', 'vq.id=tf.variant_quality_id')
 					->where('tf.variant_id > 0 AND tf.user_id = ' . $userId)
 					->queryAll();
 				$orders = Yii::app()->db->createCommand()

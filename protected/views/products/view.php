@@ -11,6 +11,13 @@ function getViewActions($variant, $orders, $actualRents, $qualities, $typedFiles
 	{
 		foreach ($typedFiles as $f)
 		{
+/*
+echo '<pre>';
+print_r($f);
+print_r($qualityVariantId);
+print_r($qualityPresetId);
+echo '</pre>';
+//*/
 			if ($f['variant_id'] == $variant['id'])
 			{
 				if (empty($qualityVariantId))
@@ -25,10 +32,13 @@ function getViewActions($variant, $orders, $actualRents, $qualities, $typedFiles
 						$inCloud = true;
 						$cloudId = $f['id'];
 					}
-					if ($f['preset_id'] >= $qualityPresetId)
+					else
 					{
-						$inCloud = true;
-						$cloudId = $f['id'];
+						if (!empty($f['preset_id']) && ($f['preset_id'] >= $qualityPresetId))
+						{
+							$inCloud = true;
+							$cloudId = $f['id'];
+						}
 					}
 				}
 			}
@@ -359,6 +369,7 @@ exit;
 //БЕРЕМ ЦЕНУ ДЛЯ КАЧЕСТВА
 								$qs = array(
 									'id'		=> $q['variant_id'],
+									'variant_id'=> $q['variant_id'],
 									'title'		=> $p['title'],
 									'pprice'	=> $q['pprice'],
 									'price_id'	=> $q['price_id'],

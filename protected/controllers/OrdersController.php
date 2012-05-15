@@ -287,17 +287,18 @@ class OrdersController extends Controller
 	 */
 	public function actionDiscard($id = 0)
 	{
-		$result = '';
+		$result = ''; $contentUrl = '/products';
 		$cmd = Yii::app()->db->createCommand()
-			->select('o.id AS oid, oi.id AS iid')
+			->select('o.id AS oid, oi.id AS iid, pv.product_id')
 			->from('{{orders}} o')
 			->join('{{order_items}} oi', 'oi.order_id=o.id')
+			->join('{{product_variants}} pv', 'pv.id=oi.variant_id')
 			->where('o.id = :id AND o.state = 0 AND o.user_id = ' . Yii::app()->user->getId());
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$orderInfo = $cmd->queryAll();
 		if (!empty($orderInfo))
 		{
-			$result = 'ok';
+			$result = 'ok'; $contentUrl = '/products/view/' . $orderInfo[0]['product_id'];
 			foreach ($orderInfo as $o)
 			{
 				$oid = $o['oid'];
@@ -311,6 +312,6 @@ class OrdersController extends Controller
 			}
 		}
 
-		$this->render('/orders/discard', array('result' => $result));
+		$this->render('/orders/discard', array('result' => $result, 'contentUrl' => $contentUrl, ));
 	}
 }

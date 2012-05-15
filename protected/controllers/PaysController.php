@@ -138,23 +138,26 @@ class PaysController extends Controller
 	 */
 	public function initPaysystem($psId)
 	{
-		$psInfo = Yii::app()->db->createCommand()
-			->select('*')
-			->from('{{paysystems}}')
-			->where('active > 0 AND id = ' . intval($psId))
-			->order('srt DESC')->queryRow();
+		if (!empty($psId))
+		{
+			$psInfo = Yii::app()->db->createCommand()
+				->select('*')
+				->from('{{paysystems}}')
+				->where('active > 0 AND id = ' . intval($psId))
+				->order('srt DESC')->queryRow();
+		}
 		if (!empty($psInfo))
 		{
 			$psName = $psInfo['class'];
-			if (!empty($psName))
-			{
-				Yii::import('ext.paysystems.' . $psName);
-				if (class_exists($psName))
-				{
-					$this->Paysystem = new $psName;
-					return true;
-				}
-			}
+		}
+		else
+			$psName = 'DiamondPay';
+
+		Yii::import('ext.paysystems.' . $psName);
+		if (class_exists($psName))
+		{
+			$this->Paysystem = new $psName;
+			return true;
 		}
 		return false;
 	}
@@ -203,6 +206,7 @@ class PaysController extends Controller
 				$created = date('Y-m-d H:i:s');
 				$payInfo = $_POST;
 				$payInfo['created'] = $created;
+				$payInfo['user_id'] = Yii::app()->user->getId();
 				$sql = '
 					INSERT INTO {{payments}}
 						(user_id, paysystem_id, created, modified, operation_id, summa, state, hash, info, order_id)
@@ -338,6 +342,7 @@ class PaysController extends Controller
 
 	/**
 	 * Обработчик успешного платежа
+	 * $_POST - может содержать данные от платежной системы
 	 *
 	 * @param integer $id - идентификатор платежной системы
 	 */
@@ -346,7 +351,7 @@ class PaysController extends Controller
 		//$this->layout = '/layouts/index';
 		$resultMsg = Yii::t('pays', 'Payment processed successfully');
 
-		if (!empty($id))
+//		if (!empty($id))
 		{
 			$this->initPaysystem($id);
  			if (!empty($_POST))
@@ -356,6 +361,25 @@ class PaysController extends Controller
 			$msg = $this->Paysystem->ok($requestInfo);
 			if (!empty($msg))
 				$resultMsg = $msg;
+			$orderId = $this->Paysystem->getOrderId($requestInfo);
+			if (!empty($orderId))
+			{
+				//ВЫБИРАЕМ ИЗ ЗАКАЗА КУПЛЕННЫЙ ПРОДУКТ
+				$cmd = Yii::app()->db->createCommand()
+					->select('pv.product_id')
+					->from('{{orders}} o')
+					->join('{{order_items}} oi', 'o.id = oi.order_id')
+					->join('{{product_variants}} pv', 'pv.id = oi.variant_id')
+					->where('o.id = :oid');
+				$cmd->bindParam(':oid', $orderId, PDO::PARAM_INT);
+				$productInfo = $cmd->queryRow();
+				if (!empty($productInfo))
+				{
+					$contentUrl = '/products/view/' . $productInfo['product_id'];
+					$this->render('/pays/ok', array('contentUrl' => $contentUrl));
+					return;
+				}
+			}
 		}
 		$this->out($resultMsg);
 	}
@@ -379,6 +403,26 @@ class PaysController extends Controller
 			$msg = $this->Paysystem->fail($requestInfo);
 			if (!empty($msg))
 				$resultMsg = $msg;
+			$orderId = $this->Paysystem->getOrderId($requestInfo);
+			if (!empty($orderId))
+			{
+				//ВЫБИРАЕМ ИЗ ЗАКАЗА КУПЛЕННЫЙ ПРОДУКТ
+				$cmd = Yii::app()->db->createCommand()
+					->select('pv.product_id')
+					->from('{{orders}} o')
+					->join('{{order_items}} oi', 'o.id = oi.order_id')
+					->join('{{product_variants}} pv', 'pv.id = oi.variant_id')
+					->where('o.id = :oid');
+				$cmd->bindParam(':oid', $orderId, PDO::PARAM_INT);
+				$productInfo = $cmd->queryRow();
+				if (!empty($productInfo))
+				{
+					$contentUrl = '/products/view/' . $productInfo['product_id'];
+					$this->render('/pays/fail', array('contentUrl' => $contentUrl));
+					return;
+				}
+			}
+			return;
 		}
 		$this->out($resultMsg);
 	}
@@ -556,5 +600,15 @@ class PaysController extends Controller
 				}
 			}
 		}
+	}
+
+	public function actionActualBalance()
+	{
+		$balanceInfo = Yii::app()->db->createCommand()
+			->select('balance, hash')
+			->from('{{balance}}')
+			->where('user_id = ' . Yii::app()->user->getId())
+			->queryRow();
+		$this->render('/pays/actualbalance', array('balanceInfo' => $balanceInfo));
 	}
 }

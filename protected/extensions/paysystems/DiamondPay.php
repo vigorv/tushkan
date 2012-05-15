@@ -15,7 +15,7 @@ class DiamondPay
 	public function start($payInfo)
 	{
 		$ch = curl_init();
-		$url = 'http://tushkan/pays/process/1';
+		$url = '/pays/process/1';
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_VERBOSE, 1);
 

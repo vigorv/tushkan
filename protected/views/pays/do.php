@@ -70,8 +70,8 @@
 					$("#content").load('/pays/ok/' + sid, {order_id: order_id});
 				else
 					$("#content").load('/pays/fail/' + sid, {order_id: order_id});
+				updateActualBalance();
 			});
-			updateActualBalance();
 		}
 		else
 		{

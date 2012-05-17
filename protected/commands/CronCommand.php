@@ -153,19 +153,22 @@ echo "\r\n";
 						Yii::app()->db->createCommand($sql)->execute();
 					}
 
-					//СПИСЫВАЕМ СУММУ ПО ТЕКУЩЕМУ ТАРИФУ
-					$hash = PaysController::createPaymentHash(array('user_id' => $s['user_id'], 'date' => $now, 'summa' => $s['balance'] - $periodCost));
-					$sql = 'UPDATE {{balance}} SET balance = balance - ' . $periodCost . ', hash = "' . $hash . '" WHERE user_id = ' . $s['user_id'];
-					Yii::app()->db->createCommand($sql)->execute();
-					//ФИКСИРУЕМ СПИСАНИЕ ПО ТЕКУЩЕМУ ТАРИФУ
-					$hash = PaysController::createPaymentHash(array('user_id' => $s['user_id'], 'date' => $now, 'summa' => $periodCost));
-					$sql = '
-						INSERT INTO {{debits}}
-							(id, user_id, created, operation_id, order_id, summa, hash)
-						VALUES
-							(null, ' . $s['user_id'] . ', "' . $now . '", ' . $s['operation_id'] . ', 0, ' . $periodCost . ', "' . $hash . '")
-					';
-					Yii::app()->db->createCommand($sql)->execute();
+					if ($periodCost > 0)
+					{
+						//СПИСЫВАЕМ СУММУ ПО ТЕКУЩЕМУ ТАРИФУ
+						$hash = PaysController::createPaymentHash(array('user_id' => $s['user_id'], 'date' => $now, 'summa' => $s['balance'] - $periodCost));
+						$sql = 'UPDATE {{balance}} SET balance = balance - ' . $periodCost . ', hash = "' . $hash . '" WHERE user_id = ' . $s['user_id'];
+						Yii::app()->db->createCommand($sql)->execute();
+						//ФИКСИРУЕМ СПИСАНИЕ ПО ТЕКУЩЕМУ ТАРИФУ
+						$hash = PaysController::createPaymentHash(array('user_id' => $s['user_id'], 'date' => $now, 'summa' => $periodCost));
+						$sql = '
+							INSERT INTO {{debits}}
+								(id, user_id, created, operation_id, order_id, summa, hash)
+							VALUES
+								(null, ' . $s['user_id'] . ', "' . $now . '", ' . $s['operation_id'] . ', 0, ' . $periodCost . ', "' . $hash . '")
+						';
+						Yii::app()->db->createCommand($sql)->execute();
+					}
 
 					//ОБНОВЛЯЕМ ИНФ О ПЕРИОДИЧЕСКОЙ УСЛУГЕ
 					$eofSql = '';

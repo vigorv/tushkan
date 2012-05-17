@@ -500,13 +500,12 @@ class RegisterController extends Controller {
 							->queryRow();
 						if (!empty($subsInfo) &&
 							(
-								((strtotime($subsInfo["paid_by"]) - time()) < 3600*24)
+								(strtotime($subsInfo["paid_by"]) > time())
 								||
 								($curTariffRelation['price'] == 0)
 							)
 						) {
-							//ЕСЛИ ДО КОНЦА ОПЛАТЫ ТЕКУЩЕГО ПЕРИОДА МЕНЬЩЕ СУТОК
-							//ИЛИ ОПЛАТА ПРОСРОЧЕНА
+							//ЕСЛИ СРОК ОПЛАТЫ ПО ТЕКУЩЕМУ ТАРИФУ НЕ ИСТЕК
 							//ИЛИ ТАРИФ БЕСПЛАТНЫЙ - НЕМЕДЛЕННОЕ ПЕРЕКЛЮЧЕНИЕ ВОЗМОЖНО
 							//ВЫЧИСЛЯЕМ РАЗНИЦУ СТОИМОСТИ СТАРОГО И НОВОГО ТАРИФА ЗА СУТКИ
 							$oldTariff = Yii::app()->db->createCommand()
@@ -515,37 +514,52 @@ class RegisterController extends Controller {
 								->where('id = ' . $curTariffRelation['id'])
 								->queryRow();
 
+							//ВЫЧИСЛЯЕМ СТОИМОСТЬ СУТОК НА СТАРОМ И НОВОМ ТАРИФЕ
 							$oldCost = $oldTariff['price'] / Utils::parsePeriod($oldTariff['period']) * 3600 * 24;
 							$newCost = $tariff['price'] / Utils::parsePeriod($tariff['period']) * 3600 * 24;
+
+							//ВЫЧИСЛЯЕМ СКОЛЬКО ДНЕЙ НОВОГО ТАРИФА МОЖНО ОПЛАТИТЬ СУММОЙ, КОТОРОЙ АВАНСОМ ОПЛАЧЕН ТЕКУЩИЙ ТАРИФ
+							$paidDays = intval((strtotime($subsInfo["paid_by"]) - time()) / 3600 / 24);
+							$paidDaysSum = $paidDays * $oldCost;//СУММА ПЕРЕПЛАТЫ (ПОЛНЫХ ДНЕЙ)
+							$paidByCorrect = intval($paidDaysSum / $newCost) - $paidDays;
+
 							$canSwitch = true;
 
 							if ($newCost > $oldCost)
 							{
 								//СПИСЫВАЕМ РАЗНИЦУ СТОИМОСТИ ТАРИФОВ ЗА ТЕКУЩИЕ СУТКИ
-								$balanceInfo = Yii::app()->db->createCommand()
+								$cost = round($newCost - $oldCost, 2);
+								$debitExists = Yii::app()->db->createCommand()
 									->select('*')
-									->from('{{balance}}')
-									->where('user_id = ' . $this->userInfo['id'])
+									->from('{{debits}}')
+									->where('user_id = ' . $this->userInfo['id'] . ' AND operation_id = ' . $subsInfo['operation_id'] . ' AND created > "' . date("Y-m-d H:i:s", time() - 3600*24). '" AND round(summa, 2) = ' . $cost)
 									->queryRow();
-								$cost = $newCost - $oldCost;
-								if ($balanceInfo['balance'] > $cost)
+								if (!$debitExists)
 								{
-									$now = date('Y-m-d H:i:s');
-									$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $balanceInfo['balance'] - $cost));
-									$sql = 'UPDATE {{balance}} SET balance = balance - ' . $cost . ', hash = "' . $hash . '" WHERE user_id = ' . $this->userInfo['id'];
-									Yii::app()->db->createCommand($sql)->execute();
-									//ФИКСИРУЕМ СПИСАНИЕ ПО РАЗНОСТИ СТОИМОСТИ
-									$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $cost));
-									$sql = '
-										INSERT INTO {{debits}}
-											(id, user_id, created, operation_id, order_id, summa, hash)
-										VALUES
-											(null, ' . $this->userInfo['id'] . ', "' . $now . '", ' . $subsInfo['operation_id'] . ', 0, ' . $cost . ', "' . $hash . '")
-									';
-									Yii::app()->db->createCommand($sql)->execute();
+									$balanceInfo = Yii::app()->db->createCommand()
+										->select('*')
+										->from('{{balance}}')
+										->where('user_id = ' . $this->userInfo['id'])
+										->queryRow();
+									if ($balanceInfo['balance'] > $cost)
+									{
+										$now = date('Y-m-d H:i:s');
+										$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $balanceInfo['balance'] - $cost));
+										$sql = 'UPDATE {{balance}} SET balance = balance - ' . $cost . ', hash = "' . $hash . '" WHERE user_id = ' . $this->userInfo['id'];
+										Yii::app()->db->createCommand($sql)->execute();
+										//ФИКСИРУЕМ СПИСАНИЕ ПО РАЗНОСТИ СТОИМОСТИ
+										$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $cost));
+										$sql = '
+											INSERT INTO {{debits}}
+												(id, user_id, created, operation_id, order_id, summa, hash)
+											VALUES
+												(null, ' . $this->userInfo['id'] . ', "' . $now . '", ' . $subsInfo['operation_id'] . ', 0, ' . $cost . ', "' . $hash . '")
+										';
+										Yii::app()->db->createCommand($sql)->execute();
+									}
+									else
+										$canSwitch = false;
 								}
-								else
-									$canSwitch = false;
 							}
 
 							if ($canSwitch)
@@ -570,7 +584,7 @@ class RegisterController extends Controller {
 								//ОБНОВЛЯЕМ ИНФ О ПЕРИОДИЧЕСКОЙ УСЛУГЕ
 								$eofSql = ', eof_period = "' . date("Y-m-d H:i:s", strtotime($subsInfo['paid_by']) + Utils::parsePeriod($tariff['period'])) . '"';
 								$sql = 'UPDATE {{user_subscribes}}
-									SET period = "' . $tariff['period'] . '"' . $eofSql . ', tariff_id = ' . $tariff['id'] . ' WHERE id = ' . $subsInfo['id'];
+									SET paid_by = DATE_ADD(paid_by, INTERVAL ' . $paidByCorrect . ' DAY), period = "' . $tariff['period'] . '"' . $eofSql . ', tariff_id = ' . $tariff['id'] . ' WHERE id = ' . $subsInfo['id'];
 								Yii::app()->db->createCommand($sql)->execute();
 
 								//ОЧИЩАЕМ ИНФУ О БАНАХ (НА ВСЯКИЙ СЛУЧАЙ)

@@ -1,4 +1,9 @@
 <?php
+/*
+echo '<pre>';
+print_r($orders);
+echo '</pre>';
+//*/
 function getViewActions($variant, $orders, $actualRents, $qualities, $typedFiles, $presets, $qualityVariantId = 0, $qualityPresetId = 0)
 {
 	$inOrder = false; $actions = array();
@@ -70,6 +75,7 @@ echo '</pre>';
 					}
 					if (!empty($order['rent_id']))
 					{
+
 						//ОПРЕДЕЛЯЕМ ПЕРИОД ПО ТЕКУШЕЙ АРЕНДЕ
 						foreach ($actualRents as $a)
 						{
@@ -203,7 +209,7 @@ echo '</pre>';
 				$actions[] = $actionOnline;
 			else
 			{
-				if (!$isRented)
+				if (!$isRented || $isOwned)
 					$actions[] = $actionDownload;
 				$actions[] = $actionOnline;
 			}

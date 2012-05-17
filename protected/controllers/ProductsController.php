@@ -153,7 +153,7 @@ class ProductsController extends Controller
 					->select('o.id AS oid, o.state, oi.id AS iid, oi.variant_id, oi.price_id, oi.rent_id, oi.price, oi.variant_quality_id, vq.preset_id')
 					->from('{{orders}} o')
 			        ->join('{{order_items}} oi', 'o.id=oi.order_id')
-			        ->join('{{variant_qualities}} vq', 'vq.id=oi.variant_quality_id')
+			        ->leftJoin('{{variant_qualities}} vq', 'vq.id=oi.variant_quality_id')
 					->where('o.user_id = ' . $userId)
 					->order('o.state DESC, o.created DESC')->queryAll();
 			}

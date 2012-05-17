@@ -83,7 +83,8 @@ if (!empty($info))
 		{
 			if ($p['id'] == $q['preset_id'])
 			{
-				$qs[$p['title']][] = array($q['fname'], $q['pfid']);
+				//ПОРЯДОК ЭЛЕМЕНТОВ МАССИВА НЕ МЕНЯТЬ
+				$qs[$p['title']][] = array($q['fname'], $q['pfid'], $q['variant_id'], $q['preset_id']);
 				break;
 			}
 		}
@@ -93,7 +94,7 @@ if (!empty($info))
 	$currentQuality = '';
 /*
 	echo'<pre>';
-	print_r($qualities);
+	print_r($qs);
 	echo'</pre>';
 exit;
 //*/
@@ -102,6 +103,50 @@ exit;
 	$onlineLinks = array(0 => '');
 	foreach ($qs as $k => $val)
 	{
+		$isRented = false;
+		$isOwned = false;
+		$qualityVariantId = $val[0][2];
+		$qualityPresetId = $val[0][3];
+		if (!empty($orders))
+		{
+			foreach ($orders as $order)
+			{
+/*
+	echo'<pre>';
+	print_r($order);
+	echo'</pre>';
+//exit;
+//*/
+				if ($order['variant_id'] == $info['variant_id'])
+				{
+					if (!empty($qualityVariantId) && ($order['variant_quality_id'] != $qualityVariantId))
+					{
+	//ЕСЛИ ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА ПО КАЧЕСТВУ ВАРИАНТА НЕ ПРОШЛА, ЗНАЧИТ ПРОДОЛЖАЕМ ИСКАТЬ ДРУГОЕ КАЧЕСТВО
+						if ($qualityPresetId > $order['preset_id'])
+							continue;
+					}
+
+					$inOrder = true;
+					if ($order['state'] == _ORDER_PAYED_)
+					{
+						//ЕСЛИ ОПЛАТИЛИ
+						if (!empty($order['price_id']))
+						{
+							$isOwned = true; $isRented = false;
+							break;
+						}
+						if (!empty($order['rent_id']))
+						{
+							$isRented = true;
+							break;
+						}
+					}
+				}
+			}
+		}
+
+
+
 		if ($k <> $currentQuality)
 		{
 			$num = 1;//ПОРЯДКОВЫЙ НОМЕР ФАЙЛА ДАННОГО КАЧКСТВА
@@ -124,8 +169,15 @@ $v[0] = 'http://212.20.62.34:82' . $v[0];
 				$aContent .= '<p id="autostart" rel="#video' . $fid . '"></p>';
 			}
 			$aContent .= '<p>';
-			$aContent .= $online;
-			$aContent .= $download;
+
+			if ($info['online_only'])
+				$aContent .= $online;
+			else
+			{
+				$aContent .= $online;
+				if (!$isRented || $isOwned)
+					$aContent .= $download;
+			}
 			$aContent .= '</p>';
 			$num++;
 		}
@@ -147,7 +199,7 @@ $v[0] = 'http://212.20.62.34:82' . $v[0];
 	$rentDsc = '';
 	if (!empty($actions))
 	{
-		if (!empty($info['period']))
+		if ($isRented && !empty($info['period']))
 		{
 			$rentDsc = ' арендовано на ' . Utils::spellPeriod($info['period']);
 			$start = strtotime($info['start']);

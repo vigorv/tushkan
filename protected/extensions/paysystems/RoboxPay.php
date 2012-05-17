@@ -92,4 +92,14 @@ class RoboxPay
 	public function fail($requestInfo)
 	{
 	}
+
+	public function getOrderId($requestInfo)
+	{
+		$orderId = 0;
+		if (!empty($requestInfo['order_id']))
+		{
+			$orderId = $requestInfo['order_id'];
+		}
+		return $orderId;
+	}
 }

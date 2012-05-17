@@ -255,4 +255,20 @@ class AssistPay
 	public function fail($requestInfo)
 	{
 	}
+
+	/**
+	 * получить номер заказа по данным о платеже
+	 *
+	 * @param mixed $requestInfo - параметры ответа от платежной системы
+	 * @return integer
+	 */
+	public function getOrderId($requestInfo)
+	{
+		$orderId = 0;
+		if (!empty($requestInfo['order_id']))
+		{
+			$orderId = $requestInfo['order_id'];
+		}
+		return $orderId;
+	}
 }

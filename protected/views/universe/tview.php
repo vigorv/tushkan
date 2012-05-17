@@ -111,15 +111,15 @@ exit;
 		{
 			foreach ($orders as $order)
 			{
+				if ($order['variant_id'] == $info['variant_id'])
+				{
 /*
 	echo'<pre>';
 	print_r($order);
 	echo'</pre>';
 //exit;
 //*/
-				if ($order['variant_id'] == $info['variant_id'])
-				{
-					if (!empty($qualityVariantId) && ($order['variant_quality_id'] != $qualityVariantId))
+					if (!empty($order['variant_quality_id']) && ($order['variant_quality_id'] != $qualityVariantId))
 					{
 	//ЕСЛИ ДОПОЛНИТЕЛЬНАЯ ПРОВЕРКА ПО КАЧЕСТВУ ВАРИАНТА НЕ ПРОШЛА, ЗНАЧИТ ПРОДОЛЖАЕМ ИСКАТЬ ДРУГОЕ КАЧЕСТВО
 						if ($qualityPresetId > $order['preset_id'])

@@ -521,7 +521,10 @@ class RegisterController extends Controller {
 							//ВЫЧИСЛЯЕМ СКОЛЬКО ДНЕЙ НОВОГО ТАРИФА МОЖНО ОПЛАТИТЬ СУММОЙ, КОТОРОЙ АВАНСОМ ОПЛАЧЕН ТЕКУЩИЙ ТАРИФ
 							$paidDays = intval((strtotime($subsInfo["paid_by"]) - time()) / 3600 / 24);
 							$paidDaysSum = $paidDays * $oldCost;//СУММА ПЕРЕПЛАТЫ (ПОЛНЫХ ДНЕЙ)
-							$paidByCorrect = intval($paidDaysSum / $newCost) - $paidDays;
+							if (!empty($newCost))
+								$paidByCorrect = intval($paidDaysSum / $newCost) - $paidDays;
+							else
+								$paidByCorrect = 0;
 
 							$canSwitch = true;
 

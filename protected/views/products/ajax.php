@@ -84,7 +84,7 @@ switch ($subAction)
 			break;
 
 			case "error":
-				$ahref = '';
+				$ahref = ''; $state .= ' ' . $result;
 			break;
 			case "queue":
 				$ahref = '';

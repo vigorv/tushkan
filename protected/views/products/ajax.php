@@ -77,20 +77,21 @@ switch ($subAction)
 		else
 			$state = 'error';
 
+		$alt = $state;
 		switch ($state)
 		{
 			case "universe":
-				$ahref = '<a href="/universe/tview/' . $result . '" title="' . $state . '">';
+				$ahref = '<a href="/universe/tview/' . $result . '" title="' . $alt . '">';
 			break;
 
 			case "error":
-				$ahref = ''; $state .= ' ' . $result;
+				$ahref = ''; $alt .= ' ' . $result;
 			break;
 			case "queue":
 				$ahref = '';
 			break;
 			case "ok":
-				$ahref = '<a href="/products/addtoqueue/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId . '" title="' . $state . '">';
+				$ahref = '<a href="/products/addtoqueue/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId . '" title="' . $alt . '">';
 			break;
 		}
 
@@ -98,7 +99,7 @@ switch ($subAction)
 		<html>
 			<head></head>
 			<body style="background-color: white">
-				' . $ahref . '<img width="20" src="/images/cloud_' . $state . '.png" alt="' . $state . '" /></a>
+				' . $ahref . '<img width="20" src="/images/cloud_' . $state . '.png" alt="' . $alt . '" /></a>
 			</body>
 		</html>
 		';

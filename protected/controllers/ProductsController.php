@@ -617,7 +617,7 @@ class ProductsController extends Controller
 				'priority'		=> 0,
 				'state'			=> 0,
 				'station_id'	=> 0,
-				'partner_id'	=> 1,
+				'partner_id'	=> 1,	//videoxq.com (`mycloud`.`dm_partners`.`id`)
 				'user_id'				=> 0,
 				'original_variant_id'	=> 0,
 				'date_start'	=> date('Y-m-d H:i:s')

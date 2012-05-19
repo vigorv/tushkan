@@ -234,9 +234,24 @@ class UniverseController extends Controller {
 		}
 		$pst = $cmd->queryAll();
 
+		$qstContent = '';
+		$uid = Yii::app()->user->getId();
+		if (!empty($this))
+		{
+			$qst = Yii::app()->db->createCommand()
+				->select('iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')
+				->from('{{income_queue}} iq')
+				->leftJoin('{{partners}} p', 'p.id=iq.partner_id')
+				->where('iq.user_id = ' . $uid)
+				->queryAll();
+			if ($qst)
+			{
+				$qstContent = $this->renderPartial('/universe/queue', array('qst' => $qst), true);
+			}
+		}
 		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
 
-		$this->render('/universe/products', array('lst' => $lst, 'pstContent' => $pstContent));
+		$this->render('/universe/products', array('lst' => $lst, 'pstContent' => $pstContent, 'qstContent' => $qstContent));
 	}
 
 

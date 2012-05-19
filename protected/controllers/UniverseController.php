@@ -234,24 +234,9 @@ class UniverseController extends Controller {
 		}
 		$pst = $cmd->queryAll();
 
-		$qstContent = '';
-		$uid = Yii::app()->user->getId();
-		if (!empty($uid))
-		{
-			$qst = Yii::app()->db->createCommand()
-				->select('iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')
-				->from('{{income_queue}} iq')
-				->leftJoin('{{partners}} p', 'p.id=iq.partner_id')
-				->where('iq.user_id = ' . $uid)
-				->queryAll();
-			if ($qst)
-			{
-				$qstContent = $this->renderPartial('/universe/queue', array('qst' => $qst), true);
-			}
-		}
 		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
 
-		$this->render('/universe/products', array('lst' => $lst, 'pstContent' => $pstContent, 'qstContent' => $qstContent));
+		$this->render('/universe/products', array('lst' => $lst, 'pstContent' => $pstContent));
 	}
 
 
@@ -276,6 +261,21 @@ class UniverseController extends Controller {
 			case 'd':
 			case 'p':
 
+				$qstContent = '';
+				$uid = Yii::app()->user->getId();
+				if (!empty($uid))
+				{
+					$qst = Yii::app()->db->createCommand()
+						->select('iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')
+						->from('{{income_queue}} iq')
+						->leftJoin('{{partners}} p', 'p.id=iq.partner_id')
+						->where('iq.cmd_id < 50 AND iq.user_id = ' . $uid)
+						->queryAll();
+					if ($qst)
+					{
+						$qstContent = $this->renderPartial('/universe/queue', array('qst' => $qst), true);
+					}
+				}
 
 				$type_id = Utils::getSectionIdByAlias($lib);
 				$productsInfo = CProduct::getUserProducts($this->user_id,$type_id);
@@ -283,6 +283,7 @@ class UniverseController extends Controller {
 				$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
 				$this->render('library', array('mb_content_items' => $mb_content_items,
 					'productsInfo' => $productsInfo,
+					'qstContent' => $qstContent,
 					'mb_content_items_unt' => $mb_content_items_unt,'nav_lib'=>$lib));
 				break;
 			default:

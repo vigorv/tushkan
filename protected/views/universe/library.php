@@ -14,7 +14,7 @@ $nav_active=array(
 <?php if (!isset($mb_content_items)): ?>
 	<?php $path_img = '/images/128x128/'; ?>
 	<ul id ="lib_menu">
-		<li>	
+		<li>
 			<a href="/universe/library?lib=v">
 				<img src="<?= $path_img; ?>/filesystems/video.png"/>
 				<?=Yii::t('users','Video');?></a>
@@ -30,7 +30,7 @@ $nav_active=array(
 				<img src="<?= $path_img; ?>/apps/package_graphics.png"/>
 				<?=Yii::t('users','Photo');?></a>
 		</li>
-		<li>	
+		<li>
 			<a href="/universe/library?lib=d">
 				<img src="<?= $path_img; ?>/apps/kwrite.png"/>
 						<?=Yii::t('users','Documents');?></a>
@@ -39,7 +39,7 @@ $nav_active=array(
 <?php else: ?>
 	<?php $path_img = '/images/16x16/'; ?>
 	<ul id="content_menu" class="nav nav-tabs">
-		<li <?=@$nav_active['v'][$nav_lib];?>>	
+		<li <?=@$nav_active['v'][$nav_lib];?>>
 			<a href="/universe/library?lib=v"><img src="<?= $path_img; ?>/filesystems/video.png"/>
 			<?=Yii::t('users','Video');?></a>
 		</li>
@@ -51,8 +51,8 @@ $nav_active=array(
 
 			<a href="/universe/library?lib=p"><img src="<?= $path_img; ?>/apps/package_graphics.png"/>
 			<?=Yii::t('users','Photo');?></a>
-		</li >	
-		<li <?=@$nav_active['d'][$nav_lib];?>>	
+		</li >
+		<li <?=@$nav_active['d'][$nav_lib];?>>
 			<a href="/universe/library?lib=d"><img src="<?= $path_img; ?>/apps/kwrite.png"/>
 				<?=Yii::t('users','Documents');?></a>
 		</li>
@@ -67,7 +67,7 @@ $nav_active=array(
 		</div>
 	<?php endif; ?>
 	<div class="lib_content ">
-		<div class="top_menu well">			
+		<div class="top_menu well">
 			<?php
 			$userProducts = $productsInfo['tFiles'];
 			$productParams = $productsInfo['fParams'];
@@ -97,6 +97,8 @@ $nav_active=array(
 				}
 				echo '<div class="divider"></div>';
 			}
+			if (!empty($qstContent))
+				echo $qstContent;
 			?>
 		</div>
 		<div class="filters">
@@ -119,14 +121,14 @@ $nav_active=array(
 
 	</div>
 <script>
-    
+
     function DeleteAllUntyped(){
         $.post('/files/removeAll',{'removeAll':'True'},function(){
-            $("#items_unt ul").load('/files/AjaxUntypedList');             
-        });        
+            $("#items_unt ul").load('/files/AjaxUntypedList');
+        });
     }
-    
-    
+
+
 	<?php /*
 	<!--
   $('#content_menu a').click(function(){
@@ -135,7 +137,7 @@ $nav_active=array(
 	main_p= this_p.parent();
 	main_p.children('li.active').removeClass('active');
 	this_p.addClass('active');
-	return false;	
+	return false;
   });->>*/?>
   </script>
 <?php endif; ?>

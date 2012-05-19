@@ -236,7 +236,7 @@ class UniverseController extends Controller {
 
 		$qstContent = '';
 		$uid = Yii::app()->user->getId();
-		if (!empty($this))
+		if (!empty($uid))
 		{
 			$qst = Yii::app()->db->createCommand()
 				->select('iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')

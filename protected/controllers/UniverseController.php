@@ -542,6 +542,9 @@ class UniverseController extends Controller {
 						  не забыть учесть, что товар может быть арендован многократно
 						  в этом случае новую аренду не стартуем до тех пора пока не истечет предыдущая аренда
 						 */
+	echo'<pre>';
+	print_r($rents);
+	echo'</pre>';
 						if (!empty($rents)) {
 							foreach ($rents as $r) {
 								if (strtotime($r['start']) == 0) {

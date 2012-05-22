@@ -2,7 +2,7 @@
 <?php
 if (!empty($info))
 {
-//*
+/*
 	echo'<pre>';
 	print_r($rents);
 	echo'</pre>';

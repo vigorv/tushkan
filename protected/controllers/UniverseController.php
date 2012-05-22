@@ -457,8 +457,10 @@ class UniverseController extends Controller {
 					foreach ($prms as $p) {
 						$params[$p['title']] = $p['value'];
 						$info['online_only'] = $p['online_only'];
-						$info['price_id'] = $p['price_id'];
-						$info['rent_id'] = $p['rent_id'];
+						if (!empty($p['price_id']))
+							$info['price_id'] = $p['price_id'];
+						if (!empty($p['rent_id']))
+							$info['rent_id'] = $p['rent_id'];
 
 						$vIds[$p['id']] = $p['id'];
 					}

@@ -2,9 +2,9 @@
 <?php
 if (!empty($info))
 {
-/*
+//*
 	echo'<pre>';
-	print_r($qualities);
+	print_r($info);
 	echo'</pre>';
 //*/
 	$presets = CPresets::getPresets();

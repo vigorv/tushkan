@@ -544,12 +544,7 @@ class UniverseController extends Controller {
 						 */
 						if (!empty($rents)) {
 							foreach ($rents as $r) {
-	echo '"' . $r['start'] . '"=' . strtotime($r['start']);
-								if (strtotime($r['start']) == 0) {
-	echo'<pre>';
-	print_r($rents);
-	echo'</pre>' . $sql;
-
+								if (strtotime($r['start']) <= 0) {
 									$start = date('Y-m-d H:i:s');
 									$sql = 'UPDATE {{actual_rents}} SET start="' . $start . '" WHERE id=' . $r['id'];
 									Yii::app()->db->createCommand($sql)->execute();

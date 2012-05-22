@@ -84,10 +84,10 @@ if (!empty($bans))
 	{
 		$period = '';
 		$start = strtotime($b["start"]);
-		if (!empty($start))
+		if ($start > 0)
 			$period .= Yii::t('common', 'from') . ' ' . $b["start"] . ' ';
 		$finish = strtotime($b["finish"]);
-		if (!empty($finish))
+		if ($finish > 0)
 			$period .= Yii::t('common', 'to') . ' ' . $b["finish"];
 		switch ($b['state'])
 		{

@@ -6,6 +6,15 @@
 class ProductsController extends Controller
 {
 	/**
+	 * HTML код страницы предупреждения ограничения просмотра по возрасту
+	 *
+	 * заполняется методами после прверки
+	 *
+	 * @var string
+	 */
+	protected $warning18plus;
+
+	/**
 	 * ПОЛУЧИТЬ МАССИВ ПАРАМЕТРОВ, НЕОБХОДИМЫХ ДЛЯ КРАТКОЙ ИНФЫ О ПРОДУКТЕ
 	 *
 	 * @return mixed
@@ -20,36 +29,106 @@ class ProductsController extends Controller
 	 */
 	public function actionIndex()
 	{
+		//ПОЛУЧАЕМ СПИСОК ПАРТНЕРОВ
 		$lst = Yii::app()->db->createCommand()
-			->select('*')
-			->from('{{partners}}')
+			->select('p.id, p.title, pt.tariff_id')
+			->from('{{partners}} p')
+			->leftJoin('{{partners_tariffs}} pt', 'p.id = pt.partner_id')
 			->where('active <= ' . $this->userPower)
 			->queryAll();
 
-		$searchCondition = '';
-		if (!empty($_GET['search']))
+		$userTariffs = Yii::app()->user->getState('dmUserTariffs');
+		//ОГРАНИЧИВАЕМ СПИСОК ПАРТНЕРОВ СОГЛАСНО ТАРИФАМ ПОЛЬЗОВАТЕЛЯ
+		$filteredLst = array();
+		foreach($lst as $l)
 		{
-			$searchCondition = ' AND p.title LIKE :search';
-			$search = '%' . $_GET['search'] . '%';
+			$allow = true;
+			if ($l['tariff_id'])
+			{
+				$allow = false;
+				//ЕСТЬ ОГРАНИЧЕНИЯ НА ТАРИФ У ЭТОГО ПАРТНЕРА
+				if (!empty($userTariffs))
+				{
+					foreach ($userTariffs as $ut)
+					{
+						if ($ut['tariff_id'] == $l['tariff_id'])
+						{
+							$allow = true;
+							break;
+						}
+					}
+				}
+			}
+			if ($allow)
+			{
+				if (empty($filteredLst[$l['id']]))
+					$filteredLst[$l['id']] = $l;
+			}
 		}
-		$paramIds = $this->getShortParamsIds();
-		$cmd = Yii::app()->db->createCommand()
-			->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
-			->from('{{products}} p')
-			->join('{{partners}} prt', 'p.partner_id=prt.id')
-			->join('{{product_variants}} pv', 'pv.product_id=p.id')
-			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-			->where('p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition)
-			->order('pv.id ASC');
-		if (!empty($searchCondition))
-		{
-			$cmd->bindParam(':search', $search, PDO::PARAM_STR);
-		}
-		$pst = $cmd->queryAll();
+		$lst = $filteredLst;
+		$pst = array();
 
+		if (!empty($lst))
+		{
+			$searchCondition = '';
+			if (!empty($_GET['search']))
+			{
+				$searchCondition = ' AND p.title LIKE :search';
+				$search = '%' . $_GET['search'] . '%';
+			}
+			$paramIds = $this->getShortParamsIds();
+			$cmd = Yii::app()->db->createCommand()
+				->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+				->from('{{products}} p')
+				->join('{{partners}} prt', 'p.partner_id=prt.id')
+				->join('{{product_variants}} pv', 'pv.product_id=p.id')
+				->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+				->where('prt.id IN (' . implode(',', array_keys($lst)) . ') AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition)
+				->order('pv.id ASC');
+			if (!empty($searchCondition))
+			{
+				$cmd->bindParam(':search', $search, PDO::PARAM_STR);
+			}
+			$pst = $cmd->queryAll();
+		}
 		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
 
 		$this->render('/products/index', array('lst' => $lst, 'pstContent' => $pstContent));
+	}
+
+	public function checkPartnerAllow($id = 0, $url = '')
+	{
+		$partnerAllowed = true;
+		$cmd = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{partners_tariffs}}')
+			->where('partner_id = :id');
+		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+		$partnerTariffs = $cmd->queryAll();
+		$userTariffs = Yii::app()->user->getState('dmUserTariffs');
+
+		$this->warning18plus = '';
+		if (!empty($partnerTariffs))
+		{
+			$partnerAllowed = false;
+			if (!empty($userTariffs))
+			{
+				foreach ($userTariffs as $ut)
+				{
+					foreach ($partnerTariffs as $pt)
+						if (($ut['tariff_id'] == $pt['tariff_id']))
+						{
+							$partnerAllowed = true;
+							break;
+						}
+					if ($partnerAllowed) break;
+				}
+			}
+
+			if (!$partnerAllowed) $url ='';
+			$this->warning18plus = $this->renderPartial('/products/warning18plus', array('url' => $url), true);
+		}
+		return $partnerAllowed;
 	}
 
 	/**
@@ -59,6 +138,12 @@ class ProductsController extends Controller
 	 */
 	public function actionPartner($id = 0)
 	{
+		$partnerAllowed = $this->checkPartnerAllow($id, '/products/partner/' . $id);
+		if (!$partnerAllowed && !empty($this->warning18plus))
+		{
+			$id = 0;
+		}
+
 		$cmd = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{partners}}')
@@ -83,25 +168,35 @@ class ProductsController extends Controller
 		if (empty($pst) && empty($pInfo))
 		{
 			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
-			Yii::app()->request->redirect('/universe/error');
+			//Yii::app()->request->redirect('/universe/error');
 		}
 
 		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
 
-		$this->render('/products/partner', array('pInfo' => $pInfo, 'pstContent' => $pstContent));
+		$this->render('/products/partner', array('pInfo' => $pInfo, 'pstContent' => $pstContent, 'warning18plus' => $this->warning18plus));
 	}
 
-	public function actionView($id)
+	public function actionView($id = 0)
 	{
 		$Order = new COrder();
 		$userId = intval(Yii::app()->user->getId());
 		$orders = $actualRents = $typedFiles = array();
 		$cmd = Yii::app()->db->createCommand()
-			->select('id, title')
+			->select('id, title, partner_id')
 			->from('{{products}}')
 			->where('id = :id AND active <= ' . $this->userPower);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$productInfo = $cmd->queryRow();
+
+		if (!empty($productInfo))
+		{
+			$partnerAllowed = $this->checkPartnerAllow($productInfo['partner_id'], '/products/view/' . $id);
+			if (!$partnerAllowed && !empty($this->warning18plus))
+			{
+				$productInfo = array();
+			}
+		}
+
 		if (!empty($productInfo))
 		{
 			$info = Yii::app()->db->createCommand()
@@ -160,12 +255,16 @@ class ProductsController extends Controller
 		}
 		else
 		{
-			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
-			Yii::app()->request->redirect('/universe/error');
+			//Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
+			//Yii::app()->request->redirect('/universe/error');
+			$this->render('/products/view', array('code' => '', 'message' => '', 'warning18plus' => $this->warning18plus));
+			return;
 		}
 		$this->render('/products/view', array('info' => $info, 'dsc' => $dsc, 'productInfo' => $productInfo,
 				'orders' => $orders, 'qualities' => $qualities,
-				'actualRents' => $actualRents, 'typedFiles' => $typedFiles, 'userInfo' => $this->userInfo));
+				'actualRents' => $actualRents, 'typedFiles' => $typedFiles, 'userInfo' => $this->userInfo,
+				'warning18plus' => $this->warning18plus)
+		);
 	}
 
 /**

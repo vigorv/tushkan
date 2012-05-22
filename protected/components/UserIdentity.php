@@ -173,6 +173,12 @@ class UserIdentity extends CUserIdentity
 			->order('state DESC')
 			->queryAll();
 
+		$tariffsInfo = Yii::app()->db->createCommand()
+			->select('*')
+			->from('{{tariffs_users}}')
+			->where('user_id = ' . $id)
+			->queryAll();
+
 		//СОХРАНИЛИ В СЕССИЮ
 		Yii::app()->user->setState('dmUserId', $id);
 		Yii::app()->user->setState('dmUserEmail', $userInfo['email']);
@@ -180,6 +186,7 @@ class UserIdentity extends CUserIdentity
 		Yii::app()->user->setState('dmUserHash', $hash);
 		Yii::app()->user->setState('dmUserIp', $ip);
 		Yii::app()->user->setState('dmHashExpired', time() + Yii::app()->params['tushkan']['hashDuration']);
+		Yii::app()->user->setState('dmUserTariffs', $tariffsInfo);
 		Yii::app()->user->setState('dmUserBans', $bansInfo);
 		Yii::app()->user->setState('dmUserInfo', serialize($userInfo));
 

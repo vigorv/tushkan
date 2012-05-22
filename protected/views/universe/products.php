@@ -1,3 +1,5 @@
 <?php
 	echo $pstContent;
-	echo $qstContent;
+
+	if (!empty($qstContent))
+		echo $qstContent;

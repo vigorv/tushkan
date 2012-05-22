@@ -41,7 +41,13 @@
 			else
 				$poster = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
 
-			$prms = array($info['12'], $info['13']);//, $info['14']);
+			$prms = array();
+			if (!empty($info['12']))
+				$prms[] = $info['12'];
+			if (!empty($info['13']))
+				$prms[] = $info['13'];
+			if (!empty($info['14']))
+				$prms[] = $info['14'];
 			echo '<div class="chess">
 				<img width="80" align="left" src="' . $poster . '" />
 				' . $info['partner'] . '

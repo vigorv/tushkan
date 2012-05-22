@@ -5,21 +5,26 @@
 		foreach ($qst as $q)
 		{
 			$info = array();
-			$info['tags']['title'] = 'Без названия';
+			$info['tags']['title'] = 'от партнера ' . $q['title'];
 			$start = strtotime($q['date_start']);
 			if (empty($start))
-				$start = 'в ожидании очереди';
+				$start = ' <i>в ожидании очереди</i>';
 			else
-				$start = 'запущено ' . date('Y-m-d в H:i');
+				$start = 'запущено ' . date('Y-m-d в H:i', $start);
+			$state = '';
 			if ($q['state'] > 3)
 				$state = 'ошибка конвертирования операция будет перезапущена';
 			else
-				$state = 'прогресс ' . ($q['cmd_id'] * 10 + $q['state'] * 3) . '%';
+			{
+				if (!empty($q['cmd_id']))
+					$state = 'прогресс ' . ($q['cmd_id'] * 10 + $q['state'] * 3) . '%';
+			}
 			if (!empty($q['info']))
 			{
 				$info = unserialize($q['info']);
+				$info['tags']['title'] .= ' (от ' . $q['title'] . ') ';
 			}
-			echo '<li>' . $info['tags']['title'] . ' (от ' . $q['title'] . ') ' . $start . ' ' . $state . '</li>';
+			echo '<li>' . $info['tags']['title'] . $start . ' <i>' . $state . '</i></li>';
 		}
 		echo '</ul>';
 	}

@@ -1,4 +1,5 @@
 <?php
+echo $warning18plus;
 /*
 echo '<pre>';
 print_r($orders);

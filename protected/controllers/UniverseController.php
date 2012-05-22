@@ -542,12 +542,14 @@ class UniverseController extends Controller {
 						  не забыть учесть, что товар может быть арендован многократно
 						  в этом случае новую аренду не стартуем до тех пора пока не истечет предыдущая аренда
 						 */
-	echo'<pre>';
-	print_r($rents);
-	echo'</pre>';
 						if (!empty($rents)) {
 							foreach ($rents as $r) {
+	echo strtotime($r['start']);
 								if (strtotime($r['start']) == 0) {
+	echo'<pre>';
+	print_r($rents);
+	echo'</pre>' . $sql;
+
 									$start = date('Y-m-d H:i:s');
 									$sql = 'UPDATE {{actual_rents}} SET start="' . $start . '" WHERE id=' . $r['id'];
 									Yii::app()->db->createCommand($sql)->execute();

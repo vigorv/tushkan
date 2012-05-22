@@ -4,7 +4,7 @@ if (!empty($info))
 {
 //*
 	echo'<pre>';
-	print_r($info);
+	print_r($rents);
 	echo'</pre>';
 //*/
 	$presets = CPresets::getPresets();

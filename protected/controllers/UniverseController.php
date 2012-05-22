@@ -544,7 +544,7 @@ class UniverseController extends Controller {
 						 */
 						if (!empty($rents)) {
 							foreach ($rents as $r) {
-	echo strtotime($r['start']);
+	echo '"' . $r['start'] . '"=' . strtotime($r['start']);
 								if (strtotime($r['start']) == 0) {
 	echo'<pre>';
 	print_r($rents);

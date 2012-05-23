@@ -889,6 +889,8 @@ class ProductsController extends Controller
 						//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
 						for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
 						{
+							if (empty($info['ovids'][$nfj]))
+								$info['ovids'][$nfj] = 0;
 							$vInfo = array(
 								'product_id'	=> $pInfo['id'],
 								'online_only'	=> 0,

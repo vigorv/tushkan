@@ -591,7 +591,7 @@ class ProductsController extends Controller
 							->from('{{products}} p')
 							->join('{{product_variants}} pv', 'p.id = pv.id')
 							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
-							->where('p.id = :originalId AND tf.user_id = :userId');
+							->where('p.original_id = :originalId AND tf.user_id = :userId');
 						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
 						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
 						$variantExists = $cmd->queryRow();
@@ -608,7 +608,7 @@ class ProductsController extends Controller
 							->select('p.id , pv.id AS pvid, p.title')
 							->from('{{products}} p')
 							->join('{{product_variants}} pv', 'p.id = pv.product_id')
-							->where('p.id = :originalId');
+							->where('p.original_id = :originalId');
 						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
 						$productExists = $cmd->queryRow();
 						if ($productExists)

@@ -1030,7 +1030,8 @@ class ProductsController extends Controller
 						{
 							$queueToDelete[$u['id']] = $u['id'];
 							//ПОВЕРЯЕМ ДОБАВЛЕНО В ПП ИЛИ НЕТ?
-							if (empty($u['original_variant_id']))
+//							if (empty($u['original_variant_id']))
+//ПОКА ВСЕГДА ДОБАВЛЯЕМ ВСЕ ВАРИАНТЫ ПРОДУКТА
 							{
 								//ЗНАЧИТ В ПП ДОЛЖНЫ БЫТЬ ДОБАВЛЕНЫ ВСЕ ВАРИАНТЫ ПРОДУКТА
 								//ВЫБИРАЕМ УЖЕ ДОБАВЛЕННЫЕ В ПП ВАРИАНТЫ ПРОДУКТА
@@ -1068,6 +1069,7 @@ class ProductsController extends Controller
 									}
 								}
 							}
+/*
 							else
 							{
 								//ЗНАЧИТ В ПП ДОЛЖНЫ БЫТЬ ДОБАВЛЕН ДАННЫЙ ВАРИАНТ ПРОДУКТА
@@ -1075,7 +1077,7 @@ class ProductsController extends Controller
 									->select('tp.id')
 									->from('{{typedfiles}} tp')
 									->join('{{product_variants}} pv', 'pv.id = tp.variant_id')
-									->whete('tp.user_id = ' . $u['user_id'] . ' AND pv.original_id = ' . $u['original_variant_id'])
+									->where('tp.user_id = ' . $u['user_id'] . ' AND pv.original_id = ' . $u['original_variant_id'])
 									->queryRow();
 								if (!$variantExists)
 								{
@@ -1100,6 +1102,7 @@ class ProductsController extends Controller
 									}
 								}
 							}
+*/
 						}
 						//УДАЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
 						//$sql = 'DELETE FROM {{income_queue}} WHERE id= IN (' . $queueToDelete . ')';

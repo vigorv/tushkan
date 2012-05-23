@@ -1105,10 +1105,16 @@ class ProductsController extends Controller
 							}
 */
 						}
+						//ОБНОВЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
+						$sql = 'UPDATE {{income_queue}} SET cmd_id=50 WHERE id= IN (' . $queueToDelete . ')';
+						Yii::app()->db->createCommand($sql)->execute();
 						//УДАЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
 						//$sql = 'DELETE FROM {{income_queue}} WHERE id= IN (' . $queueToDelete . ')';
 						//Yii::app()->db->createCommand($sql)->execute();
 					}
+					//ОБНОВЛЯЕМ ТЕКУЩЕЕ ЗАДАНИЕ
+					$sql = 'UPDATE {{income_queue}} SET cmd_id=50 WHERE id=' . $cmdInfo['id'];
+					Yii::app()->db->createCommand($sql)->execute();
 					//УДАЛЯЕМ ТЕКУЩЕЕ ЗАДАНИЕ
 					//$sql = 'DELETE FROM {{income_queue}} WHERE id=' . $cmdInfo['id'];
 					//Yii::app()->db->createCommand($sql)->execute();

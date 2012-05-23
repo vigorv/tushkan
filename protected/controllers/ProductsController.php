@@ -926,7 +926,7 @@ class ProductsController extends Controller
 
 								//СОХРАНЯЕМ ВСЕ ФАЙЛЫ ДАННОГО КАЧЕСТВА
 								$pathInfo = pathinfo($info['newfiles'][$nfj]);
-								$presetName = basename($pathInfo['dirname']);
+								$presetName = $presets[$fp]['title'];
 
 								$sz = 0;
 								if (!empty($info['newfilesizes'][$nfj]))
@@ -934,7 +934,7 @@ class ProductsController extends Controller
 								$fInfo = array(
 									'size'					=> $sz,
 									'md5'					=> "",
-									'fname'					=> $info['newfiles'][$nfj],
+									'fname'					=> $pathInfo['dirname'] . '/' . $presetName . '/' . $pathInfo['basename'],
 									'preset_id'				=> $presets[$fp]['id'],
 									'variant_quality_id'	=> $qInfo['id'],
 								);

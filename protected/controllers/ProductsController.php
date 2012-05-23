@@ -564,6 +564,7 @@ class ProductsController extends Controller
 				$userExists = $cmd->queryRow();
 				if ($userExists)
 				{
+/*
 					if (!empty($_GET['vid']))
 					{
 						$originalVariantId = $_GET['vid'];
@@ -579,6 +580,7 @@ class ProductsController extends Controller
 						$variantExists = $cmd->queryRow();
 					}
 					else
+*/
 					{
 						$originalVariantId = 0;//ПО УМОЛЧАНИЮ ДОБАВИМ ВСЕ ВАРИАНТЫ ПРОДУКТА В ПП
 						//ПРОВЕРЯЕМ КОМПРЕССОРОМ ЕСТЬ ЛИ НЕДОБАВЛЕННЫЕ ВАРИАНТЫ ПРОДУКТА
@@ -600,6 +602,28 @@ class ProductsController extends Controller
 						$result = $variantExists;
 					else
 					{
+						//ПРОВЕРЯЕМ НАЛИЧИЕ В ВИТРИНАХ
+						$cmd = Yii::app()->db->createCommand()
+							->select('p.id , pv.id AS pvid, p.title')
+							->from('{{products}} p')
+							->join('{{product_variants}} pv', 'p.id = pv.id')
+							->where('p.id = :originalId');
+						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
+						$productExists = $cmd->queryRow();
+						if (!$productExists)
+						{
+							//ЕСЛИ ЕСТЬ ВИТРИНАХ, ДОБАВЛЯЕМ В ПП
+							$tfInfo = array(
+								'variant_id'	=> $productExists['pvid'],
+								'user_id'		=> $userExists['id'],
+								'title'			=> $productExists['title'],
+								'collection_id'	=> 0,
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);
+							$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
+							return $result;
+						}
+
 						//ПОВЕРЯЕМ НАЛИЧИЕ В ОЧЕРЕДИ КОНВЕРТЕРА
 						$cmd = Yii::app()->db->createCommand()
 							->select('id')
@@ -1105,12 +1129,15 @@ class ProductsController extends Controller
 							}
 */
 						}
-						//ОБНОВЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
-						$sql = 'UPDATE {{income_queue}} SET cmd_id=50 WHERE id= IN (' . $queueToDelete . ')';
-						Yii::app()->db->createCommand($sql)->execute();
-						//УДАЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
-						//$sql = 'DELETE FROM {{income_queue}} WHERE id= IN (' . $queueToDelete . ')';
-						//Yii::app()->db->createCommand($sql)->execute();
+						if (!empty($queueToDelete))
+						{
+							//ОБНОВЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
+							$sql = 'UPDATE {{income_queue}} SET cmd_id=50 WHERE id= IN (' . implode(',', $queueToDelete) . ')';
+							Yii::app()->db->createCommand($sql)->execute();
+							//УДАЛЯЕМ ОБРАБОТАННЫЕ ЗАДАНИЯ
+							//$sql = 'DELETE FROM {{income_queue}} WHERE id= IN (' . implode(',', $queueToDelete) . ')';
+							//Yii::app()->db->createCommand($sql)->execute();
+						}
 					}
 					//ОБНОВЛЯЕМ ТЕКУЩЕЕ ЗАДАНИЕ
 					$sql = 'UPDATE {{income_queue}} SET cmd_id=50 WHERE id=' . $cmdInfo['id'];

@@ -610,18 +610,22 @@ class ProductsController extends Controller
 							->where('p.id = :originalId');
 						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
 						$productExists = $cmd->queryRow();
-						if ($productExists && !empty($_GET['do']) && ($_GET['do'] == 'add'))
+						if ($productExists)
 						{
-							//ЕСЛИ ЕСТЬ ВИТРИНАХ, ДОБАВЛЯЕМ В ПП
-							$tfInfo = array(
-								'variant_id'	=> $productExists['pvid'],
-								'user_id'		=> $userExists['id'],
-								'title'			=> $productExists['title'],
-								'collection_id'	=> 0,
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);
-							$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
-							return $result;
+							$result = $productExists['id'];
+							if (!empty($_GET['do']) && ($_GET['do'] == 'add'))
+							{
+								//ЕСЛИ ЕСТЬ ВИТРИНАХ, ДОБАВЛЯЕМ В ПП
+								$tfInfo = array(
+									'variant_id'	=> $productExists['pvid'],
+									'user_id'		=> $userExists['id'],
+									'title'			=> $productExists['title'],
+									'collection_id'	=> 0,
+								);
+								$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);
+								$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
+								return $result;
+							}
 						}
 
 						//ПОВЕРЯЕМ НАЛИЧИЕ В ОЧЕРЕДИ КОНВЕРТЕРА

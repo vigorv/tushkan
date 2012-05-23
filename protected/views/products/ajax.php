@@ -90,7 +90,7 @@ switch ($subAction)
 		switch ($state)
 		{
 			case "universe_add":
-				$ahref = '<a href="/products/addtocloud/pid/' . $get['pid'] . '/oid/' . $get['pid'] . '/vid/' . $get['vid'] . '/do/add" title="' . $alt . '">';
+				$ahref = '<a href="/products/addtocloud/pid/' . $get['pid'] . '/oid/' . $get['oid'] . '/vid/' . $get['vid'] . '/do/add" title="' . $alt . '">';
 			break;
 			case "universe":
 				$ahref = '<a href="/universe/tview/' . $result . '" title="' . $alt . '">';

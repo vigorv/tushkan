@@ -71,15 +71,27 @@ switch ($subAction)
 			}
 			if (intval($result) > 0)
 			{
-				$state = 'universe';
+				if (empty($_GET['add']))
+					$state = 'universe_add';
+				else
+					$state = 'universe';
 			}
 		}
 		else
 			$state = 'error';
 
 		$alt = $state;
+		if (empty($get['pid']))
+			$get['pid'] = 0;
+		if (empty($get['oid']))
+			$get['oid'] = 0;
+		if (empty($get['vid']))
+			$get['vid'] = 0;
 		switch ($state)
 		{
+			case "universe_add":
+				$ahref = '<a href="/products/addtocloud/pid/' . $get['pid'] . '/oid/' . $get['pid'] . '/vid/' . $get['vid'] . '/do/add" title="' . $alt . '">';
+			break;
 			case "universe":
 				$ahref = '<a href="/universe/tview/' . $result . '" title="' . $alt . '">';
 			break;

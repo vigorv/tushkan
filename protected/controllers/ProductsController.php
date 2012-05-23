@@ -610,7 +610,7 @@ class ProductsController extends Controller
 							->where('p.id = :originalId');
 						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
 						$productExists = $cmd->queryRow();
-						if (!$productExists)
+						if (!$productExists && !empty($_GET['do']) && ($_GET['do'] == 'add'))
 						{
 							//ЕСЛИ ЕСТЬ ВИТРИНАХ, ДОБАВЛЯЕМ В ПП
 							$tfInfo = array(

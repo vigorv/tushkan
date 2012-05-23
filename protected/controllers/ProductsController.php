@@ -920,8 +920,6 @@ class ProductsController extends Controller
 								$qInfo = array(
 									'variant_id'	=> $vInfo['id'],
 									'preset_id'		=> $presets[$fp]['id'],
-									'price_id'		=> 0,
-									'rent_id'		=> 0,
 								);
 								$cmd = Yii::app()->db->createCommand()->insert('{{variant_qualities}}', $qInfo);
 								$qInfo['id'] = Yii::app()->db->getLastInsertID('{{variant_qualities}}');

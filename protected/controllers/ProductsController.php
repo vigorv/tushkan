@@ -607,7 +607,7 @@ class ProductsController extends Controller
 						$cmd = Yii::app()->db->createCommand()
 							->select('p.id , pv.id AS pvid, p.title')
 							->from('{{products}} p')
-							->join('{{product_variants}} pv', 'p.id = pv.id')
+							->join('{{product_variants}} pv', 'p.id = pv.product_id')
 							->where('p.id = :originalId');
 						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
 						$productExists = $cmd->queryRow();
@@ -633,7 +633,7 @@ class ProductsController extends Controller
 						$cmd = Yii::app()->db->createCommand()
 							->select('id')
 							->from('{{income_queue}}')
-							->where('user_id = :id AND partner_id=:pid AND original_id=:oid AND original_variant_id=:vid');
+							->where('cmd_id < 50 AND user_id = :id AND partner_id=:pid AND original_id=:oid AND original_variant_id=:vid');
 						$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
 						$cmd->bindParam(':pid', $partnerId, PDO::PARAM_INT);
 						$cmd->bindParam(':oid', $originalId, PDO::PARAM_INT);

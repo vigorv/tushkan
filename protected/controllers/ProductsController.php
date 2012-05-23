@@ -602,6 +602,7 @@ class ProductsController extends Controller
 						$result = $variantExists;
 					else
 					{
+						$result = 'error';
 						//ПРОВЕРЯЕМ НАЛИЧИЕ В ВИТРИНАХ
 						$cmd = Yii::app()->db->createCommand()
 							->select('p.id , pv.id AS pvid, p.title')

@@ -71,7 +71,7 @@ switch ($subAction)
 			}
 			if (intval($result) > 0)
 			{
-				if (empty($_GET['add']))
+				if (empty($get['do']))
 					$state = 'universe_add';
 				else
 					$state = 'universe';

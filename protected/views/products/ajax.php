@@ -93,7 +93,7 @@ switch ($subAction)
 				$ahref = '<a href="/products/addtocloud/pid/' . $get['pid'] . '/oid/' . $get['oid'] . '/vid/' . $get['vid'] . '/do/add" title="' . $alt . '">';
 			break;
 			case "universe":
-				$ahref = '<a href="/universe/tview/' . $result . '" title="' . $alt . '">';
+				$ahref = '<a target="_parent" href="/universe/tview/' . $result . '" title="' . $alt . '">';
 			break;
 
 			case "error":

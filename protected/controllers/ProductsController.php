@@ -589,7 +589,7 @@ class ProductsController extends Controller
 						$cmd = Yii::app()->db->createCommand()
 							->select('tf.id')
 							->from('{{products}} p')
-							->join('{{product_variants}} pv', 'p.id = pv.id')
+							->join('{{product_variants}} pv', 'p.id = pv.product_id')
 							->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
 							->where('p.original_id = :originalId AND tf.user_id = :userId');
 						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);

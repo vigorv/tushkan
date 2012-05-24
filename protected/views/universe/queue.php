@@ -7,10 +7,10 @@
 			$info = array();
 			$info['tags']['title'] = 'от партнера ' . $q['title'];
 			$start = strtotime($q['date_start']);
-			if (empty($start))
-				$start = ' <i>в ожидании очереди</i>';
+			if ($start <= 0)
+				$start = ' <i>в ожидании очереди на добавление</i>';
 			else
-				$start = 'запущено ' . date('Y-m-d в H:i', $start);
+				$start = ' запущено ' . date('Y-m-d в H:i', $start);
 			$state = '';
 			if ($q['state'] > 3)
 				$state = 'ошибка конвертирования операция будет перезапущена';

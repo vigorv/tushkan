@@ -602,13 +602,15 @@ class ProductsController extends Controller
 							->where('p.original_id = :originalId AND tf.user_id = :userId');
 						$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
 						$cmd->bindParam(':userId', $userId, PDO::PARAM_INT);
-						$this->inCloud = true;
 						$variantExists = $cmd->queryRow();
 					}
 
 					$result = 'ok';
 					if (!empty($variantExists))
+					{
+						$this->inCloud = true;
 						$result = $variantExists['id'];
+					}
 					else
 					{
 						$result = 'error';

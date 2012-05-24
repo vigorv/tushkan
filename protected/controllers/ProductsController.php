@@ -15,6 +15,13 @@ class ProductsController extends Controller
 	protected $warning18plus;
 
 	/**
+	 * используется в разных методах для показа результата: в облаке объект или нет?
+	 *
+	 * @var boolean
+	 */
+	protected $inCloud;
+
+	/**
 	 * ПОЛУЧИТЬ МАССИВ ПАРАМЕТРОВ, НЕОБХОДИМЫХ ДЛЯ КРАТКОЙ ИНФЫ О ПРОДУКТЕ
 	 *
 	 * @return mixed
@@ -547,6 +554,7 @@ class ProductsController extends Controller
 	 */
 	public function checkQueue()
 	{
+		$this->inCloud = false;
 		$result = 'bad original ID or bad partner ID';
 		if (!empty($_GET['oid']) && !empty($_GET['pid']))
 		{
@@ -625,6 +633,7 @@ class ProductsController extends Controller
 								);
 								$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);
 								$result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
+								$this->inCloud = true;
 								return $result;
 							}
 						}
@@ -664,7 +673,7 @@ class ProductsController extends Controller
 		$subAction = 'addtocloud';
 		$variantExists = 0;
 
-        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'get' => $_REQUEST));
+        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'inCloud' => $this->inCloud, 'get' => $_REQUEST));
 	}
 
 	/**
@@ -716,7 +725,8 @@ class ProductsController extends Controller
 			$result = 'queue';
 		}
 
-       $this->render('ajax', array('subAction' => 'addtocloud', 'result' => $result, 'get' => array('pid' => $partnerId, 'oid' => $originalId, 'vid' => $originalVariantId)));
+       $this->render('ajax', array('subAction' => 'addtocloud', 'result' => $result, 'inCloud' => $this->inCloud,
+       		'get' => array('pid' => $partnerId, 'oid' => $originalId, 'vid' => $originalVariantId)));
 	}
 
 	/**

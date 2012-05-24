@@ -71,7 +71,7 @@ switch ($subAction)
 			}
 			if (intval($result) > 0)
 			{
-				if (empty($get['do']))
+				if (!$inCloud)
 					$state = 'universe_add';
 				else
 					$state = 'universe';

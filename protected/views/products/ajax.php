@@ -109,7 +109,7 @@ switch ($subAction)
 				$ahref = ''; $alt .= ' ' . $result;
 			break;
 			case "queue":
-				$ahref = '';
+				$ahref = ''; $alt .= ' ' . $result;
 			break;
 			case "ok":
 				$ahref = '<a href="/products/addtoqueue/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId . '" title="' . $alt . '">';

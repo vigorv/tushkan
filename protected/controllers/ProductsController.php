@@ -605,7 +605,6 @@ class ProductsController extends Controller
 						$variantExists = $cmd->queryRow();
 					}
 
-					$result = 'ok';
 					if (!empty($variantExists))
 					{
 						$this->inCloud = true;
@@ -613,7 +612,7 @@ class ProductsController extends Controller
 					}
 					else
 					{
-						$result = 'error';
+						$result = 'ok';
 						//ПРОВЕРЯЕМ НАЛИЧИЕ В ВИТРИНАХ
 						$cmd = Yii::app()->db->createCommand()
 							->select('p.id , pv.id AS pvid, p.title')

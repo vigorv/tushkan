@@ -641,14 +641,19 @@ class ProductsController extends Controller
 						}
 
 						//ПОВЕРЯЕМ НАЛИЧИЕ В ОЧЕРЕДИ КОНВЕРТЕРА
+						if ($originalVariantId)
+							$variantCondition = ' AND original_variant_id=:vid';
+						else
+							$variantCondition = '';
 						$cmd = Yii::app()->db->createCommand()
 							->select('id')
 							->from('{{income_queue}}')
-							->where('cmd_id < 50 AND user_id = :id AND partner_id=:pid AND original_id=:oid AND original_variant_id=:vid');
+							->where('cmd_id < 50 AND user_id = :id AND partner_id=:pid AND original_id=:oid' . $variantCondition);
 						$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
 						$cmd->bindParam(':pid', $partnerId, PDO::PARAM_INT);
 						$cmd->bindParam(':oid', $originalId, PDO::PARAM_INT);
-						$cmd->bindParam(':vid', $originalVariantId, PDO::PARAM_INT);
+						if ($originalVariantId)
+							$cmd->bindParam(':vid', $originalVariantId, PDO::PARAM_INT);
 						$queueExists = $cmd->queryRow();
 						if ($queueExists)
 							$result = 'queue';

@@ -60,7 +60,7 @@ switch ($subAction)
 
 	case "addtocloud":
 		//ВЫВОД ИКОНКМ СОГЛАСНО СОСТОЯНИЮ ПРОДУКТА
-		if (($result == 'ok') || ($result == 'queue') || (intval($result) > 0))
+		if (($result == 'ok') || (substr($result, 0, 5) == 'queue') || (intval($result) > 0))
 		{
 			$state = $result;
 			$partnerId = intval($get['pid']);
@@ -80,6 +80,15 @@ switch ($subAction)
 		else
 			$state = 'error';
 
+		if ((substr($result, 0, 5) == 'queue'))
+		{
+			$progress = explode('|', $result);
+			$state = 'queue';
+			if (count($progress) >= 3)
+			{
+				$result = 'прогресс ' . ($progress[1]*10+$progress[2]*3) . '%';
+			}
+		}
 		$alt = $state;
 		if (empty($get['pid']))
 			$get['pid'] = 0;
@@ -93,7 +102,7 @@ switch ($subAction)
 				$ahref = '<a href="/products/addtocloud/pid/' . $get['pid'] . '/oid/' . $get['oid'] . '/vid/' . $get['vid'] . '/do/add" title="' . $alt . '">';
 			break;
 			case "universe":
-				$ahref = '<a target="_parent" href="/universe/tview/' . $result . '" title="' . $alt . '">';
+				$ahref = '<a target="_parent" href="/#/universe/tview/' . $result . '" title="' . $alt . '">';
 			break;
 
 			case "error":

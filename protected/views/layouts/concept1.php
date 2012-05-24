@@ -100,9 +100,9 @@
 				});
 				$('#m_devices').load('/universe/devices');
 
-				window.onbeforeunload = function (event) {
-					return "Внимание! Ваши закачки прервутся после этого действия";
-				}
+				//window.onbeforeunload = function (event) {
+					//return "Внимание! Ваши закачки прервутся после этого действия";
+				//}
 
 				//$(window).unload(function(){
 //					if (window.confirm("Do you want to leave this page") == true){

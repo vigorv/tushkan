@@ -646,7 +646,7 @@ class ProductsController extends Controller
 						else
 							$variantCondition = '';
 						$cmd = Yii::app()->db->createCommand()
-							->select('id')
+							->select('id, cmd_id, state')
 							->from('{{income_queue}}')
 							->where('cmd_id < 50 AND user_id = :id AND partner_id=:pid AND original_id=:oid' . $variantCondition);
 						$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
@@ -656,7 +656,9 @@ class ProductsController extends Controller
 							$cmd->bindParam(':vid', $originalVariantId, PDO::PARAM_INT);
 						$queueExists = $cmd->queryRow();
 						if ($queueExists)
-							$result = 'queue';
+						{
+							$result = 'queue|' . $queueExists['cmd_id'] . '|' . $queueExists['state'];
+						}
 					}
 				}
 			}

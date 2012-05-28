@@ -120,7 +120,7 @@ switch ($subAction)
 		<html>
 			<head></head>
 			<body style="background-color: white">
-				' . $ahref . '<img width="20" src="/images/cloud_' . $state . '.png" alt="' . $alt . '" /></a>
+				' . $ahref . '<img width="28" src="/images/cloud_' . $state . '.png" alt="' . $alt . '" /></a>
 			</body>
 		</html>
 		';

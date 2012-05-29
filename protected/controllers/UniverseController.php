@@ -453,6 +453,13 @@ class UniverseController extends Controller {
 									->select('*')
 									->from('{{product_descriptions}}')
 									->where('product_id = ' . $prms[0]['product_id'])->queryRow();
+
+					$partnerInfo = Yii::app()->db->createCommand()
+						->select('prt.id, prt.title, prt.sprintf_url, p.original_id')
+						->from('{{products}} p')
+						->join('{{partners}} prt', 'prt.id = p.partner_id')
+						->where('p.id = ' . $prms[0]['product_id'])->queryRow();
+
 					$params = array();
 					foreach ($prms as $p) {
 						$params[$p['title']] = $p['value'];
@@ -561,7 +568,9 @@ class UniverseController extends Controller {
 		}
 		$this->render('tview', array('info' => $info, 'params' => $params, 'dsc' => $dsc,
 			'qualities' => $qualities, 'fid' => $fid, 'orders' => $orders,
-			'subAction' => $subAction, 'neededQuality' => $neededQuality));
+			'subAction' => $subAction, 'neededQuality' => $neededQuality,
+			'partnerInfo' => $partnerInfo
+		));
 	}
 
 	/**

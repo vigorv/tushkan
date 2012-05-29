@@ -4,7 +4,7 @@ if (!empty($info))
 {
 /*
 	echo'<pre>';
-	print_r($rents);
+	print_r($partnerInfo);
 	echo'</pre>';
 //*/
 	$presets = CPresets::getPresets();
@@ -157,12 +157,26 @@ exit;
 		{
 //$v[0] = 'http://92.63.192.12:83/l/little_caesar/270/little_caesar.mp4';//ОТЛАДКА
 //$v[0] = 'http://92.63.192.12:83' . $v[0];
-$v[0] = 'http://212.20.62.34:82' . $v[0];
+			if (empty($partnerInfo['sprintf_url']))
+			{
+				$v[0] = 'http://212.20.62.34:82' . $v[0];
+				$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн файл ' . $num . '</button>';
+				$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать файл ' . $num . '</button>';
+			}
+			else
+			{
+				//порядок параметров original_id, quality, fileName (без расширения), доп. параметр 1-online, 0-download
+				$pathInfo = pathinfo($v[0]);
+				$fn = str_replace('.' . $pathInfo['extension'], '', $pathInfo['basename']);
+				$v[0] = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], $k, $fn, 1);
+				$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн файл ' . $num . '</button>';
+				$v[0] = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], $k, $fn, 0);
+				$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать файл ' . $num . '</button>';
+			}
+
 			if (empty($fid)) $fid = $v[1];
 
 			$fids[] = $v[1];
-			$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн файл ' . $num . '</button>';
-			$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать файл ' . $num . '</button>';
 			$onlineLinks[$v[1]] = $v[0];
 			if ($fid == $v[1])
 			{

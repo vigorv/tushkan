@@ -110,7 +110,8 @@ switch ($subAction)
 				$alt = 'в очереди на добавление в пространство';
 				$alt .= ' ' . $result; $ahref = '<a title="' . $alt . '">';
 			break;
-			case "добавить в пространство":
+			case "ok":
+				$alt = 'добавить в пространство';
 				$ahref = '<a href="/products/addtoqueue/pid/' . $partnerId . '/oid/' . $originalId . '/vid/' . $originalVariantId . '" title="' . $alt . '">';
 			break;
 			default:

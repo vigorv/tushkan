@@ -42,7 +42,7 @@ $balance.=' руб';
 -->
 </script>
 	<li>
-		<a class="btn btn-small" href="#"  onClick="$('#upload_container').slideToggle();return false;">
+		<a class="btn btn-small" href="#"  onClick="window.open('/universe/upload?mini','Uploader','width=400,height=400'); return false;">
 			<i class="icon-upload"></i><?=Yii::t('users','Uploads');?>
 		</a>
 	</li>

@@ -108,7 +108,8 @@ class AppController extends ControllerApp {
 
     public function actionFilmList(){
         if (Yii::app()->user->id){
-            $list = CUserObjects::model()->getList(Yii::app()->user->id,1);
+            $list = CUserObjects::model()->getVtrList(Yii::app()->user->id,1);
+         //   $list_=
          echo json_encode(array('FilmList'=>"OK",'Data'=>$list));
         } else{
             echo json_encode(array('FilmList'=>'Error','Error'=>"Need to Login"));

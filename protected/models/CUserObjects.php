@@ -78,6 +78,6 @@ class CUserObjects extends CActiveRecord
             ->select('tf.title,tf.id')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv','pv.id = tf.variant_id')
-            ->where('tf.user_id =' . $user_id .' AND tf.item_id =  '.$item_id)->queryRow();
+            ->where('tf.user_id =' . $user_id .' AND tf.id =  '.$item_id)->queryRow();
     }
 }

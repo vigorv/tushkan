@@ -36,9 +36,9 @@ class Utils {
 	"a" => 2,
 	"p" => 3,
 	"d" => 4);
-    
+
     static $convert_list = array(
-      "v" => array('Ultra','High','Medium','Low')  
+      "v" => array('Ultra','High','Medium','Low')
     );
 
     /**
@@ -49,7 +49,7 @@ class Utils {
      * @param string $from - дата Y-m-d H:i:s, с которой отсчитываем период
      * @return integer
      */
-    public function parsePeriod($period, $from = '') {
+    public static function parsePeriod($period, $from = '') {
 	$sek = 0;
 	if (!empty($period)) {
 	    $matches = array();
@@ -70,7 +70,7 @@ class Utils {
 	return $sek;
     }
 
-    public function spellPeriod($period) {
+    public static function spellPeriod($period) {
 	$sek = 0;
 	if (!empty($period)) {
 	    $matches = array();
@@ -133,7 +133,7 @@ class Utils {
      * @param array  $titles Массив слов для склонения
      * @return string
      * */
-    public function pluralForm($number, $titles) {
+    public static function pluralForm($number, $titles) {
 	$cases = array(2, 0, 1, 1, 1, 2);
 	return number_format($number, 0, ',', ' ') . " " . $titles[($number % 100 > 4 && $number % 100 < 20) ? 2 : $cases[min($number % 10, 5)]];
     }
@@ -162,7 +162,7 @@ class Utils {
      * @param unknown_type $size
      * @return unknown
      */
-    function timeFormat($size) {
+    public static function timeFormat($size) {
 	$t = array();
 	$y = 365 * 24 * 60 * 60;
 	$o = $size % $y;
@@ -218,7 +218,7 @@ class Utils {
      * @param mixed $arr
      * @return mixed
      */
-    public function pushIndexToKey($indexName, $arr) {
+    public static function pushIndexToKey($indexName, $arr) {
 	$result = array();
 	if (!empty($arr)) {
 	    foreach ($arr as $a) {
@@ -240,7 +240,7 @@ class Utils {
      * @param string $vName - название ключа, значения которого пойдут в значения результата
      * @return mixed
      */
-    public function arrayToKeyValues($arr, $kName, $vName) {
+    public static function arrayToKeyValues($arr, $kName, $vName) {
 	$result = array();
 	foreach ($arr as $a) {
 	    $result[$a[$kName]] = $a[$vName];
@@ -253,7 +253,7 @@ class Utils {
      *
      * @return mixed
      */
-    public function getActiveStates() {
+    public static function getActiveStates() {
 	return array(
 	    _IS_GUEST_ => Yii::t('users', 'Visible for all'),
 	    _IS_USER_ => Yii::t('users', 'Visible for users'),
@@ -268,7 +268,7 @@ class Utils {
      * @param $ret = 'id' - с индексами в виде id, иначе - с индексами в виде строк
      * @return mixed
      */
-    public function getVideoConverterQuality($ret = 'id') {
+    public static function getVideoConverterQuality($ret = 'id') {
 	$qArr = array(
 	    _VIDEO_HIGH_ => 'High',
 	    _VIDEO_MEDIUM_ => 'Medium',
@@ -295,7 +295,7 @@ class Utils {
      *
      * @return mixed
      */
-    public function getMediaList() {
+    public static function getMediaList() {
     	$aliases = Utils::$mtypes;
     	$lst = array();
     	foreach ($aliases as $a => $id)
@@ -359,7 +359,7 @@ class Utils {
 	return 0;
     }
 
-    public function getPersonaldataUItypes() {
+    public static function getPersonaldataUItypes() {
 	return array(
 	    _PD_TEXT_ => Yii::t('params', 'Text'),
 	    _PD_TEXTAREA_ => Yii::t('params', 'Textarea'),
@@ -375,13 +375,13 @@ class Utils {
      *
      * @return mixed
      */
-    public function getPersonaldataGroups() {
+    public static function getPersonaldataGroups() {
 	return array(
 	    _PD_GROUP_COMMON_ => Yii::t('params', 'Common parameters'),
 	);
     }
 
-	public function getDeviceTypes()
+	public static function getDeviceTypes()
 	{
 		$types = array(
 			_DT_MOBILE_ => array("id" => _DT_MOBILE_, "title" => Yii::t('common', 'Mobile')),
@@ -391,10 +391,10 @@ class Utils {
 		);
 		return $types;
 	}
-                              
-        public static function isConvertCorrect($filename,$preset){
-            $ext = pathinfo($filename,PATHINFO_EXTENSION);
-            $section = Utils::getSectionIdByExt($ext);            
-            return Utils::$convert_list['$section'][$preset];                        
-        }
+
+    public static function isConvertCorrect($filename,$preset){
+        $ext = pathinfo($filename,PATHINFO_EXTENSION);
+        $section = Utils::getSectionIdByExt($ext);
+        return Utils::$convert_list['$section'][$preset];
+    }
 }

@@ -60,4 +60,8 @@ class CUser extends CActiveRecord {
 			->queryRow();
     }
 
+    public static function UKey($record){
+        return md5($record->id.$record->pwd.'magic'.$record->lastvisit);
+    }
+
 }

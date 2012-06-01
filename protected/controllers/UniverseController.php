@@ -182,7 +182,7 @@ class UniverseController extends Controller {
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
 //$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
 
-		$this->render('upload', array('types' => $types, 'user_id' => $this->userInfo['id'], /* 'kpt' => $kpt */));
+		$this->render('uploadFile', array('types' => $types, 'user_id' => $this->userInfo['id'], /* 'kpt' => $kpt */));
 	}
 
 	public function actionAdd($step=1) {

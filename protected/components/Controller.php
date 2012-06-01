@@ -45,6 +45,9 @@ class Controller extends CController {
 			$this->userInfo = unserialize($this->userInfo);
 		}
 
+        if (isset($_GET['mini'])){
+            $this->layout='mini';
+        }
 		if (Yii::app()->detectMobileBrowser->showMobile) {
 			$this->layout = 'mobile';
 		}

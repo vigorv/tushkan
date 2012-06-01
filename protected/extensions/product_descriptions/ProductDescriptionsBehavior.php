@@ -4,7 +4,7 @@ class ProductDescriptionsBehavior extends CActiveRecordBehavior
 {
 	public $description;
 
-	public function afterSave()
+	public function afterSave($event)
 	{
 		if (!empty($this->getOwner()->id))
 		{

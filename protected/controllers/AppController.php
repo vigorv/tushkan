@@ -121,7 +121,7 @@ class AppController extends ControllerApp {
         if (Yii::app()->user->id){
             if (isset($_POST['fc_id'])){
                 $fc_id = (int) $_POST['fc_id'];
-                $list = CUserObjects::model()->findByPk($fc_id);
+                $list = CUserObjects::model()->getVtrItem($fc_id, Yii::app()->user->id);
                 $data = array('title'=>$list->title);
                 echo json_encode(array('FilmList'=>"OK",'Data'=>$data));
             } else{
@@ -163,13 +163,13 @@ class AppController extends ControllerApp {
     }
 
     public function actionGetDirTree() {
-        $dirs = CUserfiles::model()->getDirTree($user_id);
+        //$dirs = CUserfiles::model()->getDirTree($user_id);
 
     }
 
     public function actionGetFileList() {
         $pid = 0;
-        $files = CUserfiles::model()->getFileList($this->user_id, $pid);
+      //  $files = CUserfiles::model()->getFileList($this->user_id, $pid);
 
     }
 

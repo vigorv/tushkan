@@ -10,7 +10,7 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 	 * и значения параметров для всех вариантов продукта
 	 *
 	 */
-	public function afterSave()
+	public function afterSave($event)
 	{
 
 		if (!empty($this->getOwner()->id))

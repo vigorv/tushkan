@@ -182,7 +182,7 @@ class UniverseController extends Controller {
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
 //$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
 
-		$this->render('upload', array('types' => $types, 'user_id' => $this->userInfo['id'], /* 'kpt' => $kpt */));
+		$this->render('uploadFile', array('types' => $types, 'user_id' => $this->userInfo['id'], /* 'kpt' => $kpt */));
 	}
 
 	public function actionAdd($step=1) {
@@ -278,7 +278,7 @@ class UniverseController extends Controller {
 				}
 
 				$type_id = Utils::getSectionIdByAlias($lib);
-				$productsInfo = CProduct::getUserProducts($this->user_id,$type_id);
+				$productsInfo = CProduct::model()->getUserProducts($this->user_id,$type_id);
 				$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
 				$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
 				$this->render('library', array('mb_content_items' => $mb_content_items,

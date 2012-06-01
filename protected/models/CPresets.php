@@ -22,7 +22,7 @@ class CPresets {
 	}
     }
 
-    public function getPresets() {
+    public static function getPresets() {
     	$presets = array(
     		'unknown'	=> array('id' => 1, 'title' => 'unknown'),
     		'low'		=> array('id' => 2, 'title' => 'low'),

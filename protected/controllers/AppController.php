@@ -33,7 +33,7 @@ class AppController extends ControllerApp {
 
         // TO DO : $_POST instead $_REQUEST
 
-        if(isset($_REQUEST['username'])){
+        if(isset($_REQUEST['username']) && isset($_REQUEST['password']))){
             $username = filter_var($_REQUEST['username']);
             $password = filter_var($_REQUEST['password']);
             $identity = new UserIdentityApp($username, $password);

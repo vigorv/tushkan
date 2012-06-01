@@ -110,9 +110,9 @@ class AppController extends ControllerApp {
         if (Yii::app()->user->id){
             $list = CUserObjects::model()->getVtrList(Yii::app()->user->id,1);
          //   $list_=
-         echo json_encode(array('FilmList'=>"OK",'Data'=>$list));
+         echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list));
         } else{
-            echo json_encode(array('FilmList'=>'Error','Error'=>"Need to Login"));
+            echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
         }
 
     }
@@ -123,12 +123,12 @@ class AppController extends ControllerApp {
                 $fc_id = (int) $_POST['fc_id'];
                 $list = CUserObjects::model()->getVtrItem($fc_id, Yii::app()->user->id);
                 $data = array('title'=>$list->title);
-                echo json_encode(array('FilmList'=>"OK",'Data'=>$data));
+                echo json_encode(array('cmd'=>"FilmData",'error'=>0,'Data'=>$data));
             } else{
-                echo json_encode(array('FilmList'=>"Error",'Error'=>"Unknown Film"));
+                echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Unknown item'));
             }
         } else{
-            echo json_encode(array('FilmList'=>'Error','Error'=>"Need to Login"));
+            echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Please Login'));
         }
     }
 

@@ -937,11 +937,12 @@ class ProductsController extends Controller
 						//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
 						for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
 						{
+							$onlineOnly = (!empty($info['just_online']));
 							if (empty($info['ovids'][$nfj]))
 								$info['ovids'][$nfj] = 0;
 							$vInfo = array(
 								'product_id'	=> $pInfo['id'],
-								'online_only'	=> 0,
+								'online_only'	=> intval($onlineOnly),
 								//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
 								'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
 								'active'		=> 0,

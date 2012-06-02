@@ -22,7 +22,7 @@ class CPartners extends CActiveRecord {
 	return parent::model($className);
     }
 
-    public function getPartners()
+    public static function getPartners()
     {
     	$partners = array(
     		1	=> array('id' => 1, 'title' => 'vxq', 'url' => 'http://videoxq.com', 'type_id' => 1),//type_id - какого типа контент предоставляет партнер (см. таблицу dm_product_types)
@@ -40,7 +40,7 @@ class CPartners extends CActiveRecord {
      *
      */
 
-    public function getPartnerList(){
+    public static function getPartnerList(){
 	return Yii::app()->db->createCommand()
 		->select('title,id')
 		->from('{{partners}}')

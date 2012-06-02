@@ -131,7 +131,7 @@ class AppController extends ControllerApp {
                                         $link = 'http://212.20.62.34:82/' . $res['fname'][0].'/'.$res['fname'];
                                         break;
                                     case 1:
-                                         $fn = basename($res['fname'],PATHINFO_BASENAME);
+                                         $fn = basename($res['fname'],PATHINFO_FILENAME);
                                          $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 1);
                                     break;
                                    default:

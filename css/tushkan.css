@@ -1,6 +1,6 @@
 .chess, .glue { float: left; clear: right; margin:3px; width:180px; }
 .chess { width:220px; }
-.chess img { margin-right: 8px; margin-bottom: 5px; }
+.chess img { margin-right: 8px; margin-bottom: 5px; width:80px; height:120px; }
 
 #productdetail { margin:3px; }
 #productdetail img { margin-right: 8px; margin-bottom: 5px; }

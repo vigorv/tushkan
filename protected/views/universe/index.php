@@ -40,7 +40,7 @@
 				{
 					$poster = '/images/films/noposter.jpg';
 				}
-				echo '<img align="left" width="80" src="' . $poster . '" />';
+				echo '<img align="left" width="80" height="120" src="' . $poster . '" />';
 				echo '<b>' . $f['title'] . '</b>';
 				echo '</a></div>';
 			}

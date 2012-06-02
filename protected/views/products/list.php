@@ -49,7 +49,7 @@
 			if (!empty($info['14']))
 				$prms[] = $info['14'];
 			echo '<div class="chess">
-				<img width="80" align="left" src="' . $poster . '" />
+				<img width="80" height="120" align="left" src="' . $poster . '" />
 				' . $info['partner'] . '
 				<a href="/products/view/' . $info['id'] . '">' . $info['title'] . '</a>
 				<br />' . implode(', ', $prms) . '

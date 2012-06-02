@@ -27,7 +27,7 @@ if (!empty($prms))
 	}
 </script>
 <?php
-	echo '<div class="chess">';
+	echo '<div class="productdetail">';
 	if (!empty($params['poster']))
 	{
 		$poster = $params['poster'];

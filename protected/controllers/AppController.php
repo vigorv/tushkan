@@ -138,7 +138,7 @@ class AppController extends ControllerApp {
                                        echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'unknown parnter'));
                                        Yii:app()->end();
                                 }
-                                $data = array('title'=>$res['title'],'poster'=>$res['poster'],'link'=>$link);
+                                $data = array('title'=>$res['title'],'poster'=>$res['poster'],'link'=>$link,'description'=>$res['description']);
                                 echo json_encode(array('cmd'=>"FilmData",'error'=>0,'Data'=>$data));
 
                             }

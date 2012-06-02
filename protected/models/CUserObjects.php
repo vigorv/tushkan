@@ -79,7 +79,7 @@ class CUserObjects extends CActiveRecord
 
     public function getVtrItemA($item_id=0,$user_id=0){
       return Yii::app()->db->createCommand()
-          ->select('tf.title,tf.id,pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname')
+          ->select('tf.title,tf.id,pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description')
           ->from('{{typedfiles}} tf')
           ->join('{{product_variants}} pv','pv.id = tf.variant_id')
           ->join('{{products}} p', ' p.id = pv.product_id')
@@ -87,6 +87,7 @@ class CUserObjects extends CActiveRecord
             //links in the ass
             // 10 - poster
           ->leftJoin('{{variant_qualities}} vq',' vq.variant_id = pv.id')
+          ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
           ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2' )
           ->where('tf.user_id =' . $user_id .' AND tf.id =  '.$item_id)->limit(1)->query();
     }

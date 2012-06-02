@@ -32,7 +32,7 @@ class CPartners extends CActiveRecord {
     	return $partners;
     }
 
-    public static function tableName() {
+    public function tableName() {
 	return '{{partners}}';
     }
 

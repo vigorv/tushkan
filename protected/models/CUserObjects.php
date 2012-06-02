@@ -70,7 +70,7 @@ class CUserObjects extends CActiveRecord
             ->join('{{product_variants}} pv','pv.id = tf.variant_id')
     //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
             // Posters somewhere in the ass
-            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND pv.param_id = 10')
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->where('tf.user_id =' . $user_id . $type_str)
             ->limit($count, $offset)
             ->queryAll();

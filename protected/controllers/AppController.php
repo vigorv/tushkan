@@ -116,11 +116,15 @@ class AppController extends ControllerApp {
 
     public function actionFilmData(){
         if (Yii::app()->user->id){
-            if (isset($_POST['fc_id'])){
-                $fc_id = (int) $_POST['fc_id'];
+            if (isset($_REQUEST['fc_id'])){
+                $fc_id = (int) $_REQUEST['fc_id'];
                 $list = CUserObjects::model()->getVtrItem($fc_id, Yii::app()->user->id);
-                $data = array('title'=>$list->title);
-                echo json_encode(array('cmd'=>"FilmData",'error'=>0,'Data'=>$data));
+                if ($list){
+                    $data = array('title'=>$list->title,'poster'=>$list->poster,'link'=>$list->link);
+
+                    echo json_encode(array('cmd'=>"FilmData",'error'=>0,'Data'=>$data));
+                }
+                    else json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Not found'));
             } else{
                 echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Unknown item'));
             }
@@ -138,6 +142,7 @@ class AppController extends ControllerApp {
            // $categoryList['Audio']=0;
            // $categoryList['Docs']=1;
             $result['list']=$categoryList;
+
             echo json_encode($result);
             Yii::app()->end();
         }else{

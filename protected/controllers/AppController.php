@@ -118,13 +118,35 @@ class AppController extends ControllerApp {
         if (Yii::app()->user->id){
             if (isset($_REQUEST['fc_id'])){
                 $fc_id = (int) $_REQUEST['fc_id'];
-                $list = CUserObjects::model()->getVtrItem($fc_id, Yii::app()->user->id);
-                if ($list){
-                    $data = array('title'=>$list->title,'poster'=>$list->poster,'link'=>$list->link);
+                $list = CUserObjects::model()->getVtrItemA($fc_id, Yii::app()->user->id);
+                if ($res = $list->read()){
+                            if($res['fname']){
+                                $partnerInfo = Yii::app()->db->createCommand()
+                                    ->select('prt.id, prt.title, prt.sprintf_url, p.original_id')
+                                    ->from('{{products}} p')
+                                    ->join('{{partners}} prt', 'prt.id = p.partner_id')
+                                    ->where('p.id = ' . $res['product_id'])->queryRow();
+                                switch($res['partner_id']){
+                                    case 2:
+                                        $link = 'http://212.20.62.34:82/' . $res['fname'][0].'/'.$res['fname'];
+                                        break;
+                                    case 1:
+                                         $fn = basename($res['fname'],PATHINFO_FILENAME);
+                                         $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 1);
+                                    break;
+                                   default:
+                                       echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'unknown parnter'));
+                                       Yii:app()->end();
+                                }
+                                $data = array('title'=>$res['title'],'poster'=>$res['poster'],'link'=>$link);
+                                echo json_encode(array('cmd'=>"FilmData",'error'=>0,'Data'=>$data));
 
-                    echo json_encode(array('cmd'=>"FilmData",'error'=>0,'Data'=>$data));
-                }
-                    else json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Not found'));
+                            }
+                            else
+                                echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Not found file'));
+                        }
+                         else
+                            echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Not found partner data'));
             } else{
                 echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Unknown item'));
             }

@@ -65,9 +65,12 @@ class CUserObjects extends CActiveRecord
         } else
             $type_str = '';
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id')
+            ->select('tf.title,tf.id, ppv.value as poster')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv','pv.id = tf.variant_id')
+    //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
+            // Posters somewhere in the ass
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND pv.param_id = 10')
             ->where('tf.user_id =' . $user_id . $type_str)
             ->limit($count, $offset)
             ->queryAll();
@@ -75,9 +78,13 @@ class CUserObjects extends CActiveRecord
 
     public function getVtrItem($item_id=0,$user_id=0){
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id')
+            ->select('tf.title,tf.id ppv.value as poster')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv','pv.id = tf.variant_id')
+            //links in the ass too
+            // 10 - poster
+            // 4
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND pv.param_id = 10')
             ->where('tf.user_id =' . $user_id .' AND tf.id =  '.$item_id)->queryRow();
     }
 }

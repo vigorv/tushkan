@@ -21,9 +21,6 @@ class AppController extends ControllerApp {
             }
     }
     public function actionLogin() {
-
-
-
         /*
         if (!Yii::app()->user->isGuest) {
             echo json_encode(array('Login'=>'OK'));

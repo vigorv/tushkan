@@ -18,6 +18,7 @@ class AppController extends ControllerApp {
     public function actionError() {
         if($error=Yii::app()->errorHandler->error) {
             echo json_encode(array("Error"=>$error));
+           /// echo"<html><body><pre>".var_dump($error)."</pre></body><html>";
             }
     }
     public function actionLogin() {
@@ -116,7 +117,7 @@ class AppController extends ControllerApp {
 
     public function actionFilmSearch(){
         if (Yii::app()->user->id && isset($_REQUEST['search'])){
-            $search = filter_var($_POST['search'],FILTER_SANITIZE_STRING);
+            $search = filter_var($_REQUEST['search'],FILTER_SANITIZE_STRING);
             $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1);
             $count = CAppHandler::countFoundProducts($search,Yii::app()->user->id,1);
 

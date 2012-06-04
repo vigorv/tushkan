@@ -106,8 +106,9 @@ class AppController extends ControllerApp {
     public function actionFilmList(){
         if (Yii::app()->user->id){
             $list = CAppHandler::getVtrList(Yii::app()->user->id,1);
+            $count = CAppHandler::countVtrList(Yii::app()->user->id,1);
          //   $list_=
-         echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list));
+         echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count));
         } else{
             echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
         }
@@ -117,7 +118,10 @@ class AppController extends ControllerApp {
         if (Yii::app()->user->id && isset($_POST['search'])){
             $search = filter_var($_POST['search'],FILTER_SANITIZE_STRING);
             $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1);
-            echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list));
+            $count = CAppHandler::countFoundProducts($search,Yii::app()->user->id,1);
+
+
+            echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count));
         } else{
             echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
         }

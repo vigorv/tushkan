@@ -29,6 +29,22 @@ class CAppHandler
             ->queryAll();
     }
 
+    public static function countVtrList($user_id, $type_id = -1)
+    {
+
+        if ($type_id >= 0) {
+            $type_str = ' AND pv.type_id=' . $type_id;
+        } else
+            $type_str = '';
+        return Yii::app()->db->createCommand()
+            ->select('count(tf.id) as count')
+            ->from('{{typedfiles}} tf')
+            ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->where('tf.user_id =' . $user_id . $type_str)
+            ->queryScalar();
+    }
+
 
     public static function getVtrItemA($item_id = 0, $user_id = 0)
     {
@@ -72,6 +88,22 @@ class CAppHandler
             ->where('tf.user_id =' . $user_id . $type_str.' AND tf.title LIKE "%'.$search.'%"')
             ->limit($count, $offset)
             ->queryAll();
+    }
+
+    public static function countFoundProducts($search=' ', $user_id =0, $type_id =-1 ){
+        if ($type_id >= 0) {
+            $type_str = ' AND pv.type_id=' . $type_id;
+        } else
+            $type_str = '';
+        return Yii::app()->db->cache(50)->createCommand()
+            ->select('count(tf.id)as count')
+            ->from('{{typedfiles}} tf')
+            ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
+        //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
+        // Posters somewhere in the ass
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->where('tf.user_id =' . $user_id . $type_str.' AND tf.title LIKE "%'.$search.'%"')
+            ->queryScalar();
     }
 
 

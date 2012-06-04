@@ -105,7 +105,7 @@ class AppController extends ControllerApp {
 
     public function actionFilmList(){
         if (Yii::app()->user->id){
-            $list = CAppHandler::model()->getVtrList(Yii::app()->user->id,1);
+            $list = CAppHandler::getVtrList(Yii::app()->user->id,1);
          //   $list_=
          echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list));
         } else{
@@ -127,7 +127,7 @@ class AppController extends ControllerApp {
         if (Yii::app()->user->id){
             if (isset($_REQUEST['fc_id'])){
                 $fc_id = (int) $_REQUEST['fc_id'];
-                $list = CAppHandler::model()->getVtrItemA($fc_id, Yii::app()->user->id);
+                $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id);
                 if ($res = $list->read()){
                             if($res['fname']){
                                 $partnerInfo = Yii::app()->db->createCommand()

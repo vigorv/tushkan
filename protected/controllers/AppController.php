@@ -105,20 +105,29 @@ class AppController extends ControllerApp {
 
     public function actionFilmList(){
         if (Yii::app()->user->id){
-            $list = CUserObjects::model()->getVtrList(Yii::app()->user->id,1);
+            $list = CAppHandler::model()->getVtrList(Yii::app()->user->id,1);
          //   $list_=
          echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list));
         } else{
             echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
         }
+    }
 
+    public function actionFilmSearch(){
+        if (Yii::app()->user->id && isset($_POST['search'])){
+            $search = filter_var($_POST['search'],FILTER_SANITIZE_STRING);
+            $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1);
+            echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list));
+        } else{
+            echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
+        }
     }
 
     public function actionFilmData(){
         if (Yii::app()->user->id){
             if (isset($_REQUEST['fc_id'])){
                 $fc_id = (int) $_REQUEST['fc_id'];
-                $list = CUserObjects::model()->getVtrItemA($fc_id, Yii::app()->user->id);
+                $list = CAppHandler::model()->getVtrItemA($fc_id, Yii::app()->user->id);
                 if ($res = $list->read()){
                             if($res['fname']){
                                 $partnerInfo = Yii::app()->db->createCommand()
@@ -169,11 +178,21 @@ class AppController extends ControllerApp {
             Yii::app()->end();
         }else{
             $result=array("Cat_list"=>"OK");
+        }
+    }
+
+    public function actionGetWindow($wid=0){
+        if ($wid==0){
+            //Display list
+
+        } else{
+            //Display window list
+//            $list = CProduct::model()->getProductList();
 
         }
 
-
     }
+
 
 
     public function actionGetSettings(){

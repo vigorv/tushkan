@@ -115,11 +115,10 @@ class AppController extends ControllerApp {
     }
 
     public function actionFilmSearch(){
-        if (Yii::app()->user->id && isset($_POST['search'])){
+        if (Yii::app()->user->id && isset($_REQUEST['search'])){
             $search = filter_var($_POST['search'],FILTER_SANITIZE_STRING);
             $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1);
             $count = CAppHandler::countFoundProducts($search,Yii::app()->user->id,1);
-
 
             echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count));
         } else{

@@ -121,7 +121,7 @@ class AppController extends ControllerApp {
             $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1);
             $count = CAppHandler::countFoundProducts($search,Yii::app()->user->id,1);
 
-            echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count));
+            echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count,'search'=>$search));
         } else{
             echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
         }

@@ -17,7 +17,9 @@ class AppController extends ControllerApp {
 
     public function actionError() {
         if($error=Yii::app()->errorHandler->error) {
-            echo json_encode(array("Error"=>$error));
+           // echo json_encode(array("Error"=>$error));
+           /// echo"<html><body><pre>".var_dump($error)."</pre></body><html>";
+            var_dump ($error);
             }
     }
     public function actionLogin() {
@@ -105,20 +107,45 @@ class AppController extends ControllerApp {
 
     public function actionFilmList(){
         if (Yii::app()->user->id){
-            $list = CUserObjects::model()->getVtrList(Yii::app()->user->id,1);
-         //   $list_=
-         echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list));
+            $per_page = 10;
+            if (isset($_POST['offset'])){
+
+                $page = (int)((int)$_POST['offset'] / $per_page) + 1;
+            } else{
+                $page =0;
+            }
+            $list = CAppHandler::getVtrList(Yii::app()->user->id,1,$page,$per_page);
+            $total_count = CAppHandler::countVtrList(Yii::app()->user->id,1);
+            $count = count ($list);
+         echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count,'total_count'=>$total_count));
         } else{
             echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
         }
+    }
 
+    public function actionFilmSearch(){
+        if (Yii::app()->user->id && isset($_REQUEST['search'])){
+            $per_page = 10;
+            if (isset($_POST['offset'])){
+                $page = (int)((int)$_POST['offset'] / $per_page) + 1;
+            } else{
+                $page =0;
+            }
+            $search = filter_var($_REQUEST['search'],FILTER_SANITIZE_STRING);
+            $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1,$page,$per_page);
+            $total_count = CAppHandler::countFoundProducts($search,Yii::app()->user->id,1);
+            $count = count($list);
+            echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'total_count'=>$total_count, 'count'=>$count,'search'=>$search));
+        } else{
+            echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
+        }
     }
 
     public function actionFilmData(){
         if (Yii::app()->user->id){
             if (isset($_REQUEST['fc_id'])){
                 $fc_id = (int) $_REQUEST['fc_id'];
-                $list = CUserObjects::model()->getVtrItemA($fc_id, Yii::app()->user->id);
+                $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id);
                 if ($res = $list->read()){
                             if($res['fname']){
                                 $partnerInfo = Yii::app()->db->createCommand()
@@ -155,6 +182,26 @@ class AppController extends ControllerApp {
         }
     }
 
+    public function actionPartnerList(){
+        if (Yii::app()->user->id){
+            $list = CAppHandler::getPartnerList();
+            $count = count($list);
+            $total_count =$count;
+            foreach ($list as $item){
+                $item['image']='';
+            }
+            echo json_encode(array('cmd'=>"PartnerList",'error'=>0, 'Data'=>$list,'count'=>$count,'total_count'=>$total_count));
+        }
+        else{
+            json_encode(array('cmd'=>"PartnerList","error"=>1,"error_msg"=>'Please login'));
+        }
+    }
+
+    public function actionSearchPartners(){
+
+    }
+
+
     public function actionGetList($cid=0){
         //Echo Categories
         if($cid==0){
@@ -169,11 +216,21 @@ class AppController extends ControllerApp {
             Yii::app()->end();
         }else{
             $result=array("Cat_list"=>"OK");
+        }
+    }
+
+    public function actionGetWindow($wid=0){
+        if ($wid==0){
+            //Display list
+
+        } else{
+            //Display window list
+//            $list = CProduct::model()->getProductList();
 
         }
 
-
     }
+
 
 
     public function actionGetSettings(){

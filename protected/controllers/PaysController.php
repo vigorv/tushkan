@@ -168,7 +168,7 @@ class PaysController extends Controller
 	 * @param mixed $info (массив должен содержать индексы date, user_id, summa)
 	 * @return string
 	 */
-	public function createPaymentHash($info)
+	public static function createPaymentHash($info)
 	{
 		return md5($info['date'] . $info['summa'] . $info['user_id']);
 	}

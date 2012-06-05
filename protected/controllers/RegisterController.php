@@ -477,11 +477,11 @@ class RegisterController extends Controller {
 					 	)
 					{
 						//ЗАПУСКАЕМ ПРОЦЕДУРУ ОТЛОЖЕННОГО ПЕРЕКЛЮЧЕНИЯ
-						Yii::app()->user->setFlash('success', Yii::t('users', 'Request for change of tariff approved'));
+						//Yii::app()->user->setFlash('success', Yii::t('users', 'Request for change of tariff approved'));
 						if ($tariff['id'] == $curTariffRelation['id'])
 						{
 							$tariff['id'] = 0; //ОТКАЗ ОТ СМЕНЫ ТАРИФА
-							Yii::app()->user->setFlash('success', Yii::t('users', 'Request for change of tariff canceled'));
+							//Yii::app()->user->setFlash('success', Yii::t('users', 'Request for change of tariff canceled'));
 						}
 						$sql = 'UPDATE {{tariffs_users}} SET switch_to = ' . $tariff['id'] . ' WHERE user_id = ' . $userId . ' AND tariff_id = ' . $curTariffRelation['id'];
 						Yii::app()->db->createCommand($sql)->execute();

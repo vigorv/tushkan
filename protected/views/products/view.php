@@ -367,6 +367,7 @@ exit;
 				{
 					foreach ($presets as $p)
 					{
+						$tr = '';
 						if ($p['id'] == $q['preset_id'])
 						{
 							$actions = ''; //ДЕЙСТВИЯ ДЛЯ КАЧЕСТВА
@@ -388,12 +389,19 @@ exit;
 								$actions = getViewActions($qs, $orders, $actualRents, $qualities, $typedFiles, $presets, $q['id'], $q['preset_id']);
 							}
 //ВЫВОД ДЕЙСТВИЙ ДЛЯ КАЧЕСТВА
-							$aContent .= '<tr><td></td><td></td><td>Качество: ' . $p['title'] . ' ' . $actions . '</td></tr>';
+							$tr = '<tr><td></td><td></td><td>Качество: ' . $p['title'] . ' ' . $actions . '</td></tr>';
+							if (empty($actions))
+								break;
+
+							$aContent .= $tr;
+							$tr = '';
 							break;
 						}
 					}
 				}
 			}
+			if (!empty($tr))
+				$aContent .= $tr;//ЕСЛИ ДЕЙСТВИЙ ДЛЯ КАЧЕСТВА НЕТ ВЫВОДИМ ТОЛЬКО НАЗВАНИЕ ЛУЧШЕГО КАЧЕСТВА
 
 			if (empty($variantQualityCnt))
 			{

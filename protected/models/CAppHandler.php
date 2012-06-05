@@ -114,7 +114,7 @@ class CAppHandler
         return Yii::app()->db->createCommand()
         ->select('title,id')
         ->from('{{partners}}')
-        ->where('active=1')
+        ->where('active < 1')
         ->queryAll();
     }
 

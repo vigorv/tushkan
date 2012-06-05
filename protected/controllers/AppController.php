@@ -17,8 +17,9 @@ class AppController extends ControllerApp {
 
     public function actionError() {
         if($error=Yii::app()->errorHandler->error) {
-            echo json_encode(array("Error"=>$error));
+           // echo json_encode(array("Error"=>$error));
            /// echo"<html><body><pre>".var_dump($error)."</pre></body><html>";
+            var_dump ($error);
             }
     }
     public function actionLogin() {
@@ -167,6 +168,26 @@ class AppController extends ControllerApp {
             echo json_encode(array('cmd'=>"FilmData",'error'=>1,'error_msg'=> 'Please Login'));
         }
     }
+
+    public function actionPartnerList(){
+        if (Yii::app()->user->id){
+            $list = CAppHandler::getPartnerList();
+            $count = count($list);
+            $total_count =$count;
+            foreach ($list as $item){
+                $item['image']='';
+            }
+            echo json_encode(array('cmd'=>"PartnerList",'error'=>0, 'Data'=>$list,'count'=>$count,'total_count'=>$total_count));
+        }
+        else{
+            json_encode(array('cmd'=>"PartnerList","error"=>1,"error_msg"=>'Please login'));
+        }
+    }
+
+    public function actionSearchPartners(){
+
+    }
+
 
     public function actionGetList($cid=0){
         //Echo Categories

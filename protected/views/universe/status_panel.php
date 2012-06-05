@@ -60,9 +60,9 @@ $balance.=' руб';
 		<a  class="dropdown-toggle btn btn-small" data-toggle="dropdown" href="#">
 			<i class=' icon-shopping-cart'></i> <?= Yii::t('users', 'Goods'); ?></a>
 		<ul class="dropdown-menu">
-			<li><a class="l_ajax" href="/products"><?= Yii::t('common', 'All'); ?></a></li>
+			<li><a class="l_ajax" href="/products"><?php echo Yii::t('common', 'All'); ?></a></li>
 			<?php foreach ($partners as $partner): ?>
-				<li>  <a class="l_ajax" href="/products/partner/<?= $partner['id']; ?>"><?= $partner['title']; ?></a></li>
+				<li>  <a class="l_ajax" href="/products/partner/<?php echo $partner['id']; ?>"><?php echo $partner['title']; ?></a></li>
 			<?php endforeach; ?>
 		</ul></li>
 

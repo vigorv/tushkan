@@ -107,8 +107,9 @@ class AppController extends ControllerApp {
 
     public function actionFilmList(){
         if (Yii::app()->user->id){
+            $per_page = 10;
             if (isset($_POST['offset'])){
-                $per_page = 10;
+
                 $page = (int)((int)$_POST['offset'] / $per_page) + 1;
             } else{
                 $page =0;
@@ -124,8 +125,8 @@ class AppController extends ControllerApp {
 
     public function actionFilmSearch(){
         if (Yii::app()->user->id && isset($_REQUEST['search'])){
+            $per_page = 10;
             if (isset($_POST['offset'])){
-                $per_page = 10;
                 $page = (int)((int)$_POST['offset'] / $per_page) + 1;
             } else{
                 $page =0;

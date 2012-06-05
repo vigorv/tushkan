@@ -107,7 +107,13 @@ class AppController extends ControllerApp {
 
     public function actionFilmList(){
         if (Yii::app()->user->id){
-            $list = CAppHandler::getVtrList(Yii::app()->user->id,1);
+            if (isset($_POST['offset'])){
+                $per_page = 10;
+                $page = (int)((int)$_POST['offset'] / $per_page) + 1;
+            } else{
+                $page =0;
+            }
+            $list = CAppHandler::getVtrList(Yii::app()->user->id,1,$page,$per_page);
             $total_count = CAppHandler::countVtrList(Yii::app()->user->id,1);
             $count = count ($list);
          echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count,'total_count'=>$total_count));
@@ -118,8 +124,14 @@ class AppController extends ControllerApp {
 
     public function actionFilmSearch(){
         if (Yii::app()->user->id && isset($_REQUEST['search'])){
+            if (isset($_POST['offset'])){
+                $per_page = 10;
+                $page = (int)((int)$_POST['offset'] / $per_page) + 1;
+            } else{
+                $page =0;
+            }
             $search = filter_var($_REQUEST['search'],FILTER_SANITIZE_STRING);
-            $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1);
+            $list = CAppHandler::findUserProducts($search,Yii::app()->user->id,1,$page,$per_page);
             $total_count = CAppHandler::countFoundProducts($search,Yii::app()->user->id,1);
             $count = count($list);
             echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'total_count'=>$total_count, 'count'=>$count,'search'=>$search));

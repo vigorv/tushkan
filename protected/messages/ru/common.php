@@ -28,6 +28,7 @@ return array (
   'Partners' 				=> 'Партнеры, витрины',
   'Partner' 				=> 'Партнер',
   'Products' 				=> 'Продукты',
+  'product' 				=> 'продукт',
   'Tariffs' 				=> 'Тарифы',
   'Tariff' 					=> 'Тариф',
   'Pages' 					=> 'Текстовые страницы',

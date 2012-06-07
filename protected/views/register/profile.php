@@ -39,11 +39,15 @@ if (!empty($tariff))
 	{
 		echo'<p>Сменить тариф: ' .
 			CHtml::dropDownList('tariff_id', '', $tLst, array('id' => 'tariffSelectId')) .
-			CHtml::button(Yii::t('common', 'Choose'), array('onclick' => 'return setTariff();')). '</p>';
+			CHtml::button(Yii::t('common', 'Choose'), array('onclick' => 'return setTariff();')). '
+			<br /><i>Внимание! При смене тарифа, с вашего счета будет немедленно списана абонентская плата за сутки по новому тарифу</i>
+			</p>';
 	}
 	if (!empty($newTariff))
 	{
-		echo '<p>Вы собираетесь сменить тариф на "' . $newTariff['title'] . '" (' . $newTariff['price'] . ' ' . $currency . ')</p>';
+		echo '<p>Вы собираетесь сменить тариф на "' . $newTariff['title'] . '" (' . $newTariff['price'] . ' ' . $currency . ')
+		<br /><i>Тариф сменится на желаемый автоматически, при положительном балансе</i>
+		</p>';
 	}
 
 	echo '<h3>Ваше пространство ' . Utils::sizeFormat($tariff['size_limit'] * _MB_) . ' , свободно ' . Utils::sizeFormat($info['free_limit'] * _MB_) . '</h3>';

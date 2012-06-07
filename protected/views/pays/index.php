@@ -1,3 +1,10 @@
+<?php
+/*
+	echo '<pre>';
+	print_r($orders);
+	echo '</pre>';
+*/
+?>
 <form id="payPeriodForm" action="/pays/index" method="get" onsubmit="return doSubmit(this);">
 <h3><?php echo Yii::t('common', 'Over a period');?>
 	<a href="/pays/index/from/<?php echo date('Y-m-d', time() - 3600*24*7);?>"><?php echo Yii::t('common', 'week');?></a> |
@@ -22,7 +29,18 @@
 		echo '<p>Списания';
 		foreach ($debits as $d)
 		{
-			echo '<br />' . $d['created'] . ' - ' . $operations[$d['operation_id']] . ', ' . Yii::t('orders', 'Sum') . ': ' . sprintf("%01.2f", $d['summa']) . ' ' . Yii::t('pays', _CURRENCY_);
+			$orderDetail = array();
+			foreach ($orders as $o)
+			{
+				if ($o['id'] == $d['id'])
+				{
+					$doing = Yii::t('pays', 'Bought');
+					if (!empty($o['rent_id']))
+						$doing = Yii::t('pays', 'Rented');
+					$orderDetail[] = $doing . ' ' . Yii::t('common', 'product') . ' "' . $o['title'] . '"';
+				}
+			}
+			echo '<br />' . $d['created'] . ' - ' . $operations[$d['operation_id']] . ', ' . Yii::t('orders', 'Sum') . ': ' . sprintf("%01.2f", $d['summa']) . ' ' . Yii::t('pays', _CURRENCY_) . ' ' . implode(', ', $orderDetail);
 		}
 		echo '</p>';
 	}

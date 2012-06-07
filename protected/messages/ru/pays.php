@@ -9,6 +9,8 @@ return array(
 	'rur'			=> 'руб.',
 	'Buying'		=> 'Купить',
 	'Renting'		=> 'Арендовать',
+	'Bought'		=> 'Куплен',
+	'Rented'		=> 'Арендован',
 
 	'Payment initialisation error'	=> 'Ошибка инициализации оплаты',
   	'Payment processed successfully'=> 'Платеж выполнен успешно',

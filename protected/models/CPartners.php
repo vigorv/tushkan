@@ -41,10 +41,12 @@ class CPartners extends CActiveRecord {
      */
 
     public static function getPartnerList(){
-	return Yii::app()->db->createCommand()
+    	$userPower = Yii::app()->user->getState('dmUserPower');
+
+		return Yii::app()->db->createCommand()
 		->select('title,id')
 		->from('{{partners}}')
-		->where('active=1')
+		->where('active <= ' . $userPower)
 		->queryAll();
     }
 

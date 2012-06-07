@@ -157,11 +157,17 @@ exit;
 		{
 //$v[0] = 'http://92.63.192.12:83/l/little_caesar/270/little_caesar.mp4';//ОТЛАДКА
 //$v[0] = 'http://92.63.192.12:83' . $v[0];
+			$numF = '';
+			if (count($val) > 1)
+			{
+				$numF = 'файл ' . $num;
+			}
+
 			if (empty($partnerInfo['sprintf_url']))
 			{
 				$v[0] = 'http://212.20.62.34:82' . $v[0];
-				$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн файл ' . $num . '</button>';
-				$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать файл ' . $num . '</button>';
+				$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</button>';
+				$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</button>';
 			}
 			else
 			{
@@ -169,9 +175,9 @@ exit;
 				$pathInfo = pathinfo($v[0]);
 				$fn = str_replace('.' . $pathInfo['extension'], '', $pathInfo['basename']);
 				$v[0] = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], $k, $fn, 1);
-				$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн файл ' . $num . '</button>';
+				$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</button>';
 				$v[0] = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], $k, $fn, 0);
-				$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать файл ' . $num . '</button>';
+				$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</button>';
 			}
 
 			if (empty($fid)) $fid = $v[1];

@@ -19,13 +19,13 @@ class PaysController extends Controller
 		{
 			$from = date('Y-m-d', strtotime($_GET['from']));
 			$fSql = $from . ' 00:00:00';
-			$conditions[] = 'created >= :from';
+			$conditions[] = 'o.created >= :from';
 		}
 		if (!empty($_GET['to']))
 		{
 			$to = date('Y-m-d', strtotime($_GET['to']));
 			$tSql = $to . ' 23:59:59';
-			$conditions[] = 'created <= :to';
+			$conditions[] = 'o.created <= :to';
 		}
 		if (!empty($conditions))
 		{
@@ -48,9 +48,9 @@ class PaysController extends Controller
 
 		$cmd = Yii::app()->db->createCommand()
 			->select('*')
-			->from('{{debits}}')
-			->where('user_id = ' . $this->userInfo['id'] . $conditions)
-			->order('created DESC');
+			->from('{{debits}} o')
+			->where('o.user_id = ' . $this->userInfo['id'] . $conditions)
+			->order('o.created DESC');
 		if (!empty($conditions))
 		{
 			if (!empty($fSql))
@@ -60,11 +60,30 @@ class PaysController extends Controller
 		}
 		$debits = $cmd->queryAll();
 
+		$orders = array();
+		if (!empty($debits))
+		{
+			//ВЫБИРАЕМ ЗАКАЗЫ ЗА ПЕРИОД
+			$cmd = Yii::app()->db->createCommand()
+				->select('o.id, oi.price_id, oi.rent_id, pv.title')
+				->from('{{debits}} o')
+				->join('{{order_items}} oi', 'oi.order_id = o.order_id')
+				->join('{{product_variants}} pv', 'oi.variant_id = pv.id')
+				->where('o.user_id = ' . $this->userInfo['id'] . $conditions);
+			if (!empty($conditions))
+			{
+				if (!empty($fSql))
+					$cmd->bindParam(':from', $fSql, PDO::PARAM_STR);
+				if (!empty($tSql))
+					$cmd->bindParam(':to', $tSql, PDO::PARAM_STR);
+			}
+			$orders = $cmd->queryAll();
+		}
 		$cmd = Yii::app()->db->createCommand()
 			->select('*')
-			->from('{{payments}}')
-			->where('operation_id = 1 AND user_id = ' . $this->userInfo['id'] . $conditions)
-			->order('created DESC');
+			->from('{{payments}} o')
+			->where('o.operation_id = 1 AND o.user_id = ' . $this->userInfo['id'] . $conditions)
+			->order('o.created DESC');
 		if (!empty($conditions))
 		{
 			if (!empty($fSql))
@@ -74,7 +93,7 @@ class PaysController extends Controller
 		}
 		$incs = $cmd->queryAll();
 
-		$this->render('/pays/index', array('balance' => $balance, 'debits' => $debits, 'incs' => $incs, 'from' => $from, 'to' => $to, 'operations' => $operations));
+		$this->render('/pays/index', array('balance' => $balance, 'debits' => $debits, 'incs' => $incs, 'from' => $from, 'to' => $to, 'operations' => $operations, 'orders' => $orders));
 	}
 
 	/**
@@ -168,7 +187,7 @@ class PaysController extends Controller
 	 * @param mixed $info (массив должен содержать индексы date, user_id, summa)
 	 * @return string
 	 */
-	public function createPaymentHash($info)
+	public static function createPaymentHash($info)
 	{
 		return md5($info['date'] . $info['summa'] . $info['user_id']);
 	}

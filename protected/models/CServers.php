@@ -36,6 +36,7 @@ class CServers extends CActiveRecord {
 	return parent::model($className);
     }
 
+
     public static function convertIpToString($ip) {
 	$long = 4294967295 - ($ip - 1);
 	return long2ip(-$long);
@@ -76,7 +77,7 @@ class CServers extends CActiveRecord {
 	$server = CServers::model()->findByAttributes($cond);
 	if ($server) {
 	    if ($server['alias'] == '')
-		return CServers::convertIpToString($server['ip']) . ':' . $server['port'];
+		return  $server['ip'] . ':' . $server['port'];
 	    else
 		return $server['alias'] . ':' . $server['port'];
 	} else
@@ -88,7 +89,7 @@ class CServers extends CActiveRecord {
      * @param type $zone
      * @return type 
      */
-        public function getServerFull($stype=0, $zone = 0) {
+    public function getServerFull($stype=0, $zone = 0) {
 	$cond = array();
 	if ($stype)
 	    $cond['stype'] = $stype;

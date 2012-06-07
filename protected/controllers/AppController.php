@@ -117,7 +117,7 @@ class AppController extends ControllerApp {
             $list = CAppHandler::getVtrList(Yii::app()->user->id,1,$page,$per_page);
             $total_count = CAppHandler::countVtrList(Yii::app()->user->id,1);
             $count = count ($list);
-         echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count,'total_count'=>$total_count));
+            echo json_encode(array('cmd'=>"FilmList",'error'=>0,'Data'=>$list,'count'=>$count,'total_count'=>$total_count));
         } else{
             echo json_encode(array('cmd'=>'FilmList','error'=>1,'error_msg' => 'Please login'));
         }
@@ -184,7 +184,7 @@ class AppController extends ControllerApp {
 
     public function actionPartnerList(){
         if (Yii::app()->user->id){
-            $list = CAppHandler::getPartnerList();
+            $list = CAppHandler::getPartnerList($this->userPower);
             $count = count($list);
             $total_count =$count;
             foreach ($list as $item){
@@ -195,6 +195,32 @@ class AppController extends ControllerApp {
         else{
             json_encode(array('cmd'=>"PartnerList","error"=>1,"error_msg"=>'Please login'));
         }
+    }
+
+    public function actionPartnerInfo($id=0){
+        if (Yii::app()->user->id){
+            $partner_id = int($id);
+            if ($partner_id){
+            $list = CAppHandler::getPartnerProductsForUser($partner_id);
+            $count = count($list);
+            $total_count =$count;
+             foreach ($list as $item){
+                 $item['image']='';
+             }
+               echo json_encode(array('cmd'=>"PartnerData",'error'=>0, 'Data'=>$list,'count'=>$count,'total_count'=>$total_count));
+            }
+        }
+    }
+
+    public function actionPartnerSearch(){
+        if (Yii::app()->user->id && isset($_REQUEST['search'])){
+            $per_page = 10;
+            if (isset($_POST['offset'])){
+                $page = (int)((int)$_POST['offset'] / $per_page) + 1;
+            } else{
+                $page =0;
+            }
+            $search = filter_var($_REQUEST['search'],FILTER_SANITIZE_STRING);
     }
 
     public function actionSearchPartners(){
@@ -222,11 +248,7 @@ class AppController extends ControllerApp {
     public function actionGetWindow($wid=0){
         if ($wid==0){
             //Display list
-
         } else{
-            //Display window list
-//            $list = CProduct::model()->getProductList();
-
         }
 
     }

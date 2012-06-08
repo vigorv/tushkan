@@ -6,6 +6,7 @@ class PartnersController extends Controller {
         $this->layout = '/layouts/admin';
 
         $criteria = new CDbCriteria();
+        //$criteria->join = '{{products}} pr ON (pr.partner_id = p.id)';
         $count = CPartners::model()->count($criteria);
         $server_count = CPartners::model()->count();
 
@@ -16,7 +17,7 @@ class PartnersController extends Controller {
         $partner_list = CPartners::model()->findAll($criteria);
         $this->render('admin', array('partner_list' => $partner_list));
 
-        
+
     }
 
     public function actionIndex() {
@@ -24,24 +25,24 @@ class PartnersController extends Controller {
     }
 
     public function actionPartnerList($id) {
-        //get partner script  
+        //get partner script
     //
     }
 
     public function actionPartnerItemsList() {
-        
+
     }
 
     public function actionPartnerItemDetail() {
-        
+
     }
 
     public function actionPartnerFilterList() {
-        
+
     }
 
     public function actionPartnerItemPurchase() {
-        
+
     }
 
 }

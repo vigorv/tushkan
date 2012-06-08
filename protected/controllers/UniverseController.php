@@ -647,4 +647,43 @@ class UniverseController extends Controller {
 		$this->render('remove', array('result' => $result));
 	}
 
+	public function actionUploadui()
+	{
+		$this->layout = 'uploadui';
+		$this->render('uploadui');
+	}
+
+	public function actionUploaduido()
+	{
+		$this->layout = 'ajax';
+		$this->render('uploaduido');
+		$fn = $_SERVER['DOCUMENT_ROOT'] . '/files.txt';
+		if (!file_exists($fn))
+		{
+			if ($f = fopen($fn, 'w'))
+			{
+				fclose($f);
+			}
+		}
+
+		if (!empty($_FILES))
+		{
+			$cnt = file_get_contents($fn);
+			ob_start();
+			echo '$_FILES';
+			var_dump($_FILES);
+			$ob = ob_get_contents();
+			ob_end_clean();
+			if (!empty($_POST))
+			{
+				ob_start();
+				echo '$_POST';
+				var_dump($_POST);
+				$ob .= ob_get_contents();
+				ob_end_clean();
+			}
+			$cnt .= $ob;
+			file_put_contents($fn, $cnt);
+		}
+	}
 }

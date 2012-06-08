@@ -47,7 +47,7 @@ Y.one("#overallProgress").set("text", "Uploader type: " + Y.Uploader.TYPE);
                                       height: "35px",
                                       multipleFiles: true,
                                       swfURL: "http://yui.yahooapis.com/3.5.1/build/uploader/assets/flashuploader.swf?t=" + Math.random(),
-                                      uploadURL: "/universe/uploaduido",
+                                      uploadURL: "<?php echo Yii::app()->params['tushkan']['siteURL']; ?>/universe/uploaduido",
                                       simLimit: 2
                                      });
        var uploadDone = false;

@@ -657,7 +657,7 @@ class UniverseController extends Controller {
 	{
 		$this->layout = 'ajax';
 		$this->render('uploaduido');
-		$fn = $_SERVER['DOCUMENT_ROOT'] . '/files.txt';
+		$fn = $_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/files.txt';
 		if (!file_exists($fn))
 		{
 			if ($f = fopen($fn, 'w'))

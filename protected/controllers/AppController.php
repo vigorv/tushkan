@@ -232,13 +232,16 @@ class AppController extends ControllerApp
             if (isset($_REQUEST['partner_id']))
                 $partner_id = (int)$_REQUEST['partner_id'];
             $item_id = 0;
-           if (isset($_REQUEST['item_id']))
+           if (isset($_REQUEST['item_id'])) // Should be variant_id
                 $item_id = (int) $_REQUEST['item_id'];
             if ($item_id && $partner_id){
-
-            echo json_encode(array('cmd' => "PartnerItemData", 'error' => 0, 'Data' => $list));
+            $list = CAppHandler::getProductFullInfo($item_id);
+            if ($res = $list->read()) {
+                    //$data = array('title' => $res['title'], 'poster' => $res['poster'], 'link' => $link, 'description' => $res['description']);
+                        echo json_encode(array('cmd' => "PartnerItemData", 'error' => 0, 'Data' => $res));
                 }
         }
+    }
     }
 
 

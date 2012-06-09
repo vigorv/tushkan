@@ -157,9 +157,21 @@ class CAppHandler
 
     }
 
-
-    public static function getProductFullInfo(){
-
+    public static function getProductFullInfo($item_id){
+            return Yii::app()->db->createCommand()
+            //->select('pv.product_id')
+                //->select('*')
+                ->select('pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description')
+                ->from('{{product_variants}} pv')
+                ->join('{{products}} p','product_id = p.id')
+                ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            //links in the ass
+            // 10 - poster
+                ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
+                ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
+                ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
+                ->where('pv.id = :variant_id', array(':variant_id'=>$item_id))
+                ->limit(1)->query();
     }
 
     public static function addPartnerProductToUser($item_id=0,$partner_id=0){

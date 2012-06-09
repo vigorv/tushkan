@@ -124,16 +124,20 @@ class CAppHandler
         ->queryAll();
     }
 
-    public static function getPartnerProductsForUser($paramIds,$userPower,$search='',$partner_id){
+    public static function getPartnerProductsForUser($paramIds,$userPower,$search='',$partner_id=0){
         $searchCondition = '';
         if (!($search == '')) {
             $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
+        }
+        $partnerCondition='';
+        if ($partner_id){
+            $partnerCondition = 'AND prt.id = '.$partner_id;
         }
 
         $cmd = Yii::app()->db->createCommand()
             ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
             ->from('{{products}} p')
-            ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.id = '.$partner_id)
+            ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
             ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
@@ -175,9 +179,13 @@ class CAppHandler
     }
 
     public static function addPartnerProductToUser($item_id=0,$partner_id=0){
-        if()
+        $found = Yii::app()->db->createCommand()
+            ->select('Count(*)')->from('{{typedfiles}}')
+            ->where('where item_id = :item_id AND partner_id = :partner_id',array(':item_id'=>$item_id,':partner_id'=>$partner_id))->queryScalar();
+        if($found)
         return Yii::app()->db->createCommand()
             ->insert('{{typedfiles}}',array('item_id'=>$item_id,'partner_id'=>$partner_id));
+        return false;
     }
 
 

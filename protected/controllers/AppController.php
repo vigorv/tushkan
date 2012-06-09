@@ -1,10 +1,10 @@
 <?php
 
-    /**
-     *  AppController
-     * @author Snow
-     *
-     */
+/**
+ *  AppController
+ * @author Snow
+ *
+ */
 class AppController extends ControllerApp
 {
 
@@ -210,7 +210,7 @@ class AppController extends ControllerApp
             $partner_id = int($id);
             if ($partner_id) {
                 $paramIds = array(10, 12, 13, 14);
-                $search='';
+                $search = '';
                 if (isset($_REQUEST['search']))
                     $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
                 $list = CAppHandler::getPartnerProductsForUser($paramIds, Yii::app()->user->userPower, $search, $partner_id);
@@ -235,143 +235,137 @@ class AppController extends ControllerApp
             }
             $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
         }
+    }
 
-        public
-        function actionSearchPartners()
-        {
-
-        }
-
-
-        public
-        function actionGetList($cid = 0)
-        {
-            //Echo Categories
-            if ($cid == 0) {
-                $result = array("Category" => "OK");
-                $categoryList = array();
-                $categoryList['Video'] = 1;
-                // $categoryList['Audio']=0;
-                // $categoryList['Docs']=1;
-                $result['list'] = $categoryList;
-
-                echo json_encode($result);
-                Yii::app()->end();
-            } else {
-                $result = array("Cat_list" => "OK");
-            }
-        }
-
-        public
-        function actionGetWindow($wid = 0)
-        {
-            if ($wid == 0) {
-                //Display list
-            } else {
-            }
-
-        }
-
-
-        public
-        function actionGetSettings()
-        {
-
-        }
-
-
-        public
-        function actionGetUserInfo()
-        {
-            //$user= CUser::model()->getU
-            echo "No info";
-        }
-
-        public
-        function actionGetDirTree()
-        {
-            //$dirs = CUserfiles::model()->getDirTree($user_id);
-
-        }
-
-        public
-        function actionGetFileList()
-        {
-            $pid = 0;
-            //  $files = CUserfiles::model()->getFileList($this->user_id, $pid);
-
-        }
-
-        /*
-
-        public function actionCreate() {
-            $pid = (int) $_POST['pid'];
-            $title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
-            $flag_dir = (int) $_POST['flag_dir'];
-            $files = new CUserfiles();
-            $files->title = $title;
-            $files->pid = $pid;
-            $files->is_dir = 0;
-            $files->user_id = Yii::app()->user->id;
-            $files->save();
-
-        }
-
-
-        public function actionMove() {
-            $id = (int) $_POST['id'];
-            $new_pid = (int) $_POST['new_pid'];
-            $category = (int) $_POST['category'];
-    //Check is directory exists
-            $place = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-            if (($place) && ($place->is_dir)) {
-                $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-                if ($files) {
-                    $files->pid = $new_pid;
-                    $files->save();
-                    echo "OK: Moved";
-                }else
-                    echo "ERROR: Unknown file";
-            }else
-                echo "ERROR: Unknown place";
-        }
-
-        public function actionRename() {
-            $id = (int) $_POST['id'];
-            $title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
-            $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-            if ($files) {
-                $files->title = $title;
-                $files->save();
-                echo "OK: Renamed";
-            }
-            else
-                echo "ERROR: unknown file";
-        }
-
-        public function actionDelete() {
-            $id = (int) $_POST['id'];
-            $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-            if ($files) {
-                $files->delete();
-                echo "OK: Deleted";
-            }
-            else
-                echo "ERROR: unknown file";
-        }
-
-        public function actionGetUpdatesCmdList() {
-            echo "No Updates";
-        }
-
-
-
-        public function actionSetSyncSettings() {
-            if (isset($_POST['data'])) {
-                $data = $_POST['data'];
-            }else
-                echo "ERROR: no data";
-        }
-        */
+    public function actionSearchPartners()
+    {
 
     }
+
+
+    public function actionGetList($cid = 0)
+    {
+        //Echo Categories
+        if ($cid == 0) {
+            $result = array("Category" => "OK");
+            $categoryList = array();
+            $categoryList['Video'] = 1;
+            // $categoryList['Audio']=0;
+            // $categoryList['Docs']=1;
+            $result['list'] = $categoryList;
+
+            echo json_encode($result);
+            Yii::app()->end();
+        } else {
+            $result = array("Cat_list" => "OK");
+        }
+    }
+
+    public  function actionGetWindow($wid = 0)
+    {
+        if ($wid == 0) {
+            //Display list
+        } else {
+        }
+
+    }
+
+
+    public function actionGetSettings()
+    {
+
+    }
+
+
+    public function actionGetUserInfo()
+    {
+        //$user= CUser::model()->getU
+        echo "No info";
+    }
+
+    public function actionGetDirTree()
+    {
+        //$dirs = CUserfiles::model()->getDirTree($user_id);
+
+    }
+
+    public function actionGetFileList()
+    {
+        $pid = 0;
+        //  $files = CUserfiles::model()->getFileList($this->user_id, $pid);
+
+    }
+
+    /*
+
+    public function actionCreate() {
+        $pid = (int) $_POST['pid'];
+        $title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
+        $flag_dir = (int) $_POST['flag_dir'];
+        $files = new CUserfiles();
+        $files->title = $title;
+        $files->pid = $pid;
+        $files->is_dir = 0;
+        $files->user_id = Yii::app()->user->id;
+        $files->save();
+
+    }
+
+
+    public function actionMove() {
+        $id = (int) $_POST['id'];
+        $new_pid = (int) $_POST['new_pid'];
+        $category = (int) $_POST['category'];
+//Check is directory exists
+        $place = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
+        if (($place) && ($place->is_dir)) {
+            $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
+            if ($files) {
+                $files->pid = $new_pid;
+                $files->save();
+                echo "OK: Moved";
+            }else
+                echo "ERROR: Unknown file";
+        }else
+            echo "ERROR: Unknown place";
+    }
+
+    public function actionRename() {
+        $id = (int) $_POST['id'];
+        $title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
+        $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
+        if ($files) {
+            $files->title = $title;
+            $files->save();
+            echo "OK: Renamed";
+        }
+        else
+            echo "ERROR: unknown file";
+    }
+
+    public function actionDelete() {
+        $id = (int) $_POST['id'];
+        $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
+        if ($files) {
+            $files->delete();
+            echo "OK: Deleted";
+        }
+        else
+            echo "ERROR: unknown file";
+    }
+
+    public function actionGetUpdatesCmdList() {
+        echo "No Updates";
+    }
+
+
+
+    public function actionSetSyncSettings() {
+        if (isset($_POST['data'])) {
+            $data = $_POST['data'];
+        }else
+            echo "ERROR: no data";
+    }
+    */
+
+}

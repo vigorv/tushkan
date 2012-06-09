@@ -207,20 +207,19 @@ class AppController extends ControllerApp
     public function actionPartnerItemList()
     {
         if (Yii::app()->user->id) {
-            $partner_id=0;
-            if(isset($_REQUEST['partner_id']))
+            $partner_id = 0;
+            if (isset($_REQUEST['partner_id']))
                 $partner_id = (int)$_REQUEST['partner_id'];
-                $paramIds = array(10, 12, 13, 14);
-                $search = '';
-                if (isset($_REQUEST['search']))
-                    $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
-                $list = CAppHandler::getPartnerProductsForUser($paramIds, Yii::app()->user->UserPower, $search, $partner_id);
-                $count = count($list);
-                $total_count = $count;
-                foreach ($list as $item) {
-                    $item['image'] = '';
-                }
-                echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
+            $search = '';
+            if (isset($_REQUEST['search']))
+                $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
+            $list = CAppHandler::getPartnerProductsForUser(Yii::app()->user->UserPower, $search, $partner_id);
+            $count = count($list);
+            $total_count = $count;
+            foreach ($list as $item) {
+                $item['image'] = '';
+            }
+            echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
         }
     }
 
@@ -261,7 +260,7 @@ class AppController extends ControllerApp
         }
     }
 
-    public  function actionGetWindow($wid = 0)
+    public function actionGetWindow($wid = 0)
     {
         if ($wid == 0) {
             //Display list

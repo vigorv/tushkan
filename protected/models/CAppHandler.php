@@ -124,7 +124,7 @@ class CAppHandler
         ->queryAll();
     }
 
-    public static function getPartnerProductsForUser($paramIds,$userPower,$search='',$partner_id=0){
+    public static function getPartnerProductsForUser($userPower,$search='',$partner_id=0){
         $searchCondition = '';
         if (!($search == '')) {
             $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
@@ -135,11 +135,11 @@ class CAppHandler
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value as poster')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
-            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+            ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
             ->order('pv.id ASC')
             ->limit(100);
@@ -150,24 +150,7 @@ class CAppHandler
 
     }
 
-     public static function getProductList($paramIds, $userPower, $search = '')
-    {
-        $searchCondition = '';
-        if (!($search == '')) {
-            $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
-        }
 
-        $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
-            ->from('{{products}} p')
-            ->join('{{partners}} prt', 'p.partner_id=prt.id')
-            ->join('{{product_variants}} pv', 'pv.product_id=p.id')
-            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-            ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
-            ->order('pv.id ASC')
-            ->limit(100);
-        return $cmd->queryAll();
-    }
 
     public static function searchAllProductsForUser($search){
 

@@ -204,11 +204,12 @@ class AppController extends ControllerApp
         }
     }
 
-    public function actionPartnerItemList($id = 0)
+    public function actionPartnerItemList()
     {
         if (Yii::app()->user->id) {
-            $partner_id = (int)$id;
-            if ($partner_id) {
+            $partner_id=0;
+            if(isset($_REQUEST['partner_id']))
+                $partner_id = (int)$_REQUEST['partner_id'];
                 $paramIds = array(10, 12, 13, 14);
                 $search = '';
                 if (isset($_REQUEST['search']))
@@ -220,7 +221,6 @@ class AppController extends ControllerApp
                     $item['image'] = '';
                 }
                 echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
-            }
         }
     }
 

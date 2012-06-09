@@ -124,7 +124,8 @@ class CAppHandler
         ->queryAll();
     }
 
-    public static function getPartnerProductsForUser($userPower,$search='',$partner_id=0){
+    public static function getPartnerProductsForUser($userPower,$search='',$partner_id=0, $page = 1, $count = 10){
+        $offset = ($page - 1) * $count;
         $searchCondition = '';
         if (!($search == '')) {
             $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
@@ -142,7 +143,7 @@ class CAppHandler
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
             ->order('pv.id ASC')
-            ->limit(100);
+            ->limit($count,$offset);
         return $cmd->queryAll();
     }
 

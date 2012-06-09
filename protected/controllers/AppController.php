@@ -207,14 +207,22 @@ class AppController extends ControllerApp
     public function actionPartnerItemList()
     {
         if (Yii::app()->user->id) {
+            $per_page = 10;
+            if (isset($_POST['offset'])) {
+                $page = (int)((int)$_POST['offset'] / $per_page) + 1;
+            } else {
+                $page = 0;
+            }
+
             $partner_id = 0;
             if (isset($_REQUEST['partner_id']))
                 $partner_id = (int)$_REQUEST['partner_id'];
             $search = '';
             if (isset($_REQUEST['search']))
                 $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
-            $list = CAppHandler::getPartnerProductsForUser(Yii::app()->user->UserPower, $search, $partner_id);
+            $list = CAppHandler::getPartnerProductsForUser(Yii::app()->user->UserPower, $search, $partner_id, $page);
             $count = count($list);
+
             $total_count = $count;
             echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
         }

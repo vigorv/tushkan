@@ -192,7 +192,7 @@ class AppController extends ControllerApp
     public function actionPartnerList()
     {
         if (Yii::app()->user->id) {
-            $list = CAppHandler::getPartnerList(Yii::app()->user->userPower);
+            $list = CAppHandler::getPartnerList(Yii::app()->user->UserPower);
             $count = count($list);
             $total_count = $count;
             foreach ($list as $item) {
@@ -213,7 +213,7 @@ class AppController extends ControllerApp
                 $search = '';
                 if (isset($_REQUEST['search']))
                     $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
-                $list = CAppHandler::getPartnerProductsForUser($paramIds, Yii::app()->user->userPower, $search, $partner_id);
+                $list = CAppHandler::getPartnerProductsForUser($paramIds, Yii::app()->user->UserPower, $search, $partner_id);
                 $count = count($list);
                 $total_count = $count;
                 foreach ($list as $item) {

@@ -6,9 +6,9 @@
 
 class CAppHandler
 {
-
-
-
+    /*
+     *  UserProducts
+     */
 
     public static function getVtrList($user_id, $type_id = -1, $page = 1, $count = 10)
     {
@@ -106,19 +106,47 @@ class CAppHandler
             ->queryScalar();
     }
 
+    public static function RemoveFromMyProducts($item_id=0){
+        return Yii::app()->db->createCommand()
+            ->delete('{{typedfiles}}','id = :item_id',array(':item_id'=>$item_id));
+    }
 
+    /*
+     *  Partners
+     */
 
-
-    public static function getPartnerList()
+    public static function getPartnerList($userPower)
     {
         return Yii::app()->db->createCommand()
         ->select('title,id')
         ->from('{{partners}}')
-        ->where('active < 1')
+        ->where('active <= '.$userPower )
         ->queryAll();
     }
 
-    public static function getProductList($paramIds, $userPower, $search = '')
+    public static function getPartnerProductsForUser($paramIds,$userPower,$search='',$partner_id){
+        $searchCondition = '';
+        if (!($search == '')) {
+            $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
+        }
+
+        $cmd = Yii::app()->db->createCommand()
+            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+            ->from('{{products}} p')
+            ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.id = '.$partner_id)
+            ->join('{{product_variants}} pv', 'pv.product_id=p.id')
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+            ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
+            ->order('pv.id ASC')
+            ->limit(100);
+        return $cmd->queryAll();
+    }
+
+    public static function searchPartnerProductsForUser($partner_id,$search=''){
+
+    }
+
+     public static function getProductList($paramIds, $userPower, $search = '')
     {
         $searchCondition = '';
         if (!($search == '')) {
@@ -137,37 +165,20 @@ class CAppHandler
         return $cmd->queryAll();
     }
 
-    public static function getUserProducts($userId,$type_id=0)
-    {
-        //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
-        $tFiles = Yii::app()->db->createCommand()
-            ->select('id, variant_id, title')
-            ->from('{{typedfiles}}')
-            ->where('variant_id > 0 AND user_id = ' . $userId)
-            ->queryAll();
-        $fParams = array();
-        $types_str='';
-        if ($type_id)
-            $types_str=' AND pv.type_id ='.$type_id;
-        if (!empty($tFiles)) {
-            $tfIds = array();
-            foreach ($tFiles as $tf) {
-                $tfIds[$tf['variant_id']] = $tf['variant_id'];
-            }
-            $fParams = Yii::app()->db->createCommand()
-                ->select('pv.id, ptp.title, ppv.value')
-                ->from('{{product_variants}} pv')
-                ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
-                ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
-                ->where('pv.id IN (' . implode(', ', $tfIds) . ')'.$types_str)
-                ->group('ppv.id')
-                ->order('pv.id ASC, ptp.srt DESC')->queryAll();
-        }
-        return array("tFiles" => $tFiles, "fParams" => $fParams);
+    public static function searchAllProductsForUser($search){
+
     }
+
 
     public static function getProductFullInfo(){
 
     }
+
+    public static function addPartnerProductToUser($item_id=0,$partner_id=0){
+        if()
+        return Yii::app()->db->createCommand()
+            ->insert('{{typedfiles}}',array('item_id'=>$item_id,'partner_id'=>$partner_id));
+    }
+
 
 }

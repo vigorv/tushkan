@@ -32,4 +32,20 @@
             return Yii::app()->user->setState('__UserPower',$value);
         }
 
+        /**
+         * @return mixed
+         */
+        public function getUserGroupId(){
+            return Yii::app()->user->getState('__UserGroupId');
+        }
+
+        /**
+         * @param mixed $value
+         */
+
+        public function setUserGroupId($value){
+            return Yii::app()->user->setState('__UserGroupId',$value);
+        }
+
+
     }

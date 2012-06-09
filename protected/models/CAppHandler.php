@@ -135,7 +135,7 @@ class CAppHandler
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value as poster')
+            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value as image')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')

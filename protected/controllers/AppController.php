@@ -216,9 +216,6 @@ class AppController extends ControllerApp
             $list = CAppHandler::getPartnerProductsForUser(Yii::app()->user->UserPower, $search, $partner_id);
             $count = count($list);
             $total_count = $count;
-            foreach ($list as $item) {
-                $item['image'] = '';
-            }
             echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
         }
     }

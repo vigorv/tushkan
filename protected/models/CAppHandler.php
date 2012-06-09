@@ -139,7 +139,7 @@ class CAppHandler
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
-            ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
             ->order('pv.id ASC')
             ->limit(100);

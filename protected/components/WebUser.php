@@ -17,5 +17,19 @@
             Yii::app()->user->setState('__email',$value);
         }
 
+        /**
+         * @return mixed
+         */
+        public function getUserPower(){
+            return Yii::app()->user->getState('__UserPower');
+        }
+
+        /**
+         * @param mixed $value
+         */
+
+        public function setUserPower($value){
+            return Yii::app()->user->setState('__UserPower',$value);
+        }
 
     }

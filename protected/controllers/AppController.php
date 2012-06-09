@@ -192,7 +192,7 @@ class AppController extends ControllerApp
     public function actionPartnerList()
     {
         if (Yii::app()->user->id) {
-            $list = CAppHandler::getPartnerList($this->userPower);
+            $list = CAppHandler::getPartnerList(Yii::app()->user->userPower);
             $count = count($list);
             $total_count = $count;
             foreach ($list as $item) {

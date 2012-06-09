@@ -41,6 +41,8 @@ class UserIdentityApp extends CUserIdentity {
 
             $ukey= CUser::UKey($record);
             Yii::app()->user->setState('ukey',$ukey);
+            Yii::app()->user->setState('__UserPower',$record->userPower);
+
             $this->email = $record->email;
         }
         return !$this->errorCode;

@@ -207,7 +207,7 @@ class AppController extends ControllerApp
     public function actionPartnerItemList($id = 0)
     {
         if (Yii::app()->user->id) {
-            $partner_id = int($id);
+            $partner_id = (int)$id;
             if ($partner_id) {
                 $paramIds = array(10, 12, 13, 14);
                 $search = '';

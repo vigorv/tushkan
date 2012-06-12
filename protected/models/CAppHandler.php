@@ -174,13 +174,19 @@ class CAppHandler
                 ->limit(1)->query();
     }
 
-    public static function addPartnerProductToUser($item_id=0,$partner_id=0){
+    public static function addProductToUser($variant_id=0){
         $found = Yii::app()->db->createCommand()
             ->select('Count(*)')->from('{{typedfiles}}')
-            ->where('where item_id = :item_id AND partner_id = :partner_id',array(':item_id'=>$item_id,':partner_id'=>$partner_id))->queryScalar();
-        if($found)
-        return Yii::app()->db->createCommand()
-            ->insert('{{typedfiles}}',array('item_id'=>$item_id,'partner_id'=>$partner_id));
+            ->where('where variant_id = :variant_id AND user_id = :user_id',array(':variant_id'=>$variant_id,':user_id'=>Yii::app()->user->id))->queryScalar();
+        if(!$found){
+            $variant = Yii::app()->db->createCommand()
+                ->select("*")
+                ->from('{{product_variants}} pv')
+                ->where('id = :variant_id',array(':variant_id'=>$variant_id))->queryRow();
+            if ($variant)
+                return Yii::app()->db->createCommand()
+                    ->insert('{{typedfiles}}',array('variant_id'=>$variant_id,'user_id'=>Yii::app()->user->id,'title'=>$variant['title'],'variant_quality_id'=>2));
+        }
         return false;
     }
 

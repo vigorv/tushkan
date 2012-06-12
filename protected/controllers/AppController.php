@@ -114,9 +114,9 @@ class AppController extends ControllerApp
     {
         if (Yii::app()->user->id) {
             $per_page = 10;
-            if (isset($_POST['offset'])) {
+            if (isset($_REQUEST['offset'])) {
 
-                $page = (int)((int)$_POST['offset'] / $per_page) + 1;
+                $page = (int)((int)$_REQUEST['offset'] / $per_page) + 1;
             } else {
                 $page = 0;
             }
@@ -226,25 +226,36 @@ class AppController extends ControllerApp
         }
     }
 
-    public function actionPartnerItemData(){
+    public function actionPartnerItemData()
+    {
         if (Yii::app()->user->id) {
             $partner_id = 0;
             if (isset($_REQUEST['partner_id']))
                 $partner_id = (int)$_REQUEST['partner_id'];
             $item_id = 0;
-           if (isset($_REQUEST['item_id'])) // Should be variant_id
-                $item_id = (int) $_REQUEST['item_id'];
-            if ($item_id && $partner_id){
-            $list = CAppHandler::getProductFullInfo($item_id);
-            if ($res = $list->read()) {
+            if (isset($_REQUEST['item_id'])) // Should be variant_id
+                $item_id = (int)$_REQUEST['item_id'];
+            if ($item_id && $partner_id) {
+                $list = CAppHandler::getProductFullInfo($item_id);
+                if ($res = $list->read()) {
                     //$data = array('title' => $res['title'], 'poster' => $res['poster'], 'link' => $link, 'description' => $res['description']);
-                        echo json_encode(array('cmd' => "PartnerItemData", 'error' => 0, 'Data' => $res));
+                    echo json_encode(array('cmd' => "PartnerItemData", 'error' => 0, 'Data' => $res));
                 }
+            }
         }
     }
+
+    public function actionAddItemFromPartner(){
+        if (Yii::app()->user->id){
+            if ($_REQUEST['variant_id']){
+                $variant_id =(int)$_REQUEST['variant_id'];
+                if ($res=CAppHandler::addProductToUser($variant_id)){
+                    echo json_decode(array('cmd'=>"AddItemFromPartner",'error'=> 0));
+                } else
+                    echo json_decode(array('cmd'=>"AddItemFromPartner",'error'=> 1));
+            }
+        }
     }
-
-
 
 
     public function actionGetList($cid = 0)
@@ -300,76 +311,5 @@ class AppController extends ControllerApp
 
     }
 
-    /*
-
-    public function actionCreate() {
-        $pid = (int) $_POST['pid'];
-        $title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
-        $flag_dir = (int) $_POST['flag_dir'];
-        $files = new CUserfiles();
-        $files->title = $title;
-        $files->pid = $pid;
-        $files->is_dir = 0;
-        $files->user_id = Yii::app()->user->id;
-        $files->save();
-
-    }
-
-
-    public function actionMove() {
-        $id = (int) $_POST['id'];
-        $new_pid = (int) $_POST['new_pid'];
-        $category = (int) $_POST['category'];
-//Check is directory exists
-        $place = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-        if (($place) && ($place->is_dir)) {
-            $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-            if ($files) {
-                $files->pid = $new_pid;
-                $files->save();
-                echo "OK: Moved";
-            }else
-                echo "ERROR: Unknown file";
-        }else
-            echo "ERROR: Unknown place";
-    }
-
-    public function actionRename() {
-        $id = (int) $_POST['id'];
-        $title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
-        $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-        if ($files) {
-            $files->title = $title;
-            $files->save();
-            echo "OK: Renamed";
-        }
-        else
-            echo "ERROR: unknown file";
-    }
-
-    public function actionDelete() {
-        $id = (int) $_POST['id'];
-        $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-        if ($files) {
-            $files->delete();
-            echo "OK: Deleted";
-        }
-        else
-            echo "ERROR: unknown file";
-    }
-
-    public function actionGetUpdatesCmdList() {
-        echo "No Updates";
-    }
-
-
-
-    public function actionSetSyncSettings() {
-        if (isset($_POST['data'])) {
-            $data = $_POST['data'];
-        }else
-            echo "ERROR: no data";
-    }
-    */
 
 }

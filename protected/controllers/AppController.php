@@ -108,6 +108,7 @@ class AppController extends ControllerApp
         if (Yii::app()->user->id) {
             Yii::app()->user->logout();
         }
+        echo json_encode(array('error'=>0,"msg"=>"Bye"));
     }
 
     public function actionFilmList()

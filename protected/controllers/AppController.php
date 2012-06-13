@@ -219,9 +219,9 @@ class AppController extends ControllerApp
             $search = '';
             if (isset($_REQUEST['search']))
                 $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
-            $list = CAppHandler::getPartnerProductsForUser(Yii::app()->user->UserPower, $search, $partner_id, $page);
+            $list = CAppHandler::getPartnerProductsForUser($search, $partner_id, $page);
             $count = count($list);
-            $total_count = $count;
+            $total_count = CAppHandler::CountPartnerProductsForUser($search, $partner_id);
             echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
         }
     }

@@ -124,7 +124,7 @@ class CAppHandler
         ->queryAll();
     }
 
-    public static function getPartnerProductsForUser($userPower,$search='',$partner_id=0, $page = 1, $count = 10){
+    public static function getPartnerProductsForUser($search='',$partner_id=0, $page = 1, $count = 10){
         $offset = ($page - 1) * $count;
         $searchCondition = '';
         if (!($search == '')) {
@@ -141,11 +141,32 @@ class CAppHandler
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
+            ->where('p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
             ->order('pv.id ASC')
             ->limit($count,$offset);
         return $cmd->queryAll();
     }
+
+    public static function countPartnerProductsForUser($search='',$partner_id=0){
+        $searchCondition = '';
+        if (!($search == '')) {
+            $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
+        }
+        $partnerCondition='';
+        if ($partner_id){
+            $partnerCondition = 'AND prt.id = '.$partner_id;
+        }
+
+        $cmd = Yii::app()->db->createCommand()
+            ->select('Count(p.id)')
+            ->from('{{products}} p')
+            ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
+            ->join('{{product_variants}} pv', 'pv.product_id=p.id')
+            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->where('p.active <= ' . Yii::app()->user->userPower. ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition);
+        return $cmd->queryScalar();
+    }
+
 
     public static function searchPartnerProductsForUser($partner_id,$search=''){
 

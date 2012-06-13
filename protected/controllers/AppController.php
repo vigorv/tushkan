@@ -255,7 +255,11 @@ class AppController extends ControllerApp
                 } else
                     echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1));
             }
-        }
+                else
+                    echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1,"error_msg" => 'Unknown item'));
+        } else
+             echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1,"error_msg" => 'Unknown user'));
+
     }
 
 

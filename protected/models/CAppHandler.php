@@ -136,12 +136,12 @@ class CAppHandler
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value as image, tf.id as cloud')
+            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value as image, COALESCE(tf.id,0) as cloud')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->leftJoin('{{typed_files}} tf', 'tf.variant_id = pv.id')
+            ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id')
             ->where('p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
             ->order('pv.id ASC')
             ->limit($count,$offset);
@@ -183,7 +183,7 @@ class CAppHandler
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
                 //->select('*')
-                ->select('pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description,tf.id as cloud')
+                ->select('pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud')
                 ->from('{{product_variants}} pv')
                 ->join('{{products}} p','product_id = p.id')
                 ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
@@ -191,7 +191,7 @@ class CAppHandler
             // 10 - poster
                 ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
                 ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
-                ->leftJoin('{{typed_files}} tf', 'tf.variant_id = pv.id')
+                ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id')
                 ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
                 ->where('pv.id = :variant_id', array(':variant_id'=>$item_id))
                 ->limit(1)->query();

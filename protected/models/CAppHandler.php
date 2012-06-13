@@ -49,7 +49,7 @@ class CAppHandler
     public static function getVtrItemA($item_id = 0, $user_id = 0)
     {
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id,pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description')
+            ->select('tf.title,tf.id, pv.variant_id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{products}} p', ' p.id = pv.product_id')
@@ -79,7 +79,7 @@ class CAppHandler
         } else
             $type_str = '';
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, ppv.value as poster')
+            ->select('tf.title,tf.id, ppv.value as poster,pv.variant_id as variant_id')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
@@ -136,7 +136,7 @@ class CAppHandler
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value as image, COALESCE(tf.id,0) as cloud')
+            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')

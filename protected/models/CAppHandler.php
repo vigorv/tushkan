@@ -141,7 +141,7 @@ class CAppHandler
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id)' )
+            ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)' )
             ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
             ->where('pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
             ->order('pv.id ASC')
@@ -192,7 +192,7 @@ class CAppHandler
             // 10 - poster
                 ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
                 ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
-                ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id)' )
+                ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)' )
                 ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
                 ->where('pv.id = :variant_id', array(':variant_id'=>$item_id))
                 ->limit(1)->query();

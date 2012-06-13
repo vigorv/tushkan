@@ -106,7 +106,7 @@ class AppController extends ControllerApp
     public function actionLogout()
     {
         if (Yii::app()->user->id) {
-            Yii::app()->user->logout;
+            Yii::app()->user->logout();
         }
     }
 

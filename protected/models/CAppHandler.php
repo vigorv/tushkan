@@ -142,7 +142,8 @@ class CAppHandler
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id')
-            ->where('p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
+            ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
+            ->where('pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
             ->order('pv.id ASC')
             ->limit($count,$offset);
         return $cmd->queryAll();
@@ -203,10 +204,11 @@ class CAppHandler
             ->where('variant_id = :variant_id AND user_id = :user_id',array(':variant_id'=>$variant_id,':user_id'=>Yii::app()->user->id))->queryScalar();
         if(!$found){
             $variant = Yii::app()->db->createCommand()
-                ->select("*")
+                ->select("pv.title, COALESCE(pr.price,0) as price")
                 ->from('{{product_variants}} pv')
-                ->where('id = :variant_id',array(':variant_id'=>$variant_id))->queryRow();
-            if ($variant)
+                ->leftjoin('{{prices}} pr','pr.variant_id = '.(int)$variant_id.' and pr.variant_quality_id = 2')
+                ->where('id = :variant_id and online_only = 0',array(':variant_id'=>$variant_id))->queryRow();
+            if ($variant && !$variant['price'])
                 return Yii::app()->db->createCommand()
                     ->insert('{{typedfiles}}',array('variant_id'=>$variant_id,'user_id'=>Yii::app()->user->id,'title'=>$variant['title'],'variant_quality_id'=>2));
         }

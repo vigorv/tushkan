@@ -49,7 +49,7 @@ class CAppHandler
     public static function getVtrItemA($item_id = 0, $user_id = 0)
     {
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, pv.variant_id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description')
+            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster, pf.fname as fname, pd.description')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{products}} p', ' p.id = pv.product_id')
@@ -79,7 +79,7 @@ class CAppHandler
         } else
             $type_str = '';
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, ppv.value as poster,pv.variant_id as variant_id')
+            ->select('tf.title,tf.id, ppv.value as poster,pv.id as variant_id')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')

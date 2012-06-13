@@ -208,7 +208,7 @@ class CAppHandler
                 ->select("pv.title, COALESCE(pr.price,0) as price")
                 ->from('{{product_variants}} pv')
                 ->leftjoin('{{prices}} pr','pr.variant_id = '.(int)$variant_id.' and pr.variant_quality_id = 2')
-                ->where('id = :variant_id and online_only = 0',array(':variant_id'=>$variant_id))->queryRow();
+                ->where('pv.id = :variant_id and pv.online_only = 0',array(':variant_id'=>$variant_id))->queryRow();
             if ($variant && !$variant['price'])
                 return Yii::app()->db->createCommand()
                     ->insert('{{typedfiles}}',array('variant_id'=>$variant_id,'user_id'=>Yii::app()->user->id,'title'=>$variant['title'],'variant_quality_id'=>2));

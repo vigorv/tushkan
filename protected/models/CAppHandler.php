@@ -197,8 +197,8 @@ class CAppHandler
 
     public static function addProductToUser($variant_id=0){
         $found = Yii::app()->db->createCommand()
-            ->select('Count(*)')->from('{{typedfiles}}')
-            ->where('where variant_id = :variant_id AND user_id = :user_id',array(':variant_id'=>$variant_id,':user_id'=>Yii::app()->user->id))->queryScalar();
+            ->select('count(id)')->from('{{typedfiles}}')
+            ->where('variant_id = :variant_id AND user_id = :user_id',array(':variant_id'=>$variant_id,':user_id'=>Yii::app()->user->id))->queryScalar();
         if(!$found){
             $variant = Yii::app()->db->createCommand()
                 ->select("*")

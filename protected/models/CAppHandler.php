@@ -145,6 +145,7 @@ class CAppHandler
             ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
             ->where('pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
             ->order('pv.id ASC')
+            ->group('p.id')
             ->limit($count,$offset);
         return $cmd->queryAll();
     }

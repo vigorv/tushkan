@@ -18,7 +18,7 @@ class CAppHandler
         } else
             $type_str = '';
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, ppv.value as poster,pv.product_id as product_id')
+            ->select('tf.title,tf.id, ppv.value as poster,pv.id as variant_id')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')

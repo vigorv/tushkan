@@ -190,6 +190,49 @@ class AppController extends ControllerApp
         }
     }
 
+    public function actionFilmLink()
+    {
+        if (Yii::app()->user->id) {
+            if (isset($_REQUEST['fc_id'])) {
+                $fc_id = (int)$_REQUEST['fc_id'];
+                $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id);
+                if ($res = $list->read()) {
+                    if ($res['fname']) {
+                        $partnerInfo = Yii::app()->db->createCommand()
+                            ->select('prt.id, prt.title, prt.sprintf_url, p.original_id')
+                            ->from('{{products}} p')
+                            ->join('{{partners}} prt', 'prt.id = p.partner_id')
+                            ->where('p.id = ' . $res['product_id'])->queryRow();
+                        $fn = basename($res['fname'], PATHINFO_FILENAME);
+                        switch ($res['partner_id']) {
+                            case 2:
+                                $link = 'http://212.20.62.34:82/' . $res['fname'][0] . '/' . $res['fname'];
+                                break;
+                            case 1:
+                                $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
+                                break;
+                            default:
+                                echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown parnter'));
+                                Yii:
+                                app()->end();
+                        }
+                        $data = array('id'=>$res['id'], 'link' => $link);
+                        echo json_encode(array('cmd' => "FilmLink", 'error' => 0, 'Data' => $data));
+
+                    } else
+                        echo json_encode(array('cmd' => "FilmLink", 'error' => 1, 'error_msg' => 'Not found file'));
+                } else
+                    echo json_encode(array('cmd' => "FilmLink", 'error' => 1, 'error_msg' => 'Not found partner data'));
+            } else {
+                echo json_encode(array('cmd' => "FilmLink", 'error' => 1, 'error_msg' => 'Unknown item'));
+            }
+        } else {
+            echo json_encode(array('cmd' => "FilmLink", 'error' => 1, 'error_msg' => 'Please Login'));
+        }
+    }
+
+
+
     public function actionPartnerList()
     {
         if (Yii::app()->user->id) {

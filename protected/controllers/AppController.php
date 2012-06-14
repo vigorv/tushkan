@@ -249,7 +249,7 @@ class AppController extends ControllerApp
 
     public function actionAddItemFromPartner(){
         if (Yii::app()->user->id){
-            if ($_REQUEST['variant_id']){
+            if (isset($_REQUEST['variant_id'])){
                 $variant_id =(int)$_REQUEST['variant_id'];
                 if ($res=CAppHandler::addProductToUser($variant_id)){
                     echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 0));
@@ -261,6 +261,18 @@ class AppController extends ControllerApp
         } else
              echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1,"error_msg" => 'Unknown user'));
 
+    }
+
+    public function actionRemoveFromMe(){
+        if (Yii::app()->user->id){
+            if (isset($_REQUEST['id'])){
+                $item_id = (int)$_REQUEST['id'];
+                CAppHandler::removeFromUser($item_id);
+                echo json_encode(array('cmd'=>"RemoveFromMe",'error'=> 0));
+            }
+            else echo json_encode(array('cmd'=>"RemoveFromMe",'error'=> 1,"error_msg"=>'Unknown item'));
+        } else
+        echo json_encode(array('cmd'=>"RemoveFromMe",'error'=> 1, "error_msg"=> 'Unknown user'));
     }
 
 

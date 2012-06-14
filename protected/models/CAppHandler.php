@@ -216,5 +216,10 @@ class CAppHandler
         return false;
     }
 
+    public  static function removeFromUser($item_id=0){
+        Yii::app()->db->createCommand()
+            ->delete('{{typedfiles}}','id = :item_id AND user_id = :user_id',array(':item_id'=>$item_id,':user_id'=>Yii::app()->user->id));
+    }
+
 
 }

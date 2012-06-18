@@ -10,13 +10,10 @@
     <link rel="stylesheet" type="text/css" href="<?php echo Yii::app()->request->baseUrl; ?>/css/ie.css" media="screen, projection" />
     <![endif]-->
 
-    <link rel="stylesheet" type="text/css"  href="/css/bootstrap.min.css"/>
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
-    <script src="/js/bootstrap.min.js"></script>
     <?php
     Yii::app()->getClientScript()->registerScriptFile("http://yui.yahooapis.com/3.5.1/build/yui/yui-min.js");
     ?>
-    <script src="/js/bootstrap.min.js"></script>
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>

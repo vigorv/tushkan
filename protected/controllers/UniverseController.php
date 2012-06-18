@@ -650,40 +650,101 @@ class UniverseController extends Controller {
 	public function actionUploadui()
 	{
 		$this->layout = 'uploadui';
-		$this->render('uploadui');
+		$fishKey = CUser::getfishkey($this->userInfo['id'], date('Y-m-d'));
+		$uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
+//$uploadServer = 'upload';//ДЛЯ ОТЛАДКИ НА ЛОКАЛЬНОЙ МАШИНЕ
+		$this->render('uploadui', array('fishKey' => $fishKey, 'uploadServer' => $uploadServer, 'userId' => $this->userInfo['id']));
 	}
 
+	/**
+	 * ДЕЙСТВИЕ СОХРАНЕНИЯ ФАЙЛА. ЕСЛИ ЗАГРУЗКА ИДЕТ НА ОТДЕЛЬНЫЙ ФАЙЛОВЫЙ СЕРВЕР.
+	 * ОФОРМИТЬ ДЕЙСТВИЕ ОТДЕЛЬНЫМ СКРИПТОМ И РАЗМЕСТИТЬ НА ЭТОМ ОТДЕЛЬНОМ ФАЙЛОВОМ СЕРВЕРЕ
+	 *
+	 */
 	public function actionUploaduido()
 	{
+		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+			header('Access-Control-Allow-Origin: *');
+			exit;
+		}
 		$this->layout = 'ajax';
 		$this->render('uploaduido');
-		$fn = $_SERVER['DOCUMENT_ROOT'] . '/protected/runtime/files.txt';
-		if (!file_exists($fn))
-		{
-			if ($f = fopen($fn, 'w'))
-			{
-				fclose($f);
-			}
-		}
 
 		if (!empty($_FILES))
 		{
-			$cnt = file_get_contents($fn);
-			ob_start();
-			echo '$_FILES';
-			var_dump($_FILES);
-			$ob = ob_get_contents();
-			ob_end_clean();
+			/**
+			 * приходит массив с информацией о файле array(1) {
+			 * ["Filedata"]=>
+  					array(5) {
+						["name"]=>string(43) "design.mycloud.ver1_4_enter_more-clouds.jpg"
+						["type"]=>string(10) "image/jpeg"
+						["tmp_name"]=>string(14) "/tmp/phpikgVJm"
+						["error"]=>int(0)
+						["size"]=>int(0)
+  					}
+  				}
+			 */
+
+			//СОХРАНЯЕМ ФАЙЛЫ
+				$filePath = '';//ПУТЬ СОХРАНЕНИЯ ФАЙЛА НА СЕРВЕРЕ
+				$fileName = '';//ИМЯ ФАЙЛА НА СЕРВЕРЕ
+				$fileMD5 = '';//MD5 ФАЙЛА
+				$serverIp = ''; //IP ДАННОГО ФАЙЛОВОГО СЕРВЕРА
+				$serverId = ''; //ИДЕНТИФИКАТОР ДАННОГО ФАЙЛОВОГО СЕРВЕРА
+
+			//ЗАПОЛНЯЕМ СТРУКТУРУ, ОПИСЫВАЮЩУЮ ФАЙЛ
+			if (!empty($saveSuccess))
+			{
+				$fileInfo = array(
+					"file_original" => $_FILES["Filedata"]["name"],
+					"file_name" => $fileName,
+					"file_path" => $filePath,//ЦЕЛОЕ ЧИСЛО
+					"file_MD5" => $fileMD5,
+					"file_size" => $fileSize,
+					"server_ip" => $serverIp,
+				);
+			}
+
 			if (!empty($_POST))
 			{
-				ob_start();
-				echo '$_POST';
-				var_dump($_POST);
-				$ob .= ob_get_contents();
-				ob_end_clean();
+				/**
+				 * ДОП. ПАРАМЕТРЫ
+				 * array(
+				 * 		"key"	=>string,
+				 * 		"userid"=>int
+				 * 		"params"=> array - доп. параметры для типизации файла
+				 * )
+				 */
+				$result = '';
+				if (!empty($_POST["key"]) && !empty($_POST['userid']) && !empty($fileInfo))
+				{
+
+					$key = $_POST["key"];
+					$uid = $_POST["userid"];
+					$sfile = serialize($fileInfo);
+					$sparams = serialize(array());
+					if (!empty($_POST['params']))
+						$sparams = serialize($_POST['params']);
+					$sum = sha1($sfile . $serverId);
+
+					//ЗАПРОС ЧЕРЕЗ CURL
+					$ch = curl_init("http://myicloud.ws/serversync/upload");
+					curl_setopt($ch, CURLOPT_HEADER, 0);
+					curl_setopt($ch, CURLOPT_POST, true);
+					curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');
+					curl_setopt($ch, CURLOPT_HTTPHEADER, array('Expect:'));//ОБХОДИМ ПРОБЛЕМУ С NGINX
+					$data = 'key=' . $key . '&uid=' . $uid . '&sum=' . $sum . '&sid=' . $serverId . '&sfile=' . $sfile . '&sparams=' . $sparams;
+					curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+					curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 0);
+					$result = curl_exec($ch);
+					curl_close($ch);
+				}
+
+				if ($result <> 'ok')
+				{
+					//ДАННЫЕ НЕ ПРОШЛИ ПРОВЕРКУ, ФАЙЛЫ НУЖНО УДАЛИТЬ
+				}
 			}
-			$cnt .= $ob;
-			file_put_contents($fn, $cnt);
 		}
 	}
 }

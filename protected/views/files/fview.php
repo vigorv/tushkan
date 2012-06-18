@@ -1,8 +1,21 @@
 <?php
 if (!empty($item)) {
     $mediaList = Utils::getMediaList();
+    $detectedType = 0;
     ?>
     <script type="text/javascript">
+    	links = new Array();
+    	<?php
+    		$info = pathinfo(strtolower($item['title']));
+    		foreach ($mediaList as $k => $v)
+    		{
+    			echo "links[{$k}] = '{$v['link']}';";
+    			if (in_array($info['extension'], $v['exts']))
+    			{
+    				$detectedType = $k;
+    			}
+    		}
+    	?>
         function queue(subaction)
         {
             $.post('/files/queue', {id: <?php echo $item['id']; ?>, subaction: subaction}, function(data){
@@ -19,13 +32,13 @@ if (!empty($item)) {
                     //$("#content").load("/files/fview/<?php echo $item['id']; ?>");
                 }
                 else
-                {  
+                {
                     if (answer.err_code){
                         switch(answer.err_code){
                             case 1: "alert('Произошла ошибка при попытке конвертации. Попробуйте позднее');";
                             case 2: "alert('Уже выполняется')";
                         }
-                            
+
                     }
                     else
                         alert('Ошибка создания очереди конвертирования ');
@@ -34,14 +47,15 @@ if (!empty($item)) {
             return false;
         }
 
-        function doType()
+        function doType(type_id)
         {
-            $.post("/products/ajax", {typeId: <?php echo $item['type_id']; ?>, action: "wizardtypeparams"}, function(html){
+return false;
+            $.post("/products/ajax", {typeId: type_id, action: "wizardtypeparams"}, function(html){
                 $("#content").html(html);
                 $("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[fileId]" value="<?php echo $item['id']; ?>" />');
-                $("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[typeId]" value="<?php echo $item['type_id']; ?>" />');
+                $("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[typeId]" value="' + type_id + '" />');
                 $("#wizardParamsFormId").ajaxForm(function() {
-                    $("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
+                    //$("#content").load(links[type_id]);
                 });
             });
         }
@@ -54,7 +68,6 @@ if (!empty($item)) {
             }
             $.post('/files/remove', {id: <?php echo $item['id']; ?>}, function(){
                 $.address.value("<?php echo $mediaList[$item['type_id']]['link']; ?>");
-                //$("#content").load("<?php echo $mediaList[$item['type_id']]['link']; ?>");
             });
             return false;
         }
@@ -71,16 +84,18 @@ if (!empty($item)) {
     if (isset($variants) && count($variants)) {
         $actions[] = '<button class="btn"  onclick="window.open(' . "'/files/download?fid=" . $item['id'] . "'" . ');" >' . Yii::t('files', 'download') . '</button>';
         $actions[] = '<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
-    } else {
-        echo "Файл находится в обработке";
     }
+
     if (empty($queue)) {
-        $actions[] = '<button class="btn" onclick="return queue(\'add\');">конвертировать</button>';
+    	if (!empty($detectedType))
+    		$actions[] = '<button class="btn" onclick="return doType(' . $detectedType . ');">типизировать</button>';
+    	else
+    		$actions[] = 'unsupported type';
     } else {
         //foreach($variants as $variant){
 //            if ($variant['preset_id']>0)
   //      }
-    
+
         //else {
             echo '<p>Состояние: добавление в пространство<br />';
             echo 'Текущая операция: конвертирование<br />';
@@ -89,7 +104,8 @@ if (!empty($item)) {
         //   }
     }
 
-    $actions[] = '<button class="btn" onclick="return doType();">типизировать</button>';
+    if (!empty($item['type_id']))
+        $actions[] = '<button class="btn" onclick="return queue(\'add\');">конвертировать</button>';
     if (!empty($actions)) {
         echo implode(' ', $actions);
     }

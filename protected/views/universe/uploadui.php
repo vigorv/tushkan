@@ -47,7 +47,7 @@ Y.one("#overallProgress").set("text", "Uploader type: " + Y.Uploader.TYPE);
                                       height: "35px",
                                       multipleFiles: true,
                                       swfURL: "http://yui.yahooapis.com/3.5.1/build/uploader/assets/flashuploader.swf?t=" + Math.random(),
-                                      uploadURL: "<?php echo Yii::app()->params['tushkan']['siteURL']; ?>/universe/uploaduido",
+                                      uploadURL: "http://<?php echo $uploadServer; ?>/index.php",
                                       simLimit: 2
                                      });
        var uploadDone = false;
@@ -74,7 +74,7 @@ Y.one("#overallProgress").set("text", "Uploader type: " + Y.Uploader.TYPE);
                                     "<td class='filesize'>" + fileInstance.get("size") + "</td>" +
                                     "<td class='percentdone'>Hasn't started yet</td>" +
                                     "<td class='serverdata'></td>");
-				perFileVars[fileInstance.get("id")] = {key: "111"};
+				perFileVars[fileInstance.get("id")] = {key: "<?php echo $fishKey; ?>", userid: "<?php echo $userId; ?>"};
 			});
 
 			uploader.set("postVarsPerFile", Y.merge(uploader.get("postVarsPerFile"), perFileVars));

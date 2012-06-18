@@ -10,7 +10,7 @@
  * @property $server_id
  * @property $gtitle;
  * @property $sess_id;
- * 
+ *
  */
 class CUser extends CActiveRecord {
 
@@ -36,12 +36,25 @@ class CUser extends CActiveRecord {
     /**
      *
      * @param type $user_id
-     * @return type 
+     * @return type
      */
     public static function KPT($user_id) {
 	$sid = CUser::model()->findByPk($user_id)->sess_id;
 	$kpt = md5($user_id . $sid . "I am robot");
 	return $kpt;
+    }
+
+    /**
+     * генерация ключа пользователя, для межсерверных запросов (к файловым серверам итп)
+     *
+     * @param integer $user_id
+     * @param date $dt (YYYY-MM-DD)
+     * @return string
+     */
+    public static function getfishkey($user_id, $dt) {
+		$salt = CUser::model()->findByPk($user_id)->salt;
+		$key = sha1($user_id . $dt . $salt);
+		return $key;
     }
 
     /**

@@ -37,7 +37,7 @@ class FilesController extends Controller {
     }
 
     /**
-     * действие добавление в очередь на конвертацию
+     * добавление в очередь на конвертацию
      * принимает параметры в $_POST
      *
      */
@@ -47,7 +47,7 @@ class FilesController extends Controller {
             $fid = (int) $_POST['id'];
             $preset = filter_var($_POST['preset']);
             $fileinfo = CUserfiles::model()->getFileInfonfo($this->user_id, $fid);
-            // Is supported convert 
+            // Is supported convert
             if ($type_id = Utils::IsConvertingCorrect($fileinfo['title'], $preset)) {
                 // is converted before
                 if (CFilesvariants::model()->findAllByAttributes(array('file_id' => fid, 'preset_id' => $preset))) {
@@ -90,7 +90,7 @@ class FilesController extends Controller {
 
     /**
      * Handle Ajax tree
-     * 
+     *
      * Deprecated
      */
     /*

@@ -32,10 +32,12 @@ define("_DT_PLAYER_", 3);
 class Utils {
 
     static $mtypes = array(
-	"v" => 1,
-	"a" => 2,
-	"p" => 3,
-	"d" => 4);
+	"v" => 1,//ВИДЕО
+	"a" => 2,//АУДИО
+	"p" => 5,//КАРТИНКИ
+	"d" => 4,//ДОКУМЕНТЫ
+	"g" => 3,//ИГРЫ
+	);
 
     static $convert_list = array(
       "v" => array('Ultra','High','Medium','Low')
@@ -298,6 +300,13 @@ class Utils {
     public static function getMediaList() {
     	$aliases = Utils::$mtypes;
     	$lst = array();
+    	$lst[0] = array(
+			'id' => 0,
+			'alias' => 'u',
+			'title' => Yii::t('common', 'Untyped files'),
+			'exts' => array(),
+			'link' => '/files',
+    	);
     	foreach ($aliases as $a => $id)
     	{
     		switch ($a)

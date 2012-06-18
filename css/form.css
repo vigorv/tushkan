@@ -42,7 +42,6 @@ div.form input,
 div.form textarea,
 div.form select
 {
-	margin: 0.2em 0 0.5em 0;
 }
 
 div.form fieldset
@@ -56,6 +55,7 @@ div.form fieldset
 div.form label
 {
 	font-weight: bold;
+	font-weight: normal;
 	font-size: 0.9em;
 	display: block;
 }
@@ -124,7 +124,7 @@ div.form .errorSummary
 div.form .errorMessage
 {
 	color: red;
-	font-size: 0.9em;
+	font-size: 0.85em;
 }
 
 div.form .errorSummary p

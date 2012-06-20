@@ -41,6 +41,7 @@ return array (
   'Error'					=> 'Ошибка',
   'About'					=> 'О нас',
   'Search'					=> 'Поиск',
+  'Search results'			=> 'Результаты поиска',
   'FAQ'						=> 'ЧАВО',
   'Devices'					=> 'Устройства',
   'Device types'			=> 'Типы устройств',
@@ -110,6 +111,7 @@ return array (
 
   'Administrator resources'	=> 'Ресурсы администратора',
   'Page not found'			=> 'Страница не найдена',
+  'Nothing was found'		=> 'Ничего не найдено',
   'Are you sure?'			=> 'Вы уверены?',
 
   'Request cannot be processed'	=> 'Запрос не может быть выполнен',

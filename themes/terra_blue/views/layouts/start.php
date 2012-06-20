@@ -9,10 +9,8 @@
 		<!--[if IE]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
-<?php
-    Yii::app()->getClientScript()->registerCoreScript('jquery');
-?>
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>

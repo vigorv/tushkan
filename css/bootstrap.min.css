@@ -737,12 +737,16 @@ button.close{padding:0;cursor:pointer;background:transparent;border:0;-webkit-ap
 .no-horizontal-padding{padding-left:0px;padding-right: 0px;}
 .no-horizontal-margin{margin-left:0px;margin-right:0px;}
 .margin-left-only{float:left;margin-right:20px;margin-left:0px;}
+.padding-top-only{padding:15px 0;}
 .no-margin{float:left; margin-right:0;margin-left:0;}
 .index-bg{padding:0 20px 0 0;background:url('../img/index-bg.png') center center no-repeat;clear:both;height:334px;position:relative;}
 .index-offset{padding:145px 0 0 100px;}
 .overflow{overflow:hidden;}
 .some-space{margin-top:15px;}
 .pagination-space{margin-top:35px;}
+.gray-block{background:#ededed;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
+.device-span-full{width:900px;}
+.device-span{width:880px;padding-left:20px;}
 
 .top-movies-list{background:#fff;width:940px;overflow:hidden;padding:15px 0;margin:0 0 15px 0;position:relative;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
 .left-button{position:absolute;width:34px;height:37px;top:50px;left:-10px;background:url('../img/movie-left-button.png') top left no-repeat;z-index:999;}
@@ -772,14 +776,14 @@ a.top-film,a.top-film:hover{display:block;text-align:center;font:normal 12px/120
 .type .tv{background:url('../img/type-icon-tv.png') top center no-repeat;background-position:center 15px;}
 
 .connected{background:#fff;overflow:hidden;margin:10px 0 15px 0;position:relative;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
-.connected a.device{position:relative;display:block;text-align:center;height: 30px;padding:70px 0 15px 0;font:normal 16px/120% arial;color:#3e8ed3;text-decoration:underline;}
-.connected a.device:hover{position:relative;display:block;background-color:#d3ecff;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
-.connected .iphone{background:url('../img/connected/conn-iphone.png') top center no-repeat;background-position:center 15px;}
-.connected .ipad{background:url('../img/connected/conn-ipad.png') top center no-repeat;background-position:center 15px;}
-.connected .ipod-classic{background:url('../img/connected/conn-ipod-classic.png') top center no-repeat;background-position:center 15px;}
-.connected .ipod-nano{background:url('../img/connected/conn-ipod-nano.png') top center no-repeat;background-position:center 15px;}
-.connected .ipod-shuffle{background:url('../img/connected/conn-ipod-shuffle.png') top center no-repeat;background-position:center 15px;}
-.connected .new-device{background:url('../img/connected/add-new-device.png') top center no-repeat;background-position:center 15px;}
+a.device{position:relative;display:block;text-align:center;height: 30px;padding:70px 0 15px 0;font:normal 16px/120% arial;color:#3e8ed3;text-decoration:underline;}
+a.device:hover{position:relative;display:block;background-color:#d3ecff;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
+.iphone{background:url('../img/connected/conn-iphone.png') top center no-repeat;background-position:center 15px;}
+.ipad{background:url('../img/connected/conn-ipad.png') top center no-repeat;background-position:center 15px;}
+.ipod-classic{background:url('../img/connected/conn-ipod-classic.png') top center no-repeat;background-position:center 15px;}
+.ipod-nano{background:url('../img/connected/conn-ipod-nano.png') top center no-repeat;background-position:center 15px;}
+.ipod-shuffle{background:url('../img/connected/conn-ipod-shuffle.png') top center no-repeat;background-position:center 15px;}
+.new-device{background:url('../img/connected/add-new-device.png') top center no-repeat;background-position:center 15px;}
 
 /*¬нутренн€€ страница*/
 .my-catalog{background:#fff;overflow:hidden;margin:0 0 15px 0; padding: 0 0 15px 0;position:relative;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
@@ -791,6 +795,19 @@ a.top-film,a.top-film:hover{display:block;text-align:center;font:normal 12px/120
 .my-catalog .more-link {}
 .my-catalog .more-link a, .my-catalog .more-link a:visited{display:block;margin:0 0 10px 0; text-align: center; background:#d3ecff; height: 30px;-webkit-border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;border-radius:5px 5px 0 0;font:normal 18px/160% Arial;text-decoration:underline;}
 .my-catalog .more-link a:hover{background:#6bb9fc;color:#ffffff;}
+
+.inside-movie{background:#fff;overflow:hidden;margin:0 0 15px 0; padding: 0 0 15px 0;position:relative;-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;}
+.inside-movie h1 {display:block;position:relative;padding:0 0 0 10px;color:#ffffff;background:#6bb9fc; height: 50px;-webkit-border-radius:5px 5px 0 0;-moz-border-radius:5px 5px 0 0;border-radius:5px 5px 0 0;font:normal 24px/210% Arial;}
+.inside-movie .back-button {position: absolute; top:6px; right:2px;}
+.movie-back-button>li>a{padding-top:8px;padding-bottom:8px;margin-top:2px;margin-bottom:2px;margin-right:5px;font:normal 14px/100% Arial;color:#fff;background-color:#6bb9f;border:2px solid #fff;border:2px solid rgba(254, 254, 254, 1);-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;text-decoration:underline;}
+.movie-back-button>.active>a,.movie-back-button>.active>a:hover{color:#ffffff;background-color:#6bb9fc;}
+.movie-back-button>li>a:hover{color:#6bb9fc;background-color:#fff;text-decoration:underline;}
+.movie-text{color:#222222;font:normal 12px/100% Arial;}
+.movie-text p{padding:0px;}
+.movie-text p.more{padding-bottom:5px;padding-top:5px;}
+.movie-buttons>li>a{padding-top:8px;padding-bottom:8px;margin-top:2px;margin-bottom:2px;margin-right:5px;font:normal 14px/100% Arial;color:#6bb9f;background-color:#ffffff;border:2px solid #6bb9fc;border:2px solid rgba(0107, 185, 252, 1);-webkit-border-radius:5px;-moz-border-radius:5px;border-radius:5px;text-decoration:underline;}
+.movie-buttons>.active>a,.movie-buttons>.active>a:hover{color:#ffffff;background-color:#6bb9fc;}
+.movie-buttons>li>a:hover{color:#ffffff;background-color:#6bb9fc;text-decoration:underline;}
 
 
 /*ƒл€ главной страницы*/

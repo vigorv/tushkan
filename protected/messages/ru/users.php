@@ -38,7 +38,7 @@ return array (
 	'Settings'			=> 'Настройки',
 	'Logout'			=> "Выйти",
 	"Payments history"		=> 'История платежей',
-	"Userspace"			=> 'Занятое пространство',
+	"Userspace"			=> 'Пространство',
 	"Goods"			=> 'Витрины',
 	"Main"				=> 'Главная',
 	"Uploads"			=> 'Загрузки',
@@ -48,6 +48,7 @@ return array (
 	"Audio"			=> 'Аудиозаписи',
 	"Photo"			=> 'Изображения',
 	"Documents"			=> 'Документы',
+	"Docs"			=> 'Документы',
 	"Choose file(s)"		=>'Выберите файл(ы)',
 
   'Account in readonly mode'		=> 'Аккаунт в режиме "только для чтения"',

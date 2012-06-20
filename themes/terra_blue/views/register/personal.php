@@ -110,6 +110,9 @@
 		return true;
 	}
 </script>
+<div class="span12 no-horizontal-margin inside-movie my-catalog">
+	<h1><?php echo Yii::t('common', 'Profile'); ?></h1>
+	<div class="pad-content">
 <?php
 	if (!empty($info))
 	{
@@ -225,6 +228,10 @@
 			}
 		}
 	}
+?>
+	</div>
+</div>
+<?php
 }
 else
 	echo $ajaxResult;

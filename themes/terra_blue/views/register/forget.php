@@ -55,23 +55,23 @@ switch($subAction)
 	var generated = 0;
 	$( "#passwordId" ).focus();
 	$( "#submitButton" ).bind("click", function() {
-			$("#form-horizontal").submit();
+		$("#form-horizontal").submit();
 	});
 
 	$( "#generateButton" ).bind("click", function() {
-					generated++;
-					$("#passwordId").val("");
-					$(this).attr("disabled", true );
-					hash = new String();
-					for (i = 0; i < 15; i++)
-					{
-						code = Math.round(Math.random() * 100);
-						if (code < 50) code = code + 50;
-						hash += String.fromCharCode(code);
-					}
-					window.setTimeout('$( "#rememberId" ).attr("checked", true);$("#passwordId").val("' + hash + '");$( "#generateButton" ).attr("disabled", false );', 1000);
+		generated++;
+		$("#passwordId").val("");
+		$(this).attr("disabled", true );
+		hash = new String();
+		for (i = 0; i < 15; i++)
+		{
+			code = Math.round(Math.random() * 100);
+			if (code < 50) code = code + 50;
+			hash += String.fromCharCode(code);
+		}
+		window.setTimeout('$( "#rememberId" ).attr("checked", true);$("#passwordId").val("' + hash + '");$( "#generateButton" ).attr("disabled", false );', 1000);
 
-				return false;
+		return false;
 	});
 </script>
 		</center>

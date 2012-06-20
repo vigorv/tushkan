@@ -295,7 +295,7 @@ class AppController extends ControllerApp
             if (isset($_REQUEST['variant_id'])){
                 $variant_id =(int)$_REQUEST['variant_id'];
                 if ($res=CAppHandler::addProductToUser($variant_id)){
-                    echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 0));
+                    echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 0,'cloud_id'=>$res));
                 } else
                     echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1));
             }

@@ -136,7 +136,7 @@ class CAppHandler
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud')
+            ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')

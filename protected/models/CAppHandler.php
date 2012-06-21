@@ -185,12 +185,13 @@ class CAppHandler
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
                 //->select('*')
-                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, ppvY.value as year, ppvC.value as country, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud')
+                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, ppvY.value as year, ppvC.value as country,ppvG.value as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud')
                 ->from('{{product_variants}} pv')
                 ->join('{{products}} p','product_id = p.id')
                 ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
                 ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppv.variant_id AND ppv.param_id = 13')//year
                 ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppv.variant_id AND ppv.param_id = 14')//country
+                ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppv.variant_id AND ppv.param_id = 18')//genre
             //links in the ass
             // 10 - poster
                 ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')

@@ -29,7 +29,7 @@ if (!empty($pst)) {
 		$prms = array($info['12'], $info['13'], $info['14']);
 		echo '
 				<div class="span2 margin-left-only">
-					<img class="small-poster" src="' . $poster . '" alt="' . htmlentities($info['title'], ENT_QUOTES) . '" title="' . htmlentities($info['title'], ENT_QUOTES) . '">
+					<img class="small-poster" src="' . $poster . '" alt="' . htmlentities($info['title'], ENT_QUOTES, 'UTF-8') . '" title="' . htmlentities($info['title'], ENT_QUOTES, 'UTF-8') . '">
 					<a class="top-film" href="/products/view/' . $info['id'] . '">' . $info['title'] . '</a>
 				</div>
 		';

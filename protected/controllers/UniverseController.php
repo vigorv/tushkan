@@ -321,8 +321,8 @@ class UniverseController extends Controller {
 			$cmd = Yii::app()->db->createCommand()
 					->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, oi.price_id, oi.rent_id')
 					->from('{{product_variants}} pv')
-					->join('{{orders}} o', 'o.user_id = ' . $this->userInfo['id'] . ' AND o.state = ' . _ORDER_PAYED_)
-					->join('{{order_items}} oi', 'oi.variant_id=pv.id')
+					->leftJoin('{{orders}} o', 'o.user_id = ' . $this->userInfo['id'] . ' AND o.state = ' . _ORDER_PAYED_)
+					->leftJoin('{{order_items}} oi', 'oi.variant_id=pv.id')
 					->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
 					->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 					->where('pv.id = :id')
@@ -340,7 +340,6 @@ class UniverseController extends Controller {
 						$rent_id = $p['rent_id'];
 				}
 			}
-
 
 			$cmd = Yii::app()->db->createCommand()
 					->select('id')
@@ -440,7 +439,7 @@ class UniverseController extends Controller {
 				else
 					$presetCondition = '';
 				$prms = Yii::app()->db->createCommand()
-								->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, pr.id AS price_id, r.id AS rent_id')
+								->select('pv.id, pv.product_id, pv.online_only, pv.type_id, ptp.title, ppv.value, pr.id AS price_id, r.id AS rent_id')
 								->from('{{product_variants}} pv')
 								->join('{{variant_qualities}} vq', 'pv.id=vq.variant_id')
 								->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
@@ -569,9 +568,12 @@ class UniverseController extends Controller {
 				}
 			}
 		}
+		$type_id = $prms[0]['type_id'];
+		$mediaList = Utils::getMediaList();
 		$this->render('tview', array('info' => $info, 'params' => $params, 'dsc' => $dsc,
 			'qualities' => $qualities, 'fid' => $fid, 'orders' => $orders,
 			'subAction' => $subAction, 'neededQuality' => $neededQuality,
+			'type_id' => $type_id, 'mediaList' => $mediaList,
 			'partnerInfo' => $partnerInfo
 		));
 	}

@@ -24,7 +24,7 @@
 					$active = '';
 					if ($ml['id'] == $type_id)
 						$active = 'class="active"';
-					echo '<li ' . $active . '><a href="' . $ml['link']. '" data-toggle="tab">' . $ml['title'] . '</a></li>';
+					echo '<li ' . $active . '><a href="' . $ml['link']. '">' . $ml['title'] . '</a></li>';
 				}
 			?>
 			</ul>

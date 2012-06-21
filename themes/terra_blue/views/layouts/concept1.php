@@ -84,6 +84,9 @@
 					$('#content').load(event.value, function(){
 						$('#content a').click(function(){
 							lnk= $(this).attr('href');
+							if (lnk.substr(0, 1) == "#")return true;
+							if (lnk=="") return false;
+
 							$.address.value(lnk);
 							return false;
 						});
@@ -94,6 +97,7 @@
 				$('#m_panel').load('/universe/panel', function(){
 					$('#m_panel .dropdown-menu a').click(function(){
 						lnk= $(this).attr('href');
+						if (lnk.substr(0, 1) == "#")return true;
 						if (lnk=="") return false;
 						$.address.value(lnk);
 						return false;
@@ -102,7 +106,7 @@
 
 				$('#m_uploads a').click(function() {
 					lnk= $(this).attr('href');
-					if (lnk=="#") return false;
+					if (lnk.substr(0, 1) == "#") return true;
 					if (lnk=="") return false;
 					$.address.value(lnk);
 					return false;
@@ -114,7 +118,8 @@
 						return false;
 					});
 				});
-				$('#m_devices').load('/universe/devices');
+
+				//$('#m_devices').load('/universe/devices');
 
 			</script>
 </body>

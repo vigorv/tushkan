@@ -11,29 +11,29 @@ function hideWarning()
 }
 </script>
 <?php
-		$url = ' &nbsp; | &nbsp; <a onclick="return hideWarning();">Далее</a>';
+		$url = ' &nbsp; &nbsp; &nbsp; <a class="btn" onclick="return hideWarning();">Далее</a>';
 	}
 ?>
 <style>
 #d_100{
-	position:absolute;
-	background: white;
 	z-index:10000;
-	top:0;
-	left:0;
-	width: 100%;
-	height:100%;
+	width: 98%;
+	height:98%;
+	margin: 0;
+	left:1%;
+	top:1%;
+	overflow: hidden;
 }
 #d_cntr{
 	margin: 30% auto;
 	width: 250px;
 }
 </style>
-<div id="d_100">
+<div class="modal static" id="d_100">
 	<div id="d_cntr">
 	<h4>Предупреждение 18+</h4>
 	<p>Просмотр лицам до 18 лет запрещен.</p>
 
-	<a href="/products">Уходим отсюда</a><?php echo $url; ?>
+	<a class="btn" href="/products">Уходим отсюда</a><?php echo $url; ?>
 	</div>
 </div>

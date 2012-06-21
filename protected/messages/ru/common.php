@@ -77,6 +77,7 @@ return array (
   'Current progress'		=> 'Текущая загрузка',
   'Supported types'			=> 'Поддерживаемые типы',
 
+  'Back to list'			=> 'Вернуться к списку',
   'Back'					=> 'Назад',
   'Next'					=> 'Далее',
   'Cancel'					=> 'Отмена',

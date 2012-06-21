@@ -189,9 +189,9 @@ class CAppHandler
                 ->from('{{product_variants}} pv')
                 ->join('{{products}} p','product_id = p.id')
                 ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
-                ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppv.variant_id AND ppv.param_id = 13')//year
-                ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppv.variant_id AND ppv.param_id = 14')//country
-                ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppv.variant_id AND ppv.param_id = 18')//genre
+                ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year
+                ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
+                ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
             //links in the ass
             // 10 - poster
                 ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')

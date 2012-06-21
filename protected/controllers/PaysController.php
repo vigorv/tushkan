@@ -275,11 +275,11 @@ class PaysController extends Controller
 						$this->balancePaymentInfo = $payInfo;
 						$resultMsg = $this->actionProcess(0);
 					}
-					$this->out($resultMsg);
+					$this->render('/pays/code', array('resultMsg' => $resultMsg));
 					return;
 				}
 			}
-			$this->out('saving payment error');
+			$this->render('/pays/code', array('resultMsg' => 'saving payment error'));
 			return;
 		}
 		Yii::app()->user->setFlash('error', Yii::t('pays', 'Payment initialisation error.'));
@@ -356,7 +356,7 @@ class PaysController extends Controller
 			}
 		}
 		$this->layout = '/layouts/ajax';
-		$this->out($resultMsg);
+		$this->render('/pays/code', array('resultMsg' => $resultMsg));
 	}
 
 	/**
@@ -441,7 +441,6 @@ class PaysController extends Controller
 					return;
 				}
 			}
-			return;
 		}
 		$this->out($resultMsg);
 	}

@@ -1,19 +1,22 @@
-	<script type="text/javascript">
-		function setTariff()
-		{
-			$.post("/register/tariff", { tariff_id: $("#tariffSelectId").val()}, function(data){
-				if(data == 'ok');
-				{
-					location.reload();
-				}
-			});
-			return false;
-		}
-	</script>
+<script type="text/javascript">
+	function setTariff()
+	{
+		$.post("/register/tariff", { tariff_id: $("#tariffSelectId").val()}, function(data){
+			if(data == 'ok');
+			{
+				location.reload();
+			}
+		});
+		return false;
+	}
+</script>
+
+<div class="span12 no-horizontal-margin inside-movie my-catalog">
 <?php
-
-echo '<h2>Hi, <a href="/register/personal">' . Yii::app()->user->name . '</a>!</h2>';
-
+	echo '<h1>Hi, <a href="/register/personal">' . Yii::app()->user->name . '</a>!</h1>';
+?>
+	<div class="pad-content">
+<?php
 $upBalance = ' <a href="/pays/do/1">' . Yii::t('users', 'Fill up balance') . '</a>';
 $currency = Yii::t('pays', _CURRENCY_);
 if (!empty($balance))
@@ -119,3 +122,6 @@ if (!empty($bans))
 	}
 	echo '</ul>';
 }
+?>
+	</div>
+</div>

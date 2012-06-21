@@ -245,7 +245,7 @@ class UniverseController extends Controller {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
 		$lst = array();
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
-		$pstContent = $this->renderPartial('/products/top', array('pst' => $pst), true);
+		$pstContent = $this->renderPartial('/products/sresult', array('pst' => $pst), true);
 
 		$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
 		$unt = CUserfiles::model()->getFilesLike($this->user_id, $search);
@@ -278,12 +278,15 @@ class UniverseController extends Controller {
 				}
 
 				$type_id = Utils::getSectionIdByAlias($lib);
+				$mediaList = Utils::getMediaList();
 				$productsInfo = CProduct::model()->getUserProducts($this->user_id,$type_id);
 				$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
 				$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
 				$this->render('library', array('mb_content_items' => $mb_content_items,
 					'productsInfo' => $productsInfo,
 					'qstContent' => $qstContent,
+					'type_id' => $type_id,
+					'mediaList' => $mediaList,
 					'mb_content_items_unt' => $mb_content_items_unt,'nav_lib'=>$lib));
 				break;
 			default:

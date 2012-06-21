@@ -303,9 +303,10 @@ class Utils {
     	$lst[0] = array(
 			'id' => 0,
 			'alias' => 'u',
-			'title' => Yii::t('common', 'Untyped files'),
+			'title' => Yii::t('users', 'Untyped files'),
 			'exts' => array(),
 			'link' => '/files',
+			'hidden' => true,
     	);
     	foreach ($aliases as $a => $id)
     	{
@@ -315,36 +316,40 @@ class Utils {
 				    $lst[$id] = array(
 						'id' => $id,
 						'alias' => $a,
-						'title' => Yii::t('common', 'Video'),
+						'title' => Yii::t('users', 'Video'),
 						'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp'),
 						'link' => '/universe/library?lib=' . $a,
+						'hidden' => false,
 				    );
 				break;
     			case "a":
 				    $lst[$id] = array(
 						'id' => $id,
 						'alias' => $a,
-						'title' => Yii::t('common', 'Audio'),
+						'title' => Yii::t('users', 'Audio'),
 						'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma'),
 						'link' => '/universe/library?lib=' . $a,
+						'hidden' => false,
 				    );
 				break;
     			case "p":
 				    $lst[$id] = array(
 						'id' => $id,
 						'alias' => $a,
-						'title' => Yii::t('common', 'Photo'),
+						'title' => Yii::t('users', 'Photo'),
 						'exts'=>array('jpg','jpeg','png'),
 						'link' => '/universe/library?lib=' . $a,
+						'hidden' => false,
 				    );
 				break;
     			case "d":
 				    $lst[$id] = array(
 						'id' => $id,
 						'alias' => $a,
-						'title' => Yii::t('common', 'Docs'),
+						'title' => Yii::t('users', 'Docs'),
 						'exts' => array('txt', 'doc'),
 						'link' => '/universe/library?lib=' . $a,
+						'hidden' => false,
 				    );
 				break;
     		}

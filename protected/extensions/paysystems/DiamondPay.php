@@ -38,12 +38,14 @@ class DiamondPay
 
 	public function ok()
 	{
-
+		$resultMsg = Yii::t('pays', 'Payment processed successfully');
+		return $resultMsg;
 	}
 
 	public function fail()
 	{
-
+		$resultMsg = Yii::t('pays', 'Payment failed');
+		return $resultMsg;
 	}
 
 	public function getOrderId($requestInfo)

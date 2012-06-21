@@ -7,3 +7,11 @@
 
 .divider { height:1px; width:100%; clear: both; }
 #footer { clear: both; }
+
+.margin-left-only {
+	margin-right: 10px;
+}
+
+.pad-content {
+	padding: 10px 10px 0 10px;
+}

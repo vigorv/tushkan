@@ -175,8 +175,8 @@ class AppController extends ControllerApp
                                 Yii:
                                 app()->end();
                         }
-                        $data = array('id'=>$res['id'],'title' => $res['title'], 'poster' => $res['poster'], 'link' => $link, 'variant_id'=>$res['variant_id'], 'description' => $res['description']);
-                        echo json_encode(array('cmd' => "FilmData", 'error' => 0, 'Data' => $data));
+                        $res['link']= $link;
+                        echo json_encode(array('cmd' => "FilmData", 'error' => 0, 'Data' => $res));
 
                     } else
                         echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'Not found file'));

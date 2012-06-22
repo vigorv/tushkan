@@ -49,7 +49,7 @@ class CAppHandler
     public static function getVtrItemA($item_id = 0, $user_id = 0)
     {
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster,COALESCE(ppvY.value,"-") as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description')
+            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{products}} p', ' p.id = pv.product_id')
@@ -188,7 +188,7 @@ class CAppHandler
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
                 //->select('*')
-                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,"-") as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud')
+                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud')
                 ->from('{{product_variants}} pv')
                 ->join('{{products}} p','product_id = p.id')
                 ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster

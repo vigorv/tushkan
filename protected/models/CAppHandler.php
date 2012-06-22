@@ -123,8 +123,8 @@ class CAppHandler
         return Yii::app()->db->createCommand()
         ->select('p.title,p.id')
         ->from('{{partners}} p')
-        ->join('{{partners_tarrifs}} pt','pt.partner_id is NULL')
-        ->where('active <='.Yii::app()->user->userPower)
+        ->leftJoin('{{partners_tariffs}} pt','pt.partner_id = p.id')
+        ->where('pt.partner_id is NULL && p.active <='.Yii::app()->user->userPower)
         ->queryAll();
     }
 

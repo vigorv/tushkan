@@ -123,7 +123,7 @@ class CAppHandler
         return Yii::app()->db->createCommand()
         ->select('title,id')
         ->from('{{partners}}')
-        ->where('active < '.Yii::app()->user->userPower)
+        ->where('active <='.Yii::app()->user->userPower)
         ->queryAll();
     }
 

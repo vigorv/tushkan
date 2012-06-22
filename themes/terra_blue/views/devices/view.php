@@ -29,23 +29,17 @@
     <a class="btn" id="unlinkdevice" rel="<?php echo $info['id']; ?>"><?php echo Yii::t('devices', 'unlink'); ?></a>
     </p>
     <p>
-    <a class="btn" id="devicelist" rel="<?php echo $info['id']; ?>"><?php echo Yii::t('common', 'Back to list'); ?></a>
+    <a class="btn" id="devicelist"><?php echo Yii::t('common', 'Back to list'); ?></a>
 	</p>
 <script type="text/javascript">
-    $( "#syncdevice" )
-    .button()
-    .click(function() {
+    $( "#syncdevice" ).click(function() {
     });
 
-    $( "#devicelist" )
-    .button()
-    .click(function() {
+    $( "#devicelist" ).click(function() {
     	$('#m_devices').load('/universe/devices');
     });
 
-    $( "#unlinkdevice" )
-    .button()
-    .click(function() {
+    $( "#unlinkdevice" ).click(function() {
 	if (confirm('<?php echo Yii::t('common', 'Are you sure?'); ?>'))
 	{
 	    $.post('/devices/remove/' + $(this).attr('rel'), function(data){

@@ -59,23 +59,7 @@
 	<div id="content">
 	</div>
 
-		<div class="span12 no-horizontal-margin connected">
-			<div id="m_devices" class="span10 no-horizontal-margin">
-				<div class="span2 margin-left-only">
-					<a class="device ipad" href="#">Мой новый iPad 3</a>
-				</div>
-				<div class="span2 margin-left-only">
-					<a class="device ipod-shuffle" href="#">iPod сестры</a>
-				</div>
-				<div class="span2 margin-left-only">
-					<a class="device iphone" href="#">Папина мобилка</a>
-				</div>
-			</div>
-			<div class="span2 margin-left-only">
-				<div class="span2 margin-left-only">
-					<a class="device new-device" href="#">Добавить новое устройство</a>
-				</div>
-			</div>
+		<div id="m_devices" class="span12 no-horizontal-margin connected">
 		</div>
 	</div>
 			<script langauge="javascript">
@@ -119,7 +103,7 @@
 					});
 				});
 
-				//$('#m_devices').load('/universe/devices');
+				$('#m_devices').load('/universe/devices');
 
 			</script>
 </body>

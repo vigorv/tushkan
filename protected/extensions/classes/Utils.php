@@ -24,11 +24,6 @@ define("_PD_GROUP_COMMON_", 0);
 
 define("_MB_", 1024 * 1024);
 
-define("_DT_MOBILE_", 0);
-define("_DT_PAD_", 1);
-define("_DT_TVSET_", 2);
-define("_DT_PLAYER_", 3);
-
 class Utils {
 
     static $mtypes = array(
@@ -394,17 +389,6 @@ class Utils {
 	    _PD_GROUP_COMMON_ => Yii::t('params', 'Common parameters'),
 	);
     }
-
-	public static function getDeviceTypes()
-	{
-		$types = array(
-			_DT_MOBILE_ => array("id" => _DT_MOBILE_, "title" => Yii::t('common', 'Mobile')),
-			_DT_PAD_ => array("id" => _DT_PAD_, "title" => Yii::t('common', 'Pad')),
-			_DT_TVSET_ => array("id" => _DT_TVSET_, "title" => Yii::t('common', 'TVset')),
-			_DT_PLAYER_ => array("id" => _DT_PLAYER_, "title" => Yii::t('common', 'Player')),
-		);
-		return $types;
-	}
 
     public static function isConvertCorrect($filename,$preset){
         $ext = pathinfo($filename,PATHINFO_EXTENSION);

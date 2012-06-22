@@ -8,8 +8,8 @@ class DevicesController extends Controller {
      */
     public function actionAdd($id = 0) {
     	$result = '';
-    	$sql = 'INSERT INTO {{userdevices}} (id, user_id, title, device_type_id, guid, active)
-    		VALUES (null, ' . Yii::app()->user->getId() . ', "", :type, "", 10)
+    	$sql = 'INSERT INTO {{userdevices}} (id, user_id, title, device_type_id, guid, active, hash)
+    		VALUES (null, ' . Yii::app()->user->getId() . ', "", :type, "", 10, "")
     	';
     	$cmd = Yii::app()->db->createCommand($sql);
     	$cmd->bindParam(':type', $id, PDO::PARAM_INT);
@@ -18,9 +18,10 @@ class DevicesController extends Controller {
     	$this->render('/devices/add', array('result' => $result));
     }
 
-    public function actionView() {
+    public function actionView($id = 0) {
         //$device_count = CDevices::model()->count('user_id=' . Yii::app()->user->id);
-        $this->render('/devices/view', array('device_count' => $device_count));
+        $info = CDevices::model()->findByPk(array('user_id' => Yii::app()->user->getId(), 'id' => $id));
+        $this->render('/devices/view', array('info' => $info));
     }
 
     /**
@@ -36,6 +37,12 @@ class DevicesController extends Controller {
     	if ($cmd->execute())
     		$result = 'ok';
     	$this->render('/devices/remove', array('result' => $result));
+    }
+
+    public function actionSelect()
+    {
+    	$lst =  CDevices::getDeviceTypes();
+    	$this->render('/devices/select', array('lst' => $lst));
     }
 
     public function actionIndex()

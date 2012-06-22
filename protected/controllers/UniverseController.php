@@ -295,18 +295,21 @@ class UniverseController extends Controller {
 		}
 	}
 
-	public function actionDevices() {
-		$tst = Utils::getDeviceTypes();
+	/**
+	 * показать список привязанных устройств
+	 *
+	 * @param mixed $id - код состояния вызвавшего действия
+	 */
+	public function actionDevices($id = 0) {
+		$tst = CDevices::getDeviceTypes();
 		$dst = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{userdevices}}')
 				->where('user_id = ' . Yii::app()->user->getId())
 				->queryAll();
-		//$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
-		$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));
+		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
+		//$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));
 	}
-
-
 
 	/**
 	 * добавить в пространство вариант продукта с витрины

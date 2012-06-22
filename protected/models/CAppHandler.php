@@ -121,8 +121,9 @@ class CAppHandler
     public static function getPartnerList($userPower)
     {
         return Yii::app()->db->createCommand()
-        ->select('title,id')
-        ->from('{{partners}}')
+        ->select('p.title,p.id')
+        ->from('{{partners}} p')
+        ->join('{{partners_tarrifs}} pt','pt.partner_id is NULL')
         ->where('active <='.Yii::app()->user->userPower)
         ->queryAll();
     }

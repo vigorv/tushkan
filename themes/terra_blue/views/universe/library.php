@@ -110,18 +110,3 @@
 			</div>
 		</div>
 <?php endif; ?>
-
-		<div class="span12 no-horizontal-margin type">
-			<div class="span3 margin-left-only">
-				<a class="type-name netbook" href="#">Нетбук/планшет</a>
-			</div>
-			<div class="span3 margin-left-only">
-				<a class="type-name mobile" href="#">Мобильный телефон</a>
-			</div>
-			<div class="span3 margin-left-only">
-				<a class="type-name type-name-active player" href="#">Плеер/iPod</a>
-			</div>
-			<div class="span3 no-margin">
-				<a class="type-name tv" href="#">Телевизор</a>
-			</div>
-		</div>

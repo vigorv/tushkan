@@ -161,15 +161,53 @@ class ProductsController extends Controller
 
 		if (!empty($pInfo))
 		{
-			$paramIds = $this->getShortParamsIds();
 			$cmd = Yii::app()->db->createCommand()
-				->select('p.id, p.title AS ptitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+				->select('count(p.id)')
 				->from('{{products}} p')
-				->join('{{product_variants}} pv', 'pv.product_id=p.id')
-				->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower)
-				->order('pv.id ASC');
-			$pst = $cmd->queryAll();
+				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower);
+			$count = $cmd->queryScalar();
+
+// BEGIN БЛОК ДЛЯ ПОСТРАНИЧНОЙ НАВИГАЦИИ
+			$limit = Yii::app()->params['tushkan']['productsPerPage'];
+			$page = $offset = 0;
+			if (!empty($_GET['page']))
+			{
+				$page = intval($_GET['page']);
+				$offset = $page * $limit;
+			}
+			$paginationParams = array(
+				'limit'		=> $limit,
+				'offset'	=> $offset,
+				'url'		=> '/products/partner/id/' . $id,
+				'total'		=> $count,
+				'page'		=> $page,
+			);
+// END БЛОК ДЛЯ ПОСТРАНИЧНОЙ НАВИГАЦИИ
+			if ($count)
+			{
+				$cmd = Yii::app()->db->createCommand()
+					->select('p.id')
+					->from('{{products}} p')
+					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower)
+					->limit($limit, $offset);
+				$pst = $cmd->queryAll();
+				if (!empty($pst))
+				{
+					$pst = implode(',', Utils::arrayToKeyValues($pst, 'id', 'id'));
+				}
+				else
+					$pst = 0;
+
+				$paramIds = $this->getShortParamsIds();
+				$cmd = Yii::app()->db->createCommand()
+					->select('p.id, p.title AS ptitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
+					->from('{{products}} p')
+					->join('{{product_variants}} pv', 'pv.product_id=p.id')
+					->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
+					->where('p.id IN (' . $pst . ')')
+					->order('pv.id ASC');
+				$pst = $cmd->queryAll();
+			}
 		}
 
 		if (empty($pst) && empty($pInfo))
@@ -180,7 +218,8 @@ class ProductsController extends Controller
 
 		$pstContent = $this->renderPartial('/products/list', array('pst' => $pst), true);
 
-		$this->render('/products/partner', array('pInfo' => $pInfo, 'pstContent' => $pstContent, 'warning18plus' => $this->warning18plus));
+		$this->render(	'/products/partner', array('pInfo' => $pInfo, 'pstContent' => $pstContent,
+						'warning18plus' => $this->warning18plus, 'paginationParams' => $paginationParams));
 	}
 
 	public function actionView($id = 0)

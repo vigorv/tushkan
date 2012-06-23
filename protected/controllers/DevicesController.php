@@ -14,7 +14,10 @@ class DevicesController extends Controller {
     	$cmd = Yii::app()->db->createCommand($sql);
     	$cmd->bindParam(':type', $id, PDO::PARAM_INT);
     	if ($cmd->execute())
-    		$result = 'ok';
+    	{
+    		//$result = 'ok';
+    		$result = Yii::app()->db->getLastInsertID('{{userdevices}}');
+    	}
     	$this->render('/devices/add', array('result' => $result));
     }
 

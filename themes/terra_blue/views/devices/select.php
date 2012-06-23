@@ -25,8 +25,15 @@
 <script type="text/javascript">
     $( ".type a" ).click(function() {
 	$.post('/devices/add/' + $(this).attr('rel'), function(data){
-	    if (data != 'ok') data = 'err';
-		$('#m_devices').load('/universe/devices/' + data);
+		data = parseInt(data);
+	    if (!data)
+	    {
+	    	data = 'err';
+			$('#m_devices').load('/universe/devices/' + data);
+	    }
+	    else
+			$('#m_devices').load('/devices/view/' + data);
 	});
+	return false;
     });
 </script>

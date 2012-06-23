@@ -5,9 +5,13 @@
 	echo $warning18plus;
 
 	if (!empty($pstContent))
+	{
 		echo $pstContent;
+		$this->widget('ext.pagination.EPaginationWidget', array('params' => $paginationParams));
+	}
 	else
 		echo Yii::t('common', 'Nothing was found');
+
 ?>
 	</div>
 </div>

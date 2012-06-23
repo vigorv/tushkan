@@ -6,18 +6,22 @@
 
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/css/tushkan.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="/css/carousel/skin.css" />
 		<style>body {padding-top: 25px; background: #ededed url('/img/body-bg.png') top left repeat-x;}</style>
 		<!--[if lt IE 9]>
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
 <?php
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery-ui-1.7.3.custom/js/jquery-ui-1.7.3.custom.min.js");
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.hotkeys.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.cookie.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.form.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.address-1.4.min.js');
+    Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jcarousel.min.js');
 ?>
+
 		<script src="/js/bootstrap.min.js"></script>
 
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
@@ -54,6 +58,7 @@
 		</form>
 		<!--Список фильмов-->
 		<div id="m_goods" class="span12 no-horizontal-margin top-movies-list">
+
 		</div>
 
 	<div id="content">
@@ -96,12 +101,8 @@
 					return false;
 				});
 
-				$('#m_goods').load('/universe/goodsTop',function(){
-					$('#m_goods a').click(function() {
-						$.address.value($(this).attr('href'));
-						return false;
-					});
-				});
+
+                $('#m_goods').load('/universe/goodsTop');
 
 				$('#m_devices').load('/universe/devices');
 

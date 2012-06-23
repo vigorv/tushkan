@@ -18,7 +18,7 @@ if ($pages > 1)
 {
 ?>
 <div class="span12 no-horizontal-margin some-space"></div>
-						<div class="pagination pagination-right">
+						<div class="pagination pagination-right" style="clear:both">
 							<ul>
 								<li><a href="#">&larr;</a></li>
 <?php
@@ -32,7 +32,6 @@ if ($pages > 1)
 								<li><a href="#">&rarr;</a></li>
 							</ul>
 						</div>
-<div class="span12 no-horizontal-margin pagination-space"></div>
 <?php
 }
 

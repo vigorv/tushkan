@@ -53,6 +53,8 @@ class CFiletypes {
 							break;
 						case 'm4a':
 						case 'mp3':
+						case 'ogg':
+						case 'wma':
 						case 'flac':
 							$img = 'audio_mp4.png';
 							break;

@@ -54,7 +54,7 @@ switch ($subAction)
 				';
 			}
 			echo $rNote;
-			echo '<div class="divider"></div><button class="btn" type="submit">' . Yii::t('common', 'Submit') . '</button></form>';
+			echo '<div class="divider"></div><button class="btn" type="submit">' . Yii::t('common', 'Typify') . '</button></form>';
 		}
 	break;
 

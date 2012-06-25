@@ -312,7 +312,7 @@ class Utils {
 						'id' => $id,
 						'alias' => $a,
 						'title' => Yii::t('users', 'Video'),
-						'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp'),
+						'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp', 'm4v'),
 						'link' => '/universe/library?lib=' . $a,
 						'hidden' => false,
 				    );

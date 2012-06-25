@@ -1,7 +1,7 @@
 <?php
 if (!empty($item)) {
     $mediaList = Utils::getMediaList();
-    $detectedType = 0;
+    $detectedType = 0; $detectedTypeName = '';
     ?>
     <script type="text/javascript">
     	links = new Array();
@@ -10,9 +10,12 @@ if (!empty($item)) {
     		foreach ($mediaList as $k => $v)
     		{
     			echo "links[{$k}] = '{$v['link']}';";
-    			if (in_array($info['extension'], $v['exts']))
+
+    			//ПОКА ТИПИЗИРУЕМ ТОЛЬКО КАК ВИДЕО
+    			if (($k == 1) AND in_array($info['extension'], $v['exts']))
     			{
     				$detectedType = $k;
+    				$detectedTypeName = $v['title'];
     			}
     		}
     	?>
@@ -41,7 +44,7 @@ if (!empty($item)) {
 
                     }
                     else
-                        alert('Ошибка создания очереди конвертирования ');
+                        alert('Ошибка создания очереди конвертирования');
                 }
             });
             return false;
@@ -49,7 +52,6 @@ if (!empty($item)) {
 
         function doType(type_id)
         {
-return false;
             $.post("/products/ajax", {typeId: type_id, action: "wizardtypeparams"}, function(html){
                 $("#content").html(html);
                 $("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[fileId]" value="<?php echo $item['id']; ?>" />');
@@ -88,7 +90,7 @@ return false;
 
     if (empty($queue)) {
     	if (!empty($detectedType))
-    		$actions[] = '<button class="btn" onclick="return doType(' . $detectedType . ');">типизировать</button>';
+    		$actions[] = '<button class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</button>';
     	else
     		$actions[] = 'unsupported type';
     } else {

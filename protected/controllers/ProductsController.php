@@ -535,6 +535,7 @@ class ProductsController extends Controller
 	public function actionAjax()
 	{
 		$subAction = ''; $result = array();
+		$typeId = 0;
 		if (!empty($_POST))
 		{
 			if (!empty($_POST['action']))
@@ -544,7 +545,6 @@ class ProductsController extends Controller
 			switch ($subAction)
 			{
 				case "typeparams":
-					$typeId = 0;
 					$result['variantId'] = 0;
 					if (!empty($_POST['typeId']))
 						$typeId = $_POST['typeId'];
@@ -563,7 +563,6 @@ class ProductsController extends Controller
 				break;
 
 				case "wizardtypeparams":
-					$typeId = 0;
 					if (!empty($_POST['typeId']))
 						$typeId = $_POST['typeId'];
 					$userPower = Yii::app()->user->getState('dmUserPower');
@@ -579,7 +578,10 @@ class ProductsController extends Controller
 			}
 		}
 
-        $this->render('ajax', array('subAction' => $subAction, 'result' => $result));
+		if (!empty($typeId) && ($typeId == 1))//ПОКА ПОДДЕРЖКА ТОЛЬКО ВИДЕО
+		{
+	        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'typeId' => $typeId));
+		}
 	}
 
 	/**

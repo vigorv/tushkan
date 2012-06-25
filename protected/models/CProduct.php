@@ -52,7 +52,7 @@ class CProduct extends CActiveRecord
 
     /**
      *
-     * @param int $paramIds
+     * @param array $paramIds
      * @param int $userPower
      * @param string $search
      * @param int $offset
@@ -65,16 +65,34 @@ class CProduct extends CActiveRecord
         if (!($search == '')) {
             $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
         }
+        $select_str ='p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid';
+
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id')
-            ->join('{{product_variants}} pv', 'pv.product_id=p.id')
-            ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-            ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
+            ->join('{{product_variants}} pv', 'pv.product_id=p.id');
+
+        if (in_array(10, $paramIds)){
+            $cmd->leftJoin('{{product_param_values}} ppvP', 'pv.id=ppvP.variant_id AND ppvP.param_id = 10');
+            $select_str.=', ppvP.value as poster ';
+        }
+        if (in_array(12, $paramIds)){
+            $cmd->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12');
+            $select_str.=', ppvT.value as engTitle ';
+        }
+        if (in_array(13, $paramIds)){
+            $cmd->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13');
+            $select_str.=', ppvY.value as year ';
+        }
+        if (in_array(14, $paramIds)){
+            $cmd->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14');
+            $select_str.=', ppvC.value as country';
+        }
+        $cmd->select($select_str);
+        $cmd->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
             ->order('pv.id ASC')
-            ->limit($count,$offset);
+            ->limit($count, $offset);
         return $cmd->queryAll();
     }
 
@@ -85,7 +103,7 @@ class CProduct extends CActiveRecord
      * @param int $count
      * @return array
      */
-    public function getUserProducts($userId, $type_id = 0,$offset=0,$count=10)
+    public function getUserProducts($userId, $type_id = 0, $offset = 0, $count = 10)
     {
         //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
         $tFiles = Yii::app()->db->createCommand()
@@ -110,7 +128,7 @@ class CProduct extends CActiveRecord
                 ->where('pv.id IN (' . implode(', ', $tfIds) . ')' . $types_str)
                 ->group('ppv.id')
                 ->order('pv.id ASC, ptp.srt DESC')
-                ->limit($count,$offset)
+                ->limit($count, $offset)
                 ->queryAll();
         }
         return array("tFiles" => $tFiles, "fParams" => $fParams);

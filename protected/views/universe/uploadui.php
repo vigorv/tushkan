@@ -47,7 +47,7 @@ Y.one("#overallProgress").set("text", "Uploader type: " + Y.Uploader.TYPE);
                                       height: "35px",
                                       multipleFiles: true,
                                       swfURL: "http://yui.yahooapis.com/3.5.1/build/uploader/assets/flashuploader.swf?t=" + Math.random(),
-                                      uploadURL: "http://<?php echo $uploadServer; ?>/index.php",
+                                      uploadURL: "http://<?php echo $uploadServer; ?>/files/uploads",
                                       simLimit: 2
                                      });
        var uploadDone = false;

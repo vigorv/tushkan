@@ -232,6 +232,54 @@ class ServersyncController extends ControllerSync
     }
     */
 
+
+    public function actionFiledata()
+    {
+        $answer = array();
+        if (isset($_GET['fdata']) && isset($_GET['sdata'])) {
+            $check_data = sha1($_GET['fdata'] . Yii::app()->params['uploads_skey']);
+            if ($check_data == $_GET['sdata']) {
+                $rdata = unserialize(base64_decode($_GET['fdata']));
+                if ($rdata) {
+                    /*
+                        $syncData['variant_id'] = $vid;
+                        $syncData['user_ip'] = $user_ip;
+                        $syncData['server_ip'] = Yii::app()->params['server_ip'];
+                        $syncData['uid'] = $user_id;
+                        $syncData['ukey'] = $user_key;
+                    */
+                    if (CUser::checkfishkey($rdata['uid'], $rdata['key'])) {
+                        $variant_id = (int)$rdata['variant_id'];
+                        $server_ip = $rdata['server_ip'];
+                        $user_ip = (int)$rdata['user_ip'];
+                        $zone = CZones::model()->GetZoneByIp($user_ip);
+                        $server = CServers::model()->findByAttributes(array('ip'=>$server_ip,'downloads'=>1));
+                        if ($server){
+                             $locations = CFilelocations::model()->findAllByAttributes(array('id'=>variant_id,'server_id'=>$server['id']));
+                             $answer['folder'] = $locations['folder'];
+                             $answer['fname']  = $locations['fname'];
+                             $answer['fsize']  = $locations['fsize'];
+                        } else {
+                             $locations = CFilelocations::getLocationByZone($variant_id,$zone);
+                             if (!empty($locations)){
+                                $answer['server'] = $locations['server_ip'];
+                             }
+                        }
+                    } else {
+                        $answer['error']=1;
+                    }
+                } else {
+                    $answer['error']=1;
+                }
+            } else{
+                $answer['error']=1;
+            }
+            echo base64_encode(serialize($answer));
+        }else {
+            die();
+        }
+    }
+
     /**
      * действие обработки запроса файлового сервера по загруженным пользователем файлам
      * вся информация о пользователе, файле и параметрах приходит в $_POST в виде структуры
@@ -265,7 +313,7 @@ class ServersyncController extends ControllerSync
                    $syncData['server_ip'] = Yii::app()->params['server_ip'];
                  */
                 if (CUser::checkfishkey($rdata['uid'], $rdata['key'])) {
-                    $file_server = CServers::model()->findByAttributes(array('ip'=>$rdata['server_ip']));
+                    $file_server = CServers::model()->findByAttributes(array('ip' => $rdata['server_ip']));
                     if ($file_server) {
                         $uf = new CUserfiles();
                         $uf->title = $rdata['name'];
@@ -324,113 +372,113 @@ class ServersyncController extends ControllerSync
         echo base64_encode(serialize($answer));
     }
 
-/*
-    public function actionUploadIvan()
-    {
-        function nothingEr($n, $s)
-        {
-            throw new Exception($s);
-        }
+    /*
+public function actionUploadIvan()
+{
+function nothingEr($n, $s)
+{
+    throw new Exception($s);
+}
 
 //		set_error_handler("nothingEr");
 
+$result = '';
+//ПРОВЕРКА КЛЮЧА ПОЛЬЗОВАТЕЛЯ (С УЧЕТОМ ПЕРЕХОДА ЧЕРЕЗ НАЧАЛО СУТОК)
+if (!empty($_POST['key']) && !empty($_POST['uid'])) {
+    $userId = $_POST['uid'];
+    $key = $_POST['key'];
+    $key1 = CUser::getfishkey($_POST['uid'], date('Y-m-d'));
+    $key2 = CUser::getfishkey($_POST['uid'], date('Y-m-d', time() - 3600 * 24));
+    if (($key == $key1) || ($key == $key2)) {
+        $result = 'key ok';
+    }
+}
+
+if (!empty($result) && !empty($_POST['sfile'])) {
+    try {
+        $fileInfo = unserialize($_POST['sfile']);
+    } catch (Exception $e) {
         $result = '';
-        //ПРОВЕРКА КЛЮЧА ПОЛЬЗОВАТЕЛЯ (С УЧЕТОМ ПЕРЕХОДА ЧЕРЕЗ НАЧАЛО СУТОК)
-        if (!empty($_POST['key']) && !empty($_POST['uid'])) {
-            $userId = $_POST['uid'];
-            $key = $_POST['key'];
-            $key1 = CUser::getfishkey($_POST['uid'], date('Y-m-d'));
-            $key2 = CUser::getfishkey($_POST['uid'], date('Y-m-d', time() - 3600 * 24));
-            if (($key == $key1) || ($key == $key2)) {
-                $result = 'key ok';
-            }
+    }
+
+    if (!empty($result)) {
+        $result = '';
+        if (!empty($_POST['sum']) && !empty($_POST['sid']) && ($_POST['sum'] == sha1($_POST['sfile'] . $_POST['sid']))) {
+            //КОНТРОЛЬНАЯ СУММА ИНФО О ФАЙЛЕ В ПОРЯЛКЕ
+            $sid = $_POST['sid'];
+            $result = 'info ok';
         }
+    }
+} else $result = '';
 
-        if (!empty($result) && !empty($_POST['sfile'])) {
-            try {
-                $fileInfo = unserialize($_POST['sfile']);
-            } catch (Exception $e) {
-                $result = '';
-            }
+if (!empty($result)) {
+    //СОХРАНЕНИЕ INFO О ФАЙЛЕ В БД
+    /* ИСХОДНЫЕ ДАННЫЕ
+        $fileInfo["file_original"];
+        $fileInfo["file_name"];
+        $fileInfo["file_path"];
+        $fileInfo["file_MD5"];
+        $fileInfo["file_size"];
+        $fileInfo["server_ip"];
+    */
+    //СОЗДАЕМ ЗАПИСЬ В userobjects ТОЛЬКО ПОСЛЕ ТИПИЗАЦИИ
+    //СОЗДАЕМ ЗАПИСЬ В userfiles
+    /*    $uf = new CUserfiles();
+                $uf->title = $fileInfo["file_original"];
+                $uf->object_id = 0; //ДО ТЕХ ПОР, ПОКА НЕ БУДЕТ ТИПИЗИРОВАН
+                $uf->user_id = $userId;
+                $uf->type_id = 0; //ДО ТЕХ ПОР, ПОКА НЕ БУДЕТ ТИПИЗИРОВАН
+                if ($uf->save(false)) {
+                    $userFileId = $uf->id;
+                    if (!empty($userFileId)) {
+                        //СОЗДАЕМ ЗАПИСЬ files_variants
+                        $fv = new CFilesvariants();
+                        $fv->file_id = $userFileId;
+                        $fv->preset_id = 0; //ДО ТЕХ ПОР, ПОКА НЕ БУДЕТ ТИПИЗИРОВАН
+                        $fv->fsize = $fileInfo['file_size'];
+                        $fv->fmd5 = $fileInfo['file_MD5'];
+                        if ($fv->save(false)) {
+                            $fileVariantId = $fv->id;
+                            if (!empty($fileVariantId)) {
+                                //СОЗДАЕМ ЗАПИСЬ В filelocations
+                                $fl = new CFilelocations();
+                                $fl->id = $fileVariantId;
+                                $fl->server_id = $sid;
+                                $fl->state = 0;
+                                $fl->modified = date('Y-m-d H:i:s');
+                                $fl->fsize = $fv->fsize;
+                                $fl->fname = $fileInfo['file_name'];
+                                $fl->folder = $fileInfo['file_path'];
+                                if ($fl->save(false)) {
+                                    $fileLocationId = $fl->id;
+                                    $result = 'ok';
+                                    //СОХРАНЕНИЕ ЗАВЕРШЕНО
 
-            if (!empty($result)) {
-                $result = '';
-                if (!empty($_POST['sum']) && !empty($_POST['sid']) && ($_POST['sum'] == sha1($_POST['sfile'] . $_POST['sid']))) {
-                    //КОНТРОЛЬНАЯ СУММА ИНФО О ФАЙЛЕ В ПОРЯЛКЕ
-                    $sid = $_POST['sid'];
-                    $result = 'info ok';
-                }
-            }
-        } else $result = '';
-
-        if (!empty($result)) {
-            //СОХРАНЕНИЕ INFO О ФАЙЛЕ В БД
-            /* ИСХОДНЫЕ ДАННЫЕ
-                $fileInfo["file_original"];
-                $fileInfo["file_name"];
-                $fileInfo["file_path"];
-                $fileInfo["file_MD5"];
-                $fileInfo["file_size"];
-                $fileInfo["server_ip"];
-            */
-            //СОЗДАЕМ ЗАПИСЬ В userobjects ТОЛЬКО ПОСЛЕ ТИПИЗАЦИИ
-            //СОЗДАЕМ ЗАПИСЬ В userfiles
-        /*    $uf = new CUserfiles();
-            $uf->title = $fileInfo["file_original"];
-            $uf->object_id = 0; //ДО ТЕХ ПОР, ПОКА НЕ БУДЕТ ТИПИЗИРОВАН
-            $uf->user_id = $userId;
-            $uf->type_id = 0; //ДО ТЕХ ПОР, ПОКА НЕ БУДЕТ ТИПИЗИРОВАН
-            if ($uf->save(false)) {
-                $userFileId = $uf->id;
-                if (!empty($userFileId)) {
-                    //СОЗДАЕМ ЗАПИСЬ files_variants
-                    $fv = new CFilesvariants();
-                    $fv->file_id = $userFileId;
-                    $fv->preset_id = 0; //ДО ТЕХ ПОР, ПОКА НЕ БУДЕТ ТИПИЗИРОВАН
-                    $fv->fsize = $fileInfo['file_size'];
-                    $fv->fmd5 = $fileInfo['file_MD5'];
-                    if ($fv->save(false)) {
-                        $fileVariantId = $fv->id;
-                        if (!empty($fileVariantId)) {
-                            //СОЗДАЕМ ЗАПИСЬ В filelocations
-                            $fl = new CFilelocations();
-                            $fl->id = $fileVariantId;
-                            $fl->server_id = $sid;
-                            $fl->state = 0;
-                            $fl->modified = date('Y-m-d H:i:s');
-                            $fl->fsize = $fv->fsize;
-                            $fl->fname = $fileInfo['file_name'];
-                            $fl->folder = $fileInfo['file_path'];
-                            if ($fl->save(false)) {
-                                $fileLocationId = $fl->id;
-                                $result = 'ok';
-                                //СОХРАНЕНИЕ ЗАВЕРШЕНО
-
-                                //ПРОВЕРЯЕМ ДОП. ПАРАМЕТРЫ ДЛЯ ТИПИЗАЦИИ
-                                if (!empty($_POST['sparams'])) {
-                                    try {
-                                        $params = unserialize($_POST['sparams']);
-                                        //ПОЛУЧИЛИ МАССИВ С КЛЮЧАМИ = идентификаторам параметров по (product_type_params)
-                                        //И СО ЗНАЧЕНИЯМИ ЭТИХ ПАРАМЕТРОВ СООТВЕТСВЕННО
-                                    } catch (Exception $e) {
-                                        $params = array();
+                                    //ПРОВЕРЯЕМ ДОП. ПАРАМЕТРЫ ДЛЯ ТИПИЗАЦИИ
+                                    if (!empty($_POST['sparams'])) {
+                                        try {
+                                            $params = unserialize($_POST['sparams']);
+                                            //ПОЛУЧИЛИ МАССИВ С КЛЮЧАМИ = идентификаторам параметров по (product_type_params)
+                                            //И СО ЗНАЧЕНИЯМИ ЭТИХ ПАРАМЕТРОВ СООТВЕТСВЕННО
+                                        } catch (Exception $e) {
+                                            $params = array();
+                                        }
+                                        if (!empty($params)) {
+                                            //СОХРАНЕНИЕ ВСЕХ ЗНАЧЕНИЙ ПАРАМЕТРОВ в userobjects_param_values
+                                        }
+                                        //ПРИ НАЛИЧИИ ПАРАМЕТРОВ ТИПИЗАЦИИ, ДОБАВЛЕНИЕ В ОЧЕРЕДЬ КОНВЕРТИРОВАНИЯ
+                                        //В ТАБЛИЦУ convert_queue
                                     }
-                                    if (!empty($params)) {
-                                        //СОХРАНЕНИЕ ВСЕХ ЗНАЧЕНИЙ ПАРАМЕТРОВ в userobjects_param_values
-                                    }
-                                    //ПРИ НАЛИЧИИ ПАРАМЕТРОВ ТИПИЗАЦИИ, ДОБАВЛЕНИЕ В ОЧЕРЕДЬ КОНВЕРТИРОВАНИЯ
-                                    //В ТАБЛИЦУ convert_queue
                                 }
                             }
                         }
                     }
                 }
             }
+            restore_error_handler();
+            die($result);
         }
-        restore_error_handler();
-        die($result);
-    }
-*/
+    */
     public function actionDownload($user_id = 0)
     {
         if ($user_id > 0) {

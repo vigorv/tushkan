@@ -56,9 +56,6 @@ if (!empty($item)) {
                 $("#content").html(html);
                 $("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[fileId]" value="<?php echo $item['id']; ?>" />');
                 $("#wizardParamsFormId").append('<input type="hidden" name="paramsForm[typeId]" value="' + type_id + '" />');
-                $("#wizardParamsFormId").ajaxForm(function() {
-                    //$("#content").load(links[type_id]);
-                });
             });
         }
 

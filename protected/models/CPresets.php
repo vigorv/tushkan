@@ -22,6 +22,14 @@ class CPresets {
 	}
     }
 
+    /**
+     * статическое описание пресетов
+     *
+     * !!ВНИМАНИЕ!! при переходе к описанию этой структуры в БД заменить также в классе транспорта
+     * (/classes/fileserver/transport.php) конвертера
+     *
+     * @return mixed
+     */
     public static function getPresets() {
     	$presets = array(
     		'unknown'	=> array('id' => 1, 'title' => 'unknown'),

@@ -934,7 +934,7 @@ class ProductsController extends Controller
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmdInfo = $cmd->queryRow();
-			if (!empty($cmdInfo))
+			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
 				$productInfo = Yii::app()->db->createCommand()

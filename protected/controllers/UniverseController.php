@@ -245,17 +245,17 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-		if (!empty($objectId))
-		{
-			Yii::app()->request->redirect('/universe/oview/' . $objectId);
-			return;
-		}
+		$url = '/universe';
 		if (!empty($fileId))
 		{
-			Yii::app()->request->redirect('/files/fview/' . $fileId);
-			return;
+			$url = '/files/fview/' . $fileId;
 		}
-		Yii::app()->request->redirect('/universe');
+		if (!empty($objectId))
+		{
+			$url = '/universe/oview/' . $objectId;
+		}
+		$this->render('/universe/postuploadparams', array('url' => $url));
+		//$this->redirect('/#' . $url);
 	}
 
 	/**

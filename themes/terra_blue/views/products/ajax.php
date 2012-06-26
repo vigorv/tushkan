@@ -49,7 +49,24 @@ switch ($subAction)
 	<h1><?php echo Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"'; ?></h1>
 	<div class="span9 movie-text">
 	<div class="span12 no-horizontal-margin some-space"></div>
-	<form id="wizardParamsFormId" method="post" action="/universe/postuploadparams">
+	<script type="text/javascript">
+		function ajaxSubmit(f)
+		{
+			var str='ajax=1&';
+			$('#' + f.id + ' input').each(function(n,element){
+			if($(element).attr('type')!='button'){
+				str = str + $(element).attr('name') +'='+$(element).val()+'&';
+			}
+			});
+			//alert(str);
+				$.post('/universe/postuploadparams', str, function(redirect){
+					if (redirect == '') redirect = '/universe';
+					$('#content').load(redirect);
+				});
+			return false;
+		}
+	</script>
+	<form id="wizardParamsFormId" method="post" onsubmit="return ajaxSubmit(this);">
 <?php
 			$rNote = '';
 			foreach($result['lst'] as $p)

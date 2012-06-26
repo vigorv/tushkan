@@ -112,6 +112,56 @@ class UniverseController extends Controller {
 	}
 
 	/**
+	 * проверяем состояние очереди по параметрам запроса на типизацию(конвертирование)
+	 *
+		$id - id файла пользователя (original_id)
+	 *
+	 */
+	public function checkQueue($id)
+	{
+		$isTypified = false;
+		$result = 'bad original ID';
+		if (!empty($id))
+		{
+			$originalId = $id;
+			$result = 'user not registered';
+			if (!empty($this->userInfo['id']))
+			{
+				//ВЫБОРКА ВАРИАНТА (У НЕТИПИЗИРОВАННОГО ВАРИАНТ ОДИН И ЛОКАЦИЯ ОДНА)
+				$cmd = Yii::app()->db->createCommand()
+					->select('fv.id, fv.preset_id')
+					->from('{{files_variants}} fv')
+					->where('fv.id = :originalId');
+				$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
+				$variantExists = $cmd->queryRow();
+
+				if (!empty($variantExists) && !empty($variantExists['preset_id']))
+				{
+					$isTypified = true;
+					$result = $variantExists['id'];
+				}
+				else
+				{
+					$result = 'ok';
+					//ПОВЕРЯЕМ НАЛИЧИЕ В ОЧЕРЕДИ КОНВЕРТЕРА
+					$cmd = Yii::app()->db->createCommand()
+						->select('id, cmd_id, state')
+						->from('{{income_queue}}')
+						->where('cmd_id < 50 AND user_id = :id AND partner_id=0 AND original_id=:oid');
+					$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
+					$cmd->bindParam(':oid', $originalId, PDO::PARAM_INT);
+					$queueExists = $cmd->queryRow();
+					if ($queueExists)
+					{
+						$result = 'queue|' . $queueExists['cmd_id'] . '|' . $queueExists['state'];
+					}
+				}
+			}
+		}
+		return $result;
+	}
+
+	/**
 	 * действие сохранения информации о загруженном файле (параметры)
 	 *
 	 */
@@ -127,16 +177,44 @@ class UniverseController extends Controller {
 				$params = $_POST['paramsForm']['params'];
 			}
 			if (!empty($fileId) && !empty($params)) {
+
+				$result = $this->checkQueue($fileId);
+				if (($result == 'ok'))
+				{
+					$state = $result;
+					$partnerId = 0;
+					$originalId = $fileId;
+					//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
+					//original_id, partner_id, user_id, original_variant_id
+					$userId = $this->userInfo['id'];
+					$queue = array(
+						'id'			=> null,
+						'product_id'	=> 0,
+						'original_id'	=> $originalId,
+						'task_id'		=> 0,
+						'cmd_id'		=> 0,
+						'info'			=> "",
+						'priority'		=> 200,
+						'state'			=> 0,
+						'station_id'	=> 0,
+						'partner_id'	=> $partnerId,
+						'user_id'		=> $this->userInfo['id'],
+						'original_variant_id'	=> 0,
+					);
+					$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
+					$result = 'queue';
+				}
+
 				$cmd = Yii::app()->db->createCommand()
-						->select('*')
+						->select('id, title, object_id')
 						->from('{{userfiles}}')
 						->where('id = :id AND user_id = ' . $this->userInfo['id']);
 				$cmd->bindParam(':id', $fileId);
 				$fileInfo = $cmd->queryRow();
-				if (!empty($fileInfo)) {
+				if (!empty($fileInfo) && empty($fileInfo['object_id'])) {
 					//ПРИ ТИПИЗАЦИИ ЗАКРЕПЛЯЕМ ФАЙЛ ЗА ОБЪЕКТОМ
-					$sql = 'INSERT INTO {{userobjects}} (id, title, user_id, type_id, active, parent_id)
-						VALUES (null, :title, :user_id, :type_id, 0, 0)
+					$sql = 'INSERT INTO {{userobjects}} (id, title, user_id, type_id, active, parent_id, modified)
+						VALUES (null, :title, :user_id, :type_id, 0, 0, "' . date("Y-m-d H:i:s") . '")
 					';
 					$cmd = Yii::app()->db->createCommand($sql);
 					$cmd->bindParam(':title', $fileInfo['title'], PDO::PARAM_STR);
@@ -149,6 +227,8 @@ class UniverseController extends Controller {
 					$cmd = Yii::app()->db->createCommand($sql);
 					$cmd->bindParam(':id', $fileInfo['id'], PDO::PARAM_INT);
 					$cmd->execute();
+
+					$fileInfo['object_id'] = $objectId;
 
 					foreach ($params as $p) {
 						if (empty($p['id']))
@@ -165,6 +245,17 @@ class UniverseController extends Controller {
 				}
 			}
 		}
+		$url = '/universe';
+		if (!empty($fileId))
+		{
+			$url = '/files/fview/' . $fileId;
+		}
+		if (!empty($objectId))
+		{
+			$url = '/universe/oview/' . $objectId;
+		}
+		$this->render('/universe/postuploadparams', array('url' => $url));
+		//$this->redirect('/#' . $url);
 	}
 
 	/**

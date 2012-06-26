@@ -34,7 +34,40 @@ switch ($subAction)
 	case "wizardtypeparams":
 		if (!empty($result['lst']))
 		{
-			echo '<form id="wizardParamsFormId" method="post" action="/universe/postuploadparams">';
+		    $mediaList = Utils::getMediaList();
+    		$detectedType = 0; $detectedTypeName = '';
+    		foreach ($mediaList as $k => $v)
+    		{
+    			if ($k == $typeId)
+    			{
+    				$detectedType = $k;
+    				$detectedTypeName = $v['title'];
+    			}
+    		}
+?>
+<div class="span12 no-horizontal-margin inside-movie my-catalog">
+	<h1><?php echo Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"'; ?></h1>
+	<div class="span9 movie-text">
+	<div class="span12 no-horizontal-margin some-space"></div>
+	<script type="text/javascript">
+		function ajaxSubmit(f)
+		{
+			var str='ajax=1&';
+			$('#' + f.id + ' input').each(function(n,element){
+			if($(element).attr('type')!='button'){
+				str = str + $(element).attr('name') +'='+$(element).val()+'&';
+			}
+			});
+			//alert(str);
+				$.post('/universe/postuploadparams', str, function(redirect){
+					if (redirect == '') redirect = '/universe';
+					$('#content').load(redirect);
+				});
+			return false;
+		}
+	</script>
+	<form id="wizardParamsFormId" method="post" onsubmit="return ajaxSubmit(this);">
+<?php
 			$rNote = '';
 			foreach($result['lst'] as $p)
 			{
@@ -49,12 +82,20 @@ switch ($subAction)
 				echo'<div class="chess">
 				<input name="paramsForm[params][' . $pid . '][id]" type="hidden" value="' . $pid . '" />
 				' . $title . ':' . $r . '<br />
-				<input name="paramsForm[params][' . $pid . '][value]" type="text" value="" class="text ui-widget-content ui-corner-all" />
+				<input name="paramsForm[params][' . $pid . '][value]" type="text" value="" />
 				</div>
 				';
 			}
 			echo $rNote;
-			echo '<div class="divider"></div><button class="btn" type="submit">' . Yii::t('common', 'Typify') . '</button></form>';
+			echo '
+				<div class="divider"></div>
+				<button class="btn" type="submit">' . Yii::t('common', 'Typify') . '</button>
+				';
+?>
+	</form>
+	</div>
+</div>
+<?php
 		}
 	break;
 

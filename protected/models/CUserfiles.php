@@ -2,17 +2,11 @@
 
 /**
  * модель file пользователей
-
-
-
  * @property $id
  * @property $user_id
  * @property $object_id
  * @property $title
  * @property $type_id
- method  getFileList($user_id, $pid=0, $page=1, $count=100)
- method getFileloc($fid, $user_id, $zone_id, $stype=1)
- method getDirTree($user_id)
  */
 class CUserfiles extends CActiveRecord {
 

@@ -490,6 +490,7 @@ if (!empty($result)) {
             die($result);
         }
     */
+    /*
     public function actionDownload($user_id = 0)
     {
         if ($user_id > 0) {
@@ -518,7 +519,7 @@ if (!empty($result)) {
         } else
             die("Bad User");
     }
-
+*/
     public
     function actionTypify($user_id = 0, $data = '')
     {

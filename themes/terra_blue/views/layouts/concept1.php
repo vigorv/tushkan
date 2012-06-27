@@ -66,12 +66,38 @@
 
 		<div id="m_devices" class="span12 no-horizontal-margin connected">
 		</div>
+
+		<div id="bottom" class="span12 no-horizontal-margin"><center>
+		<p class="note">&copy; <?php echo date('Y'); ?> <?php echo Yii::app()->name; ?>
+		<?php
+			$menu = array(
+				'About' => '/pages/1',
+				'FAQ' => '/pages/2',
+				'Feedback' => '/register/feedback',
+			);
+			$d = '';
+			foreach ($menu as $k => $v)
+			{
+				echo $d . '<a href="' . $v . '">' . Yii::t('common', $k) . '</a>';
+				$d = ' | ';
+			}
+		?></p></center>
+		</div>
+
 	</div>
 			<script langauge="javascript">
 				$.address.change(function(event) {
 					console.log(event.value);
 					$('#content').load(event.value, function(){
 						$('#content a').click(function(){
+							lnk= $(this).attr('href');
+							if (lnk.substr(0, 1) == "#")return true;
+							if (lnk=="") return false;
+
+							$.address.value(lnk);
+							return false;
+						});
+						$('#bottom a').click(function(){
 							lnk= $(this).attr('href');
 							if (lnk.substr(0, 1) == "#")return true;
 							if (lnk=="") return false;

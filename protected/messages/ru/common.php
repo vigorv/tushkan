@@ -57,6 +57,10 @@ return array (
   'Variant'					=> 'Вариант',
   'Upload'					=> 'Загрузить',
   'Upload process'			=> 'Процесс загрузки',
+  "Hasn't started yet"		=> 'Ожидает загрузки',
+  "Total uploaded"			=> 'Всего загружено',
+  "Finished"				=> 'Закончено',
+  "Uploads complete"		=> 'Загрузки завершены',
   'Upload a file'			=> 'Загрузить файл',
   'Choose'					=> 'Выберите',
   'Choose type of file'		=> 'Выберите тип файла',
@@ -117,10 +121,13 @@ return array (
   'Page not found'			=> 'Страница не найдена',
   'Nothing was found'		=> 'Ничего не найдено',
   'Are you sure?'			=> 'Вы уверены?',
+	'File size'				=> 'Размер файла',
 
+  'Nothing have been selected'	=> 'Ничего не выбрано',
   'Request cannot be processed'	=> 'Запрос не может быть выполнен',
 
   'Access denied. Authentication required'			=> 'Отказано в доступе. Tребуется аутентификация.',
   'Letters of verify code are not case-sensitive.'	=> 'Символы проверочного кода не чувствительны к регистру.',
+  'We are sorry, but the uploader technology is not supported on this platform'	=> 'Извините, Ваш браузер не поддерживает загрузку файлов',
 
 );

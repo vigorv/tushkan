@@ -18,8 +18,11 @@
 </head>
 <body>
 <div id="content">
-    <img src="/images/cloud.png"/><br/>
+<center>
+    <img width="300" src="/img/cloud-head.png"/>
+    <p><br /></p>
     <?php echo $content; ?>
+</center>
 </div>
 </body>
 </html>

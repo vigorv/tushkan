@@ -91,20 +91,20 @@ if (!empty($pst)) {
     });
 
     function m_good_carousel_next(){
-        var current = $("#m_goods_carousel .pages .item-active");
+        var current = $("#m_goods_carousel .pages a.item-active");
         var inext = current.next('a');
         if (inext){
             inext.removeClass("item").addClass("item-active");
-            inext.removeClass("item-active").addClass("item");
+            current.removeClass("item-active").addClass("item");
         }
     }
 
     function m_good_carousel_prev(){
-        var current = $("#m_goods_carousel .pages .item-active");
+        var current = $("#m_goods_carousel .pages a.item-active");
         var previos = current.prev('a');
         if (previos){
             previos.removeClass("item").addClass("item-active");
-            previos.removeClass("item-active").addClass("item");
+            current.removeClass("item-active").addClass("item");
         }
     }
 

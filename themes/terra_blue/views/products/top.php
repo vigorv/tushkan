@@ -55,11 +55,11 @@ if (!empty($pst)) {
 </ul>
 
 <div class="pages">
-    <a class="item-active" href="#" onClick="m_goods_carousel_page(1); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(2); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(3); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(4); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(5); return false;"></a>
+    <a class="item-active" href="#" onClick="m_goods_carousel_page(1,self); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(2,self); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(3,self); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(4,self); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(5,self); return false;"></a>
 </div>
 
 <script language="javascript">
@@ -88,8 +88,10 @@ if (!empty($pst)) {
         scroll:<?=Yii::app()->params['product_top_count'];?>
     });
 
-    function m_goods_carousel_page(page){
-        goodsCarousel.jcarousel('scroll',page*<?=Yii::app()->params['product_top_count'];?>+1)
+    function m_goods_carousel_page(page,e){
+        goodsCarousel.jcarousel('scroll',(page-1)*<?=Yii::app()->params['product_top_count'];?>+1);
+        $(".pages .item-active").removeClass("item-active").addClass("item");
+        $(e).removeClass("item").addClass("item-active");
     }
 
 </script>

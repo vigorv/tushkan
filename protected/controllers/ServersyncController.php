@@ -256,10 +256,15 @@ class ServersyncController extends ControllerSync
                             $zone = CZones::model()->GetZoneByIp($user_ip);
                             $server = CServers::model()->findByAttributes(array('ip' => $server_ip, 'downloads' => 1));
                             if ($server) {
-                                $locations = CFilelocations::model()->findAllByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
-                                $answer['folder'] = $locations['folder'];
-                                $answer['fname'] = $locations['fname'];
-                                $answer['fsize'] = $locations['fsize'];
+                                $locations = CFilelocations::model()->findByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
+                                if ($locations){
+                                    $answer['folder'] = $locations['folder'];
+                                    $answer['fname'] = $locations['fname'];
+                                    $answer['fsize'] = $locations['fsize'];
+                                } else{
+                                    $answer['error'] = 1;
+                                    $answer['error_msg'] = "File not found";
+                                }
                             } else {
                                 $locations = CFilelocations::getLocationByZone($variant_id, $zone);
                                 if (!empty($locations)) {

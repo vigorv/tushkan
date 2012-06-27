@@ -43,13 +43,13 @@ if (!empty($prms))
 	$actions = array();
 	$actions[] = '<button class="btn" onclick="return doRemove(' . $prms[0]['id'] . ')">удалить из пространства</button>';
 	$onlineHref = '';
-		$onlineLinks[$fk] = '/files/download?fid=' . $files[0]['id'];
+		$onlineLinks[$fk] = '/files/download?vid=' . $files[0]['variant_id'];
 //$onlineLinks[$fk] = 'http://92.63.192.12:83/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<button class="btn" onclick="$.address.value(\'/universe/oview/id/' . $prms[0]['id'] . '/do/online\'); return false;">смотреть онлайн</button>';
 		$onlineHref = '<p id="autostart" rel="#video' . $fk . '"></p>';
 	unset($params['onlineurl']);
 
-	$links[$fk] = '/files/download?fid=' . $files[0]['id'];
+	$links[$fk] = '/files/download?vid=' . $files[0]['variant_id'];
 //$links[$fk] = 'http://92.63.192.12/d/direktoren_for_det_hele/direktoren_for_det_hele.mp4';
 		$actions[] = '<button class="btn" onclick="return doRedirect(\'' . $links[$fk] . '\');">скачать</button>';
 	unset($params['url']);

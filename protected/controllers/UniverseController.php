@@ -695,7 +695,7 @@ class UniverseController extends Controller {
 				}
 
 				$cmd = Yii::app()->db->createCommand()
-						->select('fv.id, fv.file_id, fl.fname')
+						->select('fv.id as variant_id, fv.file_id, fl.fname')
 						->from('{{userfiles}} uf')
 						->join('{{files_variants}} fv', 'uf.id=fv.file_id')
 						->join('{{filelocations}} fl', 'fl.id=fv.id')

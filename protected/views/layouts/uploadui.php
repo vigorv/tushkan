@@ -17,8 +17,8 @@
     <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 </head>
 <body>
-<div id="content">
-    <img src="/images/cloud.png"/><br/>
+<div id="content" >
+    <img width="200px" src="/images/cloud.png" style="margin:10px"/><br/>
     <?php echo $content; ?>
 </div>
 </body>

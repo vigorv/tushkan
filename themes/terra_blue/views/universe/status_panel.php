@@ -50,7 +50,7 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 						<div class="ann">(<?php echo @$space_busy; ?>MB : <?php echo @$userInfo['size_limit'] ?>MB)</div>
 					</li>
 					<li>
-						<a href="#" onClick="window.open('/universe/uploadui','Uploader','width=700,height=500'); return false;"><?php echo Yii::t('users','Uploads');?></a>
+						<a href="#" onClick="window.open('/universe/uploadui','_blank'); return false;"><?php echo Yii::t('users','Uploads');?></a>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo Yii::t('users', 'Goods'); ?><b class="caret caret-top-menu"></b></a>

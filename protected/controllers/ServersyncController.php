@@ -526,6 +526,7 @@ if (!empty($result)) {
                 $fid = (int)$input['file_id'];
                 $filename = $input['save'];
                 $fsize = $input['fsize'];
+                $folder = $input['folder'];
                 $task_id = (int)$input['task_id'];
                 if ($task_id > 0) {
                     $queue = CConvertQueue::model()->findByAttributes(array('task_id' => $task_id));

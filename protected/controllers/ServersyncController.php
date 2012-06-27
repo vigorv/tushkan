@@ -520,6 +520,7 @@ if (!empty($result)) {
             die("Bad User");
     }
 */
+    /*
     public
     function actionTypify($user_id = 0, $data = '')
     {
@@ -624,5 +625,5 @@ if (!empty($result)) {
             }
         }
     }
-
+*/
 }

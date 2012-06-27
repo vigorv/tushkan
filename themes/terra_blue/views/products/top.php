@@ -40,6 +40,7 @@ if (!empty($pst)) {
         $.address.value($(e).attr('href'));
         return false;
     }
+
 </script>
 
 <ul id="m_goods_carousel" class="jcarousel-skin-tango">
@@ -54,11 +55,11 @@ if (!empty($pst)) {
 </ul>
 
 <div class="pages">
-    <a class="item" href="#"></a>
-    <a class="item" href="#"></a>
-    <a class="item-active" href="#"></a>
-    <a class="item" href="#"></a>
-    <a class="item" href="#"></a>
+    <a class="item-active" href="#" onClick="m_goods_carousel_page(1); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(2); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(3); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(4); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(5); return false;"></a>
 </div>
 
 <script language="javascript">
@@ -83,7 +84,12 @@ if (!empty($pst)) {
     }
 
     var goodsCarousel = jQuery('#m_goods #m_goods_carousel').jcarousel({
-        itemLoadCallback:m_goods_carousel_itemLoadCallback
+        itemLoadCallback:m_goods_carousel_itemLoadCallback,
+        scroll:<?=Yii::app()->params['product_top_count'];?>
     });
+
+    function m_goods_carousel_page(page){
+        goodsCarousel.jcarousel('scroll',page*<?=Yii::app()->params['product_top_count'];?>+1)
+    }
 
 </script>

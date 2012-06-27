@@ -291,7 +291,7 @@ class UniverseController extends Controller {
 
 	public function actionGoodsTop($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
-		$pst = CProduct::model()->getProductList(array(10), $this->userPower, $search,0,11);
+		$pst = CProduct::model()->getProductList(array(10), $this->userPower, $search,0,Yii::app()->params['product_top_count']*2);
 		$this->render('/products/top', array('pst' => $pst));
 	}
 
@@ -759,6 +759,7 @@ class UniverseController extends Controller {
 	 * ОФОРМИТЬ ДЕЙСТВИЕ ОТДЕЛЬНЫМ СКРИПТОМ И РАЗМЕСТИТЬ НА ЭТОМ ОТДЕЛЬНОМ ФАЙЛОВОМ СЕРВЕРЕ
 	 *
 	 */
+    /*
 	public function actionUploaduido()
 	{
 		if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
@@ -782,7 +783,7 @@ class UniverseController extends Controller {
   					}
   				}
 			 */
-
+/*
 			//СОХРАНЯЕМ ФАЙЛЫ
 				$filePath = '';//ПУТЬ СОХРАНЕНИЯ ФАЙЛА НА СЕРВЕРЕ
 				$fileName = '';//ИМЯ ФАЙЛА НА СЕРВЕРЕ
@@ -813,6 +814,7 @@ class UniverseController extends Controller {
 				 * 		"params"=> array - доп. параметры для типизации файла
 				 * )
 				 */
+    /*
 				$result = '';
 				if (!empty($_POST["key"]) && !empty($_POST['userid']) && !empty($fileInfo))
 				{
@@ -844,5 +846,5 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-	}
+	}*/
 }

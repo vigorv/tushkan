@@ -81,7 +81,7 @@ if (!empty($item)) {
     echo '<p>Размер: ' . Utils::sizeFormat($item['fsize']) . '</p>';
     $actions = array();
     if (isset($variants) && count($variants)) {
-        $actions[] = '<button class="btn"  onclick="window.open(' . "'/files/download?fid=" . $item['id'] . "'" . ');" >' . Yii::t('files', 'download') . '</button>';
+        $actions[] = '<button class="btn"  onclick="window.open(' . "'/files/download?fid=" . $variants[0]['id'] . "'" . ');" >' . Yii::t('files', 'download') . '</button>';
         $actions[] = '<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
     }
 

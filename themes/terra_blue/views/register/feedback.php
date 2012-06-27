@@ -1,7 +1,6 @@
 <?php
 $title = Yii::t('common', 'Feedback');
-$this->pageTitle=Yii::app()->name . ' - ' . $title;
-$this->breadcrumbs=array($title);
+//$this->pageTitle=Yii::app()->name . ' - ' . $title;
 ?>
 
 <h2><?php echo $title; ?></h2>

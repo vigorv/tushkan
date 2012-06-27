@@ -903,6 +903,6 @@ class RegisterController extends Controller {
 				$this->refresh();
 			}
 		}
-		$this->render('feedback',array('model'=>$model));
+		$this->render('/register/feedback',array('model'=>$model));
 	}
 }

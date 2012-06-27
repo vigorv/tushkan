@@ -18,7 +18,8 @@
 </head>
 <body>
 <div id="content" >
-    <img width="200px" src="/images/cloud.png" style="margin:10px"/><br/>
+    <img width="200px" src="/images/cloud.png" style="margin:10px"/>
+      <br/>
     <?php echo $content; ?>
 </div>
 </body>

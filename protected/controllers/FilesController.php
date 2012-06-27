@@ -130,18 +130,25 @@ class FilesController extends Controller {
     }
 
     public function actionDownload() {
-        $fid = (int) $_GET['fid'];
-        if ($fid > 0) {
-            $item = CUserfiles::model()->findByPk(array('user_id' => $this->user_id, 'id' => $fid));
-//        $server = CFilelocations::model()->findAllByAttributes(array('user_id' => $this->user_id, 'id' => $fid));
-//            echo "it's file aviable on " . $server['id'];
-            $dl_server = CServers::model()->getServer(DOWNLOAD_SERVER);
-            $kpt = CUser::kpt($this->user_id);
-            $this->redirect('http://' . $dl_server . '/files/download?fid=' . $fid . '&kpt=' . $kpt . '&user_id=' . $this->user_id);
+        if (isset($_GET['vid']) && ((int)$_GET['vid']>0)){
+        $variant_id = (int) $_GET['vid'];
+            $allowed_download = CUserfiles::DidUserHaveVariant(Yii::app()->user->id,$variant_id);
+            if ($allowed_download){
+                $server = CFileservers::getDownloadServerForUserFile($variant_id);
+                $sign = CUser::getDownloadSign($variant_id.$this->user_id);
+                if ($server){
+                    if ($server['alias'] == '')
+                        $this->redirect('http://' .$server['ip'].':'.$server['port'].'/files/download?vid=' . $variant_id. '&user_id=' . $this->user_id .'&key='.$sign);
+                    else
+                        $this->redirect('http://' .$server['alias'].':'.$server['port'].'/files/download?vid=' . $variant_id . '&user_id=' . $this->user_id .'&key='.$sign);
+                }
             exit();
-        } else
+            } else {
+                throw new CHttpException(403);
+            }
+        } else {
             throw new CHttpException(404, 'The specified file cannot be found.');
-        exit();
+        }
     }
 
     /* Just key for user access to other servers */

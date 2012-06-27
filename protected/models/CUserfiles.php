@@ -203,5 +203,20 @@ class CUserfiles extends CActiveRecord {
 			->queryAll();
     }
 
+    /**
+     * @static
+     * @param $user_id
+     * @param $variant_id
+     * @return mixed
+     */
+
+    public static function DidUserHaveVariant($user_id,$variant_id){
+        return Yii::app()->db->createCommand()
+            ->select('Count(uf.id)')
+            ->from('{{userfiles}} uf')
+            ->join('{{files_variants}} fv','fv.file_id = uf.id and fv.id = :variant_id',array(':variant_id'=>$variant_id))
+            ->where('uf.user_id = :user_id',array(':user_id'=>$user_id))
+            ->queryScalar();
+    }
 
 }

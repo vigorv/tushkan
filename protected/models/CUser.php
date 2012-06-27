@@ -38,15 +38,12 @@ class CUser extends CActiveRecord
     }
 
     /**
-     *
-     * @param type $user_id
-     * @return type
+     * @static
+     * @param $info
+     * @return string
      */
-    public static function KPT($user_id)
-    {
-        $sid = CUser::model()->findByPk($user_id)->sess_id;
-        $kpt = md5($user_id . $sid . "I am robot");
-        return $kpt;
+    public static function getDownloadSign($info){
+        return sha1($info.'_make_download_allow');
     }
 
     /**

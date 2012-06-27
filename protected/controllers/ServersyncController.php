@@ -256,7 +256,7 @@ class ServersyncController extends ControllerSync
                             $zone = CZones::model()->GetZoneByIp($user_ip);
                             $server = CServers::model()->findByAttributes(array('ip' => $server_ip, 'downloads' => 1));
                             if ($server) {
-                                $locations = CFilelocations::model()->findAllByAttributes(array('id' => variant_id, 'server_id' => $server['id']));
+                                $locations = CFilelocations::model()->findAllByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
                                 $answer['folder'] = $locations['folder'];
                                 $answer['fname'] = $locations['fname'];
                                 $answer['fsize'] = $locations['fsize'];

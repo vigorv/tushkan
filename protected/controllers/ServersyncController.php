@@ -258,9 +258,9 @@ class ServersyncController extends ControllerSync
                             if ($server) {
                                 $locations = CFilelocations::model()->findByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
                                 if ($locations){
-                                    $answer['folder'] = $locations['folder'];
-                                    $answer['fname'] = $locations['fname'];
-                                    $answer['fsize'] = $locations['fsize'];
+                                    $answer['folder'] = $locations->folder;
+                                    $answer['fname'] = $locations->fname;
+                                    $answer['fsize'] = $locations->fsize;
                                 } else{
                                     $answer['error'] = 1;
                                     $answer['error_msg'] = "File not found";

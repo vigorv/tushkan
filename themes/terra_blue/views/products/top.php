@@ -55,11 +55,11 @@ if (!empty($pst)) {
 </ul>
 
 <div class="pages">
-    <a class="item-active" href="#" onClick="m_goods_carousel_page(1,self); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(2,self); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(3,self); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(4,self); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(5,self); return false;"></a>
+    <a class="item-active" href="#" onClick="m_goods_carousel_page(1,this); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(2,this); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(3,this); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(4,this); return false;"></a>
+    <a class="item" href="#" onClick="m_goods_carousel_page(5,this); return false;"></a>
 </div>
 
 <script language="javascript">
@@ -85,8 +85,28 @@ if (!empty($pst)) {
 
     var goodsCarousel = jQuery('#m_goods #m_goods_carousel').jcarousel({
         itemLoadCallback:m_goods_carousel_itemLoadCallback,
+        buttonNextCallback:m_good_carousel_next,
+        buttonPrevCallback:m_good_carousel_prev,
         scroll:<?=Yii::app()->params['product_top_count'];?>
     });
+
+    function m_good_carousel_next(){
+        var current = $("#m_goods_carousel .pages .item-active");
+        var inext = current.next('a');
+        if (inext){
+            inext.removeClass("item").addClass("item-active");
+            inext.removeClass("item-active").addClass("item");
+        }
+    }
+
+    function m_good_carousel_prev(){
+        var current = $("#m_goods_carousel .pages .item-active");
+        var previos = current.prev('a');
+        if (previos){
+            previos.removeClass("item").addClass("item-active");
+            previos.removeClass("item-active").addClass("item");
+        }
+    }
 
     function m_goods_carousel_page(page,e){
         goodsCarousel.jcarousel('scroll',(page-1)*<?=Yii::app()->params['product_top_count'];?>+1);

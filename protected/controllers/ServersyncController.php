@@ -246,36 +246,42 @@ class ServersyncController extends ControllerSync
                         $syncData['user_ip'] = $user_ip;
                         $syncData['server_ip'] = Yii::app()->params['server_ip'];
                         $syncData['uid'] = $user_id;
-                        $syncData['ukey'] = $user_key;
+                        $syncData['key'] = $user_key;
                     */
-                    if (CUser::checkfishkey($rdata['uid'], $rdata['key'])) {
-                        $variant_id = (int)$rdata['variant_id'];
-                        $server_ip = $rdata['server_ip'];
-                        $user_ip = (int)$rdata['user_ip'];
-                        $zone = CZones::model()->GetZoneByIp($user_ip);
-                        $server = CServers::model()->findByAttributes(array('ip'=>$server_ip,'downloads'=>1));
-                        if ($server){
-                             $locations = CFilelocations::model()->findAllByAttributes(array('id'=>variant_id,'server_id'=>$server['id']));
-                             $answer['folder'] = $locations['folder'];
-                             $answer['fname']  = $locations['fname'];
-                             $answer['fsize']  = $locations['fsize'];
+                    $variant_id = (int)$rdata['variant_id'];
+                    if (CUser::getDownloadSign($variant_id.$rdata['uid'])) {
+                        if (CUserfiles::DidUserHaveVariant($rdata['uid'], $variant_id)) {
+                            $server_ip = $rdata['server_ip'];
+                            $user_ip = (int)$rdata['user_ip'];
+                            $zone = CZones::model()->GetZoneByIp($user_ip);
+                            $server = CServers::model()->findByAttributes(array('ip' => $server_ip, 'downloads' => 1));
+                            if ($server) {
+                                $locations = CFilelocations::model()->findAllByAttributes(array('id' => variant_id, 'server_id' => $server['id']));
+                                $answer['folder'] = $locations['folder'];
+                                $answer['fname'] = $locations['fname'];
+                                $answer['fsize'] = $locations['fsize'];
+                            } else {
+                                $locations = CFilelocations::getLocationByZone($variant_id, $zone);
+                                if (!empty($locations)) {
+                                    $answer['server'] = $locations['server_ip'];
+                                }
+                            }
                         } else {
-                             $locations = CFilelocations::getLocationByZone($variant_id,$zone);
-                             if (!empty($locations)){
-                                $answer['server'] = $locations['server_ip'];
-                             }
+                            $answer['error'] = 1;
+                            $answer['error_msg']="User ".$rdata['uid']." didn't have variant $variant_id";
                         }
                     } else {
-                        $answer['error']=1;
+                        $answer['error'] = 1;
+                        $answer['error_msg']="Bad key";
                     }
                 } else {
-                    $answer['error']=1;
+                    $answer['error'] = 1;
                 }
-            } else{
-                $answer['error']=1;
+            } else {
+                $answer['error'] = 1;
             }
             echo base64_encode(serialize($answer));
-        }else {
+        } else {
             die();
         }
     }

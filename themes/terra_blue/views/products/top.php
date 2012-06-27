@@ -55,28 +55,27 @@ if (!empty($pst)) {
 </ul>
 
 <div class="pages">
-    <a class="item-active" href="#" onClick="m_goods_carousel_page(1,this); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(2,this); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(3,this); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(4,this); return false;"></a>
-    <a class="item" href="#" onClick="m_goods_carousel_page(5,this); return false;"></a>
+    <a class="item-active" href="#"></a>
+    <a class="item" href="#" ></a>
+
 </div>
 
 <script language="javascript">
+
     function m_goods_carousel_itemLoadCallback(carousel, state) {
         if (state == 'next') {
-            offset = carousel.last ;
-            console.log(offset);
+            offset = carousel.last;
+           // console.log(offset);
             jQuery.get('/ajax/productsTop?offset=' + offset, function (data) {
-                $(data).each(function () {
-                    console.log($(this));
-                });
+               // $(data).each(function () {
+                 //  console.log($(this));
+                //});
                 $(data).each(function () {
                     offset++;
                     carousel.add(offset, this);
 
                 });
-                carousel.size(offset );
+                carousel.size(offset);
             });
 
             return;
@@ -85,33 +84,36 @@ if (!empty($pst)) {
 
     var goodsCarousel = jQuery('#m_goods #m_goods_carousel').jcarousel({
         itemLoadCallback:m_goods_carousel_itemLoadCallback,
-        buttonNextCallback:m_good_carousel_next,
-        buttonPrevCallback:m_good_carousel_prev,
+        itemFirstOutCallback:m_good_carousel_turn,
+       // itemLastOutCallback:m_good_carousel_prev,
         scroll:<?=Yii::app()->params['product_top_count'];?>
     });
 
-    function m_good_carousel_next(){
-        var current = $("#m_goods_carousel .pages a.item-active");
-        var inext = current.next('a');
-        if (inext){
-            inext.removeClass("item").addClass("item-active");
-            current.removeClass("item-active").addClass("item");
-        }
+
+    function m_good_carousel_turn(carousel, elem ,index,state) {
+        //console.log(index);
+           if (state == "next"){
+            var current = $(".pages a.item-active");
+            var inext = current.next('a');
+            if (inext.length != 0) {
+                inext.removeClass("item").addClass("item-active");
+                current.removeClass("item-active").addClass("item");
+            } else{
+                $('.pages').append('<a class="item-active" href="#"></a>');
+                current.removeClass("item-active").addClass("item");
+            }
+           } else if (state == "prev"){
+               var current = $(".pages a.item-active");
+               var previos = current.prev('a');
+               if (previos) {
+                   previos.removeClass("item").addClass("item-active");
+                   current.removeClass("item-active").addClass("item");
+               }
+           }
+
+
     }
 
-    function m_good_carousel_prev(){
-        var current = $("#m_goods_carousel .pages a.item-active");
-        var previos = current.prev('a');
-        if (previos){
-            previos.removeClass("item").addClass("item-active");
-            current.removeClass("item-active").addClass("item");
-        }
-    }
 
-    function m_goods_carousel_page(page,e){
-        goodsCarousel.jcarousel('scroll',(page-1)*<?=Yii::app()->params['product_top_count'];?>+1);
-        $(".pages .item-active").removeClass("item-active").addClass("item");
-        $(e).removeClass("item").addClass("item-active");
-    }
 
 </script>

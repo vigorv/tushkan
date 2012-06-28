@@ -131,7 +131,7 @@ class UniverseController extends Controller {
 				$cmd = Yii::app()->db->createCommand()
 					->select('fv.id, fv.preset_id')
 					->from('{{files_variants}} fv')
-					->where('fv.id = :originalId');
+					->where('fv.file_id = :originalId');
 				$cmd->bindParam(':originalId', $originalId, PDO::PARAM_INT);
 				$variantExists = $cmd->queryRow();
 
@@ -148,7 +148,7 @@ class UniverseController extends Controller {
 						->select('id, cmd_id, state')
 						->from('{{income_queue}}')
 						->where('user_id = :id AND partner_id=0 AND original_id=:oid');
-					$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
+					$cmd->bindParam(':id', $this->userInfo['id'], PDO::PARAM_INT);
 					$cmd->bindParam(':oid', $originalId, PDO::PARAM_INT);
 					$queueExists = $cmd->queryRow();
 					if ($queueExists)
@@ -179,7 +179,7 @@ class UniverseController extends Controller {
 			if (!empty($fileId) && !empty($params)) {
 
 				$result = $this->checkQueue($fileId);
-				if (($result == 'ok'))
+				if ($result == 'ok')
 				{
 					$state = $result;
 					$partnerId = 0;
@@ -202,7 +202,6 @@ class UniverseController extends Controller {
 						'original_variant_id'	=> 0,
 					);
 					$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
-					$result = 'queue';
 				}
 
 				$cmd = Yii::app()->db->createCommand()

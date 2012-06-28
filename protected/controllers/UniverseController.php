@@ -147,7 +147,7 @@ class UniverseController extends Controller {
 					$cmd = Yii::app()->db->createCommand()
 						->select('id, cmd_id, state')
 						->from('{{income_queue}}')
-						->where('cmd_id < 50 AND user_id = :id AND partner_id=0 AND original_id=:oid');
+						->where('user_id = :id AND partner_id=0 AND original_id=:oid');
 					$cmd->bindParam(':id', $userId, PDO::PARAM_INT);
 					$cmd->bindParam(':oid', $originalId, PDO::PARAM_INT);
 					$queueExists = $cmd->queryRow();

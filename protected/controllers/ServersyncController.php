@@ -355,7 +355,7 @@ class ServersyncController extends ControllerSync
                                         $fl->fname = $rdata['name'];
                                         $fl->folder = $rdata['path'];
                                         if ($fl->save(false)) {
-                                            CUser::UpdateSpaceInfo($user_id,$fv->size);
+                                            CUser::UpdateSpaceInfo($user_id,$fv->fsize);
                                             $fileLocationId = $fl->id;
                                             $answer['success'] = 1;
                                             $answer['id'] = $userFileId;

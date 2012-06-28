@@ -21,6 +21,7 @@ if (!empty($item)) {
     	?>
         function queue(subaction)
         {
+return false;
             $.post('/files/queue', {id: <?php echo $item['id']; ?>, subaction: subaction}, function(data){
                 result = '';
                 if (data)
@@ -65,6 +66,7 @@ if (!empty($item)) {
             {
                 return false;
             }
+return false;
             $.post('/files/remove', {id: <?php echo $item['id']; ?>}, function(){
                 $.address.value("<?php echo $mediaList[$item['type_id']]['link']; ?>");
             });
@@ -85,30 +87,22 @@ if (!empty($item)) {
     echo '<p>Размер: ' . Utils::sizeFormat($item['fsize']) . '</p>';
     $actions = array();
     if (isset($variants) && count($variants)) {
-        $actions[] = '<button class="btn"  onclick="window.open(' . "'/files/download?vid=" . $variants[0]['id'] . "'" . ');" >' . Yii::t('files', 'download') . '</button>';
-        $actions[] = '<button class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</button>';
-    }
+        $actions[] = '<a class="btn"  onclick="window.open(' . "'/files/download?vid=" . $variants[0]['id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
+        $actions[] = '<a class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</a>';
 
-    if (empty($queue)) {
-    	if (!empty($detectedType))
-    		$actions[] = '<button class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</button>';
-    	else
-    		$actions[] = 'unsupported type';
-    } else {
-        //foreach($variants as $variant){
-//            if ($variant['preset_id']>0)
-  //      }
-
-        //else {
+	    if (empty($queue)) {
+	    	if (!empty($detectedType) && empty($variants[0]['preset_id']))
+	    		$actions[] = '<a class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</a>';
+		}
+		else
+		{
             echo '<p>Состояние: добавление в пространство<br />';
-            echo 'Текущая операция: конвертирование<br />';
-            //echo 'Процент завершения: ' . rand(0, 100) . '%</p>';
-            $actions[] = '<button class="btn" href="#" onclick="return queue(\'cancel\');">отменить операцию</button>';
-        //   }
+            echo 'Текущая операция: конвертирование<br /></p>';
+	    }
     }
 
     if (!empty($item['type_id']))
-        $actions[] = '<button class="btn" onclick="return queue(\'add\');">конвертировать</button>';
+        $actions[] = '<a class="btn" onclick="return queue(\'add\');">' . Yii::t('files', 'convert') . '</a>';
     if (!empty($actions)) {
         echo implode(' ', $actions);
     }

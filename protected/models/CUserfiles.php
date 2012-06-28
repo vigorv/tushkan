@@ -55,7 +55,7 @@ class CUserfiles extends CActiveRecord {
 	return Yii::app()->db->createCommand()
 			->select('fv.id, fv.fsize , fv.preset_id')
 			->from('{{filelocations}} fl')
-			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id . ' AND fs.stype=1')
+			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id)
 			->join('{{files_variants}} fv', 'fv.id = fl.id AND fl.fsize = fv.fsize AND fv.file_id=' . $fid)
 			->queryAll();
     }
@@ -105,7 +105,8 @@ class CUserfiles extends CActiveRecord {
 			->select('uf.id, uf.title, fv.fsize, uf.type_id, fv.preset_id')
 			->from('{{userfiles}} uf')
 			->leftJoin('{{files_variants}} fv', ' fv.file_id = uf.id')
-			->where('uf.object_id = 0 AND uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
+			//->where('uf.object_id = 0 AND uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
+			->where('uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)//ТИПИЗИРОВАННЫЙ ТОЖЕ МОЖЕМ ВЫБРАТЬ
 			->queryRow();
     }
 

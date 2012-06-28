@@ -26,7 +26,7 @@ if (!empty($prms))
 	echo'</pre>';
 exit;
 //*/
-	$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $item['id'] . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
+	$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
 
 	$playList = '';
 	foreach ($qs as $k => $val)
@@ -54,7 +54,7 @@ exit;
 		//$actions[] = '<a href="#" onclick="return doRemove(' . $val[0][1] . ')">' . Yii::t('files', 'delete') . '</a>';
 		if (empty($queue)) {
 			if (!empty($files[0]['preset_id']))
-				$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $val[0][1] . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
+				$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
 		}
 		else
 		{

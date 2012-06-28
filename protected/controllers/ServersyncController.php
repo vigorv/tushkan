@@ -366,7 +366,6 @@ class ServersyncController extends ControllerSync
 										if (!empty($fInfo['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts']))
 										{
 											$partnerId = 0;
-											$originalId = $fileId;
 											//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
 											//original_id, partner_id, user_id, original_variant_id
 											$userId = $this->userInfo['id'];

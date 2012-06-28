@@ -366,9 +366,6 @@ class ServersyncController extends ControllerSync
 										if (!empty($fInfo['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts']))
 										{
 											$partnerId = 0;
-											//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
-											//original_id, partner_id, user_id, original_variant_id
-											$userId = $this->userInfo['id'];
 											$queue = array(
 												'id'			=> null,
 												'product_id'	=> 0,
@@ -380,7 +377,7 @@ class ServersyncController extends ControllerSync
 												'state'			=> 0,
 												'station_id'	=> 0,
 												'partner_id'	=> $partnerId,
-												'user_id'		=> $this->userInfo['id'],
+												'user_id'		=> $rdata['uid'],
 												'original_variant_id'	=> 0,
 											);
 											$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);

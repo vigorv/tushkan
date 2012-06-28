@@ -55,7 +55,7 @@ class CUserfiles extends CActiveRecord {
 	return Yii::app()->db->createCommand()
 			->select('fv.id, fv.fsize , fv.preset_id')
 			->from('{{filelocations}} fl')
-			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id . ' AND fs.stype=1')
+			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id . ' AND fs.downloads=1')
 			->join('{{files_variants}} fv', 'fv.id = fl.id AND fl.fsize = fv.fsize AND fv.file_id=' . $fid)
 			->queryAll();
     }

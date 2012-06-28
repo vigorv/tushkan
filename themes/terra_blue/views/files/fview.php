@@ -12,7 +12,7 @@ if (!empty($item)) {
     			echo "links[{$k}] = '{$v['link']}';";
 
     			//ПОКА ТИПИЗИРУЕМ ТОЛЬКО КАК ВИДЕО
-    			if (($k == 1) AND in_array($info['extension'], $v['exts']))
+    			if (($k == 1) && !empty($info['extension']) && in_array($info['extension'], $v['exts']))
     			{
     				$detectedType = $k;
     				$detectedTypeName = $v['title'];

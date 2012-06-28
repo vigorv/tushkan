@@ -26,22 +26,13 @@ if (!empty($prms))
 	echo'</pre>';
 exit;
 //*/
-	$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $item['id'] . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
+	$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
 
 	$playList = '';
 	foreach ($qs as $k => $val)
 	{
 		$qualityVariantId = $val[0][2];
 //ВНИМАНИЕ НУЖНО ОПРЕДЕЛЯТЬ КАКОЙ ВАИАНТ ЗАПРОСИЛИ СМОТРЕТЬ ПО КАЧЕСТВУ ИЗ УРЛА
-		if (!empty($_GET['quality']))
-		{
-			if ($_GET['quality'] == $k)
-				$currentVariantId = $qualityVariantId;
-		}
-		else
-		{
-			$currentVariantId = $qualityVariantId;
-		}
 		$qualityPresetId = $val[0][3];
 		$actions = array();
 		if ($k <> $currentQuality)
@@ -50,11 +41,21 @@ exit;
 			$tabsContent .= '<li id="linkQuality' . $k . '"><a href="#tabQuality' . $k . '" data-toggle="tab">Качество "' . $k . '"</a></li>';;
 			$currentQuality = $activateTab = $k;
 		}
+		if (!empty($_GET['quality']))
+		{
+			$activateTab = $_GET['quality'];
+			if ($_GET['quality'] == $k)
+				$currentVariantId = $qualityVariantId;
+		}
+		else
+		{
+			$currentVariantId = $qualityVariantId;
+		}
 
 		//$actions[] = '<a href="#" onclick="return doRemove(' . $val[0][1] . ')">' . Yii::t('files', 'delete') . '</a>';
 		if (empty($queue)) {
 			if (!empty($files[0]['preset_id']))
-				$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $val[0][1] . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
+				$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
 		}
 		else
 		{

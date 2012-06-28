@@ -739,7 +739,7 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-		$this->render('oview', array('prms' => $prms, 'params' => $params, 'files' => $files,
+		$this->render('oview', array('id' => $id, 'prms' => $prms, 'params' => $params, 'files' => $files,
 			'subAction' => $subAction, 'variants' => $variants, 'queue' => $queue,
 			'qualities' => $qualities, 'item' => $item,
 			));

@@ -55,7 +55,7 @@ class CUserfiles extends CActiveRecord {
 	return Yii::app()->db->createCommand()
 			->select('fv.id, fv.fsize , fv.preset_id')
 			->from('{{filelocations}} fl')
-			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id)
+			->join('{{fileservers}} fs', 'fs.id=fl.server_id and fs.zone_id=' . $zone_id . ' AND fs.stype=1')
 			->join('{{files_variants}} fv', 'fv.id = fl.id AND fl.fsize = fv.fsize AND fv.file_id=' . $fid)
 			->queryAll();
     }
@@ -105,8 +105,7 @@ class CUserfiles extends CActiveRecord {
 			->select('uf.id, uf.title, fv.fsize, uf.type_id, fv.preset_id')
 			->from('{{userfiles}} uf')
 			->leftJoin('{{files_variants}} fv', ' fv.file_id = uf.id')
-			//->where('uf.object_id = 0 AND uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
-			->where('uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)//ТИПИЗИРОВАННЫЙ ТОЖЕ МОЖЕМ ВЫБРАТЬ
+			->where('uf.object_id = 0 AND uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
 			->queryRow();
     }
 
@@ -159,8 +158,12 @@ class CUserfiles extends CActiveRecord {
 	         $file_variants = CFilesvariants::model()->findAllByAttributes(array('file_id' => $file['id']));
 
 	    // TODO: DELETE BY mysql onDELETE
-	    foreach ($file_variants as $file_variant)
+	    foreach ($file_variants as $file_variant){
+            $locations = CFilelocations::getAllLocationsForVariant($file_variant);
+            foreach ($locations as $location)
+                CServers::deleteFileOnServerByLocation($location);
 		    CFilelocations::model()->deleteAllByAttributes(array('id' => $file_variant['id']));
+        }
 	        CFilesvariants::model()->deleteAllByAttributes(array('file_id' => $file['id']));
 	        CUserfiles::model()->deleteByPk($fid);
 	} else

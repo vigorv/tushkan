@@ -84,6 +84,8 @@ return false;
 ?>
 	<div class="pad-content">
 <?php
+	if (strtotime($item['created']) > 0)
+    	echo '<p>Дата загрузки: ' . $item['created'] . '</p>';
     echo '<p>Размер: ' . Utils::sizeFormat($item['fsize']) . '</p>';
     $actions = array();
     if (isset($variants) && count($variants)) {

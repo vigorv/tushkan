@@ -677,9 +677,41 @@ class UniverseController extends Controller {
 	 * @param integer $id - идентификатор объекта в ПП
 	 */
 	public function actionOview($id = 0) {
-		$prms = $params = $files = array();
+		$prms = $params = $files = $variants = $queue = $qualities = $item = array();
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
+			$cmd = Yii::app()->db->createCommand()
+					->select('fv.id as variant_id, fv.file_id, fv.preset_id, fl.fname')
+					->from('{{userfiles}} uf')
+					->join('{{files_variants}} fv', 'uf.id=fv.file_id')
+					->join('{{filelocations}} fl', 'fl.id=fv.id')
+					->where('uf.object_id = :id')
+					->group('fl.id');
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$files = $cmd->queryAll();
+
+            $item = CUserfiles::model()->getFileInfo($this->userInfo['id'], $files[0]['file_id']);
+			if (!empty($files) && empty($files[0]['preset_id']))
+			{
+	            $zone = 0;
+	            if (!empty($item)) {
+		            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
+	                $queue = CConvertQueue::model()->findAllByAttributes(array('original_id' => $item['id'], 'partner_id' => 0));
+	            }
+			}
+
+			if (!empty($files[0]['preset_id']))
+			{
+				$cmd = Yii::app()->db->createCommand()
+					->select('uf.id AS ufid, fv.id AS fvid, fv.preset_id, fl.fname')
+					->from('{{userfiles}} uf')
+					->join('{{files_variants}} fv', 'uf.id = fv.file_id')
+					->join('{{filelocations}} fl', 'fl.id = fv.id')
+					->where('uf.object_id = :id');
+				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$qualities = $cmd->queryAll();
+			}
+
 			$cmd = Yii::app()->db->createCommand()
 					->select('uo.id, uo.title AS uotitle, ptp.title AS ptptitle, uopv.value')
 					->from('{{userobjects}} uo')
@@ -693,17 +725,6 @@ class UniverseController extends Controller {
 				foreach ($prms as $p) {
 					$params[$p['ptptitle']] = $p['value'];
 				}
-
-				$cmd = Yii::app()->db->createCommand()
-						->select('fv.id as variant_id, fv.file_id, fl.fname')
-						->from('{{userfiles}} uf')
-						->join('{{files_variants}} fv', 'uf.id=fv.file_id')
-						->join('{{filelocations}} fl', 'fl.id=fv.id')
-						->where('uf.object_id = :id')
-						->group('fl.id');
-				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-				$files = $cmd->queryAll();
-
 				$subAction = 'view';
 				if (!empty($_GET['do'])) {//ДОЛЖНО БЫТЬ УКАЗАНО ДЕЙСТВИЕ И ВАРИАНТ
 					$subAction = $_GET['do'];
@@ -718,7 +739,10 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-		$this->render('oview', array('prms' => $prms, 'params' => $params, 'files' => $files, 'subAction' => $subAction));
+		$this->render('oview', array('prms' => $prms, 'params' => $params, 'files' => $files,
+			'subAction' => $subAction, 'variants' => $variants, 'queue' => $queue,
+			'qualities' => $qualities, 'item' => $item,
+			));
 	}
 
 	/**

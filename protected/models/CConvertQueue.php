@@ -18,9 +18,9 @@ class CConvertQueue extends CActiveRecord {
     }
 
     public function tableName() {
-	return '{{convert_queue}}';
+		return '{{income_queue}}';
     }
- 
+
 }
 
 ?>

@@ -137,7 +137,7 @@ exit;
 		$qualityVariantId = $val[0][2];
 		$qualityPresetId = $val[0][3];
 		$actions = array();
-		$actions[] = '<a onclick="return doRemove(' . $info['id'] . ')">удалить из пространства</a>';
+		$actions[] = '<a onclick="return doRemove(' . $info['id'] . ')">' . Tii::t('files', 'delete') . '</a>';
 		if (!empty($orders))
 		{
 			foreach ($orders as $order)
@@ -255,8 +255,6 @@ exit;
 			$btnsContent .= '<div class="tab-pane" id="tabQuality' . $currentQuality . '"><ul class="nav nav-pills movie-buttons">' . $actions . '</ul></div>';
 		}
 	}
-
-	//echo $aContent;
 ?>
 	<div class="span9 movie-text">
 <?php

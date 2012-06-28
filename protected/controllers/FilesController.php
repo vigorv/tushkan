@@ -188,10 +188,9 @@ class FilesController extends Controller {
             $item = CUserfiles::model()->getFileInfo($this->user_id, $id);
             // TO DO: make zones
             $zone = 0;
-            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
-            //getFileloc($item['id'], $this->, $zone_id, $preset_id)($item)
             if (!empty($item)) {
-                $queue = CConvertQueue::model()->findAllByAttributes(array('id' => $item['id']));
+	            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
+                $queue = CConvertQueue::model()->findAllByAttributes(array('original_id' => $item['id'], 'partner_id' => 0));
             }
         }
         $this->render('fview', array('item' => $item, 'queue' => $queue, 'variants' => $variants));

@@ -33,15 +33,6 @@ exit;
 	{
 		$qualityVariantId = $val[0][2];
 //ВНИМАНИЕ НУЖНО ОПРЕДЕЛЯТЬ КАКОЙ ВАИАНТ ЗАПРОСИЛИ СМОТРЕТЬ ПО КАЧЕСТВУ ИЗ УРЛА
-		if (!empty($_GET['quality']))
-		{
-			if ($_GET['quality'] == $k)
-				$currentVariantId = $qualityVariantId;
-		}
-		else
-		{
-			$currentVariantId = $qualityVariantId;
-		}
 		$qualityPresetId = $val[0][3];
 		$actions = array();
 		if ($k <> $currentQuality)
@@ -49,6 +40,16 @@ exit;
 			$num = 1;//ПОРЯДКОВЫЙ НОМЕР ФАЙЛА ДАННОГО КАЧКСТВА
 			$tabsContent .= '<li id="linkQuality' . $k . '"><a href="#tabQuality' . $k . '" data-toggle="tab">Качество "' . $k . '"</a></li>';;
 			$currentQuality = $activateTab = $k;
+		}
+		if (!empty($_GET['quality']))
+		{
+			$activateTab = $_GET['quality'];
+			if ($_GET['quality'] == $k)
+				$currentVariantId = $qualityVariantId;
+		}
+		else
+		{
+			$currentVariantId = $qualityVariantId;
 		}
 
 		//$actions[] = '<a href="#" onclick="return doRemove(' . $val[0][1] . ')">' . Yii::t('files', 'delete') . '</a>';

@@ -190,7 +190,7 @@ class FilesController extends Controller {
             $zone = 0;
             if (!empty($item)) {
 	            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
-                $queue = CConvertQueue::model()->findAllByAttributes(array('original_id' => $item['id'], 'partner_id' => 0));
+                $queue = CConvertQueue::model()->findAllByAttributes(array('original_id' => $item['id'], 'partner_id' => 0, 'cmd_id' => '<50'));
             }
         }
         $this->render('fview', array('item' => $item, 'queue' => $queue, 'variants' => $variants));

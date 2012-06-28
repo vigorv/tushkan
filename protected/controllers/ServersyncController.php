@@ -360,6 +360,34 @@ class ServersyncController extends ControllerSync
                                             $answer['success'] = 1;
                                             $answer['id'] = $userFileId;
                                             //СОХРАНЕНИЕ ЗАВЕРШЕНО
+
+                                        $mediaList = Utils::getMediaList();
+                                        $fInfo = pathinfo(strtolower($rdata['name']));
+										if (!empty($fInfo['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts']))
+										{
+											$partnerId = 0;
+											$originalId = $fileId;
+											//ПРОВЕРКУ ДУБЛЕЙ В ОЧЕРЕДИ ДЕЛАЕМ ЧЕРЕЗ УНИКАЛЬНЫЙ ИНДЕКС ПО ПОЛЯМ
+											//original_id, partner_id, user_id, original_variant_id
+											$userId = $this->userInfo['id'];
+											$queue = array(
+												'id'			=> null,
+												'product_id'	=> 0,
+												'original_id'	=> $userFileId,
+												'task_id'		=> 0,
+												'cmd_id'		=> 0,
+												'info'			=> "",
+												'priority'		=> 200,
+												'state'			=> 0,
+												'station_id'	=> 0,
+												'partner_id'	=> $partnerId,
+												'user_id'		=> $this->userInfo['id'],
+												'original_variant_id'	=> 0,
+											);
+											$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
+											$result = 'queue';
+										}
+
                                             echo base64_encode(serialize($answer));
                                             Yii::app()->end();
                                         }

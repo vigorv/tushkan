@@ -92,12 +92,9 @@ return false;
         $actions[] = '<a class="btn"  onclick="window.open(' . "'/files/download?vid=" . $variants[0]['id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
         $actions[] = '<a class="btn" href="#" onclick="return doDelete();">' . Yii::t('files', 'delete') . '</a>';
 
-	    if (empty($queue)) {
-	    	if (!empty($detectedType) && empty($variants[0]['preset_id']))
-	    		$actions[] = '<a class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</a>';
-		}
-		else
-		{
+    	if (!empty($detectedType) && empty($item['object_id']))
+    		$actions[] = '<a class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</a>';
+	    if (!empty($queue)) {
             echo '<p>Состояние: добавление в пространство<br />';
             echo 'Текущая операция: конвертирование<br /></p>';
 	    }

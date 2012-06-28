@@ -102,10 +102,10 @@ class CUserfiles extends CActiveRecord {
      */
     public function getFileInfo($user_id, $fid) {
 	return Yii::app()->db->createCommand()
-			->select('uf.id, uf.title, uf.created, fv.fsize, uf.type_id, fv.preset_id')
+			->select('uf.id, uf.title, uf.created, uf.object_id, fv.fsize, uf.type_id, fv.preset_id')
 			->from('{{userfiles}} uf')
 			->leftJoin('{{files_variants}} fv', ' fv.file_id = uf.id')
-			->where('uf.object_id = 0 AND uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
+			->where('uf.id= ' . $fid . ' AND uf.user_id =' . $user_id)
 			->queryRow();
     }
 

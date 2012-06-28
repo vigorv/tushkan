@@ -100,6 +100,7 @@ class CUser extends CActiveRecord
      */
 
     public static function UpdateSpaceInfo($user_id,$add_size){
+        $add_size = $add_size >> 20;
         return Yii::app()->db->createCommand("UPDATE {{users}} set free_limit = free_limit - $add_size where id = $user_id")->execute();
     }
 

@@ -22,4 +22,15 @@ class CFilesvariants extends CActiveRecord {
 	return '{{files_variants}}';
     }
 
+    /**
+     * @static
+     * @param $variant_id
+     */
+    public static function RemoveFileVariantWithLoc($variant_id){
+        $loc_list = CFilelocations::getAllLocationsForVariant($variant_id);
+        foreach($loc_list as $location){
+            CServers::deleteFileOnServerByLocation($location);
+        }
+    }
+
 }

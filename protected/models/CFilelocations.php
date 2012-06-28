@@ -34,6 +34,18 @@ class CFilelocations extends CActiveRecord {
             ->queryALL();
     }
 
+    /**
+     * @static
+     * @param $variant_id
+     * @return array
+     */
+    public static function getAllLocationsForVariant($variant_id){
+        return Yii::app()->db->createCommand()
+            ->select('fl.*,fs.*')
+            ->from('{{filelocations}} fl')
+            ->leftJoin('{{fileservers}} fs','fl.server_id = fs.id')
+            ->where('fl.id = :fl_id',array(':fl_id'=>$variant_id))
+            ->queryAll();    }
 
 
 }

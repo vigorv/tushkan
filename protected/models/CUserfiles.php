@@ -153,15 +153,15 @@ class CUserfiles extends CActiveRecord {
      * @param int $id
      */
     public function RemoveFile($user_id, $fid) {
-	$file = $this->getFileMeta($user_id, $fid);
-	if (($file) && ($file['object_id'] == 0)) {
-	    $file_variants = CFilesvariants::model()->findAllByAttributes(array('file_id' => $file['id']));
+	    $file = $this->getFileMeta($user_id, $fid);
+	    if (($file) && ($file['object_id'] == 0)) {
+	         $file_variants = CFilesvariants::model()->findAllByAttributes(array('file_id' => $file['id']));
 
 	    // TODO: DELETE BY mysql onDELETE
 	    foreach ($file_variants as $file_variant)
-		CFilelocations::model()->deleteAllByAttributes(array('id' => $file_variant['id']));
-	    CFilesvariants::model()->deleteAllByAttributes(array('file_id' => $file['id']));
-	    CUserfiles::model()->deleteByPk($fid);
+		    CFilelocations::model()->deleteAllByAttributes(array('id' => $file_variant['id']));
+	        CFilesvariants::model()->deleteAllByAttributes(array('file_id' => $file['id']));
+	        CUserfiles::model()->deleteByPk($fid);
 	} else
 	    return false;
     }

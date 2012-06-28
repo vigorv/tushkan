@@ -43,6 +43,10 @@ class CServers extends CActiveRecord
         return sprintf("%u", ip2long($ip));
     }
 
+    public static function sendCommandByIp($cmd,$ip,$data){
+
+    }
+
     public function sendCommand($action, $sid, $data)
     {
         $server = $this->findByPk($sid);
@@ -129,6 +133,18 @@ class CServers extends CActiveRecord
     {
         return '{{fileservers}}';
     }
+
+    public static function deleteFileOnServerByLocation($location){
+       $data = array();
+       $data['filename'] = $location['fname'];
+       $data['path'] = $location['folder'];
+       $fdata = base64_encode(serialize($data));
+       $sdata = sha1($fdata . Yii::app()->params['servers_skey']);
+       $link = 'http://' . $location['ip'].':'.$location['port'] . '/files/delete?fdata='.$fdata.'&sdata='.$sdata;
+       $result = file_get_contents($link);
+       unset($data); unset($fdata);unset($sdata);
+    }
+
 
 }
 

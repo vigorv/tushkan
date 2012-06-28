@@ -312,6 +312,7 @@ class ServersyncController extends ControllerSync
             $check_data = sha1($_GET['fdata'] . Yii::app()->params['uploads_skey']);
             if ($check_data == $_GET['sdata']) {
                 $rdata = unserialize(base64_decode($_GET['fdata']));
+                $user_id = (int)$rdata['uid'];
                 /*
                    $syncData = array();
                    $syncData['md5'] = $_POST['Filedata_md5'];
@@ -323,7 +324,7 @@ class ServersyncController extends ControllerSync
                    $syncData['uid'] = $uid;
                    $syncData['server_ip'] = Yii::app()->params['server_ip'];
                  */
-                if (CUser::checkfishkey($rdata['uid'], $rdata['key'])) {
+                if (CUser::checkfishkey($user_id, $rdata['key'])) {
                     $file_server = CServers::model()->findByAttributes(array('ip' => $rdata['server_ip']));
                     if ($file_server) {
                         $uf = new CUserfiles();
@@ -354,6 +355,7 @@ class ServersyncController extends ControllerSync
                                         $fl->fname = $rdata['name'];
                                         $fl->folder = $rdata['path'];
                                         if ($fl->save(false)) {
+                                            CUser::UpdateSpaceInfo($user_id,$fv->size);
                                             $fileLocationId = $fl->id;
                                             $answer['success'] = 1;
                                             $answer['id'] = $userFileId;

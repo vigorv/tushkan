@@ -129,8 +129,6 @@ var tinyMCE_GZ = {
 		// Create script
 		se.type = 'text/javascript';
 		se.text = co;
-
-		// Add it to evaluate it and remove it
 		(document.getElementsByTagName('head')[0] || document.documentElement).appendChild(se);
 		se.parentNode.removeChild(se);
 	}

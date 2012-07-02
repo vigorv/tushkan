@@ -159,6 +159,7 @@ class ProductsController extends Controller
 		$pInfo = $cmd->queryRow();
 		$pst = array();
 
+		$paginationParams = array();
 		if (!empty($pInfo))
 		{
 			$cmd = Yii::app()->db->createCommand()

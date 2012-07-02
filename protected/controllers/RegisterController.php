@@ -907,7 +907,7 @@ class RegisterController extends Controller {
 				$ml->send();
 
 				Yii::app()->user->setFlash('contact', Yii::t('users', 'Thank you for contacting us. We will respond to you as soon as possible.'));
-				$this->refresh();
+				$this->redirect('/');
 			}
 		}
 		else

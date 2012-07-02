@@ -336,11 +336,18 @@ class RegisterController extends Controller {
 		//ОТПРАВКА ПИСЬМА СО ССЫЛКОЙ НА ПОДТВЕРЖДЕНИЕ
 		$headers="From: " . Yii::app()->params['adminEmail'] . "\r\nReply-To: " . $userInfo['email'];
 		$hashLink = Yii::app()->params['tushkan']['siteURL'] . '/register/confirm/' . $userInfo['sess_id'];
-		$body = "Здравствуйте!\n\n"
-		. "Для подтверждения регистрации на сайте " . Yii::app()->name . ", пожалуйста, перейдите по следующей ссылке:\n\n"
-		. "{$hashLink}\n\n"
-		. "Если вы не регистрировались на данном ресурсе, просто удалите это письмо.\n\n"
-		. "С уважением, администрация " . Yii::app()->name;
+		$body = "Здравствуйте!\n\n";
+		if (empty(Yii::app()->params['tushkan']['ZBT']))
+		{
+			$body .= "Для подтверждения регистрации на сайте " . Yii::app()->name . ", пожалуйста, перейдите по следующей ссылке:\n\n"
+			. "{$hashLink}\n\n";
+		}
+		else
+		{
+			$body .= "Вы зарегистрированы на сайте " . Yii::app()->name . " для проведения закрытого бета-тестирования. Пожалуйста, дождитесь подтверждения вашей регистрации администратором.\n\n"
+			. "Если вы не регистрировались на данном ресурсе, просто удалите это письмо.\n\n";
+		}
+		$body .= "С уважением, администрация " . Yii::app()->name;
 
 		$ml = new SimpleMail();
 		$ml->setFrom(Yii::app()->params['adminEmail']);
@@ -893,8 +900,8 @@ class RegisterController extends Controller {
 			if($model->validate())
 			{
 				$ml = new SimpleMail();
-				$ml->setFrom(Yii::app()->params['adminEmail']);
-				$ml->setTo($model->email);
+				$ml->setFrom($this->userInfo['email']);
+				$ml->setTo(Yii::app()->params['adminEmail']);
 				$ml->setSubject($model->subject);
 				$ml->setTextBody($model->body);
 				$ml->send();
@@ -902,6 +909,14 @@ class RegisterController extends Controller {
 				Yii::app()->user->setFlash('contact', Yii::t('users', 'Thank you for contacting us. We will respond to you as soon as possible.'));
 				$this->refresh();
 			}
+		}
+		else
+		{
+			$ref = Yii::app()->params['tushkan']['siteURL'];
+			if (!empty($_SERVER['HTTP REFERER']))
+				$ref = $_SERVER['HTTP REFERER'];
+			$model->subject = Yii::t('users', 'user error report');
+			$model->body = Yii::t('users', 'Error detected on page') . ' "' . $ref . "\"\n" . Yii::t('users', 'error description') . "\n\n";
 		}
 		$this->render('/register/feedback',array('model'=>$model));
 	}

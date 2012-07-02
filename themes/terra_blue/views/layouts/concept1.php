@@ -20,6 +20,7 @@
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.form.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.address-1.4.min.js');
     Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jcarousel.min.js');
+    //Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.caret.js');
 ?>
 
 		<script src="/js/bootstrap.min.js"></script>
@@ -103,7 +104,8 @@
 					$('#content').load(event.value, function(){
 						$('#content a').click(function(){
 							lnk= $(this).attr('href');
-							if (lnk.substr(0, 1) == "#")return true;
+							if (lnk == null) return false;
+						if (lnk.substr(0, 1) == "#")return true;
 							if (lnk=="") return false;
 
 							$.address.value(lnk);
@@ -111,6 +113,7 @@
 						});
 						$('#bottom a').click(function(){
 							lnk= $(this).attr('href');
+							if (lnk == null) return false;
 							if (lnk.substr(0, 1) == "#")return true;
 							if (lnk=="") return false;
 
@@ -124,6 +127,7 @@
 				$('#m_panel').load('/universe/panel', function(){
 					$('#m_panel .dropdown-menu a').click(function(){
 						lnk= $(this).attr('href');
+						if (lnk == null) return false;
 						if (lnk.substr(0, 1) == "#")return true;
 						if (lnk=="") return false;
 						$.address.value(lnk);
@@ -133,6 +137,7 @@
 
 				$('#m_uploads a').click(function() {
 					lnk= $(this).attr('href');
+					if (lnk == null) return false;
 					if (lnk.substr(0, 1) == "#") return true;
 					if (lnk=="") return false;
 					$.address.value(lnk);

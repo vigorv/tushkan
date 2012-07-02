@@ -57,6 +57,7 @@ class AccessFilter extends CFilter
 					|| ($filterChain->action->id == 'profile')
 					|| ($filterChain->action->id == 'personal')
 					|| ($filterChain->action->id == 'tariff')
+					|| ($filterChain->action->id == 'feedback')
 				)
 					$access = ($userPower >= _IS_USER_);
 			break;

@@ -85,10 +85,15 @@ $form=$this->beginWidget('CActiveForm', array(
 	break;
 
 default:
+	if (empty(Yii::app()->params['tushkan']['ZBT']))
+		$margin = 60;
+	else
+		$margin = 0;
+
 ?>
 	<div id="floater"></div>
 	<div class="span6 offset3 index-bg">
-		<div class="span3 index-offset form" style="width:320px;margin-top:-60px; margin-left:-20px;">
+		<div class="span3 index-offset form" style="width:320px;margin-top:-<?php echo $margin; ?>px; margin-left:-20px;">
 <?php
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'forget-form',
@@ -114,16 +119,25 @@ $form=$this->beginWidget('CActiveForm', array(
 	{
 		echo '<h4>Вы зарегистрированы</h4>';
 		echo '<p class="note"><span class="required">Регистрация не подтверждена.</span></p>';
-		if (empty($model->email))
-			echo '<h4>Для подтверждения регистрации на ваш адрес Email отправлено письмо со ссылкой подтверждения.</h4>';
+		if (empty(Yii::app()->params['tushkan']['ZBT']))
+		{
+			if (empty($model->email))
+				echo '<h4>Для подтверждения регистрации на ваш адрес Email отправлено письмо со ссылкой подтверждения.</h4>';
+			else
+				echo '<h4>Повторное письмо со ссылкой подтверждения отправлено по адресу <i>' . $model->email . '</i></h4>';
+		}
 		else
-			echo '<h4>Повторное письмо со ссылкой подтверждения отправлено по адресу <i>' . $model->email . '</i></h4>';
+		{
+			echo '<h4>Пожалуйста, дождитесь подтверждения вашей регистрации администратором.</h4>';
+		}
 	}
-	echo '<p class="note">
-	Если вы не получили письмо со ссылкой подтверждения, сделайте запрос.
-	Введите адрес Email, указанный вами при регистрации.
-	</p>';
 
+	if (empty(Yii::app()->params['tushkan']['ZBT']))
+	{
+		echo '<p class="note">
+		Если вы не получили письмо со ссылкой подтверждения, сделайте запрос.
+		Введите адрес Email, указанный вами при регистрации.
+		</p>';
 ?>
 
 	<?php echo $form->textField($model,'email', array('class' => 'span3', 'style' => 'width:300px;', 'placeholder' => Yii::t('users', 'Email'))) ?>
@@ -136,7 +150,10 @@ $form=$this->beginWidget('CActiveForm', array(
 	</p></center>
     </div>
 
-<?php $this->endWidget(); ?>
+<?php
+	}
+	$this->endWidget();
+?>
 </div>
 <?php
 }

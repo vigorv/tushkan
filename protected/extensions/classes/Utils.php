@@ -24,6 +24,8 @@ define("_PD_GROUP_COMMON_", 0);
 
 define("_MB_", 1024 * 1024);
 
+define('_REQUIRED_', '<span class="required">*</span>');
+
 class Utils {
 
     static $mtypes = array(

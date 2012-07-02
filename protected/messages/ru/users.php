@@ -55,6 +55,9 @@ return array (
   'Account banned'				=> 'Аккаунт блокирован',
   'Overdue abonent fee'			=> 'Просрочена абонентская плата',
   'User violation'				=> 'Грубое нарушение пользователя',
+  'user error report'			=> 'сообщение пользователя об ошибке',
+  'Error detected on page'		=> 'Обнаружена ошибка по адресу',
+  'error description'			=> 'описание ошибки',
 
   'Confirm registration'		=> 'Подтвердите регистрацию',
   'Registration confirmed'		=> 'Регистрация подтверждена',

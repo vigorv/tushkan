@@ -19,3 +19,11 @@
 .navbar-top .nav li a {
 	padding: 9px 18px 11px;
 }
+
+.required {
+	color: red;
+}
+
+.wideform {
+	width: 350px;
+}

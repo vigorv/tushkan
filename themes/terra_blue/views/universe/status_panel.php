@@ -69,5 +69,8 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 							<li><a href="" onclick="$('#confirmLogout').modal();$('#confirmLogout').click();" ><?= Yii::t('users', 'Logout'); ?></a></li>
 						</ul>
 					</li>
+					<li> <!-- class="active" -->
+						<a href="/#/register/feedback"><?php echo Yii::t('common', 'Error'); ?>!</a>
+					</li>
 				</ul>
 			</div>

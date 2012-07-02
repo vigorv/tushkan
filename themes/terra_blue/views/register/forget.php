@@ -17,7 +17,7 @@ switch($subAction)
 		Введите (<u>или сгенерируйте</u>) новый пароль.
 	</p>
 
-    <?php
+<?php
 		$clearScript = '
 	$( "#passwordId" )
 		.focus(function(obj) {
@@ -38,9 +38,9 @@ switch($subAction)
 	    	$checked = $model->rememberMe;
     	}
 
-    ?>
-	<?php echo $form->passwordField($model, 'pwd', array('id' => 'passwordId', 'value' => $pwd, 'class' => 'span3', 'placeholder' => Yii::t('users', 'New password'))) ?>
-	<?php echo $form->error($model,'pwd'); ?>
+	echo $form->passwordField($model, 'pwd', array('id' => 'passwordId', 'value' => $pwd, 'class' => 'span3', 'placeholder' => Yii::t('users', 'New password')));
+	echo $form->error($model,'pwd');
+?>
 	<p></p>
 	<label class="checkbox"><?php echo $form->checkBox($model,'rememberMe') . Yii::t('users', 'remember me'); ?></label>
 	<?php echo $form->error($model,'rememberMe'); ?>

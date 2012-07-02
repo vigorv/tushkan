@@ -2,10 +2,12 @@
 switch($subAction)
 {
 	case "askpassword":
-		echo '<h2>' . Yii::t('users', 'Registration confirmed') . '</h2>';
 ?>
-<div class="form">
+	<div id="floater"></div>
+	<div class="span6 offset3 index-bg">
+		<div class="span3 index-offset form">
 <?php
+		echo '<h4>' . Yii::t('users', 'Registration confirmed') . '</h4>';
 		$clearScript = '
 	$( "#passwordId" )
 		.focus(function(obj) {
@@ -38,62 +40,55 @@ $form=$this->beginWidget('CActiveForm', array(
 	<p class="note">
 		Введите (<u>или сгенерируйте</u>) пароль.
 	</p>
+<?php
+	echo $form->passwordField($model, 'pwd', array('id' => 'passwordId', 'value' => $pwd, 'class' => 'span3', 'placeholder' => Yii::t('users', 'New password')));
+	echo $form->error($model,'pwd');
+?>
+	<p></p>
+	<label class="checkbox"><?php echo $form->checkBox($model,'rememberMe') . Yii::t('users', 'remember me'); ?></label>
+	<?php echo $form->error($model,'rememberMe'); ?>
 
-    <div class="row">
-        <?php echo $form->labelEx($model, 'pwd', array('label' => Yii::t('users', 'New password'))); ?>
-        <?php echo $form->passwordField($model, 'pwd', array('id' => 'passwordId', 'value' => $pwd, 'class' => 'text ui-widget-content ui-corner-all', 'style' => 'width: 350px;')); ?>
-		<?php echo $form->error($model,'pwd'); ?>
-    </div>
-	<div class="row rememberMe">
-		<?php echo $form->checkBox($model,'rememberMe', array('checked' => $checked, 'id' => 'rememberId')); ?>
-		<?php echo $form->label($model,'rememberMe', array('label' => Yii::t('users', 'remember me'))); ?>
-		<?php echo $form->error($model,'rememberMe'); ?>
-	</div>
-
-	<div class="row buttons"><center>
-		<button type="submit" id="submitButton"><?php echo Yii::t('common', 'Login');?></button>
-		<button type="button" id="generateButton"><?php echo Yii::t('common', 'Generate');?></button>
+	<center>
+		<button class="btn" type="submit" id="submitButton"><?php echo Yii::t('common', 'Login');?></button>
+		<button class="btn" type="button" id="generateButton"><?php echo Yii::t('common', 'Generate');?></button>
 <script type="text/javascript">
 <?php
 	echo $clearScript;
 ?>
 	var generated = 0;
 	$( "#passwordId" ).focus();
-	$( "#submitButton" )
-				.button()
-				.click(function() {
-					$("#forget-form").submit();
+	$( "#submitButton" ).bind("click", function() {
+		$("#form-horizontal").submit();
 	});
 
-	$( "#generateButton" )
-				.button()
-				.click(function() {
-					generated++;
-					$("#passwordId").val("");
-					$(this).button( "option", "disabled", true );
-					hash = new String();
-					for (i = 0; i < 15; i++)
-					{
-						code = Math.round(Math.random() * 100);
-						if (code < 50) code = code + 50;
-						hash += String.fromCharCode(code);
-					}
-					window.setTimeout('$( "#rememberId" ).attr("checked", true);$("#passwordId").val("' + hash + '");$("#generateButton").button( "option", "disabled", false );', 1000);
+	$( "#generateButton" ).bind("click", function() {
+		generated++;
+		$("#passwordId").val("");
+		$(this).attr("disabled", true );
+		hash = new String();
+		for (i = 0; i < 15; i++)
+		{
+			code = Math.round(Math.random() * 100);
+			if (code < 50) code = code + 50;
+			hash += String.fromCharCode(code);
+		}
+		window.setTimeout('$( "#rememberId" ).attr("checked", true);$("#passwordId").val("' + hash + '");$( "#generateButton" ).attr("disabled", false );', 1000);
 
-				return false;
+		return false;
 	});
 </script>
 		</center>
-    </div>
-
 <?php $this->endWidget(); ?>
-</div>
+		</div>
+	</div>
 <?php
 	break;
 
 default:
 ?>
-<div class="form">
+	<div id="floater"></div>
+	<div class="span6 offset3 index-bg">
+		<div class="span3 index-offset form" style="width:320px;margin-top:-60px; margin-left:-20px;">
 <?php
 $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'forget-form',
@@ -109,7 +104,7 @@ $form=$this->beginWidget('CActiveForm', array(
 	{
 		if (empty($subAction))
 		{
-			echo '<h2>' . Yii::t('users', 'Confirm registration') . '</h2>';
+			echo '<h4>' . Yii::t('users', 'Confirm registration') . '</h4>';
 			echo '<p class="note"><span class="required">Срок действия ссылки истек, сделайте запрос на получение новой ссылки</span></p>';
 		}
 		else
@@ -117,7 +112,7 @@ $form=$this->beginWidget('CActiveForm', array(
 	}
 	else
 	{
-		echo '<h1>Вы зарегистрированы</h1>';
+		echo '<h4>Вы зарегистрированы</h4>';
 		echo '<p class="note"><span class="required">Регистрация не подтверждена.</span></p>';
 		if (empty($model->email))
 			echo '<h4>Для подтверждения регистрации на ваш адрес Email отправлено письмо со ссылкой подтверждения.</h4>';
@@ -131,22 +126,11 @@ $form=$this->beginWidget('CActiveForm', array(
 
 ?>
 
-    <div class="row">
-        <?php echo $form->labelEx($model, 'email'); ?>
-        <?php echo $form->textField($model, 'email', array('class' => 'text ui-widget-content ui-corner-all', 'style' => 'width: 350px;')); ?>
-		<?php echo $form->error($model,'email'); ?>
-    </div>
+	<?php echo $form->textField($model,'email', array('class' => 'span3', 'style' => 'width:300px;', 'placeholder' => Yii::t('users', 'Email'))) ?>
+	<?php echo $form->error($model,'email'); ?>
 
 	<div class="row buttons"><center>
-		<button type="submit" id="submitButton"><?php echo Yii::t('common', 'Submit');?></button>
-<script type="text/javascript">
-	$( "input:text" ).focus();
-	$( "#submitButton" )
-				.button()
-				.click(function() {
-					$("#forget-form").submit();
-	});
-</script>
+		<button type="submit" class="btn" id="submitButton"><?php echo Yii::t('common', 'Submit');?></button>
 	<p class="note">
 		<a href="/register/login"><?php echo Yii::t('common', 'Login'); ?></a>
 	</p></center>

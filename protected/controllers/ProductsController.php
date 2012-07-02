@@ -920,6 +920,27 @@ class ProductsController extends Controller
 	}
 
 	/**
+	 * заполнить витрину партнера готовыми продуктами из очереди конвертирования
+	 * метод генерирует очередь на добавление в П Поль-ля с идентификатором 34
+	 *
+	 * периодический вызов метода например для ВХК "wget http://myicloud.ws/products/fillpartnerproducts/1"
+	 *
+	 * @param integer $id - идентификатор партнера
+	 */
+	public function actionFillpartnerproducts($id = 0)
+	{
+		$this->layout = '/layouts/ajax';
+		if (!empty($id))
+		{
+			$sql = 'UPDATE {{income_queue}} SET cmd_id=8, user_id=34 WHERE cmd_id=50 AND user_id=0 AND partner_id = :id';
+			$cmd = Yii::app()->db->createCommand($sql);
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$cmd->execute();
+		}
+		Yii::app()->end();
+	}
+
+	/**
 	 * метод вызывается конвертером для добавления продукта в витрины и в ПП пользователей
 	 *
 	 * @param integer $id - идентификатор очереди

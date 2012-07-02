@@ -23,7 +23,7 @@ class DevicesController extends Controller {
 
     public function actionView($id = 0) {
         //$device_count = CDevices::model()->count('user_id=' . Yii::app()->user->id);
-        $info = CDevices::model()->findByPk(array('user_id' => Yii::app()->user->getId(), 'id' => $id));
+        $info = CDevices::model()->findByPk(array('id' => $id, 'user_id' => Yii::app()->user->getId(), 'device_type_id' => '?0'));
         $this->render('/devices/view', array('info' => $info));
     }
 

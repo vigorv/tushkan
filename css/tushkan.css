@@ -15,3 +15,7 @@
 .pad-content {
 	padding: 10px 10px 0 10px;
 }
+
+.navbar-top .nav li a {
+	padding: 9px 18px 11px;
+}

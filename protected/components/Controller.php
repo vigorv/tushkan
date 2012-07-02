@@ -5,7 +5,7 @@ Yii::import('ext.classes.Utils');
 
 class Controller extends CController {
 
-	public $layout = '//layouts/index';
+	public $layout = '//layouts/concept1';
 	public $menu = array();
 	public $breadcrumbs = array();
 	public $identity = null;

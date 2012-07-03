@@ -20,28 +20,11 @@
 		</title>
 </head>
 <body>
-	<div class="container">
+	<div class="container" style="clear:both">
+	<div id="ipad" style="margin-bottom:40px;float:right;width:320px;height:240px;"></div>
 <?php echo $content; ?>
 	</div>
-    <div id="bottom" class="span12 no-horizontal-margin">
-
-	<center>
-	<div width="640" height="480">
-    	<a href="#" id="ipad"></a>
-    </div>
-        <!--LiveInternet counter--><script type="text/javascript"><!--
-    document.write("<a href='http://www.liveinternet.ru/click' "+
-        "target=_blank><img src='//counter.yadro.ru/hit?t14.6;r"+
-        escape(document.referrer)+((typeof(screen)=="undefined")?"":
-        ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
-            screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
-        ";"+Math.random()+
-        "' alt='' title='LiveInternet: показано число просмотров за 24"+
-        " часа, посетителей за 24 часа и за сегодня' "+
-        "border='0' width='88' height='31'><\/a>");
-	<!--/LiveInternet-->
-<?php
-/*
+<script type="text/javascript">
 	$f("ipad", "/js/flowplayer/flowplayer-3.2.5.swf",
 						{plugins: {
 							h264streaming: {
@@ -66,10 +49,23 @@
 							}
 
 		).ipad();
-*/
-?>
 </script>
-        </center>
+	    <div id="bottom" class="span12 no-horizontal-margin">
         </div>
+	    <br /><br /><br />
+    <center>
+        <!--LiveInternet counter--><script type="text/javascript"><!--
+    document.write("<a href='http://www.liveinternet.ru/click' "+
+        "target=_blank><img src='//counter.yadro.ru/hit?t14.6;r"+
+        escape(document.referrer)+((typeof(screen)=="undefined")?"":
+        ";s"+screen.width+"*"+screen.height+"*"+(screen.colorDepth?
+            screen.colorDepth:screen.pixelDepth))+";u"+escape(document.URL)+
+        ";"+Math.random()+
+        "' alt='' title='LiveInternet: показано число просмотров за 24"+
+        " часа, посетителей за 24 часа и за сегодня' "+
+        "border='0' width='88' height='31'><\/a>");
+	<!--/LiveInternet-->
+	</script>
+    </center>
 </body>
 </html>

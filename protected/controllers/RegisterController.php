@@ -337,22 +337,23 @@ class RegisterController extends Controller {
 		$headers="From: " . Yii::app()->params['adminEmail'] . "\r\nReply-To: " . $userInfo['email'];
 		$hashLink = Yii::app()->params['tushkan']['siteURL'] . '/register/confirm/' . $userInfo['sess_id'];
 		$body = "Здравствуйте!\n\n";
+		$ml = new SimpleMail();
 		if (empty(Yii::app()->params['tushkan']['ZBT']))
 		{
+			$ml->setSubject(Yii::t('users', 'Confirm registration'));
 			$body .= "Для подтверждения регистрации на сайте " . Yii::app()->name . ", пожалуйста, перейдите по следующей ссылке:\n\n"
 			. "{$hashLink}\n\n";
 		}
 		else
 		{
+			$ml->setSubject(Yii::t('common', 'beta test on' . ' ' . Yii::app()->name));
 			$body .= "Вы зарегистрированы на сайте " . Yii::app()->name . " для проведения закрытого бета-тестирования. Пожалуйста, дождитесь подтверждения вашей регистрации администратором.\n\n"
 			. "Если вы не регистрировались на данном ресурсе, просто удалите это письмо.\n\n";
 		}
 		$body .= "С уважением, администрация " . Yii::app()->name;
 
-		$ml = new SimpleMail();
 		$ml->setFrom(Yii::app()->params['adminEmail']);
 		$ml->setTo($userInfo['email']);
-		$ml->setSubject(Yii::t('users', 'Confirm registration'));
 		$ml->setTextBody($body);
 		$ml->send();
 

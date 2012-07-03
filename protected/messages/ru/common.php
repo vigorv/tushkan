@@ -81,6 +81,7 @@ return array (
   'Low'						=> 'Низкое',
   'As is'					=> 'Не конвертировать',
 
+  'beta test on'			=> 'бета тестирование на',
   'Current progress'		=> 'Текущая загрузка',
   'Supported types'			=> 'Поддерживаемые типы',
 

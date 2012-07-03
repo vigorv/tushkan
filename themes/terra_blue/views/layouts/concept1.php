@@ -21,6 +21,7 @@
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.address-1.4.min.js');
     Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jcarousel.min.js');
     //Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.caret.js');
+
 ?>
 
 		<script src="/js/bootstrap.min.js"></script>
@@ -75,6 +76,7 @@
 				'About' => '/pages/1',
 				'FAQ' => '/pages/2',
 				'Feedback' => '/register/feedback',
+				'Coming soon' => '/pages/3',
 			);
 			$d = '';
 			foreach ($menu as $k => $v)
@@ -150,7 +152,7 @@
 
 				$('#m_devices').load('/universe/devices');
             });
-			</script>
+	</script>
 
 </body>
 </html>

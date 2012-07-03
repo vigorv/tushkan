@@ -11,13 +11,24 @@
 		<![endif]-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 		<script src="/js/bootstrap.min.js"></script>
-        <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+        <title>
+<?php
+	echo CHtml::encode($this->pageTitle);
+    Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer-3.2.4.min.js");
+	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
+?>
+		</title>
 </head>
 <body>
 	<div class="container">
 <?php echo $content; ?>
 	</div>
-    <div id="bottom" class="span12 no-horizontal-margin"><center>
+    <div id="bottom" class="span12 no-horizontal-margin">
+
+	<center>
+	<div width="640" height="480">
+    	<a href="#" id="ipad"></a>
+    </div>
         <!--LiveInternet counter--><script type="text/javascript"><!--
     document.write("<a href='http://www.liveinternet.ru/click' "+
         "target=_blank><img src='//counter.yadro.ru/hit?t14.6;r"+
@@ -27,8 +38,37 @@
         ";"+Math.random()+
         "' alt='' title='LiveInternet: показано число просмотров за 24"+
         " часа, посетителей за 24 часа и за сегодня' "+
-        "border='0' width='88' height='31'><\/a>")
-    //--></script><!--/LiveInternet-->
+        "border='0' width='88' height='31'><\/a>");
+	<!--/LiveInternet-->
+<?php
+/*
+	$f("ipad", "/js/flowplayer/flowplayer-3.2.5.swf",
+						{plugins: {
+							h264streaming: {
+								url: "/js/flowplayer/flowplayer.pseudostreaming-3.2.5.swf"
+										 }
+                         },
+						clip: {
+							provider: "h264streaming",
+							autoPlay: true,
+							scaling: "fit",
+							autoBuffering: true,
+							scrubber: true
+						},
+						canvas: {
+							// remove default canvas gradient
+							backgroundGradient: "none",
+							backgroundColor: "#ffffff"
+						},
+						playlist: [
+							{ url: "/img/final0010.m4v", scaling: "fit" }
+						]
+							}
+
+		).ipad();
+*/
+?>
+</script>
         </center>
         </div>
 </body>

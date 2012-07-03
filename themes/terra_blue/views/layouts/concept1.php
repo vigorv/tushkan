@@ -99,6 +99,7 @@
 
 	</div>
 			<script langauge="javascript">
+            $(document).ready(function() {
 				$.address.change(function(event) {
 					console.log(event.value);
 					$('#content').load(event.value, function(){
@@ -148,7 +149,7 @@
                 $('#m_goods').load('/universe/goodsTop');
 
 				$('#m_devices').load('/universe/devices');
-
+            });
 			</script>
 
 </body>

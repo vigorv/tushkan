@@ -1,20 +1,23 @@
 <?php if (!isset($mb_content_items)): ?>
+
+<?php
+	$mediaList = Utils::getMediaList();
+?>
 		<div class="span12 no-horizontal-margin category">
 			<div class="span3 margin-left-only">
-				<a class="cat-name cat-name-active video" href="/universe/library?lib=v"><?php echo Yii::t('users','Video');?></a>
+				<a class="cat-name cat-name-active video" href="<?php echo $mediaList[1]['link']; ?>"><?php echo $mediaList[1]['title'];?></a>
 			</div>
 			<div class="span3 margin-left-only">
-				<a class="cat-name audio" href="/universe/library?lib=a"><?php echo Yii::t('users','Audio');?></a>
+				<a class="cat-name audio" href="<?php echo $mediaList[2]['link']; ?>"><?php echo $mediaList[2]['title'];?></a>
 			</div>
 			<div class="span3 margin-left-only">
-				<a class="cat-name photo" href="/universe/library?lib=p"><?php echo Yii::t('users','Photo');?></a>
+				<a class="cat-name photo" href="<?php echo $mediaList[5]['link']; ?>"><?php echo $mediaList[5]['title'];?></a>
 			</div>
 			<div class="span3 no-margin">
-				<a class="cat-name document" href="/universe/library?lib=d"><?php echo Yii::t('users','Documents');?></a>
+				<a class="cat-name document" href="<?php echo $mediaList[4]['link']; ?>"><?php echo $mediaList[4]['title'];?></a>
 			</div>
 		</div>
 <?php else: ?>
-
 		<div class="tabbable"> <!-- Only required for left/right tabs -->
 			<ul class="nav inside-nav nav-pills inside-nav-pills">
 			<?php

@@ -38,7 +38,7 @@
 							$userProducts = $productsInfo['tFiles'];
 							$productParams = $productsInfo['fParams'];
 							$pHeader1 ='
-								<div class="span12 no-horizontal-margin more-link"><a href="#">Добавлено с витрин</a></div>
+								<div class="span12 no-horizontal-margin more-link"><a href="#">' . Yii::t('common', 'From partners') . '</a></div>
 								<div class="span12 no-horizontal-margin type">
 							';
 							$pHeader2 = '</div>';
@@ -75,7 +75,7 @@
 
 							if (!empty($qstContent)) {
 								?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#">В процессе добавления</a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Processing');?></a></div>
 						<div class="span12 no-horizontal-margin type">
 								<?php
 								echo $qstContent;
@@ -85,10 +85,10 @@
 							}
 							if (!empty($mb_content_items)) {
 								?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#">Objects</a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Typed');?></a></div>
 						<div class="span12 no-horizontal-margin type">
 
-							<ul>
+							<ul class="nav inside-nav nav-pills">
 							<?php
 								echo CFiletypes::ParsePrint($mb_content_items, 'TL1');
 							?>
@@ -99,9 +99,9 @@
 
 							if (!empty($mb_content_items_unt)) {
 							?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#">UntypedItems(Свалка)</a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Untyped');?> (<?php echo Yii::t('common', 'Garbage');?>)</a></div>
 						<div class="span12 no-horizontal-margin type">
-							<ul>
+							<ul class="nav inside-nav nav-pills ">
 								<?= CFiletypes::ParsePrint($mb_content_items_unt, 'UTL1'); ?>
 							</ul>
 						</div>

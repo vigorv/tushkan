@@ -86,6 +86,12 @@ return array (
   'Current progress'		=> 'Текущая загрузка',
   'Supported types'			=> 'Поддерживаемые типы',
 
+  'Processing'				=> 'В процессе добавления',
+  'Garbage'					=> 'Свалка',
+  'Typed'					=> 'Типизированные',
+  'Untyped'					=> 'Нетипизированные',
+  'From partners'			=> 'Добавлено с витрин',
+
   'Back to list'			=> 'Вернуться к списку',
   'Back'					=> 'Назад',
   'Next'					=> 'Далее',

@@ -1,10 +1,12 @@
 <?php
 	if (!empty($qst))
 	{
+		echo '<ul class="nav inside-nav">';
 		foreach ($qst as $q)
 		{
 			$info = array();
 			$info['tags']['title'] = 'от партнера ' . $q['title'];
+			$img = 'video_mp4.png';
 			$start = strtotime($q['date_start']);
 			if ($start <= 0)
 				$start = ' <i>в ожидании очереди на добавление</i>';
@@ -23,7 +25,7 @@
 				$info = unserialize($q['info']);
 				$info['tags']['title'] .= ' (от ' . $q['title'] . ') ';
 			}
-			echo '<li>' . $info['tags']['title'] . $start . ' <i>' . $state . '</i></li>';
+			echo '<li><img src="/images/64x64/mimetypes/' . $img . '">' . $info['tags']['title'] . $start . ' <i>' . $state . '</i></li>';
 		}
 		echo '</ul>';
 	}

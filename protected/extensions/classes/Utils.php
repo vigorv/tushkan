@@ -400,4 +400,35 @@ class Utils {
         $section = Utils::getSectionIdByExt($ext);
         return Utils::$convert_list['$section'][$preset];
     }
+
+    public static function getMimeImg($ftype)
+    {
+		switch ($ftype) {
+			case 'txt':
+				$img = 'txt.png';
+				break;
+			case 'png':
+			case 'jpg':
+				$img = 'image_jpeg.png';
+				break;
+			case 'm4a':
+			case 'mp3':
+			case 'ogg':
+			case 'wma':
+			case 'flac':
+				$img = 'audio_mp4.png';
+				break;
+			case 'm4v':
+			case 'avi':
+			case 'mkv':
+			case 'flv':
+			case '3gp':
+			case 'mp4':
+				$img = 'video_mp4.png';
+				break;
+			default:
+				$img = 'unknown.png';
+		}
+		return $img;
+    }
 }

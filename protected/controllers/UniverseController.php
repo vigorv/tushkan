@@ -26,11 +26,12 @@ class UniverseController extends Controller {
 		$error = Yii::app()->errorHandler->error;
 		if ($error) {
 			if (Yii::app()->request->isAjaxRequest)
+			{
 				echo $error['message'];
-			else
-				var_dump($error);
-//$this->render('error', $error);
+				Yii::app()->end();
+			}
 		}
+		$this->render('/universe/error', $error);
 	}
 
 	public function actionIndex($section='') {

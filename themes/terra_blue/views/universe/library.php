@@ -99,7 +99,7 @@
 
 							if (!empty($mb_content_items_unt)) {
 							?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Untyped');?> (<?php echo Yii::t('common', 'Garbage');?>)</a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Untyped');?><?php //(echo Yii::t('common', 'Garbage') );?></a></div>
 						<div class="span12 no-horizontal-margin type">
 							<ul class="nav inside-nav nav-pills ">
 								<?= CFiletypes::ParsePrint($mb_content_items_unt, 'UTL1'); ?>

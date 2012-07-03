@@ -20,7 +20,7 @@ class UsersController extends Controller {
 	 */
 	$pages = new CPagination($count);
 	// элементов на страницу
-	$pages->pageSize = 10;
+	$pages->pageSize = 100;
 	$pages->applyLimit($criteria);
 	$criteria->select = ' u.*, g.title as gtitle';
 	$criteria->join = 'LEFT JOIN {{user_groups}} as g  ON g.id=u.group_id';

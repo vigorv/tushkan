@@ -418,12 +418,17 @@ class Utils {
 			case 'flac':
 				$img = 'audio_mp4.png';
 				break;
-			case 'm4v':
 			case 'avi':
-			case 'mkv':
-			case 'flv':
-			case '3gp':
 			case 'mp4':
+			case 'm4v':
+			case 'mov':
+			case 'vob':
+			case 'ts':
+			case '3gp':
+			case 'flv':
+			case 'mpeg':
+			case 'mpg':
+			case 'wmv':
 				$img = 'video_mp4.png';
 				break;
 			default:

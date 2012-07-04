@@ -36,6 +36,14 @@ class RegisterController extends Controller {
         	}
         	else
         	{
+        		if (!empty($this->userInfo['id']))
+        		{
+        			//ЕСЛИ ДЕЙСТВИЕ ВЫЗВАЛ АВТОРИЗОВАННЫЙ ПОЛЬЗОВАТЕЛЬ, ПОСЫЛАЕМ ПОВТОРНЫЙ ЕМЭЙЛ
+        			//ПОДТВЕРЖДЕНИЯ ПОЛЬЗОВАТЕЛЮ С ДАННЫМ $hash
+        			$this->sendConfirmMail($userInfo);
+        			Yii::app()->end();
+        		}
+
 				//РАБОТА С ФОРМОЙ ПАРОЛЯ
 	        	$model = new PasswordForm();
 				$subAction = 'askpassword';
@@ -338,7 +346,11 @@ class RegisterController extends Controller {
 		$hashLink = Yii::app()->params['tushkan']['siteURL'] . '/register/confirm/' . $userInfo['sess_id'];
 		$body = "Здравствуйте!\n\n";
 		$ml = new SimpleMail();
-		if (empty(Yii::app()->params['tushkan']['ZBT']))
+
+		$userPower = Yii::app()->user->getState('dmUserPower');
+		$isAdmin = ($userPower >= _IS_ADMIN_);
+
+		if (empty(Yii::app()->params['tushkan']['ZBT']) || $isAdmin)
 		{
 			$ml->setSubject(Yii::t('users', 'Confirm registration'));
 			$body .= "Для подтверждения регистрации на сайте " . Yii::app()->name . ", пожалуйста, перейдите по следующей ссылке:\n\n"

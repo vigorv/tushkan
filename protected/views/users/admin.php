@@ -50,3 +50,4 @@
 		}
 		echo '</table>';
 	}
+	$this->widget('ext.pagination.EPaginationWidget', array('params' => $paginationParams));

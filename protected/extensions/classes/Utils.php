@@ -436,4 +436,35 @@ class Utils {
 		}
 		return $img;
     }
+
+    /**
+     * подготовка массива параметров для виджета постраниной навигации ext.pagination.EPaginationWidget
+     * значения количества элементов на странице ($limit) и номер текущей страницы ($page) определяются по умолчанию
+     * соответствеено из настройки productsPerPage конфигурации сайта и параметра $_GET['page']
+     *
+     * @param string 	$url - общий адрес для ссылок навигации по страницам
+     * @param integer 	$total - общее количество элементов выборки
+     * @param integer 	$page - номер текущей страницы
+     * @param integer 	$limit
+     * @return mixed
+     */
+    public static function preparePagination($url, $total = 0, $page = 0, $limit = 0)
+    {
+    	if (empty($limit))
+			$limit = Yii::app()->params['tushkan']['productsPerPage'];
+		$offset = 0;
+		if (!empty($_GET['page']))
+		{
+			$page = intval($_GET['page']);
+			$offset = $page * $limit;
+		}
+    	$params = array(
+				'limit'		=> $limit,
+				'offset'	=> $offset,
+				'url'		=> $url,
+				'total'		=> $total,
+				'page'		=> $page,
+			);
+    	return $params;
+    }
 }

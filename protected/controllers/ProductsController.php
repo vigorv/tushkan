@@ -167,30 +167,15 @@ class ProductsController extends Controller
 				->from('{{products}} p')
 				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower);
 			$count = $cmd->queryScalar();
+			$paginationParams = Utils::preparePagination('/products/partner/id/' . $id, $count);
 
-// BEGIN БЛОК ДЛЯ ПОСТРАНИЧНОЙ НАВИГАЦИИ
-			$limit = Yii::app()->params['tushkan']['productsPerPage'];
-			$page = $offset = 0;
-			if (!empty($_GET['page']))
-			{
-				$page = intval($_GET['page']);
-				$offset = $page * $limit;
-			}
-			$paginationParams = array(
-				'limit'		=> $limit,
-				'offset'	=> $offset,
-				'url'		=> '/products/partner/id/' . $id,
-				'total'		=> $count,
-				'page'		=> $page,
-			);
-// END БЛОК ДЛЯ ПОСТРАНИЧНОЙ НАВИГАЦИИ
 			if ($count)
 			{
 				$cmd = Yii::app()->db->createCommand()
 					->select('p.id')
 					->from('{{products}} p')
 					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower)
-					->limit($limit, $offset);
+					->limit($paginationParams['limit'], $paginationParams['offset']);
 				$pst = $cmd->queryAll();
 				if (!empty($pst))
 				{

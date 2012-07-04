@@ -4,31 +4,41 @@ class UsersController extends Controller {
 
     private $_crumbs = array();
 
-    public function actionAdmin() {
+    public function actionAdmin()
+    {
+		$this->layout = '/layouts/admin';
 
-	$this->layout = '/layouts/admin';
+		$cmd = Yii::app()->db->createCommand()
+			->select('count(id)')
+			->from('{{users}}');
+		$count = $cmd->queryScalar();
+		$paginationParams = Utils::preparePagination('/users/admin', $count);
+		$users = array();
 
-	$criteria = new CDbCriteria();
-	$count = CUser::model()->count($criteria);
-	/*
-	  $users = Yii::app()->db->createCommand()
-	  ->select('u.id, u.name, u.email, u.created, u.lastvisit, u.active, g.title as gtitle')
-	  ->from('{{users}}')
-	  ->leftJoin('{{user_groups}} g', 'g.id=u.group_id')
-	  ->group('u.id')
-	  ->query();
-	 */
-	$pages = new CPagination($count);
-	// элементов на страницу
-	$pages->pageSize = 500;
-	$pages->applyLimit($criteria);
-	$criteria->select = ' u.*, g.title as gtitle';
-	$criteria->join = 'LEFT JOIN {{user_groups}} as g  ON g.id=u.group_id';
+		if ($count)
+		{
+			$cmd = Yii::app()->db->createCommand()
+				->select('id')
+				->from('{{users}}')
+				->limit($paginationParams['limit'], $paginationParams['offset']);
+			$pst = $cmd->queryAll();
+			if (!empty($pst))
+			{
+				$pst = implode(',', Utils::arrayToKeyValues($pst, 'id', 'id'));
+			}
+			else
+				$pst = 0;
 
-	$users = CUser::model()
-		->findAll($criteria);
-
-	$this->render('admin', array('users' => $users, 'pages' => $pages));
+			$users = Yii::app()->db->createCommand()
+				//->select('u.*')
+				->select('u.id, u.name, u.email, u.created, u.lastvisit, u.active, u.confirmed, u.sess_id, g.title as gtitle')
+				->from('{{users}} u')
+				->leftJoin('{{user_groups}} g', 'g.id=u.group_id')
+				->where('u.id IN (' . $pst . ')')
+				->group('u.id')
+			->queryAll();
+		}
+		$this->render('admin', array('users' => $users, 'paginationParams' => $paginationParams));
     }
 
     /**

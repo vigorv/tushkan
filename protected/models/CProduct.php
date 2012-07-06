@@ -103,13 +103,14 @@ class CProduct extends CActiveRecord
      * @param int $count
      * @return array
      */
-    public function getUserProducts($userId, $type_id = 0, $offset = 0, $count = 10)
+    public function getUserProducts($userId, $type_id = 0, $offset = 0, $count = 8)
     {
         //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
         $tFiles = Yii::app()->db->createCommand()
             ->select('id, variant_id, title')
             ->from('{{typedfiles}}')
             ->where('variant_id > 0 AND user_id = ' . $userId)
+            ->limit($count, $offset)
             ->queryAll();
         $fParams = array();
         $types_str = '';
@@ -128,7 +129,6 @@ class CProduct extends CActiveRecord
                 ->where('pv.id IN (' . implode(', ', $tfIds) . ')' . $types_str)
                 ->group('ppv.id')
                 ->order('pv.id ASC, ptp.srt DESC')
-                ->limit($count, $offset)
                 ->queryAll();
         }
         return array("tFiles" => $tFiles, "fParams" => $fParams);

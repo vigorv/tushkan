@@ -12,6 +12,9 @@ Yii::import('application.components.Controller');
  * проверка текущей аренды продуктов
  * 		yiic cron checkactualrent
  *
+ * заполнить витрину партнера готовыми продуктами из очереди конвертирования
+ * 		yiic cron fillpartnerproducts 1
+ *
  * не забудь настроить config/console.php
  *
  */
@@ -28,7 +31,8 @@ class CronCommand extends CConsoleCommand
 	 */
 	public function actionFillpartnerproducts($id = 0)
 	{
-var_dump($_SERVER['argc']);
+		if (!empty($_SERVER['argc'][0]))
+			$id = $_SERVER['argc'][0];
 		if (!empty($id))
 		{
 			$sql = 'UPDATE {{income_queue}} SET cmd_id=8, user_id=34 WHERE cmd_id=50 AND user_id=0 AND partner_id = :id';

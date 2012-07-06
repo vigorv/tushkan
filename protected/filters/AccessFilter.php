@@ -50,6 +50,8 @@ class AccessFilter extends CFilter
 					$access = ($userPower >= _IS_MODERATOR_);
 				if (($filterChain->action->id == 'tocloud'))
 					$access = ($userPower >= _IS_USER_);
+				if (($filterChain->action->id == 'Fillpartnerproducts'))
+					$access = ($userPower >= _IS_GUEST_);
 			break;
 
 			case "RegisterController":

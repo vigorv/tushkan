@@ -30,7 +30,6 @@ class UsersController extends Controller {
 				$pst = 0;
 
 			$users = Yii::app()->db->createCommand()
-				//->select('u.*')
 				->select('u.id, u.name, u.email, u.created, u.lastvisit, u.active, u.confirmed, u.sess_id, g.title as gtitle')
 				->from('{{users}} u')
 				->leftJoin('{{user_groups}} g', 'g.id=u.group_id')

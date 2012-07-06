@@ -38,7 +38,7 @@ if ($pages > 1)
 	{
 		$url = $this->preparePageUrl($i);
 		if ($i == $this->params['page']) $a = ' class="active"'; else $a = '';
-		$href = 'href="' . $url;
+		$href = 'href="' . $url . '"';
 		if (!empty($this->params['loadId']))
 		{
 			$href = 'href="" onclick="return ajaxPage' . $this->params['loadId'] . '(\'' . $url . '\');"';

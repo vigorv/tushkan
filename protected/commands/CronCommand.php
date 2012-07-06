@@ -28,7 +28,6 @@ class CronCommand extends CConsoleCommand
 	 */
 	public function actionFillpartnerproducts($id = 0)
 	{
-		$this->layout = '/layouts/ajax';
 		if (!empty($id))
 		{
 			$sql = 'UPDATE {{income_queue}} SET cmd_id=8, user_id=34 WHERE cmd_id=50 AND user_id=0 AND partner_id = :id';
@@ -37,7 +36,6 @@ class CronCommand extends CConsoleCommand
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmd->execute();
 		}
-		Yii::app()->end();
 	}
 
 	/**

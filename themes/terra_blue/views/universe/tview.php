@@ -137,7 +137,7 @@ exit;
 		$qualityVariantId = $val[0][2];
 		$qualityPresetId = $val[0][3];
 		$actions = array();
-		$actions[] = '<a onclick="return doRemove(' . $info['id'] . ')">' . Tii::t('files', 'delete') . '</a>';
+		$actions[] = '<a onclick="return doRemove(' . $info['id'] . ')">' . Yii::t('files', 'delete') . '</a>';
 		if (!empty($orders))
 		{
 			foreach ($orders as $order)

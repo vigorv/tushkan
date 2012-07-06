@@ -25,7 +25,7 @@ class CronCommand extends CConsoleCommand
 	 * метод генерирует очередь на добавление в П Поль-ля с идентификатором 34
 	 *
 	 * периодический вызов метода настроить на каждом компрессоре, обрабатывающем контент данного партнера
-	 * например для ВХК (partner_id=1) "wget http://myicloud.ws/products/fillpartnerproducts/1"
+	 * например для ВХК (partner_id=1) "yiic cron fillpartnerproducts 1"
 	 *
 	 * @param integer $id - идентификатор партнера
 	 */

@@ -446,9 +446,10 @@ class Utils {
      * @param integer 	$total - общее количество элементов выборки
      * @param integer 	$page - номер текущей страницы
      * @param integer 	$limit
+     * @param string 	$loadId - идентификатор HTML элемента для ajax навигации
      * @return mixed
      */
-    public static function preparePagination($url, $total = 0, $page = 0, $limit = 0)
+    public static function preparePagination($url, $total = 0, $page = 0, $limit = 0, $loadId = '')
     {
     	if (empty($limit))
 			$limit = Yii::app()->params['tushkan']['productsPerPage'];
@@ -464,6 +465,7 @@ class Utils {
 				'url'		=> $url,
 				'total'		=> $total,
 				'page'		=> $page,
+				'loadId'		=> $loadId,
 			);
     	return $params;
     }

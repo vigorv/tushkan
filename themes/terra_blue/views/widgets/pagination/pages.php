@@ -22,11 +22,28 @@ if ($pages > 1)
 							<ul>
 								<li><a href="#">&larr;</a></li>
 <?php
+	if (!empty($this->params['loadId']))
+	{
+?>
+<script type="text/javascript">
+	function ajaxPage<?php echo $this->params['loadId']; ?>(url)
+	{
+		$('#<?php echo $this->params['loadId']; ?>').load(url);
+		return false;
+	}
+</script>
+<?php
+	}
 	for($i = 0; $i < $pages; $i++)
 	{
 		$url = $this->preparePageUrl($i);
 		if ($i == $this->params['page']) $a = ' class="active"'; else $a = '';
-		echo '<li' . $a . '><a href="' . $url . '">' . ($i + 1). '</a></li>';
+		$href = 'href="' . $url;
+		if (!empty($this->params['loadId']))
+		{
+			$href = 'href="" onclick="return ajaxPage' . $this->params['loadId'] . '(\'' . $url . '\');"';
+		}
+		echo '<li' . $a . '><a ' . $href . '>' . ($i + 1). '</a></li>';
 	}
 ?>
 								<li><a href="#">&rarr;</a></li>

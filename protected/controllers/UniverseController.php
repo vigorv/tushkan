@@ -343,6 +343,38 @@ class UniverseController extends Controller {
 		$this->render('search', array('pstContent' => $pstContent,'unt'=>$unt,'obj'=>$obj));
 	}
 
+	public function actionBlock()
+	{
+		$with = 'products';
+		if (!empty($_GET['with']))
+		{
+			$with = $_GET['with'];
+		}
+
+		switch ($with)
+		{
+			case "queue":
+			break;
+			case "typed":
+			break;
+			case "untyped":
+			break;
+			default://products
+				$uid = Yii::app()->user->getId();
+				$lib = 'v';
+				if (!empty($_GET['lib']))
+				{
+					$lib = $_GET['lib'];
+				}
+				$type_id = Utils::getSectionIdByAlias($lib);
+				$mediaList = Utils::getMediaList();
+				$productsCount = CProduct::model()->getUserProductsCount($uid, $type_id);
+				$paginationParams = Utils::preparePagination('/universe/block/lib/v/with/products', $productsCount, 0, 0, "userproductsdiv");
+				$productsInfo = CProduct::model()->getUserProducts($this->user_id, $type_id, $paginationParams['offset'], $paginationParams['limit']);
+				$this->render('/universe/block', array('productsInfo' => $productsInfo, 'paginationParams' => $paginationParams));
+		}
+	}
+
 	public function actionLibrary($lib='') {
 		//$this->layout = 'concept1';
 		switch ($lib) {
@@ -369,7 +401,10 @@ class UniverseController extends Controller {
 
 				$type_id = Utils::getSectionIdByAlias($lib);
 				$mediaList = Utils::getMediaList();
+				$productsCount = CProduct::model()->getUserProductsCount($this->user_id,$type_id);
+				$productsPagination = Utils::preparePagination('/universe/block/lib/v/with/products', $productsCount, 0, 0, "userproductsdiv");
 				$productsInfo = CProduct::model()->getUserProducts($this->user_id,$type_id);
+
 				$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
 				$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
 				$this->render('library', array('mb_content_items' => $mb_content_items,
@@ -377,7 +412,9 @@ class UniverseController extends Controller {
 					'qstContent' => $qstContent,
 					'type_id' => $type_id,
 					'mediaList' => $mediaList,
-					'mb_content_items_unt' => $mb_content_items_unt,'nav_lib'=>$lib));
+					'mb_content_items_unt' => $mb_content_items_unt,'nav_lib'=>$lib,
+					'productsPagination' => $productsPagination
+				));
 				break;
 			default:
 				$this->render('library');

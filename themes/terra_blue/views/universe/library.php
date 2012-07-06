@@ -39,12 +39,10 @@
 							$productParams = $productsInfo['fParams'];
 							$pHeader1 ='
 								<div class="span12 no-horizontal-margin more-link"><a href="#">' . Yii::t('common', 'From partners') . '</a></div>
-								<div class="span12 no-horizontal-margin type">
+								<div id="userproductsdiv" class="span12 no-horizontal-margin type">
 							';
 							$pHeader2 = '</div>';
 							if (!empty($userProducts) && count($userProducts)) {
-								?>
-								<?php
 								foreach ($userProducts as $f) {
 									$curVariantId = $f['variant_id'];
 									$params = array();
@@ -70,6 +68,7 @@
 										echo '</a></div>';
 									}
 								}
+								$this->widget('ext.pagination.EPaginationWidget', array('params' => $productsPagination));
 							}
 							if (empty($pHeader1)) echo $pHeader2;
 

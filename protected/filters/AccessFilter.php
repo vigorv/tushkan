@@ -50,10 +50,14 @@ class AccessFilter extends CFilter
 				case "ProductsController":
 					if (($filterChain->action->id == 'admin') || ($filterChain->action->id == 'edit') || ($filterChain->action->id == 'form'))
 						$access = ($userPower >= _IS_MODERATOR_);
-					if (($filterChain->action->id == 'tocloud'))
+					if ($filterChain->action->id == 'tocloud')
 						$access = ($userPower >= _IS_USER_);
-					if (($filterChain->action->id == 'fillpartnerproducts'))
-						$access = (Yii::app()->user->isGuest);
+					if ($filterChain->action->id == 'fillpartnerproducts')
+					{
+						$access = Yii::app()->user->getIsGuest();
+echo '11111111111111';
+exit;
+					}
 				break;
 
 				case "RegisterController":

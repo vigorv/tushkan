@@ -31,12 +31,15 @@ class CronCommand extends CConsoleCommand
 	 */
 	public function actionFillpartnerproducts($id = 0)
 	{
-		if (!empty($_SERVER['argc'][0]))
-			$id = $_SERVER['argc'][0];
+		if (!empty($_SERVER['argv'][3]))
+			$id = $_SERVER['argv'][3];
 		if (!empty($id))
 		{
 			$sql = 'UPDATE {{income_queue}} SET cmd_id=8, user_id=34 WHERE cmd_id=50 AND user_id=0 AND partner_id = :id';
-	echo $sql;
+
+			echo "id = {$id}\n";
+			echo "sql = {$sql}\n";
+
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmd->execute();

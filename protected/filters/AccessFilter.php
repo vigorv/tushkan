@@ -51,7 +51,7 @@ class AccessFilter extends CFilter
 				if (($filterChain->action->id == 'tocloud'))
 					$access = ($userPower >= _IS_USER_);
 				if (($filterChain->action->id == 'fillpartnerproducts'))
-					$access = ($userPower >= _IS_GUEST_);
+					$access = (Yii::app()->user->isGuest);
 			break;
 
 			case "RegisterController":

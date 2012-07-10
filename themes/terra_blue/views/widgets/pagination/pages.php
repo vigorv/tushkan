@@ -16,11 +16,11 @@
 $pages = $this->getPageCount();
 if ($pages > 1)
 {
+	$outPages = $this->getPagePairs();
 ?>
 <div class="span12 no-horizontal-margin some-space"></div>
 						<div class="pagination pagination-right" style="clear:both">
 							<ul>
-								<li><a href="#">&larr;</a></li>
 <?php
 	if (!empty($this->params['loadId']))
 	{
@@ -34,19 +34,20 @@ if ($pages > 1)
 </script>
 <?php
 	}
-	for($i = 0; $i < $pages; $i++)
-	{
-		$url = $this->preparePageUrl($i);
-		if ($i == $this->params['page']) $a = ' class="active"'; else $a = '';
-		$href = 'href="' . $url . '"';
-		if (!empty($this->params['loadId']))
+	if (!empty($outPages))
+		foreach($outPages as $i => $p)
 		{
-			$href = 'href="" onclick="return ajaxPage' . $this->params['loadId'] . '(\'' . $url . '\');"';
+			if (!empty($p['is_current'])) $a = ' class="active"'; else $a = '';
+			$href= '';
+			if (!empty($p['url']))
+				$href = 'href="' . $p['url'] . '"';
+			if (!empty($this->params['loadId']) && !empty($href))
+			{
+				$href = 'href="" onclick="return ajaxPage' . $this->params['loadId'] . '(\'' . $p['url'] . '\');"';
+			}
+			echo '<li' . $a . '><a ' . $href . '>' . $p['title']. '</a></li>';
 		}
-		echo '<li' . $a . '><a ' . $href . '>' . ($i + 1). '</a></li>';
-	}
 ?>
-								<li><a href="#">&rarr;</a></li>
 							</ul>
 						</div>
 <?php

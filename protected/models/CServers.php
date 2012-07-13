@@ -140,9 +140,19 @@ class CServers extends CActiveRecord
        $data['folder'] = $location['folder'];
        $fdata = base64_encode(serialize($data));
        $sdata = sha1($fdata . Yii::app()->params['servers_skey']);
-       $link = 'http://' . $location['ip'].':'.$location['port'] . '/files/delete?fdata='.$fdata.'&sdata='.$sdata;
-       $result = file_get_contents($link);
+
+        $query = http_build_query(array('fdata'=>$fdata,'sdata'=>$sdata));
+        $context = stream_context_create(array(
+            'http' => array(
+                'method' => 'POST',
+                'header' => 'Content-Type: application/x-www-form-urlencoded' . PHP_EOL,
+                'content' => $query,
+            ),
+        ));
+        $url = 'http://' . $location['ip'].':'.$location['port'] . '/files/delete';
+        $result = file_get_contents($url, $use_include_path=false, $context);
        unset($data); unset($fdata);unset($sdata);
+        return $result;
     }
 
 

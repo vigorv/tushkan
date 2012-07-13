@@ -96,6 +96,21 @@ class CProduct extends CActiveRecord
         return $cmd->queryAll();
     }
 
+    public function getUserProductsCount($userId, $type_id = 0)
+    {
+        //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
+        $types_str = '';
+        if ($type_id)
+            $types_str = ' AND pv.type_id =' . $type_id;
+        $count = Yii::app()->db->createCommand()
+            ->select('count(tf.id)')
+            ->from('{{typedfiles}} tf')
+            ->join('{{product_variants}} pv', 'tf.variant_id=pv.id')
+            ->where('variant_id > 0 AND user_id = ' . $userId . $types_str)
+            ->queryScalar();
+        return $count;
+    }
+
     /**
      * @param int $userId
      * @param int $type_id
@@ -103,18 +118,20 @@ class CProduct extends CActiveRecord
      * @param int $count
      * @return array
      */
-    public function getUserProducts($userId, $type_id = 0, $offset = 0, $count = 10)
+    public function getUserProducts($userId, $type_id = 0, $offset = 0, $count = 8)
     {
         //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
-        $tFiles = Yii::app()->db->createCommand()
-            ->select('id, variant_id, title')
-            ->from('{{typedfiles}}')
-            ->where('variant_id > 0 AND user_id = ' . $userId)
-            ->queryAll();
-        $fParams = array();
         $types_str = '';
         if ($type_id)
             $types_str = ' AND pv.type_id =' . $type_id;
+        $tFiles = Yii::app()->db->createCommand()
+            ->select('tf.id, tf.variant_id, tf.title')
+            ->from('{{typedfiles}} tf')
+            ->join('{{product_variants}} pv', 'tf.variant_id=pv.id')
+            ->where('variant_id > 0 AND user_id = ' . $userId . $types_str)
+            ->limit($count, $offset)
+            ->queryAll();
+        $fParams = array();
         if (!empty($tFiles)) {
             $tfIds = array();
             foreach ($tFiles as $tf) {
@@ -128,7 +145,6 @@ class CProduct extends CActiveRecord
                 ->where('pv.id IN (' . implode(', ', $tfIds) . ')' . $types_str)
                 ->group('ppv.id')
                 ->order('pv.id ASC, ptp.srt DESC')
-                ->limit($count, $offset)
                 ->queryAll();
         }
         return array("tFiles" => $tFiles, "fParams" => $fParams);

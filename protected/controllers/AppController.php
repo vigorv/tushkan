@@ -164,7 +164,7 @@ class AppController extends ControllerApp
                             ->where('p.id = ' . $res['product_id'])->queryRow();
                         switch ($res['partner_id']) {
                             case 2:
-                                $link = 'http://212.20.62.34:82/' . $res['fname'][0] . '/' . $res['fname'];
+                                $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
                                 break;
                             case 1:
                                 $fn = basename($res['fname'], PATHINFO_FILENAME);
@@ -172,8 +172,7 @@ class AppController extends ControllerApp
                                 break;
                             default:
                                 echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown parnter'));
-                                Yii:
-                                app()->end();
+                                Yii::app()->end();
                         }
                         $res['link']= $link;
                         echo json_encode(array('cmd' => "FilmData", 'error' => 0, 'Data' => $res));
@@ -206,15 +205,14 @@ class AppController extends ControllerApp
                         $fn = basename($res['fname'], PATHINFO_FILENAME);
                         switch ($res['partner_id']) {
                             case 2:
-                                $link = 'http://212.20.62.34:82/' . $res['fname'][0] . '/' . $res['fname'];
+                                $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
                                 break;
                             case 1:
                                 $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
                                 break;
                             default:
                                 echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown parnter'));
-                                Yii:
-                                app()->end();
+                                Yii::app()->end();
                         }
                         $data = array('id'=>$res['id'], 'link' => $link);
                         echo json_encode(array('cmd' => "FilmLink", 'error' => 0, 'Data' => $data));

@@ -11,9 +11,11 @@
 		<!--[if lt IE 9]>
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
 		<![endif]-->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
 <?php
+//	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery-1.7.1.min.js');
+
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/jquery-ui-1.7.3.custom/js/jquery-ui-1.7.3.custom.min.js");
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.hotkeys.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.cookie.js');
@@ -21,6 +23,7 @@
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.address-1.4.min.js');
     Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jcarousel.min.js');
     //Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.caret.js');
+
 ?>
 
 		<script src="/js/bootstrap.min.js"></script>
@@ -75,6 +78,7 @@
 				'About' => '/pages/1',
 				'FAQ' => '/pages/2',
 				'Feedback' => '/register/feedback',
+				'Coming soon' => '/pages/3',
 			);
 			$d = '';
 			foreach ($menu as $k => $v)
@@ -150,7 +154,7 @@
 
 				$('#m_devices').load('/universe/devices');
             });
-			</script>
+	</script>
 
 </body>
 </html>

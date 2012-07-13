@@ -1,20 +1,23 @@
 <?php if (!isset($mb_content_items)): ?>
+
+<?php
+	$mediaList = Utils::getMediaList();
+?>
 		<div class="span12 no-horizontal-margin category">
 			<div class="span3 margin-left-only">
-				<a class="cat-name cat-name-active video" href="/universe/library?lib=v"><?php echo Yii::t('users','Video');?></a>
+				<a class="cat-name cat-name-active video" href="<?php echo $mediaList[1]['link']; ?>"><?php echo $mediaList[1]['title'];?></a>
 			</div>
 			<div class="span3 margin-left-only">
-				<a class="cat-name audio" href="/universe/library?lib=a"><?php echo Yii::t('users','Audio');?></a>
+				<a class="cat-name audio" href="<?php echo $mediaList[2]['link']; ?>"><?php echo $mediaList[2]['title'];?></a>
 			</div>
 			<div class="span3 margin-left-only">
-				<a class="cat-name photo" href="/universe/library?lib=p"><?php echo Yii::t('users','Photo');?></a>
+				<a class="cat-name photo" href="<?php echo $mediaList[5]['link']; ?>"><?php echo $mediaList[5]['title'];?></a>
 			</div>
 			<div class="span3 no-margin">
-				<a class="cat-name document" href="/universe/library?lib=d"><?php echo Yii::t('users','Documents');?></a>
+				<a class="cat-name document" href="<?php echo $mediaList[4]['link']; ?>"><?php echo $mediaList[4]['title'];?></a>
 			</div>
 		</div>
 <?php else: ?>
-
 		<div class="tabbable"> <!-- Only required for left/right tabs -->
 			<ul class="nav inside-nav nav-pills inside-nav-pills">
 			<?php
@@ -35,13 +38,11 @@
 							$userProducts = $productsInfo['tFiles'];
 							$productParams = $productsInfo['fParams'];
 							$pHeader1 ='
-								<div class="span12 no-horizontal-margin more-link"><a href="#">Добавлено с витрин</a></div>
-								<div class="span12 no-horizontal-margin type">
+								<div class="span12 no-horizontal-margin more-link"><a href="#">' . Yii::t('common', 'From partners') . '</a></div>
+								<div id="userproductsdiv" class="span12 no-horizontal-margin type">
 							';
 							$pHeader2 = '</div>';
 							if (!empty($userProducts) && count($userProducts)) {
-								?>
-								<?php
 								foreach ($userProducts as $f) {
 									$curVariantId = $f['variant_id'];
 									$params = array();
@@ -67,12 +68,13 @@
 										echo '</a></div>';
 									}
 								}
+								$this->widget('ext.pagination.EPaginationWidget', array('params' => $productsPagination));
 							}
 							if (empty($pHeader1)) echo $pHeader2;
 
 							if (!empty($qstContent)) {
 								?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#">В процессе добавления</a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Processing');?></a></div>
 						<div class="span12 no-horizontal-margin type">
 								<?php
 								echo $qstContent;
@@ -82,10 +84,10 @@
 							}
 							if (!empty($mb_content_items)) {
 								?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#">Objects</a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Typed');?></a></div>
 						<div class="span12 no-horizontal-margin type">
 
-							<ul>
+							<ul class="nav inside-nav nav-pills">
 							<?php
 								echo CFiletypes::ParsePrint($mb_content_items, 'TL1');
 							?>
@@ -96,9 +98,9 @@
 
 							if (!empty($mb_content_items_unt)) {
 							?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#">UntypedItems(Свалка)</a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Untyped');?><?php //(echo Yii::t('common', 'Garbage') );?></a></div>
 						<div class="span12 no-horizontal-margin type">
-							<ul>
+							<ul class="nav inside-nav nav-pills ">
 								<?= CFiletypes::ParsePrint($mb_content_items_unt, 'UTL1'); ?>
 							</ul>
 						</div>

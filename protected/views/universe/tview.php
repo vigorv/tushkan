@@ -165,7 +165,7 @@ exit;
 
 			if (empty($partnerInfo['sprintf_url']))
 			{
-				$v[0] = 'http://212.20.62.34:82' . $v[0];
+				$v[0] = Yii::app()->params['tushkan']['safelib_video'] . $v[0];
 				$online = '<button class="btn" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</button>';
 				$download = '<button class="btn" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</button>';
 			}

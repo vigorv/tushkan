@@ -65,6 +65,16 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo Yii::t('common', 'Profile'); ?><b class="caret caret-top-menu"></b></a>
 						<div class="ann">(<?php echo @$userInfo['email']; ?>)</div>
 						<ul class="dropdown-menu pull-right">
+<?php
+		$userPower = Yii::app()->user->getState('dmUserPower');
+		$isAdmin = ($userPower >= _IS_ADMIN_);
+		if ($isAdmin)
+		{
+?>
+			<li><a href="#" onclick="location.href='/admin';"><?php echo Yii::t('common', 'Administrator resources');?></a></li>
+<?php
+		}
+?>
 							<li><a href="/register/profile" class="l_ajax"><?= Yii::t('users', 'Settings'); ?></a></li>
 							<li><a href="" onclick="$('#confirmLogout').modal();$('#confirmLogout').click();" ><?= Yii::t('users', 'Logout'); ?></a></li>
 						</ul>

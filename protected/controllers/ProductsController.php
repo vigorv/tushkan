@@ -167,30 +167,15 @@ class ProductsController extends Controller
 				->from('{{products}} p')
 				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower);
 			$count = $cmd->queryScalar();
+			$paginationParams = Utils::preparePagination('/products/partner/id/' . $id, $count);
 
-// BEGIN БЛОК ДЛЯ ПОСТРАНИЧНОЙ НАВИГАЦИИ
-			$limit = Yii::app()->params['tushkan']['productsPerPage'];
-			$page = $offset = 0;
-			if (!empty($_GET['page']))
-			{
-				$page = intval($_GET['page']);
-				$offset = $page * $limit;
-			}
-			$paginationParams = array(
-				'limit'		=> $limit,
-				'offset'	=> $offset,
-				'url'		=> '/products/partner/id/' . $id,
-				'total'		=> $count,
-				'page'		=> $page,
-			);
-// END БЛОК ДЛЯ ПОСТРАНИЧНОЙ НАВИГАЦИИ
 			if ($count)
 			{
 				$cmd = Yii::app()->db->createCommand()
 					->select('p.id')
 					->from('{{products}} p')
 					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower)
-					->limit($limit, $offset);
+					->limit($paginationParams['limit'], $paginationParams['offset']);
 				$pst = $cmd->queryAll();
 				if (!empty($pst))
 				{
@@ -921,27 +906,6 @@ class ProductsController extends Controller
 	}
 
 	/**
-	 * заполнить витрину партнера готовыми продуктами из очереди конвертирования
-	 * метод генерирует очередь на добавление в П Поль-ля с идентификатором 34
-	 *
-	 * периодический вызов метода например для ВХК "wget http://myicloud.ws/products/fillpartnerproducts/1"
-	 *
-	 * @param integer $id - идентификатор партнера
-	 */
-	public function actionFillpartnerproducts($id = 0)
-	{
-		$this->layout = '/layouts/ajax';
-		if (!empty($id))
-		{
-			$sql = 'UPDATE {{income_queue}} SET cmd_id=8, user_id=34 WHERE cmd_id=50 AND user_id=0 AND partner_id = :id';
-			$cmd = Yii::app()->db->createCommand($sql);
-			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-			$cmd->execute();
-		}
-		Yii::app()->end();
-	}
-
-	/**
 	 * метод вызывается конвертером для добавления продукта в витрины и в ПП пользователей
 	 *
 	 * @param integer $id - идентификатор очереди
@@ -959,18 +923,46 @@ class ProductsController extends Controller
 			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
+
+				$originalId = $cmdInfo['original_id'];
+				//ЕСЛИ УКАЗАНА ГРУППИРОВКА ОБЪЕКТ ДОЛЖЕН БЫТЬ ПОМЕЩЕН В ПРОДУКТ С ЭТИМ original_id
+				if (!empty($cmdInfo['group_id']))
+					$originalId = $cmdInfo['group_id'];
+
 				$productInfo = Yii::app()->db->createCommand()
 					->select('p.id, pv.id AS pvid, p.original_id, pv.original_id AS pvoriginal_id')
 					->from('{{products}} p')
 					->join('{{product_variants}} pv', 'pv.product_id = p.id')
-					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $cmdInfo['original_id'])
+					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $originalId)
 					->queryAll();
+
+				if ((!empty($productInfo)) && !empty($cmdInfo['group_id']))
+				{
+					//ПЕРЕБИРАЕМ ВАРИАНТЫ ЭТОЙ ГРУППЫ ИЩЕМ ВАРИАНТ С $cmdInfo['original_id']
+					foreach ($productInfo as $pInfo)
+					{
+						if ($pInfo['original_id'] == $cmdInfo['original_id'])
+						{
+							$podVariant = $pInfo;
+							break;
+						}
+					}
+				}
 
 				if (empty($productInfo))
 				{
 					$presets = CPresets::getPresets();
 					$partners = CPartners::getPartners();
 					$info = unserialize($cmdInfo['info']);
+
+					if (!empty($cmdInfo['group_id']))
+					{
+						//ЭТО ГРУППА ОБЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
+						$parentVariant = array(
+							'childs'	=> '',
+						);
+					}
+
 					if (!empty($info['tags']) && !empty($info['newfiles']))
 					{
 						$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ

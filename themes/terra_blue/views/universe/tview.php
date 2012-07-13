@@ -137,7 +137,7 @@ exit;
 		$qualityVariantId = $val[0][2];
 		$qualityPresetId = $val[0][3];
 		$actions = array();
-		$actions[] = '<a onclick="return doRemove(' . $info['id'] . ')">' . Tii::t('files', 'delete') . '</a>';
+		$actions[] = '<a onclick="return doRemove(' . $info['id'] . ')">' . Yii::t('files', 'delete') . '</a>';
 		if (!empty($orders))
 		{
 			foreach ($orders as $order)
@@ -195,7 +195,7 @@ exit;
 
 			if (empty($partnerInfo['sprintf_url']))
 			{
-				$v[0] = 'http://212.20.62.34:82' . $v[0];
+				$v[0] = Yii::app()->params['tushkan']['safelib_video'] . $v[0];
 				$online = '<a href="#" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</a>';
 				$download = '<a href="#" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</a>';
 			}

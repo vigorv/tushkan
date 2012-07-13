@@ -10,6 +10,7 @@
 class CFiletypes {
 
 	static function ParsePrint($array, $type) {
+		$img_path = '/images/64x64/mimetypes/';
 		switch ($type) {
 			case 'V1':
 				foreach ($array as $file) {
@@ -24,59 +25,34 @@ class CFiletypes {
 				break;
 			case 'AA1':
 				foreach ($array as $file) {
-					echo '<li fname="' . $file['filename'] . '><img width="100px" height="150px"/><br/>';
+					$ftype = pathinfo($file['filename'], PATHINFO_EXTENSION);
+					$img = Utils::getMimeImg($ftype);
+					echo '<li fname="' . $file['filename'] . '><img src="' . $img_path . $img . '" /><br/>';
 					echo '<span>' . $file['name'] . '</span>';
 					echo '</li>';
 				}
 				break;
 			case 'TL1':
 				foreach ($array as $object) {
+					$ftype = pathinfo($object['title'], PATHINFO_EXTENSION);
+					$img = Utils::getMimeImg($ftype);
 					?>
 					<li><a href="/universe/oview/<?= $object['id']; ?>">
-							<img src=""/>
+							<img  src="<?= $img_path . $img ?> " />
 							<?= $object['title']; ?></a></li>
 					<?
 				}
 				break;
 
 			case 'UTL1':
-				$img_path = '/images/64x64/mimetypes/';
 				foreach ($array as $object) {
 					$ftype = pathinfo($object['title'], PATHINFO_EXTENSION);
-					switch ($ftype) {
-						case 'txt':
-							$img = 'txt.png';
-							break;
-						case 'png':
-						case 'jpg':
-							$img = 'image_jpeg.png';
-							break;
-						case 'm4a':
-						case 'mp3':
-						case 'ogg':
-						case 'wma':
-						case 'flac':
-							$img = 'audio_mp4.png';
-							break;
-						case 'm4v':
-						case 'avi':
-						case 'mkv':
-						case 'flv':
-						case '3gp':
-						case 'mp4':
-							$img = 'video_mp4.png';
-							break;
-						default:
-							$img = 'unknown.png';
-					}
+					$img = Utils::getMimeImg($ftype);
 					?>
 					<li><a href="/files/fview/<?= $object['id']; ?>">
 							<img  src="<?= $img_path . $img ?> " />
 							<span><?= $object['title']; ?></span></a></li>
-
-
-
-					<?
+					<?php
 				}
 				break;
 

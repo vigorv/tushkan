@@ -37,13 +37,20 @@
 <?php
 	if (!empty($lst))
 	{
-		$select = array();
+		$select = $selectHtml = array();
 		if ($oInfo['id'] <> 1)
+		{
 			$select[] = 'Списать с баланса';
+			$selectHtml[] = array();
+		}
 		$jsCondition = '(sid == 0)';
+		$disabled = false;
 		foreach($lst as $l)
 		{
 			$select[$l['id']] = $l['title'];
+			$selectHtml[$l['id']] = array('disabled' => $disabled);
+			$disabled = true;
+
 			if ($l['is_ajax'])
 			{
 				$jsCondition .= ' || (sid == ' . $l['id'] . ')';
@@ -89,7 +96,7 @@
     <fieldset>
         <?php echo CHtml::label('Выбрать платежную систему', 'paysystem_id'); ?>
         <?php
-        	echo CHtml::dropdownlist('paysystem_id', 0, $select);
+        	echo CHtml::dropdownlist('paysystem_id', 0, $select, array('options' => $selectHtml));
         ?>
 
 <?php

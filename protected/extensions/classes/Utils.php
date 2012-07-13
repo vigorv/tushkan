@@ -314,7 +314,7 @@ class Utils {
 						'id' => $id,
 						'alias' => $a,
 						'title' => Yii::t('users', 'Video'),
-						'exts' => array('avi', 'mp4', 'mkv', 'flv', '3gp', 'm4v'),
+						'exts' => array('avi', 'mp4', 'm4v', 'mov', 'vob', 'ts', '3gp', 'flv', 'mpeg', 'mpg', 'wmv'),
 						'link' => '/universe/library?lib=' . $a,
 						'hidden' => false,
 				    );
@@ -325,7 +325,8 @@ class Utils {
 						'alias' => $a,
 						'title' => Yii::t('users', 'Audio'),
 						'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma'),
-						'link' => '/universe/library?lib=' . $a,
+//						'link' => '/universe/library?lib=' . $a,
+						'link' => '/pages/3#audio',
 						'hidden' => false,
 				    );
 				break;
@@ -335,7 +336,8 @@ class Utils {
 						'alias' => $a,
 						'title' => Yii::t('users', 'Photo'),
 						'exts'=>array('jpg','jpeg','png'),
-						'link' => '/universe/library?lib=' . $a,
+//						'link' => '/universe/library?lib=' . $a,
+						'link' => '/pages/3#foto',
 						'hidden' => false,
 				    );
 				break;
@@ -345,7 +347,8 @@ class Utils {
 						'alias' => $a,
 						'title' => Yii::t('users', 'Docs'),
 						'exts' => array('txt', 'doc'),
-						'link' => '/universe/library?lib=' . $a,
+//						'link' => '/universe/library?lib=' . $a,
+						'link' => '/pages/3#docs',
 						'hidden' => false,
 				    );
 				break;
@@ -396,5 +399,74 @@ class Utils {
         $ext = pathinfo($filename,PATHINFO_EXTENSION);
         $section = Utils::getSectionIdByExt($ext);
         return Utils::$convert_list['$section'][$preset];
+    }
+
+    public static function getMimeImg($ftype)
+    {
+		switch ($ftype) {
+			case 'txt':
+				$img = 'txt.png';
+				break;
+			case 'png':
+			case 'jpg':
+				$img = 'image_jpeg.png';
+				break;
+			case 'm4a':
+			case 'mp3':
+			case 'ogg':
+			case 'wma':
+			case 'flac':
+				$img = 'audio_mp4.png';
+				break;
+			case 'avi':
+			case 'mp4':
+			case 'm4v':
+			case 'mov':
+			case 'vob':
+			case 'ts':
+			case '3gp':
+			case 'flv':
+			case 'mpeg':
+			case 'mpg':
+			case 'wmv':
+				$img = 'video_mp4.png';
+				break;
+			default:
+				$img = 'unknown.png';
+		}
+		return $img;
+    }
+
+    /**
+     * подготовка массива параметров для виджета постраниной навигации ext.pagination.EPaginationWidget
+     * значения количества элементов на странице ($limit) и номер текущей страницы ($page) определяются по умолчанию
+     * соответствеено из настройки productsPerPage конфигурации сайта и параметра $_GET['page']
+     *
+     * @param string 	$url - общий адрес для ссылок навигации по страницам
+     * @param integer 	$total - общее количество элементов выборки
+     * @param integer 	$page - номер текущей страницы
+     * @param integer 	$limit
+     * @param string 	$loadId - идентификатор HTML элемента для ajax навигации
+     * @return mixed
+     */
+    public static function preparePagination($url, $total = 0, $page = 0, $limit = 0, $loadId = '')
+    {
+    	if (empty($limit))
+			$limit = Yii::app()->params['tushkan']['productsPerPage'];
+		$offset = 0;
+		if (!empty($_GET['page']))
+		{
+			$page = intval($_GET['page']);
+			$offset = $page * $limit;
+		}
+    	$params = array(
+				'limit'		=> $limit,
+				'offset'	=> $offset,
+				'url'		=> $url,
+				'total'		=> $total,
+				'page'		=> $page,
+				'loadId'		=> $loadId,
+			);
+    	return $params;
     }
 }

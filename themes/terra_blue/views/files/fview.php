@@ -66,7 +66,7 @@ return false;
             {
                 return false;
             }
-return false;
+
             $.post('/files/remove', {id: <?php echo $item['id']; ?>}, function(){
                 $.address.value("<?php echo $mediaList[$item['type_id']]['link']; ?>");
             });

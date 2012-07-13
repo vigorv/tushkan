@@ -159,7 +159,7 @@ class CUserfiles extends CActiveRecord {
 
 	    // TODO: DELETE BY mysql onDELETE
 	    foreach ($file_variants as $file_variant){
-            $locations = CFilelocations::getAllLocationsForVariant($file_variant);
+            $locations = CFilelocations::getAllLocationsForVariant($file_variant['id']);
             foreach ($locations as $location)
                 CServers::deleteFileOnServerByLocation($location);
 		    CFilelocations::model()->deleteAllByAttributes(array('id' => $file_variant['id']));

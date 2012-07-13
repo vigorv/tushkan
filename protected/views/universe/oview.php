@@ -13,11 +13,11 @@ if (!empty($prms))
 <script type="text/javascript">
 	function doRemove(oid)
 	{
-		if (confirm('<?php echo Yii::t('common', 'Are you sure?'); ?>'))
-		{
-
-		}
-		return false;
+        if (!confirm("<?php echo Yii::t('common', 'Are you sure?'); ?>"))
+        {
+            return false;
+        }
+        return false;
 	}
 
 	function doRedirect(url)

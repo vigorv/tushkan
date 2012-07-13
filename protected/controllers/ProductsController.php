@@ -923,18 +923,46 @@ class ProductsController extends Controller
 			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
+
+				$originalId = $cmdInfo['original_id'];
+				//ЕСЛИ УКАЗАНА ГРУППИРОВКА ОБЪЕКТ ДОЛЖЕН БЫТЬ ПОМЕЩЕН В ПРОДУКТ С ЭТИМ original_id
+				if (!empty($cmdInfo['group_id']))
+					$originalId = $cmdInfo['group_id'];
+
 				$productInfo = Yii::app()->db->createCommand()
 					->select('p.id, pv.id AS pvid, p.original_id, pv.original_id AS pvoriginal_id')
 					->from('{{products}} p')
 					->join('{{product_variants}} pv', 'pv.product_id = p.id')
-					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $cmdInfo['original_id'])
+					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $originalId)
 					->queryAll();
+
+				if ((!empty($productInfo)) && !empty($cmdInfo['group_id']))
+				{
+					//ПЕРЕБИРАЕМ ВАРИАНТЫ ЭТОЙ ГРУППЫ ИЩЕМ ВАРИАНТ С $cmdInfo['original_id']
+					foreach ($productInfo as $pInfo)
+					{
+						if ($pInfo['original_id'] == $cmdInfo['original_id'])
+						{
+							$podVariant = $pInfo;
+							break;
+						}
+					}
+				}
 
 				if (empty($productInfo))
 				{
 					$presets = CPresets::getPresets();
 					$partners = CPartners::getPartners();
 					$info = unserialize($cmdInfo['info']);
+
+					if (!empty($cmdInfo['group_id']))
+					{
+						//ЭТО ГРУППА ОБЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
+						$parentVariant = array(
+							'childs'	=> '',
+						);
+					}
+
 					if (!empty($info['tags']) && !empty($info['newfiles']))
 					{
 						$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ

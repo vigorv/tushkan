@@ -140,7 +140,7 @@ class CAppHandler
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud')
+            ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud_id')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
@@ -189,7 +189,7 @@ class CAppHandler
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
                 //->select('*')
-                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud')
+                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud_id')
                 ->from('{{product_variants}} pv')
                 ->join('{{products}} p','product_id = p.id')
                 ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster

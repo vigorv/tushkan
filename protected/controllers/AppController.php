@@ -265,7 +265,7 @@ class AppController extends ControllerApp
 
             $count = count($list);
             $total_count = CAppHandler::CountPartnerProductsForUser($search, $partner_id);
-            echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
+            echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search'=>$search));
         }
     }
 
@@ -275,11 +275,11 @@ class AppController extends ControllerApp
             $partner_id = 0;
             if (isset($_REQUEST['partner_id']))
                 $partner_id = (int)$_REQUEST['partner_id'];
-            $item_id = 0;
-            if (isset($_REQUEST['item_id'])) // Should be variant_id
-                $item_id = (int)$_REQUEST['item_id'];
-            if ($item_id && $partner_id) {
-                $list = CAppHandler::getProductFullInfo($item_id);
+            $variant_id = 0;
+            if (isset($_REQUEST['variant_id'])) // Should be variant_id
+                $variant_id = (int)$_REQUEST['variant_id'];
+            if ($variant_id && $partner_id) {
+                $list = CAppHandler::getProductFullInfo($variant_id);
                 if ($res = $list->read()) {
                     //$data = array('title' => $res['title'], 'poster' => $res['poster'], 'link' => $link, 'description' => $res['description']);
                     echo json_encode(array('cmd' => "PartnerItemData", 'error' => 0, 'Data' => $res));

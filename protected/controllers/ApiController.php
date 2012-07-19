@@ -9,7 +9,8 @@ class ApiController extends Controller {
 
     public $layout = '//layouts/ajax';
     var $user_id;
-
+/*
+В ПРЕДКЕ ОПИСАН ДОСТУП ЧЕРЕЗ ФИЛЬТРЫ
     public function beforeAction($action) {
 	parent::beforeAction($action);
 	$this->user_id = Yii::app()->user->id;
@@ -18,9 +19,10 @@ class ApiController extends Controller {
 	else
 	    Yii::app()->request->redirect('/register/login');
     }
+*/
 
     private function XmlRender() {
-	
+
     }
 
     public function actionLogin() {
@@ -33,7 +35,7 @@ class ApiController extends Controller {
     }
 
     public function actionLogout() {
-	
+
     }
 
     public function actionGetUserInfo() {
@@ -120,7 +122,7 @@ class ApiController extends Controller {
 	    $data = $_POST['data'];
 	}else
 	    echo "ERROR: no data";
-    }  
+    }
 
 }
 

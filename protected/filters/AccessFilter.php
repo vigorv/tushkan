@@ -90,6 +90,8 @@ class AccessFilter extends CFilter
 						$access = false;
 					}
 				break;
+				default:
+					$access = !Yii::app()->user->getIsGuest();
 			}
     	}
 

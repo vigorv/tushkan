@@ -922,12 +922,13 @@ class ProductsController extends Controller
 			$cmdInfo = $cmd->queryRow();
 			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
+				$info = unserialize($cmdInfo['info']);
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
 
 				$originalId = $cmdInfo['original_id'];
 				//ЕСЛИ УКАЗАНА ГРУППИРОВКА ОБЪЕКТ ДОЛЖЕН БЫТЬ ПОМЕЩЕН В ПРОДУКТ С ЭТИМ original_id
-				if (!empty($cmdInfo['group_id']))
-					$originalId = $cmdInfo['group_id'];
+				if (!empty($info['group_id']))
+					$originalId = $info['group_id'];
 
 				$productInfo = Yii::app()->db->createCommand()
 					->select('p.id, pv.id AS pvid, p.original_id, pv.original_id AS pvoriginal_id')
@@ -959,7 +960,6 @@ exit;
 				{
 					$presets = CPresets::getPresets();
 					$partners = CPartners::getPartners();
-					$info = unserialize($cmdInfo['info']);
 var_dump($partners);
 var_dump($info);
 exit;
@@ -1261,6 +1261,6 @@ exit;
 				}
 			}
 		}
-		Yii::app()->end();
+		exit;
 	}
 }

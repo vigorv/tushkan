@@ -922,8 +922,6 @@ class ProductsController extends Controller
 			$cmdInfo = $cmd->queryRow();
 			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
-var_dump($cmdInfo);
-exit;
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
 
 				$originalId = $cmdInfo['original_id'];
@@ -980,6 +978,8 @@ exit;
 							'year'				=> $info['tags']['year'],
 							'poster'			=> $partners[$cmdInfo['partner_id']]['url'] . $info['tags']['poster'],
 						);
+var_dump($pInfo);
+exit;
 						$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
 						$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');
 

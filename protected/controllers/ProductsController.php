@@ -952,6 +952,9 @@ class ProductsController extends Controller
 
 				if (empty($productInfo))
 				{
+echo 'NOT EMPTY';
+var_dump($productInfo);
+exit;
 					$presets = CPresets::getPresets();
 					$partners = CPartners::getPartners();
 var_dump($partners);
@@ -1127,6 +1130,9 @@ exit;
 				//ДОБАВЛЕНИЕ В ПП ПОЛЬЗОВАТЕЛЕЙ
 				if (!empty($productInfo))
 				{
+echo 'NOT EMPTY';
+var_dump($productInfo);
+exit;
 					$oldIds = array();
 					$oldVariantIds = array();
 					foreach ($productInfo as $pInfo)

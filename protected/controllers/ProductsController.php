@@ -936,6 +936,10 @@ class ProductsController extends Controller
 					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $originalId)
 					->queryAll();
 
+echo 'p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $originalId;
+var_dump($productInfo);
+exit;
+
 				if ((!empty($productInfo)) && !empty($cmdInfo['group_id']))
 				{
 var_dump($productInfo);

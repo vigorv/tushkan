@@ -9,6 +9,8 @@ class UniverseController extends Controller {
 	//
 	var $layout = 'concept1';
 
+/*
+В ПРЕДКЕ ОПИСАН ДОСТУП ЧЕРЕЗ ФИЛЬТРЫ
 	public function beforeAction($action) {
 		parent::beforeAction($action);
 		$this->user_id = Yii::app()->user->id;
@@ -21,7 +23,7 @@ class UniverseController extends Controller {
 	public function accessRules() {
 
 	}
-
+*/
 	public function actionError() {
 		$error = Yii::app()->errorHandler->error;
 		if ($error) {

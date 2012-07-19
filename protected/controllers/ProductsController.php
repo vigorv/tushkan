@@ -922,12 +922,13 @@ class ProductsController extends Controller
 			$cmdInfo = $cmd->queryRow();
 			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
+				$info = unserialize($cmdInfo['info']);
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
 
 				$originalId = $cmdInfo['original_id'];
 				//ЕСЛИ УКАЗАНА ГРУППИРОВКА ОБЪЕКТ ДОЛЖЕН БЫТЬ ПОМЕЩЕН В ПРОДУКТ С ЭТИМ original_id
-				if (!empty($cmdInfo['group_id']))
-					$originalId = $cmdInfo['group_id'];
+				if (!empty($info['group_id']))
+					$originalId = $info['group_id'];
 
 				$productInfo = Yii::app()->db->createCommand()
 					->select('p.id, pv.id AS pvid, p.original_id, pv.original_id AS pvoriginal_id')
@@ -951,17 +952,14 @@ class ProductsController extends Controller
 
 				if (empty($productInfo))
 				{
+echo 'NOT EMPTY';
+var_dump($productInfo);
+exit;
 					$presets = CPresets::getPresets();
 					$partners = CPartners::getPartners();
-					$info = unserialize($cmdInfo['info']);
-
-					if (!empty($cmdInfo['group_id']))
-					{
-						//ЭТО ГРУППА ОБЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
-						$parentVariant = array(
-							'childs'	=> '',
-						);
-					}
+var_dump($partners);
+var_dump($info);
+exit;
 
 					if (!empty($info['tags']) && !empty($info['newfiles']))
 					{
@@ -986,8 +984,31 @@ class ProductsController extends Controller
 							'year'				=> $info['tags']['year'],
 							'poster'			=> $partners[$cmdInfo['partner_id']]['url'] . $info['tags']['poster'],
 						);
+var_dump($pInfo);
+exit;
 						$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
 						$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');
+
+						$childsDefValue = ',,';//если вариант является потомком другого, то поле childs должно быть ='''', по умолчанию = '',,''
+						if (!empty($cmdInfo['group_id']))
+						{
+							//ЭТО ГРУППА ОБЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
+							$parentVariant = array(
+								'product_id'	=> $pInfo['id'],
+								'online_only'	=> intval($onlineOnly),
+								//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
+								'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
+								'active'		=> 0,
+								'title'			=> $pInfo['title'],
+								'description'	=> $pInfoTags['description'],
+								'original_id'	=> $info['ovids'][$nfj],
+								'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+								'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
+							);
+							$childsDefValue = '';
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $parentVariant);
+							$parentVariant['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+						}
 
 						//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
 						for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
@@ -1004,7 +1025,7 @@ class ProductsController extends Controller
 								'title'			=> $pInfo['title'],
 								'description'	=> $pInfoTags['description'],
 								'original_id'	=> $info['ovids'][$nfj],
-								'childs'		=> '', //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+								'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
 								'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
 							);
 							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $vInfo);
@@ -1094,12 +1115,24 @@ class ProductsController extends Controller
 							'description'	=> strip_tags($info['tags']['description']),
 						);
 						$cmd = Yii::app()->db->createCommand()->insert('{{product_descriptions}}', $dInfo);
+
+						if (!empty($parentVariant) && !empty($newVariants))
+						{
+							//ЗАПОЛНЯЕМ ИДЕНТИФИКАТОРЫ ПОТОМКОВ В ЗАПИСИ ПРЕДКА
+							$childs = Utils::arrayToKeyValues($newVariants, 'id', 'id');
+							$childs = ',' . implode(',', $childs) . ',';
+							$sql = 'UPDATE {{product_variants}} SET childs = "' . $childs . '" WHERE id = ' . $parentVariant['id'];
+							Yii::app()->db->createCommand($sql)->execute();
+						}
 					}
 				}
 
 				//ДОБАВЛЕНИЕ В ПП ПОЛЬЗОВАТЕЛЕЙ
 				if (!empty($productInfo))
 				{
+echo 'NOT EMPTY';
+var_dump($productInfo);
+exit;
 					$oldIds = array();
 					$oldVariantIds = array();
 					foreach ($productInfo as $pInfo)
@@ -1228,6 +1261,6 @@ class ProductsController extends Controller
 				}
 			}
 		}
-		Yii::app()->end();
+		exit;
 	}
 }

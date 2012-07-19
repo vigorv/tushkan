@@ -52,7 +52,7 @@ class AccessFilter extends CFilter
 						$access = ($userPower >= _IS_MODERATOR_);
 					if ($filterChain->action->id == 'tocloud')
 						$access = ($userPower >= _IS_USER_);
-					if ($filterChain->action->id == 'fillpartnerproducts')
+					if (($filterChain->action->id == 'fillpartnerproducts') || ($filterChain->action->id == 'addfromqueue'))
 					{
 						$access = Yii::app()->user->getIsGuest();
 					}

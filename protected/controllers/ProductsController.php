@@ -955,14 +955,6 @@ class ProductsController extends Controller
 					$partners = CPartners::getPartners();
 					$info = unserialize($cmdInfo['info']);
 
-					if (!empty($cmdInfo['group_id']))
-					{
-						//ЭТО ГРУППА ОБЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
-						$parentVariant = array(
-							'childs'	=> '',
-						);
-					}
-
 					if (!empty($info['tags']) && !empty($info['newfiles']))
 					{
 						$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ
@@ -989,6 +981,27 @@ class ProductsController extends Controller
 						$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
 						$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');
 
+						$childsDefValue = ',,';//если вариант является потомком другого, то поле childs должно быть ='''', по умолчанию = '',,''
+						if (!empty($cmdInfo['group_id']))
+						{
+							//ЭТО ГРУППА ОБЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
+							$parentVariant = array(
+								'product_id'	=> $pInfo['id'],
+								'online_only'	=> intval($onlineOnly),
+								//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
+								'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
+								'active'		=> 0,
+								'title'			=> $pInfo['title'],
+								'description'	=> $pInfoTags['description'],
+								'original_id'	=> $info['ovids'][$nfj],
+								'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+								'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
+							);
+							$childsDefValue = '';
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $parentVariant);
+							$parentVariant['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+						}
+
 						//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
 						for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
 						{
@@ -1004,7 +1017,7 @@ class ProductsController extends Controller
 								'title'			=> $pInfo['title'],
 								'description'	=> $pInfoTags['description'],
 								'original_id'	=> $info['ovids'][$nfj],
-								'childs'		=> '', //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+								'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
 								'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
 							);
 							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $vInfo);
@@ -1094,6 +1107,15 @@ class ProductsController extends Controller
 							'description'	=> strip_tags($info['tags']['description']),
 						);
 						$cmd = Yii::app()->db->createCommand()->insert('{{product_descriptions}}', $dInfo);
+
+						if (!empty($parentVariant) && !empty($newVariants))
+						{
+							//ЗАПОЛНЯЕМ ИДЕНТИФИКАТОРЫ ПОТОМКОВ В ЗАПИСИ ПРЕДКА
+							$childs = Utils::arrayToKeyValues($newVariants, 'id', 'id');
+							$childs = ',' . implode(',', $childs) . ',';
+							$sql = 'UPDATE {{product_variants}} SET childs = "' . $childs . '" WHERE id = ' . $parentVariant['id'];
+							Yii::app()->db->createCommand($sql)->execute();
+						}
 					}
 				}
 

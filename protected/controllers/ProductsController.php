@@ -936,8 +936,6 @@ class ProductsController extends Controller
 					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $originalId)
 					->queryAll();
 
-var_dump($productInfo);
-exit;
 				if ((!empty($productInfo)) && !empty($cmdInfo['group_id']))
 				{
 					//ПЕРЕБИРАЕМ ВАРИАНТЫ ЭТОЙ ГРУППЫ ИЩЕМ ВАРИАНТ С $cmdInfo['original_id']
@@ -956,6 +954,9 @@ exit;
 					$presets = CPresets::getPresets();
 					$partners = CPartners::getPartners();
 					$info = unserialize($cmdInfo['info']);
+var_dump($partners);
+var_dump($info);
+exit;
 
 					if (!empty($info['tags']) && !empty($info['newfiles']))
 					{

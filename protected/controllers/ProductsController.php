@@ -938,6 +938,8 @@ class ProductsController extends Controller
 
 				if ((!empty($productInfo)) && !empty($cmdInfo['group_id']))
 				{
+var_dump($productInfo);
+exit;
 					//ПЕРЕБИРАЕМ ВАРИАНТЫ ЭТОЙ ГРУППЫ ИЩЕМ ВАРИАНТ С $cmdInfo['original_id']
 					foreach ($productInfo as $pInfo)
 					{

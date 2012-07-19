@@ -236,10 +236,10 @@ class ServersyncController extends ControllerSync
     public function actionFiledata()
     {
         $answer = array();
-        if (isset($_GET['fdata']) && isset($_GET['sdata'])) {
-            $check_data = sha1($_GET['fdata'] . Yii::app()->params['uploads_skey']);
-            if ($check_data == $_GET['sdata']) {
-                $rdata = unserialize(base64_decode($_GET['fdata']));
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['uploads_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = unserialize(base64_decode($_REQUEST['fdata']));
                 if ($rdata) {
                     /*
                         $syncData['variant_id'] = $vid;
@@ -308,10 +308,10 @@ class ServersyncController extends ControllerSync
     public function actionUpload()
     {
         $answer = array();
-        if (isset($_GET['fdata']) && isset($_GET['sdata'])) {
-            $check_data = sha1($_GET['fdata'] . Yii::app()->params['uploads_skey']);
-            if ($check_data == $_GET['sdata']) {
-                $rdata = unserialize(base64_decode($_GET['fdata']));
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['uploads_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = unserialize(base64_decode($_REQUEST['fdata']));
                 $user_id = (int)$rdata['uid'];
                 /*
                    $syncData = array();

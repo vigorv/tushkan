@@ -140,7 +140,7 @@ class CAppHandler
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud')
+            ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud_id')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
@@ -185,11 +185,11 @@ class CAppHandler
 
     }
 
-    public static function getProductFullInfo($item_id){
+    public static function getProductFullInfo($variant_id){
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
                 //->select('*')
-                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud')
+                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud_id')
                 ->from('{{product_variants}} pv')
                 ->join('{{products}} p','product_id = p.id')
                 ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
@@ -202,7 +202,7 @@ class CAppHandler
                 ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
                 ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = '.Yii::app()->user->id )
                 ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
-                ->where('pv.id = :variant_id', array(':variant_id'=>$item_id))
+                ->where('pv.id = :variant_id', array(':variant_id'=>$variant_id))
                 ->limit(1)->query();
     }
 

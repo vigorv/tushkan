@@ -21,8 +21,7 @@ class authTest extends CTestCase
 		$check = $_identity->checkAuthInfo($blankInfo);
 		$this->assertTrue((boolean)$check);
 
-//		$this->assertEqua
-ls('<strong>test</strong>',
+		$this->assertEquals('<strong>test</strong>');
 		ob_end_flush();
 	}
 }

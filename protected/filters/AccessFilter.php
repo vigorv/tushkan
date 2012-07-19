@@ -55,8 +55,8 @@ class AccessFilter extends CFilter
 					if (($filterChain->action->id == 'fillpartnerproducts') || ($filterChain->action->id == 'addfromqueue'))
 					{
 						$access = Yii::app()->user->getIsGuest();
-echo $filterChain->action->id;
-exit;
+//echo $filterChain->action->id;
+//exit;
 						return true;
 					}
 				break;

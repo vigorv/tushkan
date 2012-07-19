@@ -915,8 +915,6 @@ class ProductsController extends Controller
 		$this->layout = '/layouts/ajax';
 		if (!empty($id))
 		{
-echo 'debug';
-exit;
 			//ВЫБИРАЕМ ОЧЕРЕДЬ
 			$sql = 'SELECT id, user_id, partner_id, original_id, original_variant_id, info FROM {{income_queue}} WHERE id=:id';
 			$cmd = Yii::app()->db->createCommand($sql);
@@ -924,6 +922,8 @@ exit;
 			$cmdInfo = $cmd->queryRow();
 			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
+var_dump($cmdInfo);
+exit;
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
 
 				$originalId = $cmdInfo['original_id'];

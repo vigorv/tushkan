@@ -915,6 +915,8 @@ class ProductsController extends Controller
 		$this->layout = '/layouts/ajax';
 		if (!empty($id))
 		{
+echo 'debug';
+exit;
 			//ВЫБИРАЕМ ОЧЕРЕДЬ
 			$sql = 'SELECT id, user_id, partner_id, original_id, original_variant_id, info FROM {{income_queue}} WHERE id=:id';
 			$cmd = Yii::app()->db->createCommand($sql);

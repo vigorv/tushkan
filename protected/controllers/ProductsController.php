@@ -943,6 +943,10 @@ class ProductsController extends Controller
 				$originalId = $cmdInfo['original_id'];
 				//ЕСЛИ УКАЗАНА ГРУППИРОВКА ОБЪЕКТ ДОЛЖЕН БЫТЬ ПОМЕЩЕН В ПРОДУКТ С ЭТИМ original_id
 				if (!empty($info['group_id']))
+				{
+					$info['group_id'] = intval($info['group_id']);
+				}
+				if (!empty($info['group_id']))
 					$originalId = $info['group_id'];
 
 				$productInfo = Yii::app()->db->createCommand()
@@ -951,30 +955,53 @@ class ProductsController extends Controller
 					->join('{{product_variants}} pv', 'pv.product_id = p.id')
 					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $originalId)
 					->queryAll();
-
-				$childIds = array();//ЗДЕСЬ БУДЕМ АККУМУЛИРОВАТЬ ИДЕНИФИКАТОРЫ НОВЫХ ПОДВАРИАНТОВ
+				$childIds = array();//ЗДЕСЬ БУДЕМ АККУМУЛИРОВАТЬ ИДЕНТИФИКАТОРЫ НОВЫХ ПОДВАРИАНТОВ
 				$newVariants = array();//ЗДЕСЬ БУДЕМ АККУМУЛИРОВАТЬ ДАННЫЕ НОВЫХ ВАРИАНТОВ
+				$childsDefValue = ',,';
+				//если вариант является потомком другого, то поле childs должно быть ="", по умолчанию = ",,"
 				if (!empty($productInfo))
 				{
-					//ПЕРЕБИРАЕМ ВАРИАНТЫ ЭТОЙ ГРУППЫ ИЩЕМ ПОДВАРИАНТ С $cmdInfo['original_id']
+					if ($productInfo[0]['original_id'] == $cmdInfo['original_id'])
+					{
+						//ПРОДУКТ ДОБАВЛЕН
+						exit;
+					}
+					$productInfo = Utils::pushIndexToKey('pvid', $productInfo);
+					//ПЕРЕБИРАЕМ ВСЕ ВАРИАНТЫ ПРОДУКТА ИЩЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ ДЛЯ ОБЪЕКТА ИЗ ОЧЕРДИ
+
 					foreach ($productInfo as $pvInfo)
 					{
-						if (!empty($info['group_id']) && ($pvInfo['original_id'] == $info['group_id']))
+						$alreadyAdded =  ($pvInfo['pvoriginal_id'] == $cmdInfo['original_id']);
+						if (!empty($info['group_id']) && !empty($pvInfo['childs']) && ($pvInfo['childs'] <> ',,') && ($pvInfo['original_id'] == $info['group_id']))
 						{
 							//НАШЛИ РОДИТЕЛЬСКИЙ ВАРИАНТ
 							$parentVariant = $pvInfo;
 						}
-						if ($pvInfo['original_id'] == $cmdInfo['original_id'])
-						{
-							//НАШЛИ СУЩЕСТВУЮЩИЙ ПОДВАРИАНТ (НЕОБХОДИМО ОБНОВЛЕНИЕ)
-							$podVariant = $pvInfo;
-						}
+						if ($alreadyAdded) exit;
 					}
-
-					if ($info['group_id'] == $cmdInfo['original_id'])
+					if (!empty($parentVariant))
 					{
-						//ЗАГЛУШКА ПРИ СОВПАДЕНИИ ИДЕНТИФИКАТОРОВ
-						$podVariant = array();
+						$childsDefValue = '';//ЗНАЧЕНИЕ ПОЛЕ childs ДЛЯ ПОДВАРИАНТОВ
+						$childs = explode(',', $parentVariant['childs']);
+						//$childIds = array_combine($childIds, $childIds);//ПОЛУЧИЛИ МАССИВ, В КОТОРОМ КЛЮЧИ РАВНЫ ЗНАЧЕНИЯМ
+						$childIds = array();
+						foreach ($childs as $v)
+						{
+							$v = intval($v);
+							if (!empty($v))
+							{
+								$childIds[$v] = $v;
+							}
+						}
+						if (!empty($childIds))
+						{
+							$podVariants = Yii::app()->db->createCommand()
+								->select('*')
+								->from('{{product_variants}}')
+								->where('id IN (' . implode(',', $childIds) . ')')
+								->queryAll();
+							$podVariants = Utils::pushIndexToKey('id', $podVariants);
+						}
 					}
 
 					//ЗАПОЛНЯЕМ ИНФО О УЖЕ ДОБАВЛЕННОМ ПРОДУКТЕ
@@ -985,7 +1012,7 @@ class ProductsController extends Controller
 					);
 				}
 				//ПРИЗНАК ДАННЫЙ ОБЪЕКТ БУДЕТ СОХРАНЕН КАК ПОДВАРИАНТ РОДИТЕЛЬСКОГО ВАРИАНТА
-				$parented = (!empty($info['group_id']) || (count($info['files'] > 1)));
+				$parented = (!empty($info['group_id']) || (count($info['files']) > 1));
 				$productInfoIndex = 0;
 				if (empty($productInfo))
 				{
@@ -1012,8 +1039,6 @@ class ProductsController extends Controller
 					);
 					$cmd = Yii::app()->db->createCommand()->insert('{{product_descriptions}}', $dInfo);
 
-					$childsDefValue = ',,';
-					//если вариант является потомком другого, то поле childs должно быть ="", по умолчанию = ",,"
 					if ($parented)
 					{
 						//ЭТО ГРУППА ОБЪЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
@@ -1030,24 +1055,17 @@ class ProductsController extends Controller
 							'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
 						);
 						$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $parentVariant);
-						$parentVariant['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+						$parentVariant['pvid'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+
+						$childsDefValue = '';//ПОСЛЕДУЮЩИЕ ВАРИАНТЫ ДОБАВЛЯЕМ КАК ПОТОМКОВ
 
 						$productInfo[$productInfoIndex++] = array(
 							'id'			=> $pInfo['id'],
-							'pvid'			=> $parentVariant['id'],
+							'pvid'			=> $parentVariant['pvid'],
 							'original_id'	=> $pInfo['original_id'],
 							'pvoriginal_id'	=> $parentVariant['original_id'],
 						);
 					}
-				}
-//var_dump($parentVariant);
-//exit;
-
-				if (!empty($parentVariant))
-				{
-					$childsDefValue = '';//ЗНАЧЕНИЕ ПОЛЕ childs ДЛЯ ПОДВАРИАНТОВ
-					$childIds = explode(',', $parentVariant['childs']);
-					$childIds = array_combine($childIds, $childIds);//ПОЛУЧИЛИ МАССИВ, В КОТОРОМ КЛЮЧИ РАВНЫ ЗНАЧЕНИЯМ
 				}
 
 				/*
@@ -1064,7 +1082,6 @@ class ProductsController extends Controller
 
 				if (!empty($info['newfiles']))
 				{
-
 					//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
 					for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
 					{
@@ -1182,7 +1199,7 @@ class ProductsController extends Controller
 					{
 						//ЗАПОЛНЯЕМ ИДЕНТИФИКАТОРЫ ПОТОМКОВ В ЗАПИСИ ПРЕДКА
 						$childs = ',' . implode(',', $childIds) . ',';
-						$sql = 'UPDATE {{product_variants}} SET childs = "' . $childs . '" WHERE id = ' . $parentVariant['id'];
+						$sql = 'UPDATE {{product_variants}} SET childs = "' . $childs . '" WHERE id = ' . $parentVariant['pvid'];
 						Yii::app()->db->createCommand($sql)->execute();
 					}
 				}

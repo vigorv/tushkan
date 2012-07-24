@@ -942,10 +942,11 @@ class ProductsController extends Controller
 
 				$originalId = $cmdInfo['original_id'];
 				//ЕСЛИ УКАЗАНА ГРУППИРОВКА ОБЪЕКТ ДОЛЖЕН БЫТЬ ПОМЕЩЕН В ПРОДУКТ С ЭТИМ original_id
-				if (!empty($info['group_id']))
+				if (empty($info['group_id']))
 				{
-					$info['group_id'] = intval($info['group_id']);
+					$info['group_id'] = 0;
 				}
+				$info['group_id'] = intval($info['group_id']);
 				if (!empty($info['group_id']))
 					$originalId = $info['group_id'];
 

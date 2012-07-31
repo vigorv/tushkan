@@ -19,7 +19,7 @@ class ControllerApp extends CController {
 
     public function init() {
         parent::init();
-        Yii::app()->errorHandler->errorAction='app/error';
+        Yii::app()->errorHandler->errorAction='/app/error';
     //        $this->identity = new UserIdentity('', '');
     //    $this->identity->authenticate();
         if (isset($_GET['_lang'])) {

@@ -922,225 +922,309 @@ class ProductsController extends Controller
 			$cmdInfo = $cmd->queryRow();
 			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
 			{
+/**
+ * ДОБАВЛЕНИЕ В ВИТРИНЫ. начало
+ */
 				$info = unserialize($cmdInfo['info']);
+				$onlineOnly = (!empty($info['just_online']));
+				$presets = CPresets::getPresets();
+				$partners = CPartners::getPartners();
+				$pInfoTags = array(
+					'title'				=> (empty($info['tags']['title'])) ? '' : strip_tags($info['tags']['title']),
+					'title_original'	=> (empty($info['tags']['title_original'])) ? '' : strip_tags($info['tags']['title_original']),
+					'description'		=> (empty($info['tags']['description'])) ? '' : strip_tags($info['tags']['description']),
+					'genres'			=> (empty($info['tags']['genres'])) ? '' : $info['tags']['genres'],
+					'countries'			=> (empty($info['tags']['countries'])) ? '' : $info['tags']['countries'],
+					'year'				=> (empty($info['tags']['year'])) ? '' : $info['tags']['year'],
+					'poster'			=> (empty($info['tags']['poster'])) ? '' : $partners[$cmdInfo['partner_id']]['url'] . $info['tags']['poster'],
+				);
 				//ПРОВЕРЯЕМ НАЛИЧИЕ ГОТОВОГО ОБЪЕКТА В ВИТРИНАХ И ПОЛУЧАЕМ ВСЕ ЕГО ВАРИАНТЫ
 
 				$originalId = $cmdInfo['original_id'];
 				//ЕСЛИ УКАЗАНА ГРУППИРОВКА ОБЪЕКТ ДОЛЖЕН БЫТЬ ПОМЕЩЕН В ПРОДУКТ С ЭТИМ original_id
+				if (empty($info['group_id']))
+				{
+					$info['group_id'] = 0;
+				}
+				$info['group_id'] = intval($info['group_id']);
 				if (!empty($info['group_id']))
 					$originalId = $info['group_id'];
 
 				$productInfo = Yii::app()->db->createCommand()
-					->select('p.id, pv.id AS pvid, p.original_id, pv.original_id AS pvoriginal_id')
+					->select('p.id, pv.id AS pvid, p.original_id, pv.original_id AS pvoriginal_id, pv.childs')
 					->from('{{products}} p')
 					->join('{{product_variants}} pv', 'pv.product_id = p.id')
 					->where('p.partner_id = ' . $cmdInfo['partner_id'] . ' AND p.original_id = ' . $originalId)
 					->queryAll();
-
-				if ((!empty($productInfo)) && !empty($cmdInfo['group_id']))
-				{
-					//ПЕРЕБИРАЕМ ВАРИАНТЫ ЭТОЙ ГРУППЫ ИЩЕМ ВАРИАНТ С $cmdInfo['original_id']
-					foreach ($productInfo as $pInfo)
-					{
-						if ($pInfo['original_id'] == $cmdInfo['original_id'])
-						{
-							$podVariant = $pInfo;
-							break;
-						}
-					}
-				}
-
-				if (empty($productInfo))
-				{
-echo 'NOT EMPTY';
-var_dump($productInfo);
-exit;
-					$presets = CPresets::getPresets();
-					$partners = CPartners::getPartners();
-var_dump($partners);
-var_dump($info);
-exit;
-
-					if (!empty($info['tags']) && !empty($info['newfiles']))
-					{
-						$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ
-						//(КАК ЕСЛИ БЫ ЭТО БЫЛ РЕЗУЛЬТАТ ВЫБОРКИ С ПОЛЯМИ id, pvid, original_id, pvoriginal_id)
-						$productInfoIndex = 0;
-						//ДОБАВЛЯЕМ ПРОДУКТ
-						$pInfo = array(
-							'title' 			=> strip_tags($info['tags']['title']),
-							'partner_id'		=> $cmdInfo['partner_id'],
-							'active'			=> 0, //ВИДИМ ВСЕМ
-							'srt'				=> 0,
-							'original_id'		=> $cmdInfo['original_id'],
-							'created'			=> date('Y-m-d H:i:s'),
-							'modified'			=> date('Y-m-d H:i:s'),
-						);
-						$pInfoTags = array(
-							'title_original'	=> strip_tags($info['tags']['title_original']),
-							'description'		=> '',
-							'genres'			=> $info['tags']['genres'],
-							'countries'			=> $info['tags']['countries'],
-							'year'				=> $info['tags']['year'],
-							'poster'			=> $partners[$cmdInfo['partner_id']]['url'] . $info['tags']['poster'],
-						);
-var_dump($pInfo);
-exit;
-						$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
-						$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');
-
-						$childsDefValue = ',,';//если вариант является потомком другого, то поле childs должно быть ='''', по умолчанию = '',,''
-						if (!empty($cmdInfo['group_id']))
-						{
-							//ЭТО ГРУППА ОБЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
-							$parentVariant = array(
-								'product_id'	=> $pInfo['id'],
-								'online_only'	=> intval($onlineOnly),
-								//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
-								'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
-								'active'		=> 0,
-								'title'			=> $pInfo['title'],
-								'description'	=> $pInfoTags['description'],
-								'original_id'	=> $info['ovids'][$nfj],
-								'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
-								'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
-							);
-							$childsDefValue = '';
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $parentVariant);
-							$parentVariant['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
-						}
-
-						//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
-						for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
-						{
-							$onlineOnly = (!empty($info['just_online']));
-							if (empty($info['ovids'][$nfj]))
-								$info['ovids'][$nfj] = 0;
-							$vInfo = array(
-								'product_id'	=> $pInfo['id'],
-								'online_only'	=> intval($onlineOnly),
-								//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
-								'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
-								'active'		=> 0,
-								'title'			=> $pInfo['title'],
-								'description'	=> $pInfoTags['description'],
-								'original_id'	=> $info['ovids'][$nfj],
-								'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
-								'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $vInfo);
-							$vInfo['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
-							$newVariants[$info['ovids'][$nfj]] = $vInfo;
-
-							$productInfo[$productInfoIndex++] = array(
-								'id'			=> $pInfo['id'],
-								'pvid'			=> $vInfo['id'],
-								'original_id'	=> $pInfo['original_id'],
-								'pvoriginal_id'	=> $vInfo['original_id'],
-							);
-
-							//СОХРАНЯЕМ ВСЕ КАЧЕСТВА ЭТОГО ВАРИАНТА
-							foreach ($info['filepresets'][$nfj] as $fp)
-							{
-								$qInfo = array(
-									'variant_id'	=> $vInfo['id'],
-									'preset_id'		=> $presets[$fp]['id'],
-								);
-								$cmd = Yii::app()->db->createCommand()->insert('{{variant_qualities}}', $qInfo);
-								$qInfo['id'] = Yii::app()->db->getLastInsertID('{{variant_qualities}}');
-
-								//СОХРАНЯЕМ ВСЕ ФАЙЛЫ ДАННОГО КАЧЕСТВА
-								$pathInfo = pathinfo($info['newfiles'][$nfj]);
-								$presetName = $presets[$fp]['title'];
-
-								$sz = 0;
-								if (!empty($info['newfilesizes'][$nfj]))
-									$sz = $info['newfilesizes'][$nfj];
-								$fInfo = array(
-									'size'					=> $sz,
-									'md5'					=> "",
-									'fname'					=> $pathInfo['dirname'] . '/' . $presetName . '/' . $pathInfo['basename'],
-									'preset_id'				=> $presets[$fp]['id'],
-									'variant_quality_id'	=> $qInfo['id'],
-								);
-								$cmd = Yii::app()->db->createCommand()->insert('{{product_files}}', $fInfo);
-								$fInfo['id'] = Yii::app()->db->getLastInsertID('{{product_files}}');
-							}
-
-							//ДОБАВЛЯЕМ ПАРАМЕТРЫ ВАРИАНТА
-							$paramInfo = array(
-								'param_id'	=> 18,//18 - genres
-								'value'		=> $pInfoTags['genres'],
-								'variant_id'=> $vInfo['id'],
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
-
-							$paramInfo = array(
-								'param_id'	=> 10,//10 - poster
-								'value'		=> $pInfoTags['poster'],
-								'variant_id'=> $vInfo['id'],
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
-
-							$paramInfo = array(
-								'param_id'	=> 12,//12 - original name
-								'value'		=> $pInfoTags['title_original'],
-								'variant_id'=> $vInfo['id'],
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
-
-							$paramInfo = array(
-								'param_id'	=> 19,//19 - description
-								'value'		=> $pInfoTags['description'],
-								'variant_id'=> $vInfo['id'],
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
-
-							$paramInfo = array(
-								'param_id'	=> 13,//13 - year
-								'value'		=> $pInfoTags['year'],
-								'variant_id'=> $vInfo['id'],
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
-
-							$paramInfo = array(
-								'param_id'	=> 14,//14 - countries
-								'value'		=> $pInfoTags['countries'],
-								'variant_id'=> $vInfo['id'],
-							);
-							$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
-						}
-						$dInfo = array(
-							'product_id'	=> $pInfo['id'],
-							'description'	=> strip_tags($info['tags']['description']),
-						);
-						$cmd = Yii::app()->db->createCommand()->insert('{{product_descriptions}}', $dInfo);
-
-						if (!empty($parentVariant) && !empty($newVariants))
-						{
-							//ЗАПОЛНЯЕМ ИДЕНТИФИКАТОРЫ ПОТОМКОВ В ЗАПИСИ ПРЕДКА
-							$childs = Utils::arrayToKeyValues($newVariants, 'id', 'id');
-							$childs = ',' . implode(',', $childs) . ',';
-							$sql = 'UPDATE {{product_variants}} SET childs = "' . $childs . '" WHERE id = ' . $parentVariant['id'];
-							Yii::app()->db->createCommand($sql)->execute();
-						}
-					}
-				}
-
-				//ДОБАВЛЕНИЕ В ПП ПОЛЬЗОВАТЕЛЕЙ
+				$childIds = array();//ЗДЕСЬ БУДЕМ АККУМУЛИРОВАТЬ ИДЕНТИФИКАТОРЫ НОВЫХ ПОДВАРИАНТОВ
+				$newVariants = array();//ЗДЕСЬ БУДЕМ АККУМУЛИРОВАТЬ ДАННЫЕ НОВЫХ ВАРИАНТОВ
+				$childsDefValue = ',,';
+				//если вариант является потомком другого, то поле childs должно быть ="", по умолчанию = ",,"
 				if (!empty($productInfo))
 				{
-echo 'NOT EMPTY';
-var_dump($productInfo);
-exit;
-					$oldIds = array();
-					$oldVariantIds = array();
-					foreach ($productInfo as $pInfo)
+					if ($productInfo[0]['original_id'] == $cmdInfo['original_id'])
 					{
-						$oldIds[$pInfo['original_id']] = $pInfo['original_id'];
-						if (!empty($pInfo['pvoriginal_id']))
+						//ПРОДУКТ ДОБАВЛЕН
+						exit;
+					}
+					$productInfo = Utils::pushIndexToKey('pvid', $productInfo);
+					//ПЕРЕБИРАЕМ ВСЕ ВАРИАНТЫ ПРОДУКТА ИЩЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ ДЛЯ ОБЪЕКТА ИЗ ОЧЕРДИ
+
+					foreach ($productInfo as $pvInfo)
+					{
+						$alreadyAdded =  ($pvInfo['pvoriginal_id'] == $cmdInfo['original_id']);
+						if (!empty($info['group_id']) && !empty($pvInfo['childs']) && ($pvInfo['childs'] <> ',,') && ($pvInfo['original_id'] == $info['group_id']))
 						{
-							$oldVariantIds[$pInfo['pvoriginal_id']] = $pInfo['pvoriginal_id'];
+							//НАШЛИ РОДИТЕЛЬСКИЙ ВАРИАНТ
+							$parentVariant = $pvInfo;
+						}
+						if ($alreadyAdded) exit;
+					}
+					if (!empty($parentVariant))
+					{
+						$childsDefValue = '';//ЗНАЧЕНИЕ ПОЛЕ childs ДЛЯ ПОДВАРИАНТОВ
+						$childs = explode(',', $parentVariant['childs']);
+						//$childIds = array_combine($childIds, $childIds);//ПОЛУЧИЛИ МАССИВ, В КОТОРОМ КЛЮЧИ РАВНЫ ЗНАЧЕНИЯМ
+						$childIds = array();
+						foreach ($childs as $v)
+						{
+							$v = intval($v);
+							if (!empty($v))
+							{
+								$childIds[$v] = $v;
+							}
+						}
+						if (!empty($childIds))
+						{
+							$podVariants = Yii::app()->db->createCommand()
+								->select('*')
+								->from('{{product_variants}}')
+								->where('id IN (' . implode(',', $childIds) . ')')
+								->queryAll();
+							$podVariants = Utils::pushIndexToKey('id', $podVariants);
+						}
+					}
+
+					//ЗАПОЛНЯЕМ ИНФО О УЖЕ ДОБАВЛЕННОМ ПРОДУКТЕ
+					$pInfo = array(
+						'id'			=> $pvInfo['id'],
+						'partner_id'	=> $cmdInfo['partner_id'],
+						'original_id'	=> $originalId,
+					);
+				}
+				//ПРИЗНАК ДАННЫЙ ОБЪЕКТ БУДЕТ СОХРАНЕН КАК ПОДВАРИАНТ РОДИТЕЛЬСКОГО ВАРИАНТА
+				$parented = (!empty($info['group_id']) || (count($info['files']) > 1));
+				$productInfoIndex = 0;
+				if (empty($productInfo))
+				{
+					//ПРОДУКТ ЕЩЕ НЕ СОЗДАВАЛИ (БЕЗ ВАРИАНТОВ ПРОДУКТА НЕ МОЖЕТ БЫТЬ)
+					$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ
+					//(КАК ЕСЛИ БЫ ЭТО БЫЛ РЕЗУЛЬТАТ ВЫБОРКИ С ПОЛЯМИ id, pvid, original_id, pvoriginal_id)
+					//ДОБАВЛЯЕМ ПРОДУКТ
+					$pInfo = array(
+						'title' 			=> $pInfoTags['title'],
+						'partner_id'		=> $cmdInfo['partner_id'],
+						'active'			=> 0, //ВИДИМ ВСЕМ
+						'srt'				=> 0,
+						'original_id'		=> $originalId,
+						'created'			=> date('Y-m-d H:i:s'),
+						'modified'			=> date('Y-m-d H:i:s'),
+					);
+					$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
+					$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');
+
+					//ОПИСАНИЕ К ПРОДУКТУ ДОБАВЛЯЕМ, (ОБНОВЛЕНИЕ ОПИСАНИЯ ПОКА НЕ РЕАЛИЗУЕМ)
+					$dInfo = array(
+						'product_id'	=> $pInfo['id'],
+						'description'	=> $pInfoTags['description'],
+					);
+					$cmd = Yii::app()->db->createCommand()->insert('{{product_descriptions}}', $dInfo);
+
+					if ($parented)
+					{
+						//ЭТО ГРУППА ОБЪЕКТОВ. СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ (С ЗАПОЛНЕНИЕМ ПОЛЯ childs)
+						$parentVariant = array(
+							'product_id'	=> $pInfo['id'],
+							'online_only'	=> intval($onlineOnly),
+							//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
+							'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
+							'active'		=> 0,
+							'title'			=> $pInfo['title'],
+							'description'	=> '',//ОПИСАНИЕ ВСЕ РАВНО БУДЕТ ВСТАВЛЕНО В {{variant_param_values}}
+							'original_id'	=> $info['group_id'],
+							'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+							'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $parentVariant);
+						$parentVariant['pvid'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+
+						$childsDefValue = '';//ПОСЛЕДУЮЩИЕ ВАРИАНТЫ ДОБАВЛЯЕМ КАК ПОТОМКОВ
+
+						$productInfo[$productInfoIndex++] = array(
+							'id'			=> $pInfo['id'],
+							'pvid'			=> $parentVariant['pvid'],
+							'original_id'	=> $pInfo['original_id'],
+							'pvoriginal_id'	=> $parentVariant['original_id'],
+						);
+					}
+				}
+
+				/*
+				НАПОМИНАНИЕ СТРУКТУРЫ ПОЛЯ info
+				$info['files'][n]		- оригинальное имя обрабатываемого файла
+				$info['ovids'][n]		- оригинальные variant_id. если = 0 продукт невозможно будет обновить частично
+											(все файлы продукта должны будут обновляться вместе)
+				$info['newfiles'][n]	- содержит новое имя (уже пережатого) файла
+				$info['filepresets'][n]	- массив. содержит список пресетов с которыми данный файл был пережат
+											для каждого пресета в папке фильма заводится подпапка
+
+					* - во всех массивах должно быть одинаковое кол-во элементов
+				*/
+
+				if (!empty($info['newfiles']))
+				{
+					//ДОБАВЛЯЕМ ВАРИАНТЫ: ОДИН ВАРИАНТ -> ОДНА СЕРИЯ -> СОДЕРЖИТ НЕСКОЛЬКО КАЧЕСТВ
+					for ($nfj = 0; $nfj < count($info['newfiles']); $nfj++)
+					{
+						if (empty($info['ovids'][$nfj]))
+							$info['ovids'][$nfj] = 0;
+						$vInfo = array(
+							'product_id'	=> $pInfo['id'],
+							'online_only'	=> intval($onlineOnly),
+							//'type_id'		=> $partners[$cmdInfo['partner_id']]['type'],//ТИП КОНТЕНТА см. dm_product_types
+							'type_id'		=> 1,//ПОКА РАБОТАЕМ ТОЛЬКО С ВИДЕО
+							'active'		=> 0,
+							'title'			=> $pInfoTags['title'],
+							'description'	=> '',//ОПИСАНИЕ ВСЕ РАВНО БУДЕТ ВСТАВЛЕНО В {{variant_param_values}}
+							'original_id'	=> $info['ovids'][$nfj],
+							'childs'		=> $childsDefValue, //ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПОТОМКОВ
+							'sub_id'		=> 1 //СУБТИП ПО УМОЛЧАНИЮ "Фильм"
+						);
+						if ($parented)
+						{
+							//ЕСЛИ ЭТОТ ФАЙЛ ИЗ ГРУППЫ, ТО ДАННЫЙ ПОДВАРИАНТ БУДЕТ ХРАНИТЬ ОРИГ ИД = ИД ФАЙЛА В БД ПАРТНЕРА
+							$vInfo['original_id'] = $cmdInfo['original_id'];
+						}
+
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_variants}}', $vInfo);
+						$vInfo['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+						$newVariants[$info['ovids'][$nfj]] = $vInfo;
+						$childIds[$vInfo['id']] = $vInfo['id'];
+
+						$productInfo[$productInfoIndex++] = array(
+							'id'			=> $pInfo['id'],
+							'pvid'			=> $vInfo['id'],
+							'original_id'	=> $pInfo['original_id'],
+							'pvoriginal_id'	=> $vInfo['original_id'],
+						);
+
+						//СОХРАНЯЕМ ВСЕ КАЧЕСТВА ЭТОГО ВАРИАНТА
+						foreach ($info['filepresets'][$nfj] as $fp)
+						{
+							$qInfo = array(
+								'variant_id'	=> $vInfo['id'],
+								'preset_id'		=> $presets[$fp]['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{variant_qualities}}', $qInfo);
+							$qInfo['id'] = Yii::app()->db->getLastInsertID('{{variant_qualities}}');
+
+							//СОХРАНЯЕМ ВСЕ ФАЙЛЫ ДАННОГО КАЧЕСТВА
+							$pathInfo = pathinfo($info['newfiles'][$nfj]);
+							$presetName = $presets[$fp]['title'];
+
+							$sz = 0;
+							if (!empty($info['newfilesizes'][$nfj]))
+								$sz = $info['newfilesizes'][$nfj];
+							$fInfo = array(
+								'size'					=> $sz,
+								'md5'					=> "",
+								'fname'					=> $pathInfo['dirname'] . '/' . $presetName . '/' . $pathInfo['basename'],
+								'preset_id'				=> $presets[$fp]['id'],
+								'variant_quality_id'	=> $qInfo['id'],
+							);
+							$cmd = Yii::app()->db->createCommand()->insert('{{product_files}}', $fInfo);
+							$fInfo['id'] = Yii::app()->db->getLastInsertID('{{product_files}}');
+						}
+
+						//ДОБАВЛЯЕМ ПАРАМЕТРЫ ВАРИАНТА
+						$paramInfo = array(
+							'param_id'	=> 18,//18 - genres
+							'value'		=> $pInfoTags['genres'],
+							'variant_id'=> $vInfo['id'],
+							'variant_quality_id'	=> 0,//ПАРАМЕТР ИМЕЕТ ОДНО ЗНАЧЕНИЕ ДЛЯ ВСЕХ КАЧЕСТВ ВАРИАНТА
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+						$paramInfo = array(
+							'param_id'	=> 10,//10 - poster
+							'value'		=> $pInfoTags['poster'],
+							'variant_id'=> $vInfo['id'],
+							'variant_quality_id'	=> 0,//ПАРАМЕТР ИМЕЕТ ОДНО ЗНАЧЕНИЕ ДЛЯ ВСЕХ КАЧЕСТВ ВАРИАНТА
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+						$paramInfo = array(
+							'param_id'	=> 12,//12 - original name
+							'value'		=> $pInfoTags['title_original'],
+							'variant_id'=> $vInfo['id'],
+							'variant_quality_id'	=> 0,//ПАРАМЕТР ИМЕЕТ ОДНО ЗНАЧЕНИЕ ДЛЯ ВСЕХ КАЧЕСТВ ВАРИАНТА
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+						$paramInfo = array(
+							'param_id'	=> 19,//19 - description
+							'value'		=> mb_substr($pInfoTags['description'], 0, 250, 'UTF-8'),
+							'variant_id'=> $vInfo['id'],
+							'variant_quality_id'	=> 0,//ПАРАМЕТР ИМЕЕТ ОДНО ЗНАЧЕНИЕ ДЛЯ ВСЕХ КАЧЕСТВ ВАРИАНТА
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+						$paramInfo = array(
+							'param_id'	=> 13,//13 - year
+							'value'		=> $pInfoTags['year'],
+							'variant_id'=> $vInfo['id'],
+							'variant_quality_id'	=> 0,//ПАРАМЕТР ИМЕЕТ ОДНО ЗНАЧЕНИЕ ДЛЯ ВСЕХ КАЧЕСТВ ВАРИАНТА
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+
+						$paramInfo = array(
+							'param_id'	=> 14,//14 - countries
+							'value'		=> $pInfoTags['countries'],
+							'variant_id'=> $vInfo['id'],
+							'variant_quality_id'	=> 0,//ПАРАМЕТР ИМЕЕТ ОДНО ЗНАЧЕНИЕ ДЛЯ ВСЕХ КАЧЕСТВ ВАРИАНТА
+						);
+						$cmd = Yii::app()->db->createCommand()->insert('{{product_param_values}}', $paramInfo);
+					}
+
+					if (!empty($parentVariant))
+					{
+						//ЗАПОЛНЯЕМ ИДЕНТИФИКАТОРЫ ПОТОМКОВ В ЗАПИСИ ПРЕДКА
+						$childs = ',' . implode(',', $childIds) . ',';
+						$sql = 'UPDATE {{product_variants}} SET childs = "' . $childs . '" WHERE id = ' . $parentVariant['pvid'];
+						Yii::app()->db->createCommand($sql)->execute();
+					}
+				}
+/**
+ * ДОБАВЛЕНИЕ В ВИТРИНЫ. конец
+ */
+
+
+
+
+
+/**
+ * ДОБАВЛЕНИЕ В ПП. начало
+ */
+				if (!empty($productInfo))
+				{
+					$oldIds = array();//СОБЕРЕМ ИДЕНТИФИКАТОРЫ ПРОДУКТОВ
+					$oldVariantIds = array();//СОБЕРЕМ ИДЕНТИФИКАТОРЫ ВАРИАНТОВ ПРОДУКТОВ
+					foreach ($productInfo as $pvInfo)
+					{
+						$oldIds[$pvInfo['original_id']] = $pvInfo['original_id'];
+						if (!empty($pvInfo['pvoriginal_id']))
+						{
+							$oldVariantIds[$pvInfo['pvoriginal_id']] = $pvInfo['pvoriginal_id'];
 						}
 					}
 					$orCondition = array();
@@ -1154,7 +1238,7 @@ exit;
 					}
 					$orCondition = implode(' OR ', $orCondition);
 
-					//ПРОДУКТ ДОБАВЛЕН, ИЩЕМ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ, СДЕЛАВШИХ ЗАЯВКУ НА ПРОДУКТ ИЛИ ВАРИАНТЫ ПРОДУКТА
+					//ИЩЕМ ВСЕХ ПОЛЬЗОВАТЕЛЕЙ, СДЕЛАВШИХ ЗАЯВКУ НА ПРОДУКТ ИЛИ ВАРИАНТЫ ПРОДУКТА
 					$users = Yii::app()->db->createCommand()
 						->select('id, user_id, original_id, original_variant_id')
 						->from('{{income_queue}}')
@@ -1199,7 +1283,7 @@ exit;
 										$tfInfo = array(
 											'variant_id'	=> $pInfo['pvid'],
 											'user_id'		=> $u['user_id'],
-											'title'			=> $info['tags']['title'],
+											'title'			=> $pInfoTags['title'],
 											'collection_id'	=> 0,
 										);
 										$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);
@@ -1233,7 +1317,7 @@ exit;
 										$tfInfo = array(
 											'variant_id'	=> $vId,
 											'user_id'		=> $u['user_id'],
-											'title'			=> $info['tags']['title'],
+											'title'			=> $pInfoTags['title'],
 											'collection_id'	=> 0,
 										);
 										$cmd = Yii::app()->db->createCommand()->insert('{{typedfiles}}', $tfInfo);

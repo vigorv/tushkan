@@ -9,17 +9,18 @@ class UniverseController extends Controller {
 	//
 	var $layout = 'concept1';
 
-/*
-В ПРЕДКЕ ОПИСАН ДОСТУП ЧЕРЕЗ ФИЛЬТРЫ
+//*
+//В ПРЕДКЕ ОПИСАН ДОСТУП ЧЕРЕЗ ФИЛЬТРЫ
 	public function beforeAction($action) {
 		parent::beforeAction($action);
 		$this->user_id = Yii::app()->user->id;
-		if ($this->user_id)
-			return true;
-		else
-			Yii::app()->request->redirect('/register/login');
+		return true;
+//		if ($this->user_id)
+//			return true;
+//		else
+//			Yii::app()->request->redirect('/register/login');
 	}
-
+/*
 	public function accessRules() {
 
 	}

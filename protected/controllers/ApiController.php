@@ -23,7 +23,7 @@ class ApiController extends Controller {
              * c. Check for Queue
              */
             $partner = CPartners::model()->find('id = :partner_id',array(':partner_id'=>$partner_id));
-            if ($partner->id && Yii::app()->user->id){
+            if ($partner && $partner->id && Yii::app()->user->id){
                 $variants = CProductVariant::getPartnerVariantData($partner->id,$partner_item_id);
                 $variant = current($variants);
                 if ($variant['id']){
@@ -60,12 +60,12 @@ class ApiController extends Controller {
              * c. Check for Queue
              */
             $partner = CPartners::model()->find('id = :partner_id',array(':partner_id'=>$partner_id));
-            if ($partner->id && Yii::app()->user->id){
+            if ($partner && $partner->id && Yii::app()->user->id){
                 $variants = CProductVariant::getPartnerVariantData($partner->id,$partner_item_id);
                 $variant = current($variants);
                 if ($variant['id']){
                     if (CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id,$variant['id'])){
-                        echo "Already added";
+                        echo json_encode(array("msg"=>"Already added","status_code"=>2));
                     } else{
                         $queue = new CConvertQueue();
                         $queue -> variant_id = $variant['id'];
@@ -74,10 +74,11 @@ class ApiController extends Controller {
                         $queue -> user_id = Yii::app()->user->id;
                         $queue -> priority = 200;
                         $queue ->save();
+                        echo json_encode(array("msg"=>"Added","status_code"=>1));
                     }
                 } else{
                     if (CConvertQueue::model()->find('original_variant_id = :variant_id AND partner_id = :partner_id AND user_id = :user_id',array(':variant_id'=>$partner_item_id,':partner_id'=>$partner_id,':user_id'=>Yii::app()->user->id))){
-                        echo "in ProcessToAdd";
+                        echo json_encode(array("msg"=>"In queue","status_code"=>3));
                     } else {
                         $queue = new CConvertQueue();
                         $queue -> original_variant_id = $partner_item_id;
@@ -85,10 +86,11 @@ class ApiController extends Controller {
                         $queue -> user_id = Yii::app()->user->id;
                         $queue -> priority = 100;
                         $queue ->save();
+                        echo json_encode(array("msg"=>"Added","status_code"=>1));
                     }
                 }
             } else {
-                echo "Unknown User or product";
+                echo json_encode(array("msg"=>"Unknown user or product","status_code"=>0));
             }
         }
     }

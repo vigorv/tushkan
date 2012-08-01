@@ -1,23 +1,13 @@
 <?php
+Yii::import('ext.tushkanwidget.ETushkanWidget');
+Yii::import('ext.classes.Utils');
 
-class EPaginationWidget extends CWidget
+class EPaginationWidget extends ETushkanWidget
 {
 	public $interval = 7;
 	public $jump = 10;
 
 	public $params;
-
-	/**
-	 * переопределяем путь к отображениям виджета с учетом текущей темы(шаблона)
-	 *
-	 * @param bool $checkTheme
-	 * @return string
-	 */
-	public function getViewPath($checkTheme=false)
-    {
-        $themeManager = Yii::app()->themeManager;
-        return $themeManager->basePath.DIRECTORY_SEPARATOR.Yii::app()->theme->name.DIRECTORY_SEPARATOR.'views/widgets';
-    }
 
     /**
      * возвращает ссылку на указанную страницу
@@ -27,7 +17,9 @@ class EPaginationWidget extends CWidget
      */
     public function preparePageUrl($page)
     {
-    	return $this->params['url'] . '/page/' . $page;
+    	$params = Utils::prepareUrlParams(false, false);
+    	$params['page'] = 'page/' . intval($page);
+    	return $this->params['url'] . '/' . implode('/', $params);
     }
 
     /**
@@ -43,6 +35,7 @@ class EPaginationWidget extends CWidget
     	$iCnt = intval($cnt);
     	if ($cnt != $iCnt)
     		$iCnt++;
+//echo $this->params['total'] . ' / ' . $this->params['limit'] . '<br/>';
     	return $iCnt;
     }
 

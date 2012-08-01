@@ -72,4 +72,23 @@ class Controller extends CController {
 		return true;
 	}
 
+	/**
+	 * общее действие для всех контроллеров
+	 * принимает параметры фильтрации из POST запроса и перенаправляет их на конечное действие GET запросом
+	 *
+	 */
+	public function actionPostfilter()
+	{
+		$action = '/';
+		if (!empty($_POST['action']))
+		{
+			$action = '/' . Yii::app()->getController()->getId() . '/' . $_POST['action'];
+
+			$url = Utils::preparePageSortUrl($action, '', false);
+			//параметр false дает нам возможность передать(не сбрасывать) параметры сортировки,
+			//переданные с данными формы
+
+			$this->redirect($url);
+		}
+	}
 }

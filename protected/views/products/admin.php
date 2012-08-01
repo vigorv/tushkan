@@ -4,6 +4,7 @@
 <a href="<?php echo $this->createUrl('/products');?>"><?php echo Yii::t('products', 'Upload products list');?></a>
 </div>
 <?php
+	$this->widget('ext.filterwidget.EFilterWidget', array('method' => 'POST', 'filterName' => 'productadmin', 'fields' => array('partners' => CPartners::getPartnerList())));
 	if (!empty($products))
 	{
 		foreach ($products as $p)
@@ -18,9 +19,5 @@
 
 			echo $p['title'] . '</a></div>';
 		}
+		$this->widget('ext.pagination.EPaginationWidget', array('params' => $paginationParams));
 	}
-$pager = $this->beginWidget('CLinkPager');
-$pages->pageVar = 'page';
-$pages->params = array('srt' => 'title', 'dir' => 'asc');
-$pager->pages = $pages;
-$this->endWidget();

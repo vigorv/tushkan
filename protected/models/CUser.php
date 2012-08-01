@@ -104,5 +104,76 @@ class CUser extends CActiveRecord
         return Yii::app()->db->createCommand("UPDATE {{users}} set free_limit = free_limit - $add_size where id = $user_id")->execute();
     }
 
+	public static function deleteUser($id = 0)
+	{
+    	$id = intval($id);
 
+		$sqls[] = 'DELETE FROM {{actual_rents}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{balance}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{bannedusers}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{convert_queue}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{income_queue}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{debits}} WHERE user_id = ' . $id;
+
+		$orders = Yii::app()->db->createCommand()
+			->select('id')
+			->from('{{orders}}')
+			->where('user_id = ' . $id)
+			->queryAll();
+		if (!empty($orders))
+		{
+			foreach ($orders as $o)
+			{
+				$sqls[] = 'DELETE FROM {{order_items}} WHERE order_id = ' . $o['id'];
+			}
+			$sqls[] = 'DELETE FROM {{orders}} WHERE user_id = ' . $id;
+		}
+
+		$sqls[] = 'DELETE FROM {{payments}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{personaldata_values}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{tariffs_users}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{typedfiles}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{userdevices}} WHERE user_id = ' . $id;
+		$sqls[] = 'DELETE FROM {{user_subscribes}} WHERE user_id = ' . $id;
+
+		$userobjects = Yii::app()->db->createCommand()
+			->select('id')
+			->from('{{userobjects}}')
+			->where('user_id = ' . $id)
+			->queryAll();
+		if (!empty($userobjects))
+		{
+			foreach ($userfiles as $o)
+			{
+				$sqls[] = 'DELETE FROM {{userobjects_param_values}} WHERE object_id = ' . $o['id'];
+			}
+			$sqls[] = 'DELETE FROM {{userobjects}} WHERE user_id = ' . $id;
+		}
+
+		$userfiles = Yii::app()->db->createCommand()
+			->select('id')
+			->from('{{userfiles}}')
+			->where('user_id = ' . $id)
+			->queryAll();
+		if (!empty($userfiles))
+		{
+			foreach ($userfiles as $o)
+			{
+				CUserfiles::RemoveFile($id, $o['id']);//ПОКА УДАЛЯЕТ ТОЛЬКО НЕТИПИЗИРОВАННЫЕ ФАЙЛЫ
+				$sqls[] = 'DELETE FROM {{filelocations}} WHERE id = ' . $o['id'];//СТРАХУЕМ (ДЛЯ УДАЛЕНИЯ ТИПИЗИРОВАННЫХ ФАЙЛОВ)
+			}
+			$sqls[] = 'DELETE FROM {{userfiles}} WHERE user_id = ' . $id;//СТРАХУЕМ
+		}
+
+		$sqls[] = 'DELETE FROM {{users}} WHERE id = ' . $id;
+
+		if (!empty($sqls))
+		{
+			foreach ($sqls as $s)
+			{
+				Yii::app()->db->createCommand($s)->execute();
+			}
+		}
+
+	}
 }

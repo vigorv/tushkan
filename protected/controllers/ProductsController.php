@@ -309,38 +309,103 @@ class ProductsController extends Controller
             Yii::t('products', 'Administrate products'),
         );
 		$userPower = Yii::app()->user->getState('dmUserPower');
-		$cmd = Yii::app()->db->createCommand()
-          ->select('count(id)')
-          ->from('{{products}}')
-          ->where('active <= :power');
-        $cmd->bindParam(':power', $userPower, PDO::PARAM_INT);
-        $count = $cmd->queryScalar();
-        $pages = new CPagination($count);
 
-        $perPage = 20;
-        if (!empty($_GET['perpage']))
-          $perPage = $_GET['perpage'];
-        $pages->pageSize = $perPage;
-
-		Yii::import('ext.pagefilters.CPageFilterProduct');
-        $pageFilter = new CPageFilterProduct();
-		$cmd = Yii::app()->db->createCommand()
-          ->select('*')
-          ->from('{{products}}')
-          ->where('active <= :power');
-
-        $sqlOrder = '';
-        $orderFilter = $pageFilter->getFilterSort($sqlOrder);
-		if (!empty($sqlOrder))
+		$filterCondition = array();
+		$filterInfo = Utils::getFilterInfo();
+		$filterInfo['active'] = $userPower;
+		$filterCondition['active'] = 'p.active <= :active';
+		if (!empty($filterInfo['search']))
 		{
-        	$cmd = $cmd->order($sqlOrder);
+			$filterCondition['search'] = 'p.title LIKE :title';
+		}
+		if (!empty($filterInfo['partner']))
+		{
+			$filterCondition['partner'] = 'p.partner_id = :partner';
+		}
+		$cmd = Yii::app()->db->createCommand()
+			->select('count(p.id) AS cnt')
+			->from('{{products}} p');
+		if (!empty($filterCondition))
+		{
+			$cmd->where(implode(' AND ', $filterCondition));
+
+			$cmd->bindParam(':active', $filterInfo['active'], PDO::PARAM_INT);
+			if (!empty($filterInfo['search']))
+			{
+				$searchValue = '%' . $filterInfo['search']['value'] . '%';
+				$cmd->bindParam(':title', $searchValue, PDO::PARAM_STR);
+			}
+			if (!empty($filterInfo['partner']))
+			{
+				$cmd->bindParam(':partner', $filterInfo['partner']['value'], PDO::PARAM_INT);
+			}
+		}
+		$count = $cmd->queryScalar();
+/*
+echo $cmd->getText();
+exit;
+*/
+		$paginationParams = Utils::preparePagination('/products/admin', $count);
+		$products = array();
+
+		if ($count)
+		{
+			$cmd = Yii::app()->db->createCommand()
+	          ->select('p.id')
+	          ->from('{{products}} p');
+
+			if (!empty($filterCondition))
+			{
+				$cmd->where(implode(' AND ', $filterCondition));
+			}
+			$sortInfo = Utils::getSortInfo();
+			if (!empty($sortInfo))
+			{
+				$sortCondition = array();
+				foreach (array('title') as $srt)
+					if (!empty($sortInfo[$srt]))
+						$sortCondition[$srt] = $sortInfo[$srt]['name'] . ' ' . $sortInfo[$srt]['direction'];
+			}
+			if (!empty($sortCondition))
+			{
+				$cmd->order(implode(',', $sortCondition));
+			}
+			$cmd->limit($paginationParams['limit']);
+			$cmd->offset($paginationParams['offset']);
+
+			$cmd->bindParam(':active', $filterInfo['active'], PDO::PARAM_INT);
+			if (!empty($filterInfo['search']))
+			{
+				$searchValue = '%' . $filterInfo['search']['value'] . '%';
+				$cmd->bindParam(':title', $searchValue, PDO::PARAM_STR);
+			}
+			if (!empty($filterInfo['partner']))
+			{
+				$cmd->bindParam(':partner', $filterInfo['partner']['value'], PDO::PARAM_INT);
+			}
+			$pst = $cmd->queryAll();
+
+			if (!empty($pst))
+			{
+				$pst = implode(',', Utils::arrayToKeyValues($pst, 'id', 'id'));
+			}
+			else
+				$pst = 0;
+
+			$cmd = Yii::app()->db->createCommand()
+				->select('p.id, p.title')
+				->from('{{products}} p')
+				->where('p.id IN (' . $pst . ')')
+				->group('p.id');
+			if (!empty($sortCondition))
+			{
+				$cmd = $cmd->order(implode(',', $sortCondition));
+			}
+			$products = $cmd->queryAll();
 		}
 
-        $cmd = $cmd->limit($perPage, $pages->getCurrentPage() * $perPage);
-        $cmd->bindParam(':power', $userPower, PDO::PARAM_INT);
-        $products = $cmd->queryAll();
 
-        $this->render('admin', array('products' => $products, 'pages' => $pages));
+        $this->render('admin', array('products' => $products, 'paginationParams' => $paginationParams));
     }
 
     /**

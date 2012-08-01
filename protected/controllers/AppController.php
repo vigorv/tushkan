@@ -22,7 +22,9 @@ class AppController extends ControllerApp
         if ($error = Yii::app()->errorHandler->error) {
             // echo json_encode(array("Error"=>$error));
             /// echo"<html><body><pre>".var_dump($error)."</pre></body><html>";
+            echo '<pre>';
             var_dump($error);
+            echo '</pre>';
         }
     }
 

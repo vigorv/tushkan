@@ -440,7 +440,7 @@ class Utils {
     /**
      * подготовка массива параметров для виджета постраниной навигации ext.pagination.EPaginationWidget
      * значения количества элементов на странице ($limit) и номер текущей страницы ($page) определяются по умолчанию
-     * соответствеено из настройки productsPerPage конфигурации сайта и параметра $_GET['page']
+     * соответствеено из настройки productsPerPage конфигурации сайта и параметра $_REQUEST['page']
      *
      * @param string 	$url - общий адрес для ссылок навигации по страницам
      * @param integer 	$total - общее количество элементов выборки
@@ -454,9 +454,9 @@ class Utils {
     	if (empty($limit))
 			$limit = Yii::app()->params['tushkan']['productsPerPage'];
 		$offset = 0;
-		if (!empty($_GET['page']))
+		if (!empty($_REQUEST['page']))
 		{
-			$page = intval($_GET['page']);
+			$page = intval($_REQUEST['page']);
 			$offset = $page * $limit;
 		}
     	$params = array(
@@ -469,4 +469,271 @@ class Utils {
 			);
     	return $params;
     }
+
+    /**
+     * получить параметры фильтра из адресной строки
+     *
+     * @return mixed - массив параметров фильтра вида
+     * 		array(
+     * 			array(
+     * 				'name'	- чистое название параметра без префиксов
+     * 				'uname'	- название параметра с префиксом
+     * 				'value'	- значение параметра фильтра (декодированое от ESC)
+     * 				'url'	- название параметра фильтра и его значение для подстановки в url
+     * 				'reset'	- (true|false) признак замещения (замещает ли данный параметр остальные параметры фильтра)
+     * 			),
+     * 			...
+     * 		)
+     *
+     */
+    public static function getFilterInfo()
+    {
+    	$params = array_keys($_REQUEST);
+    	$urlFilterInfo = array();
+    	if (!empty($params))
+    	{
+    		foreach($params as $p)
+    		{
+				$matches = array();
+				preg_match(_FILTER_PARAMNAME_PATTERN_, $p, $matches);
+				if (!empty($matches[1]))
+				{
+					$name = $matches[1];
+					if (empty($_REQUEST[$p]))
+					{
+						continue;
+					}
+					$urlFilterInfo[$name] = Utils::formatFilterParam($name, $_REQUEST[$p]);
+				}
+    		}
+    	}
+    	return $urlFilterInfo;
+    }
+
+    /**
+     * получить параметры сортировки из адресной строки
+     *
+     * @return mixed - массив параметров сортировки вида
+     * 		array(
+     * 			array(
+     * 				'name'		- чистое название параметра без префиксов
+     * 				'direction'	- SQL значение направления сортировки (ASC|DESC)
+     * 				'url'		- название параметра сортировки его значение для подстановки в url
+     * 				'reset'		- (true|false) признак замещения (замещает ли данный параметр остальные параметры сортировки)
+     * 			),
+     * 			...
+     * 		)
+     *
+     */
+    public static function getSortInfo()
+    {
+    	$params = array_keys($_REQUEST);
+    	$urlSortInfo = array();
+    	if (!empty($params))
+    	{
+    		foreach($params as $p)
+    		{
+				$matches = array();
+				preg_match(_SORT_PARAMNAME_PATTERN_, $p, $matches);
+				if (!empty($matches[1]))
+				{
+					$name = $matches[1];
+					if (empty($_REQUEST[$p]))
+					{
+						$direction = 'ASC';
+						$dir = 'a';
+					}
+					else
+						switch ($_REQUEST[$p])
+						{
+							case "d":
+								$dir = 'd';
+								$direction = 'DESC';
+							break;
+							default:
+								$dir = 'a';
+								$direction = 'ASC';
+						}
+					$urlSortInfo[$name] = array('name' => $name, 'uname' => $p, 'dir' => $dir, 'direction' => $direction, 'url' => $p . '/' . $dir, 'reset' => true);
+				}
+    		}
+    	}
+    	return $urlSortInfo;
+    }
+
+    /**
+     * форматирование параметра сортировки
+     *
+     * @param string $param			- название параметра
+     * @param string $direction		- SQL обозначение направления сортировки (ASC - по умолчанию, DESC)
+     * @param boolean $resetSort	- признак сброса параметров сортировки (true - сортировка только по этому параметру, false - добавить параметр к существующим параметрам)
+     */
+    public static function formatSortParam($param, $dirIn = '', $resetSort = true)
+    {
+    	$urlSortInfo = Utils::getSortInfo();
+
+	    $direction = $dirIn;
+		if (empty($dirIn) && !empty($urlSortInfo[$param]))
+		{
+			$direction = $urlSortInfo[$param]['direction'];
+		}
+		if (empty($direction))
+		{
+			$direction = 'ASC';
+			$dirIn = $direction;
+		}
+    	if ($direction == 'ASC')
+    	{
+			$dir = 'a';
+			$reDir = 'd';
+			$reDirection = 'DESC';
+    	}
+    	else
+    	{
+    		$direction = 'DESC';
+			$dir = 'd';
+			$reDir = 'a';
+			$reDirection = 'ASC';
+    	}
+		if (empty($dirIn))
+		{
+			$dir = $reDir;
+			$direction = $reDirection;
+		}
+
+    	$p = 'srt_' . $param;
+		return array('name' => $param, 'uname' => $p, 'dir' => $dir, 'direction' => $direction, 'url' => $p . '/' . $dir, 'reset' => $resetSort);
+    }
+
+
+    /**
+     * форматирование параметра фильтра
+     *
+     * @param string $param			- название параметра
+     * @param string $value			- значение фильтра
+     * @param boolean $resetSort	- признак сброса параметров сортировки (true - сортировка только по этому параметру, false - добавить параметр к существующим параметрам)
+     */
+    public static function formatFilterParam($param, $value = '', $resetSort = true)
+    {
+    	$p = 'flt_' . $param;
+		if (is_array($value))
+		{
+			//ЗНАЧИТ ПЕРЕЛАНО МЕТОДОМ POST (СКОРЕЕ ВСЕГО)
+			$value = array();
+			$encode = array();
+			foreach ($value as $v)
+			{
+				$value[] = $v;
+				$encode[] = urlencode($v);
+			}
+			$encode = implode(',', $encode);
+		}
+		else
+		{
+			$value = urldecode($value);
+			$encode = $value;
+		}
+		return array('name' => $param, 'uname' => $p, 'value' => $value, 'url' => $p . '/' . $encode, 'reset' => true);
+    }
+
+
+    public static function prepareUrlParams($resetFilter = false, $resetSort = false)
+    {
+    	$params = array();
+    	if (!$resetFilter)
+    	{
+	    	$urlFilterInfo = Utils::getFilterInfo();
+	    	if (!empty($urlFilterInfo))
+	    	{
+	    		foreach ($urlFilterInfo as $i)
+	    		{
+	    			$params[$i['uname']] = $i['url'];
+	    		}
+	    	}
+    	}
+
+    	if (!$resetSort)
+    	{
+	    	$urlSortInfo = Utils::getSortInfo();
+	    	if (!empty($urlSortInfo))
+	    	{
+	    		foreach ($urlSortInfo as $i)
+	    		{
+	    			$params[$i['uname']] = $i['url'];
+	    		}
+	    	}
+    	}
+
+    	if (!empty($_REQUEST['page']))
+    	{
+    		$params['page'] = 'page/' . intval($_REQUEST['page']);
+    	}
+    	ksort($params);
+    	return $params;
+    }
+
+    /**
+     * формирование ссылки по параметру сортировки с учетом других параметров сортировки, фильтра
+     * и постраничной навигации
+     *
+     * @param string $baseUrl
+     */
+    public static function preparePageSortUrl($baseUrl, $name = '', $resetSort = true)
+    {
+    	$url = $baseUrl;
+		/*
+		//OLD VERSION
+    	$urlFilterInfo = Utils::getFilterInfo();
+    	if (!empty($urlFilterInfo))
+    	{
+    		foreach ($urlFilterInfo as $i)
+    		{
+    			$url .= '/' . $i['url'];
+    		}
+    	}
+
+    	if (!empty($_REQUEST['page']))
+    	{
+    		$url .= '/page/' . intval($_REQUEST['page']);
+    	}
+
+    	$urlSortInfo = Utils::getSortInfo();
+    	if (!empty($name))
+    	{
+    		$urlSortInfo[$name] = Utils::formatSortParam($name, '', $resetSort);
+    	}
+
+    	if (!empty($urlSortInfo))
+    	{
+    		foreach ($urlSortInfo as $i)
+    		{
+    			if (empty($name) || ($i['name'] == $name) || !$resetSort)
+    			$url .= '/' . $i['url'];
+    		}
+    	}
+    	//OLD VERSION
+    	*/
+
+		$params = Utils::prepareUrlParams(false, $resetSort);
+    	if (!empty($name))
+    	{
+    		$sortParamInfo = Utils::formatSortParam($name, '', $resetSort);
+    		$params[$sortParamInfo['uname']] = $sortParamInfo['url'];
+    	}
+
+    	$url .= '/' . implode('/', $params);
+    	return $url;
+    }
 }
+
+/**
+	РЕГУЛЯРНОЕ ВЫРАЖЕНИЕ ВАЛИДАЦИИ ИМЕНИ ПАРАМЕТРА СОРТИРОВКИ В АДРЕСНОЙ СТРОКЕ
+	ЗНАЧЕНИЕ ПАРАМЕТРА СОРТИРОВКИ ДОЛЖНО СОДЕРЖАТЬ НАПРАВЛЕНИЕ СОРТИРОВКИ
+		-- не актуально --
+			ИМЯ ПАРАМЕТРА НЕ ДОЛЖНО ЗАКАНЧИВАТЬСЯ НА _a ИЛИ _d
+			ЧТОБЫ ОБОЙТИ ЭТО ОГРАНИЯЧЕНИЕ ИСПОЛЬЗУЙТЕ АЛИАСЫ В ЗАПРОСАХ
+		-- не актуально --
+ */
+//-- не актуально -- define('_SORT_PARAMNAME_PATTERN_', '/srt_([a-z_0-9]{1,}[^_ad])[_]*([ad]*$)/');
+define('_SORT_PARAMNAME_PATTERN_', '/srt_([a-z_0-9]{1,})/');
+define('_FILTER_PARAMNAME_PATTERN_', '/flt_([a-z_0-9]{1,})/');

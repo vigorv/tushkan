@@ -9,119 +9,90 @@ class ApiController extends Controller {
 
     public $layout = '//layouts/ajax';
     var $user_id;
-/*
-В ПРЕДКЕ ОПИСАН ДОСТУП ЧЕРЕЗ ФИЛЬТРЫ
-    public function beforeAction($action) {
-	parent::beforeAction($action);
-	$this->user_id = Yii::app()->user->id;
-	if ($this->user_id)
-	    return true;
-	else
-	    Yii::app()->request->redirect('/register/login');
-    }
-*/
 
-    private function XmlRender() {
-
-    }
-
-    public function actionLogin() {
-	if (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
-	    $username = $_POST['username'];
-	    $password = $_POST['password'];
-	} else {
-	    $this->redirect('https://' . getenv('HTTP_HOST') . '/api/login');
-	}
-    }
-
-    public function actionLogout() {
-
-    }
-
-    public function actionGetUserInfo() {
-	//$user= CUser::model()->getU
-	echo "No info";
-    }
-
-    public function actionGetDirTree() {
-	$dirs = CUserfiles::model()->getDirTree($user_id);
-	echo CXmlHandler::arrayToXml($dirs);
-    }
-
-    public function actionGetFileList() {
-	$pid = 0;
-	$files = CUserfiles::model()->getFileList($this->user_id, $pid);
-	echo CXmlHandler::arrayToXml($files);
+    public function actionStatusImage(){
+        if (isset($_REQUEST['partner_id']) && isset($_REQUEST['partner_item_id'])){
+            $partner_id = (int) $_REQUEST['partner_id'];
+            $partner_item_id = (int) $_REQUEST['partner_item_id'];
+            /**
+             * a. Find Partners
+             * b. Find Variants
+             * ->> State: Already Converted
+             * c. Check For Added
+             * ->> State: not Converted
+             * c. Check for Queue
+             */
+            $partner = CPartners::model()->find('id = :partner_id',array(':partner_id'=>$partner_id));
+            if ($partner && $partner->id && Yii::app()->user->id){
+                $variants = CProductVariant::getPartnerVariantData($partner->id,$partner_item_id);
+                $variant = current($variants);
+                if ($variant['id']){
+                    if (CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id,$variant['id'])){
+                        $image = new Imagick('img/cloud_added.jpg');
+                    } else{
+                        $image = new Imagick('img/cloud_add_fast.jpg');
+                    }
+                } else{
+                    if (CConvertQueue::model()->find('original_variant_id = :variant_id AND partner_id = :partner_id AND user_id = :user_id',array(':variant_id'=>$partner_item_id,':partner_id'=>$partner_id,':user_id'=>Yii::app()->user->id))){
+                        $image = new Imagick('img/cloud_in_process.jpg');
+                    } else {
+                        $image = new Imagick('img/cloud_add_long.jpg');
+                    }
+                }
+            } else {
+                $image = new Imagick('img/cloud_unknown.jpg');
+            }
+            header("Content-type: image/jpeg");
+            echo $image;
+        }
     }
 
-    public function actionCreate() {
-	$pid = (int) $_POST['pid'];
-	$title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
-	$flag_dir = (int) $_POST['flag_dir'];
-	$files = new CUserfiles();
-	$files->title = $title;
-	$files->pid = $pid;
-	$files->is_dir = $is_dir;
-	$files->user_id = $this->user_id;
-	$files->save();
-	$xml_data->save();
-    }
-
-    public function actionMove() {
-	$id = (int) $_POST['id'];
-	$new_pid = (int) $_POST['new_pid'];
-	$category = (int) $_POST['category'];
-//Check is directory exists
-	$place = CUserfiles::model()->findByPk(array('id' => $pid, 'user_id' => $this->user_id));
-	if (($place) && ($place->is_dir)) {
-	    $files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-	    if ($files) {
-		$files->pid = $new_pid;
-		$files->save();
-		echo "OK: Moved";
-	    }else
-		echo "ERROR: Unknown file";
-	}else
-	    echo "ERROR: Unknown place";
-    }
-
-    public function actionRename() {
-	$id = (int) $_POST['id'];
-	$title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
-	$files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-	if ($files) {
-	    $files->title = $title;
-	    $files->save();
-	    echo "OK: Renamed";
-	}
-	else
-	    echo "ERROR: unknown file";
-    }
-
-    public function actionDelete() {
-	$id = (int) $_POST['id'];
-	$files = CUserfiles::model()->findByPk(array('id' => $id, 'user_id' => $this->user_id));
-	if ($files) {
-	    $files->delete();
-	    echo "OK: Deleted";
-	}
-	else
-	    echo "ERROR: unknown file";
-    }
-
-    public function actionGetUpdatesCmdList() {
-	echo "No Updates";
-    }
-
-    public function actionGetSettings() {
-	echo "No Settings";
-    }
-
-    public function actionSetSyncSettings() {
-	if (isset($_POST['data'])) {
-	    $data = $_POST['data'];
-	}else
-	    echo "ERROR: no data";
+    public function actionCloudButton(){
+        if (isset($_REQUEST['partner_id']) && isset($_REQUEST['partner_item_id'])){
+            $partner_id = (int) $_REQUEST['partner_id'];
+            $partner_item_id = (int) $_REQUEST['partner_item_id'];
+            /**
+             * a. Find Partners
+             * b. Find Variants
+             * ->> State: Already Converted
+             * c. Check For Added
+             * ->> State: not Converted
+             * c. Check for Queue
+             */
+            $partner = CPartners::model()->find('id = :partner_id',array(':partner_id'=>$partner_id));
+            if ($partner && $partner->id && Yii::app()->user->id){
+                $variants = CProductVariant::getPartnerVariantData($partner->id,$partner_item_id);
+                $variant = current($variants);
+                if ($variant['id']){
+                    if (CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id,$variant['id'])){
+                        echo json_encode(array("msg"=>"Already added","status_code"=>2));
+                    } else{
+                        $queue = new CConvertQueue();
+                        $queue -> variant_id = $variant['id'];
+                        $queue -> original_variant_id = $partner_item_id;
+                        $queue -> partner_id = $partner_id;
+                        $queue -> user_id = Yii::app()->user->id;
+                        $queue -> priority = 200;
+                        $queue ->save();
+                        echo json_encode(array("msg"=>"Added","status_code"=>1));
+                    }
+                } else{
+                    if (CConvertQueue::model()->find('original_variant_id = :variant_id AND partner_id = :partner_id AND user_id = :user_id',array(':variant_id'=>$partner_item_id,':partner_id'=>$partner_id,':user_id'=>Yii::app()->user->id))){
+                        echo json_encode(array("msg"=>"In queue","status_code"=>3));
+                    } else {
+                        $queue = new CConvertQueue();
+                        $queue -> original_variant_id = $partner_item_id;
+                        $queue -> partner_id = $partner_id;
+                        $queue -> user_id = Yii::app()->user->id;
+                        $queue -> priority = 100;
+                        $queue ->save();
+                        echo json_encode(array("msg"=>"Added","status_code"=>1));
+                    }
+                }
+            } else {
+                echo json_encode(array("msg"=>"Unknown user or product","status_code"=>0));
+            }
+        }
     }
 
 }

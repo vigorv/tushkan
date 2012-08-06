@@ -1,11 +1,23 @@
 <?php
 
 /**
- * @property $server_id
- * @property $preset_id
- * @property $task_id
  * @property $id
+ * @property $product_id
+ * @property $original_id
+ * @property $task_id
+ * @property $cmd_id
+ * @property $info
+ * @property $priority
+ * @property $state
+ * @property $station_id
+ * @property $partner_id
+ * @property $user_id
+ * @property $original_variant_id
+ * @property $date_start
+ * @property $path
+ *
  */
+
 class CConvertQueue extends CActiveRecord {
 
     /**

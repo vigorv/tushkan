@@ -7,6 +7,7 @@ class SLFormRegister extends CFormModel {
     public $email;
     public $password;
     private $_identity;
+    public $verifyCode;
 
 
     public function rules() {

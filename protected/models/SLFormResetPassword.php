@@ -6,7 +6,7 @@ class SLFormResetPassword extends CFormModel {
 
     public $email;
     public $password;
-
+    public $verifyCode;
     private $_identity;
 
 

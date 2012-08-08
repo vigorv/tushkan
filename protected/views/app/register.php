@@ -14,7 +14,7 @@
      *@var CActiveForm $form
      * */
     ?>
-    <h1>SafeLib</h1>
+
     <ul class="form">
         <li class="controls">
             <?php echo $form->textField($model, 'email', array('class' => 'email','placeholder'=>'Email')); ?>

@@ -4,4 +4,5 @@ return array (
     'Password'     => 'Пароль',
     'Sign up'      => 'Регистрация',
     'Reset password' => 'Сбросить пароль',
+    'Set password' => 'Установить пароль'
 );

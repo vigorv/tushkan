@@ -422,7 +422,7 @@ class AppController extends ControllerApp
     public function actionResetPassword($hash = '',$user_id =0)
     {
         $this->layout = 'app';
-        if ($hash = '') {
+        if ($hash == '') {
             $model = new SLFormResetPassword();
             if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
                 echo CActiveForm::validate($model);
@@ -445,18 +445,20 @@ class AppController extends ControllerApp
                     echo CActiveForm::validate($model);
                     Yii::app()->end();
                 }
-                if (isset($_POST['SLFormResetPasswordConfirm'])) {
-                    $model->attributes = $_POST['SLFormResetPasswordConfirm'];
-                    if ($model->validate() && $model->resetpasswordConfirm()) {
-                        $msg = Yii::t('user', 'Instructions sended to ') . $model->email;
+                if (isset($_POST['SLFormConfirmReset'])) {
+                    $model->attributes = $_POST['SLFormConfirmReset'];
+                    $model->id = $user_id;
+                    if ($model->validate() && $model->setPassword()) {
+
+                        $msg = Yii::t('user', 'Password changed ');
                         $this->render('/app/messages', array('msg' => $msg));
                         Yii::app()->end();
                     } else
                         $this->render('resetPasswordConfirm', array('model' => $model));
                 } else
                     $this->render('resetPasswordConfirm', array('model' => $model));
-
-            }
+            } else
+                $this->render('/app/messages', array('msg' => "Unknown user"));
         }
 
     }

@@ -2,9 +2,10 @@
 
 Yii::import('ext.classes.SimpleMail');
 
-class SLFormResetPassword extends CFormModel {
+class SLFormConfirmReset extends CFormModel {
 
     public $email;
+    public $id;
     public $password;
     public $verifyCode;
     private $_identity;
@@ -12,8 +13,7 @@ class SLFormResetPassword extends CFormModel {
 
     public function rules() {
         return array(
-            array('email', 'email'),
-            array('email', 'userNotExists'),
+            array('password', 'ext.validators.EPasswordStrength', 'min' => 5),
         );
     }
 
@@ -27,25 +27,16 @@ class SLFormResetPassword extends CFormModel {
         );
     }
 
-    public function userNotExists($attribute, $params) {
-        switch ($attribute) {
-            case 'email':
-                $email_exist = CUser::model()->count('email ="' . $this->email . '"');
-                if (!$email_exist)
-                    $this->addError('email', Yii::t('user','User with this address not registered.'));
-                break;
-        }
-    }
-
     public function setPassword(){
-
         if ($this->_identity === null) {
-            $user = CUser::model()->findByAttributes(array('email'=>$this->email));
+            $user = CUser::model()->findByAttributes(array('id'=>$this->id));
             if ($user){
                 $user->pwd = $this->password;
                 if ($user->save()){
                     $magic_key = CUser::deleteMagicKeyForUser($user['id']);
                     $this->sendConfirmMail($user,$magic_key);
+                    return true;
+
                 }
             }
         }

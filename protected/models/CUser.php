@@ -10,6 +10,8 @@
  * @property $server_id
  * @property $gtitle;
  * @property $sess_id;
+ * @property $free_limit
+ * @property $confirmed
  *
  */
 class CUser extends CActiveRecord
@@ -94,6 +96,34 @@ class CUser extends CActiveRecord
 
     /**
      * @static
+     * @param $pwd
+     * @param $salt
+     * @return string
+     *  App Register HASH
+     */
+    public static function makeHash($pwd, $salt) {
+        return md5($pwd . Yii::app()->getBaseUrl(true) . $salt.'magic_hash');
+    }
+
+    public static function createMagicKeyForUser($user_id=0){
+        if ($user_id>0){
+            $key = md5(md5('magic_key'.time()).$user_id);
+            Yii::app()->db->createCommand(" INSERT INTO {{user_keys}} (user_id,gen_time,hash) VALUES ('".(int)$user_id."',CURRENT_TIMESTAMP,'".$key."') ON DUPLICATE KEY UPDATE hash='$key',gen_time = CURRENT_TIMESTAMP" )->execute();
+            return $key;
+        }
+    }
+
+    public static function checkMagicKeyForUser($user_id=0,$key=''){
+        if ($user_id>0){
+            $key = FILTER_VAR($key,FILTER_SANITIZE_STRING);
+            $result = Yii::app()->db->createCommand("SELECT Count(user_id) as count FROM {{user_keys}} WHERE user_id =".(int)$user_id." AND hash='".$key."'")->queryScalar();
+            return $result;
+        }
+    }
+
+
+    /**
+     * @static
      * @param $user_id
      * @param $add_size
      * @return mixed
@@ -143,7 +173,7 @@ class CUser extends CActiveRecord
 			->queryAll();
 		if (!empty($userobjects))
 		{
-			foreach ($userfiles as $o)
+			foreach ($userobjects as $o)
 			{
 				$sqls[] = 'DELETE FROM {{userobjects_param_values}} WHERE object_id = ' . $o['id'];
 			}

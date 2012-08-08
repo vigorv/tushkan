@@ -86,13 +86,12 @@ class AppController extends ControllerApp
                     'hash' => $device->hash));
                 return true;
             } else {
-                echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => "unknown user"));
+                echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => Yii::t('app','Unknown user')));
                 Yii::app()->end();
             }
             echo json_encode(array('LoginData' => $username . ' ' . $password));
         } else {
-            echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => "no data"));
-
+            echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => Yii::t('app','Unknown user')));
         }
         /*
           if (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
@@ -371,6 +370,73 @@ class AppController extends ControllerApp
         //  $files = CUserfiles::model()->getFileList($this->user_id, $pid);
 
     }
+
+    public function actionRegister(){
+        $this->layout = 'app';
+        $model = new SLFormRegister();
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
+                echo CActiveForm::validate($model);
+                Yii::app()->end();
+            }
+            if (isset($_POST['SLFormRegister'])) {
+                $model->attributes = $_POST['SLFormRegister'];
+                if ($model->validate() && $model->register()) {
+                    $msg = Yii::t('user', 'Please, confirm your email. Instructions sended to ') . $model->email;
+                    $this->render('/app/messages', array('msg' => $msg));
+                    Yii::app()->end();
+                } else
+                    $this->render('register',array('model'=>$model));
+            } else
+                $this->render('register',array('model'=>$model));
+    }
+
+    public function actionConfirm($user_id =0 , $hash=''){
+        if ($hash != '') {
+            $hash = filter_var($hash, FILTER_SANITIZE_STRING);
+            $user_id = (int) $user_id;
+            $msg = '';
+            if ($user_id) {
+                $user = CUsers::model()->findByPk($user_id);
+                if ($user)
+                    if ($hash == CUsers::makeHash($user['password'], $user['salt'])) {
+                        $user->confirmed = 1;
+                        if ($user->save()) {
+                            $msg = Yii::t('user', 'Yours email is confirmed') . '! <a href="/users/login">' . Yii::t('user', 'Login') . '</a>';
+                            $this->render('/app/messages', array('msg' => $msg));
+                            Yii::app()->end();
+                        } else
+                            $msg = 'Error: saving data';
+                    } else
+                        $msg = 'Error: unknown hash';
+            } else
+                $msg = 'Error: unknown user';
+            $msg .= '<p>Yours mail is not confirmed</p>';
+        } else
+            $msg = 'No confirm data';
+        $this->render('/app/messages', array('msg' => $msg));
+        Yii::app()->end();
+
+    }
+
+    public function actionResetPassword($hash=''){
+        $this->layout = 'app';
+        $model = new SLFormResetPassword();
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+        if (isset($_POST['SLFormResetPassword'])) {
+            $model->attributes = $_POST['SLFormResetPassword'];
+            if ($model->validate() && $model->resetpassword()) {
+                $msg = Yii::t('user', 'Instructions sended to ') . $model->email;
+                $this->render('/app/messages', array('msg' => $msg));
+                Yii::app()->end();
+            } else
+                $this->render('resetPassword',array('model'=>$model));
+        } else
+            $this->render('resetPassword',array('model'=>$model));
+    }
+
 
 
 }

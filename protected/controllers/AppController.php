@@ -397,18 +397,19 @@ class AppController extends ControllerApp
             $user_id = (int)$user_id;
             $msg = '';
             if ($user_id) {
-                $user = CUsers::model()->findByPk($user_id);
-                if ($user)
-                    if ($hash == CUsers::makeHash($user['password'], $user['salt'])) {
+                $user = CUser::model()->findByPk($user_id);
+                if ($user){
+                    if ($hash == CUser::makeHash($user['pwd'], $user['salt'])) {
                         $user->confirmed = 1;
                         if ($user->save()) {
-                            $msg = Yii::t('user', 'Yours email is confirmed') . '! <a href="/users/login">' . Yii::t('user', 'Login') . '</a>';
+                            $msg = Yii::t('user', 'Yours email is confirmed') . '!';
                             $this->render('/app/messages', array('msg' => $msg));
                             Yii::app()->end();
                         } else
                             $msg = 'Error: saving data';
                     } else
                         $msg = 'Error: unknown hash';
+                } else $msg = 'Error: unknown user';
             } else
                 $msg = 'Error: unknown user';
             $msg .= '<p>Yours mail is not confirmed</p>';

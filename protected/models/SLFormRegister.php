@@ -61,7 +61,7 @@ class SLFormRegister extends CFormModel {
     public function sendConfirmMail($user) {
         //ОТПРАВКА ПИСЬМА СО ССЫЛКОЙ НА ПОДТВЕРЖДЕНИЕ
         $headers = "From: " . Yii::app()->params['adminEmail'] . "\r\nReply-To: " . $user['email'];
-        $hashLink = Yii::app()->getBaseUrl(true) . '/app/confirm?hash=' . CUser::makeResetHash($user['pwd'], $user['salt']).'&user_id='.$user['id'];
+        $hashLink = Yii::app()->getBaseUrl(true) . '/app/confirm?hash=' . CUser::makeHash($user['pwd'], $user['salt']).'&user_id='.$user['id'];
         $body = "Здравствуйте!\n\n"
                 . "Для подтверждения регистрации на сайте " . Yii::app()->name . ", пожалуйста, перейдите по следующей ссылке:\n\n"
                 . "{$hashLink}\n\n"

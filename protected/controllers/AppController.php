@@ -86,12 +86,12 @@ class AppController extends ControllerApp
                     'hash' => $device->hash));
                 return true;
             } else {
-                echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => Yii::t('app','Unknown user')));
+                echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => Yii::t('app', 'Unknown user')));
                 Yii::app()->end();
             }
             echo json_encode(array('LoginData' => $username . ' ' . $password));
         } else {
-            echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => Yii::t('app','Unknown user')));
+            echo json_encode(array('cmd' => 'Login', 'error' => 1, 'error_msg' => Yii::t('app', 'Unknown user')));
         }
         /*
           if (isset($_SERVER['HTTPS']) && !strcasecmp($_SERVER['HTTPS'], 'on')) {
@@ -109,7 +109,7 @@ class AppController extends ControllerApp
         if (Yii::app()->user->id) {
             Yii::app()->user->logout();
         }
-        echo json_encode(array('error'=>0,"msg"=>"Bye"));
+        echo json_encode(array('error' => 0, "msg" => "Bye"));
     }
 
     public function actionFilmList()
@@ -175,7 +175,7 @@ class AppController extends ControllerApp
                                 echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown parnter'));
                                 Yii::app()->end();
                         }
-                        $res['link']= $link;
+                        $res['link'] = $link;
                         echo json_encode(array('cmd' => "FilmData", 'error' => 0, 'Data' => $res));
 
                     } else
@@ -215,7 +215,7 @@ class AppController extends ControllerApp
                                 echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown parnter'));
                                 Yii::app()->end();
                         }
-                        $data = array('id'=>$res['id'], 'link' => $link);
+                        $data = array('id' => $res['id'], 'link' => $link);
                         echo json_encode(array('cmd' => "FilmLink", 'error' => 0, 'Data' => $data));
 
                     } else
@@ -229,7 +229,6 @@ class AppController extends ControllerApp
             echo json_encode(array('cmd' => "FilmLink", 'error' => 1, 'error_msg' => 'Please Login'));
         }
     }
-
 
 
     public function actionPartnerList()
@@ -266,7 +265,7 @@ class AppController extends ControllerApp
 
             $count = count($list);
             $total_count = CAppHandler::CountPartnerProductsForUser($search, $partner_id);
-            echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search'=>$search));
+            echo json_encode(array('cmd' => "PartnerData", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $search));
         }
     }
 
@@ -289,32 +288,32 @@ class AppController extends ControllerApp
         }
     }
 
-    public function actionAddItemFromPartner(){
-        if (Yii::app()->user->id){
-            if (isset($_REQUEST['variant_id'])){
-                $variant_id =(int)$_REQUEST['variant_id'];
-                if ($res=CAppHandler::addProductToUser($variant_id)){
-                    echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 0,'cloud_id'=>$res));
+    public function actionAddItemFromPartner()
+    {
+        if (Yii::app()->user->id) {
+            if (isset($_REQUEST['variant_id'])) {
+                $variant_id = (int)$_REQUEST['variant_id'];
+                if ($res = CAppHandler::addProductToUser($variant_id)) {
+                    echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 0, 'cloud_id' => $res));
                 } else
-                    echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1));
-            }
-                else
-                    echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1,"error_msg" => 'Unknown item'));
+                    echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 1));
+            } else
+                echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 1, "error_msg" => 'Unknown item'));
         } else
-             echo json_encode(array('cmd'=>"AddItemFromPartner",'error'=> 1,"error_msg" => 'Unknown user'));
+            echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 1, "error_msg" => 'Unknown user'));
 
     }
 
-    public function actionRemoveFromMe(){
-        if (Yii::app()->user->id){
-            if (isset($_REQUEST['id'])){
+    public function actionRemoveFromMe()
+    {
+        if (Yii::app()->user->id) {
+            if (isset($_REQUEST['id'])) {
                 $item_id = (int)$_REQUEST['id'];
                 CAppHandler::removeFromUser($item_id);
-                echo json_encode(array('cmd'=>"RemoveFromMe",'error'=> 0));
-            }
-            else echo json_encode(array('cmd'=>"RemoveFromMe",'error'=> 1,"error_msg"=>'Unknown item'));
+                echo json_encode(array('cmd' => "RemoveFromMe", 'error' => 0));
+            } else echo json_encode(array('cmd' => "RemoveFromMe", 'error' => 1, "error_msg" => 'Unknown item'));
         } else
-        echo json_encode(array('cmd'=>"RemoveFromMe",'error'=> 1, "error_msg"=> 'Unknown user'));
+            echo json_encode(array('cmd' => "RemoveFromMe", 'error' => 1, "error_msg" => 'Unknown user'));
     }
 
 
@@ -371,29 +370,31 @@ class AppController extends ControllerApp
 
     }
 
-    public function actionRegister(){
+    public function actionRegister()
+    {
         $this->layout = 'app';
         $model = new SLFormRegister();
-            if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
-                echo CActiveForm::validate($model);
+        if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
+            echo CActiveForm::validate($model);
+            Yii::app()->end();
+        }
+        if (isset($_POST['SLFormRegister'])) {
+            $model->attributes = $_POST['SLFormRegister'];
+            if ($model->validate() && $model->register()) {
+                $msg = Yii::t('user', 'Please, confirm your email. Instructions sended to ') . $model->email;
+                $this->render('/app/messages', array('msg' => $msg));
                 Yii::app()->end();
-            }
-            if (isset($_POST['SLFormRegister'])) {
-                $model->attributes = $_POST['SLFormRegister'];
-                if ($model->validate() && $model->register()) {
-                    $msg = Yii::t('user', 'Please, confirm your email. Instructions sended to ') . $model->email;
-                    $this->render('/app/messages', array('msg' => $msg));
-                    Yii::app()->end();
-                } else
-                    $this->render('register',array('model'=>$model));
             } else
-                $this->render('register',array('model'=>$model));
+                $this->render('register', array('model' => $model));
+        } else
+            $this->render('register', array('model' => $model));
     }
 
-    public function actionConfirm($user_id =0 , $hash=''){
+    public function actionConfirm($user_id = 0, $hash = '')
+    {
         if ($hash != '') {
             $hash = filter_var($hash, FILTER_SANITIZE_STRING);
-            $user_id = (int) $user_id;
+            $user_id = (int)$user_id;
             $msg = '';
             if ($user_id) {
                 $user = CUsers::model()->findByPk($user_id);
@@ -418,25 +419,47 @@ class AppController extends ControllerApp
 
     }
 
-    public function actionResetPassword($hash=''){
+    public function actionResetPassword($hash = '',$user_id =0)
+    {
         $this->layout = 'app';
-        $model = new SLFormResetPassword();
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
-            echo CActiveForm::validate($model);
-            Yii::app()->end();
-        }
-        if (isset($_POST['SLFormResetPassword'])) {
-            $model->attributes = $_POST['SLFormResetPassword'];
-            if ($model->validate() && $model->resetpassword()) {
-                $msg = Yii::t('user', 'Instructions sended to ') . $model->email;
-                $this->render('/app/messages', array('msg' => $msg));
+        if ($hash = '') {
+            $model = new SLFormResetPassword();
+            if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
+                echo CActiveForm::validate($model);
                 Yii::app()->end();
+            }
+            if (isset($_POST['SLFormResetPassword'])) {
+                $model->attributes = $_POST['SLFormResetPassword'];
+                if ($model->validate() && $model->resetpassword()) {
+                    $msg = Yii::t('user', 'Instructions sended to ') . $model->email;
+                    $this->render('/app/messages', array('msg' => $msg));
+                    Yii::app()->end();
+                } else
+                    $this->render('resetPassword', array('model' => $model));
             } else
-                $this->render('resetPassword',array('model'=>$model));
-        } else
-            $this->render('resetPassword',array('model'=>$model));
-    }
+                $this->render('resetPassword', array('model' => $model));
+        } else{
+            if ($user_id>0 && CUser::checkMagicKeyForUser($user_id,$hash)){
+                $model = new SLFormConfirmReset();
+                if (isset($_POST['ajax']) && $_POST['ajax'] === 'register-form') {
+                    echo CActiveForm::validate($model);
+                    Yii::app()->end();
+                }
+                if (isset($_POST['SLFormResetPasswordConfirm'])) {
+                    $model->attributes = $_POST['SLFormResetPasswordConfirm'];
+                    if ($model->validate() && $model->resetpasswordConfirm()) {
+                        $msg = Yii::t('user', 'Instructions sended to ') . $model->email;
+                        $this->render('/app/messages', array('msg' => $msg));
+                        Yii::app()->end();
+                    } else
+                        $this->render('resetPasswordConfirm', array('model' => $model));
+                } else
+                    $this->render('resetPasswordConfirm', array('model' => $model));
 
+            }
+        }
+
+    }
 
 
 }

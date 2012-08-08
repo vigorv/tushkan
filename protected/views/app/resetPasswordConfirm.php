@@ -18,22 +18,12 @@
                 <?php echo $form->passwordField($model, 'password',array('class' => 'password')); ?>
                 <?php echo $form->error($model, 'password'); ?>
             </div>
-
         </div>
-        <?php if (CCaptcha::checkRequirements()): ?>
-        <div class="control-group">
-            <?php echo $form->labelEx($model, 'verifyCode', array('class' => 'control-label')); ?>
-            <div class="controls">
-                <?php $this->widget('CCaptcha'); ?>
-                <?php echo $form->textField($model, 'verifyCode',array('class' => 'text')); ?>
-            </div>
-            <?php echo $form->error($model, 'verifyCode'); ?>
-        </div>
-        <?php endif; ?>
     </fieldset>
-    <div class="form-actions">
-        <?php echo CHtml::submitButton(Yii::t('user','Reset Password'),array('class'=>'btn btn-primary')); ?>
-    </div>
+    <p align="center">
+        <a href="javascript:submitform();" class="button" style="background-image: url('/images/registerButton.png'); background-repeat: no-repeat; width:219px; height:57px; display:block;"><?=Yii::t('app','Set password');?></a>
+    </p>
+
 
     <?php $this->endWidget(); ?>
 </div><!-- form -->

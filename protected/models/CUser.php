@@ -121,6 +121,12 @@ class CUser extends CActiveRecord
         }
     }
 
+    public static function deleteMagicKeyForUser($user_id=0){
+        if ($user_id>0){
+           Yii::app()->db->createCommand("DELETE FROM {{user_keys}} WHERE user_id =".(int)$user_id." LIMIT 1")->execute();
+        }
+    }
+
 
     /**
      * @static

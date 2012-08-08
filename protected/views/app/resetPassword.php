@@ -15,14 +15,6 @@
             <?php echo $form->textField($model, 'email', array('class' => 'email','placeholder'=>'Email')); ?>
             <?php echo $form->error($model, 'email'); ?>
         </li>
-
-    <?php if (CCaptcha::checkRequirements()): ?>
-    <li class="controls">
-        <?php $this->widget('CCaptcha'); ?>
-        <?php echo $form->textField($model, 'verifyCode', array('class' => 'text')); ?>
-    </li>
-    <?php echo $form->error($model, 'verifyCode'); ?>
-    <?php endif; ?>
     </ul>
     <p align="center">
         <a href="javascript:submitform();" class="button" style="background-image: url('/images/registerButton.png'); background-repeat: no-repeat; width:219px; height:57px; display:block;"><?=Yii::t('app','Reset password');?></a>

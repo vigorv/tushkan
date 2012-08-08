@@ -35,7 +35,7 @@
         <?php endif; ?>
     </ul>
     <p>
-       <a href="javascript:submitform();" class="button white"><?=Yii::t('app','Sign up');?></a>
+       <a href="javascript:submitform();" class="button" style="background-image: url('/images/registerButton.png'); background-repeat: no-repeat; width:219px; height:57px; display:block;"><?=Yii::t('app','Sign up');?></a>
     </p>
 
     </ul>

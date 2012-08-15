@@ -95,5 +95,49 @@ class ApiController extends Controller {
         }
     }
 
+    public function actionUpdatePartnerData(){
+        if(YII_DEBUG){
+            $item_id = (int)$_REQUEST['item_id'];
+            $partner_id = (int)$_REQUEST['partner_id'];
+          $result = Yii::app()->db
+              ->createCommand(
+        " SELECT tf.user_id as user_id,pv.product_id as product_id FROM {{products}} p"
+            ." JOIN {{product_variants}} pv ON pv.product_id = p.id"
+            ." JOIN {{typedfiles}} tf ON tf.variant_id = pv.id"
+            ." WHERE p.original_id=".$item_id." AND p.partner_id =".$partner_id)->queryAll();
+        var_dump($result);
+        $affected = Yii::app()->db
+            ->createCommand("INSERT IGNORE INTO {{user_product_updates}} (user_id,product_id)"
+            ." (SELECT tf.user_id as user_id,pv.product_id as product_id FROM {{products}} p"
+            ." JOIN {{product_variants}} pv ON pv.product_id = p.id"
+            ." JOIN {{typedfiles}} tf ON tf.variant_id = pv.id"
+            ." WHERE p.original_id=".$item_id." AND p.partner_id =".$partner_id.")" )->execute();
+
+            echo serialize(array('count'=>$affected));
+
+            return;
+        }
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata']) && isset($_REQUEST['partner_id'])) {
+            $partner_id = (int) $_REQUEST['partner_id'];
+            $partner = CPartners::model()->findByAttributes(array('id'=>$partner_id));
+            // CPartners partner
+            $sdata = hash('sha512',$_REQUEST['fdata'].$partner->hkey);
+            if ($sdata == $_REQUEST['sdata']){
+                $fdata = unserialize(base64_encode($_REQUEST['fdata']));
+                if (isset($fdata['item_id'])){
+                    $item_id = $fdata['item_id'];
+                    $affected = Yii::app()->db
+                        ->createCommand("INSERT IGNORE INTO {{user_product_updates}} (user_id,product_id)"
+                        ." (SELECT tf.user_id as user_id,pv.product_id as product_id FROM {{products}} p"
+                        ." JOIN {{product_variants}} pv ON pv.product_id = p.id"
+                        ." JOIN {{typedfiles}} tf ON tf.variant_id = pv.id"
+                        ." WHERE p.original_id=".$item_id." AND p.partner_id =".$partner_id.")" )->execute();
+                    echo serialize(array('count'=>$affected));
+                }
+            }else{
+
+            }
+        }
+    }
 }
 

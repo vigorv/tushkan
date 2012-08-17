@@ -49,6 +49,7 @@ class SLFormRegister extends CFormModel {
             $salt = 'mb'.rand(0,9);
             $user->pwd = md5($this->password . $salt);
             $user->salt = $salt;
+            $user->group_id = 2;
             //$user->last_ip = Yii::app()->request->getUserHostAddress();
             if ($user->save()) {
                 $this->sendConfirmMail($user);

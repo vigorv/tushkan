@@ -23,7 +23,8 @@
 			if (!empty($q['info']))
 			{
 				$info = unserialize($q['info']);
-				$info['tags']['title'] .= ' (от ' . $q['title'] . ') ';
+                if (isset($info['tags']))
+				    $info['tags']['title'] .= ' (от ' . $q['title'] . ') ';
 			}
 			echo '<li><img src="/images/64x64/mimetypes/' . $img . '">' . $info['tags']['title'] . $start . ' <i>' . $state . '</i></li>';
 		}

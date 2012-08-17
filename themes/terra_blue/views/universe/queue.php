@@ -5,7 +5,7 @@
 		foreach ($qst as $q)
 		{
 			$info = array();
-			$info['tags']['title'] = 'от партнера ' . $q['title'];
+			$title= 'от партнера ' . $q['title'];
 			$img = 'video_mp4.png';
 			$start = strtotime($q['date_start']);
 			if ($start <= 0)
@@ -24,9 +24,9 @@
 			{
 				$info = unserialize($q['info']);
                 if (isset($info['tags']))
-				    $info['tags']['title'] .= ' (от ' . $q['title'] . ') ';
+				    $title .= ' (от ' . $q['title'] . ') ';
 			}
-			echo '<li><img src="/images/64x64/mimetypes/' . $img . '">' . $info['tags']['title'] . $start . ' <i>' . $state . '</i></li>';
+			echo '<li><img src="/images/64x64/mimetypes/' . $img . '">' . $title . $start . ' <i>' . $state . '</i></li>';
 		}
 		echo '</ul>';
 	}

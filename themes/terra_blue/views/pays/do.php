@@ -49,7 +49,7 @@
 		{
 			$select[$l['id']] = $l['title'];
 			$selectHtml[$l['id']] = array('disabled' => $disabled);
-			$disabled = true;
+			$disabled = (($l['active'] > $userPower) || ($l['active'] == 1));
 
 			if ($l['is_ajax'])
 			{

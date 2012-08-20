@@ -1,5 +1,4 @@
 <?php
-
 switch ($subAction)
 {
 	case "typeparams":
@@ -22,9 +21,26 @@ switch ($subAction)
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][id]" type="hidden" value="' . $pid . '" />
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][title]" type="hidden" value="' . $title . '" />
 				' . $title . ':<br />
-				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][value]" type="text" value="" class="text ui-widget-content ui-corner-all" />
+				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][value]" type="text" value="' . $p['value'] . '" class="text ui-widget-content ui-corner-all" />
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][variant_id]" type="hidden" value="' . $curVariantId . '" />
 				<input name="ProductForm[params][' . $curVariantId . '][' . $pid . '][vlid]" type="hidden" value="' . $curValueId . '" />
+				<br />
+				';
+			}
+		}
+	break;
+
+	case "variantparams":
+		if (!empty($result['lst']))
+		{
+			foreach($result['lst'] as $p)
+			{
+				$pid = $p['id']; //ИДЕНТИФИКАТОР ПАРАМЕТРА
+				$vid = $p['vlid']; //ИДЕНТИФИКАТОР ЗНАЧЕНИЯ ПАРАМЕТРА
+				$title = Yii::t('params', $p['title']);
+				echo'
+				' . $title . ':<br />
+				<input name="variantForm[' . $vid . ']" type="text" value="' . $p['value'] . '" class="text" />
 				<br />
 				';
 			}

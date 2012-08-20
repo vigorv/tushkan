@@ -145,7 +145,7 @@ class PaysController extends Controller
 			Yii::app()->user->setFlash('error', Yii::t('pays', 'Payment initialisation error.'));
 			$this->redirect('/universe/error');
 		}
-		$this->render('/pays/do', array('lst' => $lst, 'oInfo' => $oInfo, 'balance' => $balance, 'postInfo' => $postInfo, 'orderInfo' => $orderInfo));
+		$this->render('/pays/do', array('lst' => $lst, 'oInfo' => $oInfo, 'balance' => $balance, 'postInfo' => $postInfo, 'orderInfo' => $orderInfo, 'userPower' => $userPower));
 	}
 
 	/**

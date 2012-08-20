@@ -105,7 +105,7 @@
 //ВИДИМОСТЬ
 				echo'
 					<input type="checkbox" ' . $checked . ' name="ProductForm[variants][' . $vk . '][online_only]" class="text ui-widget-content ui-corner-all" /> ' .  Yii::t('common', 'online only') . '<br />
-					<select name="ProductForm[variants][' . $vk . '][active]" class="text ui-widget-content ui-corner-all">
+					<select name="ProductForm[variants][' . $vk . '][active]" class="text">
 				';
 				foreach ($aLst as $k => $v)
 				{

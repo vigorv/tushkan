@@ -37,6 +37,8 @@ class AccessFilter extends CFilter
 		{
 			switch (get_class($filterChain->controller))
 			{
+                case "ApiController":
+                    return true;
 				case "OrdersController":
 				case "DevicesController":
 				case "UniverseController":

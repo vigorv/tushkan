@@ -47,9 +47,9 @@
 		$disabled = false;
 		foreach($lst as $l)
 		{
+			$disabled = (($l['active'] > $userPower) || ($l['active'] == 1));
 			$select[$l['id']] = $l['title'];
 			$selectHtml[$l['id']] = array('disabled' => $disabled);
-			$disabled = (($l['active'] > $userPower) || ($l['active'] == 1));
 
 			if ($l['is_ajax'])
 			{

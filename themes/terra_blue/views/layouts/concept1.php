@@ -66,6 +66,10 @@
 		</div>
 
 	<div id="content">
+<?php
+	if (Yii::app()->getController()->getId() <> 'index')
+		echo $content;
+?>
 	</div>
 
 		<div id="m_devices" class="span12 no-horizontal-margin connected">
@@ -105,6 +109,9 @@
 			<script langauge="javascript">
             $(document).ready(function() {
 				$.address.change(function(event) {
+
+					if (event.value == '/') return; <?php /* ЗАГЛУШКА НА ПРЯМЫЕ УРЛИ */ ?>
+
 					console.log(event.value);
 					$('#content').load(event.value, function(){
 						$('#content a').click(function(){

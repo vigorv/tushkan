@@ -63,6 +63,7 @@
 	{
 		sid = document.startPayForm.paysystem_id.value;
 		summa = document.startPayForm.summa.value;
+		document.startPayForm.action = "/pays/payment/" + sid;
 		if (<?php echo $jsCondition; ?>)
 		{
 <?php
@@ -85,6 +86,7 @@
 		}
 		else
 		{
+			document.startPayForm.submit();
 			return true;
 		}
 		return false;

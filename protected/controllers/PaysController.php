@@ -228,20 +228,20 @@ class PaysController extends Controller
 				$payInfo['user_id'] = Yii::app()->user->getId();
 				$sql = '
 					INSERT INTO {{payments}}
-						(user_id, paysystem_id, created, modified, operation_id, summa, state, hash, info, order_id)
+						(id, user_id, paysystem_id, created, modified, operation_id, summa, state, hash, info, order_id)
 					VALUES
-						(:user_id, ' . $paysystemInfo['id'] . ', "' . $created . '", "' . $created . '", :operation_id, :summa, ' . _PS_STARTED_ . ', :hash, "", :order_id)
+						(NULL, :user_id, ' . $paysystemInfo['id'] . ', "' . $created . '", "' . $created . '", :operation_id, :summa, ' . _PS_STARTED_ . ', :hash, "", :order_id)
 				';
 				$cmd = Yii::app()->db->createCommand($sql);
-				if (!empty($payInfo['user_id']))
-					$cmd->bindParam(':user_id', $payInfo['user_id'], PDO::PARAM_INT);
-				if (!empty($payInfo['operation_id']))
-					$cmd->bindParam(':operation_id', $payInfo['operation_id'], PDO::PARAM_INT);
-				if (!empty($payInfo['order_id']))
-					$order_id = $payInfo['order_id'];
-				else
-					$order_id = 0;
-				$cmd->bindParam(':order_id', $order_id, PDO::PARAM_INT);
+				if (empty($payInfo['user_id'])) $payInfo['user_id'] = 0;
+				$cmd->bindParam(':user_id', $payInfo['user_id'], PDO::PARAM_INT);
+
+				if (empty($payInfo['operation_id'])) $payInfo['operation_id'] = 0;
+				$cmd->bindParam(':operation_id', $payInfo['operation_id'], PDO::PARAM_INT);
+
+				if (empty($payInfo['order_id'])) $payInfo['order_id'] = 0;
+				$cmd->bindParam(':order_id', $payInfo['order_id'], PDO::PARAM_INT);
+
 				if (!empty($payInfo['summa']))
 				{
 					$cmd->bindParam(':summa', $payInfo['summa'], PDO::PARAM_LOB);
@@ -251,6 +251,8 @@ class PaysController extends Controller
 							'user_id' => $payInfo['user_id'])
 					);
 					$payInfo['hash'] = $hash;
+//print_r($payInfo);
+//exit;
 					$cmd->bindParam(':hash', $hash, PDO::PARAM_STR);
 					$res = $cmd->execute();
 				}

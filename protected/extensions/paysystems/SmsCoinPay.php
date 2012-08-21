@@ -15,7 +15,7 @@ class SmsCoinPay
 
 	public function start($payInfo)
 	{
-		$order_id		= $payInfo['id'];
+		$order_id		= $payInfo['payment_id'];
 		$secret_code	= Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['code'];
 		$purse			= Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['bank_id'];
 		$amount			= $payInfo['summa'];

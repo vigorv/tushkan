@@ -73,7 +73,7 @@ class SmsCoinPay
 			if (!empty($payInfo))
 			{
 				// service secret code
-				$secret_code = Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['secret_code'];
+				$secret_code = Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['code'];
 
 				// collecting required data
 				$purse        = $requestInfo["s_purse"];        // sms:bank id

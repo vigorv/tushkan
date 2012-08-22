@@ -423,7 +423,23 @@ class PaysController extends Controller
  				$requestInfo = array();
 			$msg = $this->Paysystem->fail($requestInfo);
 			if (!empty($msg))
-				$resultMsg = $msg;
+			{
+				if (!empty($msg['payment_id']))
+				{
+					$cmd = Yii::app()->db->createCommand()
+						->select('*')
+						->from('{{payments}}')
+						->where('id=:id AND state <= ' . _PS_CHECK_);
+					$cmd->bindParam(':id', $msg['payment_id'], PDO::PARAM_INT);
+					$payInfo = $cmd->queryRow();
+					//ОБНОВЛЯЕМ СТАТУС ПЛАТЕЖА
+					$sql = 'UPDATE {{payments}} SET state = ' . $msg['result_id'] . ', modified = "' . date('Y-m-d H:i:s') . '" WHERE id = ' . $payInfo['id'];
+					Yii::app()->db->createCommand($sql)->query();
+					$resultMsg = $msg['msg'];
+				}
+				else
+					$resultMsg = $msg;
+			}
 			$orderId = $this->Paysystem->getOrderId($requestInfo);
 			if (!empty($orderId))
 			{

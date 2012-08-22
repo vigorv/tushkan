@@ -106,6 +106,7 @@ class SmsCoinPay
 	 */
 	public function ok($requestInfo)
 	{
+
 	}
 
 	/**
@@ -114,6 +115,14 @@ class SmsCoinPay
 	 */
 	public function fail($requestInfo)
 	{
+		$answerInfo = '';
+		if (!empty($requestInfo['s_order_id']))
+		{
+			$answerInfo['payment_id'] = $requestInfo['s_order_id'];
+			$answerInfo['result_id'] = _PS_CANCELED_;
+			$answerInfo['msg'] = '';
+		}
+		return $answerInfo;
 	}
 
 	public function getOrderId($requestInfo)

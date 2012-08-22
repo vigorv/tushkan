@@ -68,8 +68,8 @@
 	<div id="content">
 <?php
 
-	$controllerName = Yii::app()->getController()->getId();
-	if (!empty($controllerName) && ($controllerName <> 'index') && ($controllerName <> 'universe'))
+//	$controllerName = Yii::app()->getController()->getId();
+//	if (!empty($controllerName) && ($controllerName <> 'index') && ($controllerName <> 'universe'))
 		echo $content;
 ?>
 	</div>

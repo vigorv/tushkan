@@ -435,7 +435,8 @@ class PaysController extends Controller
 					//ОБНОВЛЯЕМ СТАТУС ПЛАТЕЖА
 					$sql = 'UPDATE {{payments}} SET state = ' . $msg['result_id'] . ', modified = "' . date('Y-m-d H:i:s') . '" WHERE id = ' . $payInfo['id'];
 					Yii::app()->db->createCommand($sql)->query();
-					$resultMsg = $msg['msg'];
+					if (!empty($msg['msg']))
+						$resultMsg = $msg['msg'];
 				}
 				else
 					$resultMsg = $msg;

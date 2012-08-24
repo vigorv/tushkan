@@ -248,7 +248,10 @@ class AppController extends ControllerApp
 
     public function actionPartnerItemList()
     {
-        if (Yii::app()->user->id) {
+//            Yii::log(implode(',',$_SERVER),CLogger::LEVEL_ERROR);
+//           Yii::log(implode(',',array_keys($_SERVER)),CLogger::LEVEL_ERROR);
+//	    Yii::log(implode(',',$_REQUEST),CLogger::LEVEL_ERROR);
+            if (Yii::app()->user->id) {
             $per_page = 10;
             if (isset($_POST['offset'])) {
                 $page = (int)((int)$_POST['offset'] / $per_page) + 1;

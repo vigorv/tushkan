@@ -299,6 +299,117 @@ class ProductsController extends Controller
 		);
 	}
 
+	public function actionGroup()
+	{
+		$errorResult = 'Нечего выполнять. Небходимо выбрать несколько продуктов';
+		if (!empty($_POST['group_ids']) && !empty($_POST['operation']))
+		{
+			$errorResult = '';
+			switch ($_POST['operation'])
+			{
+				case 1://объединить
+					$ids = array();
+					$group_ids = array_keys($_POST['group_ids']);
+					foreach ($group_ids as $id)
+					{
+						$id = intval($id);
+						if (empty($productId)) $productId = $id;
+						$ids[$id] = $id;
+					}
+					if (count($ids) > 1)
+					{
+						//ВЫБИРАЕМ ВАРИАНТЫ УКАЗАННЫХ ПРОДУКТОВ
+						$variantsToUnite = Yii::app()->db->createCommand()
+							->select('*')
+							->from('{{product_variants}}')
+							->where('product_id IN (' . implode(',', $ids) . ')')
+							->queryAll();
+						//ИЩЕМ СРЕДИ НИХ РОДИТЕЛЬСКИТЙ ВАРИАНТ
+						//НАПОМИНАНИЕ: если вариант является потомком другого, то поле childs = "", по умолчанию childs = ",,"
+						if (!empty($variantsToUnite))
+						{
+							$parentVariant = array();
+							foreach ($variantsToUnite as $vu)
+							{
+								if (($vu['childs'] != '') && ($vu['childs'] != ',,'))
+								{
+									$parentVariant = $vu;
+									break;
+								}
+							}
+
+							if (empty($parentVariant))
+							{
+								//СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ
+								$parentVariant = $variantsToUnite[0]; //РОДИТЕЛЬСКИЙ ВАРИАНТ ДЕЛАЕМ ПО ШАБЛОНУ ПЕРВОГО ВАРИАНТА
+								unset($parentVariant['id']);
+								$parentVariant['childs'] = ',,';
+/*
+echo '<pre>';
+var_dump($parentVariant);
+echo '</pre>';
+exit;
+*/
+								if (!Yii::app()->db->createCommand()->insert('{{product_variants}}', $parentVariant))
+								{
+									$errorResult = 'Невозможно создать родительский вариант';
+									break;
+								}
+								$parentVariant['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+							}
+
+							//ПЕРЕЗАКРЕПЛЯЕМ ВСЕ ВАРИАНТЫ НА ОДИН ПРОДУКТ
+							$childIds = array();
+							foreach ($variantsToUnite as $vu)
+							{
+								if ($vu['id'] == $parentVariant['id']) continue;
+
+								if (($vu['childs'] != '') && ($vu['childs'] != ',,'))
+								{
+									//ЕЩЕ ОДИН РОДИТЕЛЬСКИЙ ВАРИАНТ. УДАЛЯЕМ
+									$sql = 'DELETE FROM {{product_variants}} WHERE id = ' . $vu['id'];
+									Yii::app()->db->createCommand($sql)->execute();
+									continue;
+								}
+
+								$childIds[] = $vu['id'];
+								$sql = 'UPDATE {{product_variants}} SET childs = "", product_id = ' . $productId . ' WHERE id = ' . $vu['id'];
+								Yii::app()->db->createCommand($sql)->execute();
+							}
+
+							//ПРОПИСЫВАЕМ childs У РОДИТЕЛЯ
+							$childs = ',' . implode(',', $childIds) . ',';
+							$sql = 'UPDATE {{product_variants}} SET childs = "' . $childs . '" WHERE id = ' . $parentVariant['id'];
+							Yii::app()->db->createCommand($sql)->execute();
+
+							//УДАЛЯЕМ ЛИШНИЕ ПРОДУКТЫ
+							$ids = array_keys($ids);
+							unset($ids[0]);
+							$sql = 'DELETE FROM {{products}} WHERE id IN (' . implode(',', $ids) . ')';
+							Yii::app()->db->createCommand($sql)->execute();
+
+							$operationResult = 'Продукты объединены';
+							break;
+						}
+						$errorResult = 'Ошибка структуры данных. Продукты не содержат варианты.';
+					}
+				break;
+				case 2://скрыть
+				break;
+				case 3://удалить
+				break;
+			}
+			if (!empty($operationResult))
+				Yii::app()->user->setFlash('success', $operationResult);
+		}
+
+		if (empty($operationResult) && empty($errorResult))
+			$errorResult = 'Операция на стадии разработки';
+		if (!empty($errorResult))
+			Yii::app()->user->setFlash('error', $errorResult);
+		$this->redirect('/products/admin');
+	}
+
 /**
  * методы админских скриптов
  */
@@ -409,7 +520,328 @@ exit;
     }
 
     /**
-     * действие инлайн редактирования
+     * действие редактирования/сохранения данных продукта и опциями управления структурой вариантов:
+     * - группировка/разгруппировка с родительским вариантом
+     * - удаление варианта
+     *
+     * @param integer $id - идентификатор продукта
+     */
+	public function actionEditproduct($id = 0)
+	{
+        $this->layout = '/layouts/admin';
+        $this->breadcrumbs = array(
+            Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
+            Yii::t('products', 'Administrate products') => array($this->createUrl('products/admin')),
+            Yii::t('common', 'Edit'),
+        );
+
+        $cmd = Yii::app()->db->createCommand()
+        	->select('*')
+        	->from('{{products}}')
+        	->where('id = :id');
+        $cmd->bindParam(':id', $id, PDO::PARAM_INT);
+        $info = $cmd->queryRow();
+
+        if (empty($info))
+        {
+			Yii::app()->user->setFlash('error', Yii::t('common', 'Page not found'));
+			$this->redirect('/universe/error');
+        }
+
+        $dscInfo = Yii::app()->db->createCommand()
+        	->select('description')
+        	->from('{{product_descriptions}}')
+        	->where('product_id = ' . $info['id'])->queryRow();
+        if (!empty($dscInfo))
+        	$info['description'] = $dscInfo['description'];
+        else
+        	$info['description'] = '';
+
+		$variantsTree = CProductVariant::getProductVariantsTree($id);
+/*
+echo '<pre>';
+var_dump($variantsTree);
+echo '</pre>';
+exit;
+//*/
+        $productForm = new ProductForm();
+        if (isset($_POST['ProductForm'])) {
+            $productForm->attributes = $_POST['ProductForm'];
+
+            if ($productForm->validate()) {
+                //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
+                $products = new Cproduct();
+
+                $attrs = $productForm->getAttributes();
+                foreach ($attrs as $k => $v) {
+                    $products->{$k} = $v;
+                }
+                $products->original_id = 0;
+                if (empty($products->srt))
+                	$products->srt = 0;
+                $products->created = date('Y-m-d H:i:s');
+                $products->modified = date('Y-m-d H:i:s');
+
+                $products->isNewRecord = false;
+                $products->id = $info['id'];
+                $products->save();
+                Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
+                $this->redirect('/products/edit/' . $id);
+            }
+            else
+            {
+            	$attrs = $productForm->getAttributes();
+            	$info = $attrs;//ДЛЯ ОТОБРАЖЕНИЯ В ФОРМЕ ИЗМЕНЕННЫХ ДАННЫХ
+            }
+
+        }
+
+		$pLst = Utils::arrayToKeyValues(CPartners::getPartnerList(), 'id', 'title');
+/*
+echo '<pre>';
+var_dump($pLst);
+echo '</pre>';
+exit;
+//*/
+
+        $this->render('/products/editproduct', array('model' => $productForm,
+        	'info' => $info,
+        	'pLst' => $pLst,
+        	'variantsTree' => $variantsTree));
+	}
+
+	/**
+	 * действие обработки операций над вариантами продукта
+	 *
+	 * @param integer $id
+	 */
+	public function actionEditajax($id = 0)
+	{
+		if (!empty($_POST))
+		{
+			if (!empty($_POST['group_ids']))
+			{
+				$ids = array();
+				$group_ids = array_keys($_POST['group_ids']);
+				foreach ($group_ids as $gid)
+				{
+					$gid = intval($gid);
+					$ids[$gid] = $gid;
+				}
+				if (!empty($ids))
+				{
+					//ВЫБИРАЕМ ОТМЕЧЕННЫЕ
+					$cmd = Yii::app()->db->createCommand()
+						->select('*')
+						->from('{{product_variants}}')
+						->where('product_id = :id AND id IN (' . implode(',', $ids) . ')');
+					$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+					$vst = $cmd->queryAll();
+				}
+			}
+
+			switch ($_POST['action'])
+			{
+				case "group":
+					//СГРУППИРОВАТЬ ВАРИАНТЫ В ГРУППУ (С СОЗДАНИЕМ РОДИТЕЛЬСКОГО ВАРИАНТА)
+					if (!empty($vst))
+					{
+						$fst = array();//СЮДА ОТФИЛЬТРУЕМ ВСЕ ВАРИАНТЫ ГОДНЫЕ ДЛЯ ГРУППИРОВКИ
+						$fIds = array(); //СЮДА АККУМУЛИРУЕМ ИДЕНТИФИКАТОРЫ ГОДНЫХ ВАРИАНТОВ
+						foreach($vst as $v)
+						{
+							if (($v['childs'] == ',,') || empty($v['childs']))//ЕСЛИ НЕ ЯВЛЯЕТСЯ ПРЕДКОМ ДРУГИХ ВАРИАНТОВ
+							{
+								$fst[] = $v;
+								$fIds[] = $v['id'];
+							}
+						}
+						if (!empty($fIds))
+						{
+							//СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ
+							$pInfo = $fst[0];//ЗА ОСНОВУ БЕРЕМ ПЕРВЫЙ ВАРИАНТ ИЗ СПИСКА
+							unset($pInfo['id']);
+							$pInfo['childs'] = ',' . implode(',', $fIds) . ',';
+
+							if (!Yii::app()->db->createCommand()->insert('{{product_variants}}', $pInfo))
+							{
+								$errorResult = 'Невозможно создать родительский вариант';
+								break;
+							}
+							$pInfo['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
+							foreach ($fst as $f)
+							{
+								$sql = 'UPDATE {{product_variants}} SET childs="" WHERE id = ' . $f['id'];
+								Yii::app()->db->createCommand($sql)->execute();
+							}
+						}
+					}
+				break;
+				case "ungroup":
+				case "toparent":
+					//РАЗГРУППИРОВАТЬ (ВЫВЕСТИ ИЗ ГРУППЫ В КОРЕНЬ) (ПРЕДКА ПРИ ЭТОМ СКРЫВАЕМ (ACTIVE=_IS_ADMIN_)
+					//И ПРОПИСЫВАЕМ ПУСТОЙ СПИСОК ПОТОМКОВ В ВИДЕ ,0,)
+					$tree = CProductVariant::getProductVariantsTree($id);
+					foreach ($vst as $v)
+					{
+						if (($v['childs'] != ',,') && !empty($v['childs']))//ЕСЛИ ЯВЛЯЕТСЯ ПРЕДКОМ ДРУГИХ ВАРИАНТОВ
+							continue; //ПРОПУСКАЕМ
+
+						//ИЩЕМ СТАРОГО ПРЕДКА ОТМЕЧЕННЫХ ВАРИАНТОВ
+						foreach ($tree as $vk => $vv)
+						{
+							if (!empty($vv['childsInfo']))
+							{
+								foreach ($vv['childsInfo'] as $ck => $cv)
+								{
+									if ($cv['id'] == $v['id'])
+									{
+										//КОРРЕКТИРУЕМ СТРУКТУРУ ДЕРЕВА ВАРИАНТОВ
+										unset($tree[$vk]['childsInfo'][$ck]);
+
+										//ОБНОВЛЯЕМ ПРЕДКА
+										if (empty($tree[$vk]['childsInfo']))
+										{
+											$childs = ',0,';
+											$active = 'active = ' . _IS_ADMIN_ . ',';
+										}
+										else
+										{
+											$childs = Utils::pushIndexToKey('id', $tree[$vk]['childsInfo']);
+											$childs = ',' . implode(',', array_keys($childs)) . ',';
+											$active = '';
+										}
+										$sql = 'UPDATE {{product_variants}} SET ' . $active. 'childs="' . $childs . '" WHERE id = ' . $tree[$vk]['id'];
+										Yii::app()->db->createCommand($sql)->execute();
+										$tree[$vk]['childs'] = $childs;
+
+										if (empty($_POST['parentId']))
+										{
+											//ОБНОВЛЯЕМ ПОТОМКА
+											$sql = 'UPDATE {{product_variants}} SET childs=",," WHERE id = ' . $cv['id'];
+											Yii::app()->db->createCommand($sql)->execute();
+										}
+									}
+								}
+							}
+
+							//ЗАКРЕПИТЬ В ВИДЕ ПОТОМКА ЗА НОВЫМ ПРЕДКОМ
+							if (!empty($_POST['parentId']))
+							{
+								$parentId = intval($_POST['parentId']);
+								if ($vv['id'] == $parentId)
+								{
+									//КОРРЕКТИРУЕМ ДЕРЕВО
+									$tree[$vk]['childsInfo'][$v['id']] = $v;
+
+									//ОБНОВЛЯЕМ ПРЕДКА
+									$childs = Utils::pushIndexToKey('id', $tree[$vk]['childsInfo']);
+									$childs = ',' . implode(',', array_keys($childs)) . ',';
+									$active = 'active = 0, ';
+
+									$sql = 'UPDATE {{product_variants}} SET ' . $active. 'childs="' . $childs . '" WHERE id = ' . $tree[$vk]['id'];
+									Yii::app()->db->createCommand($sql)->execute();
+									$tree[$vk]['childs'] = $childs;
+
+									//ОБНОВЛЯЕМ ПОТОМКА
+									$sql = 'UPDATE {{product_variants}} SET childs="" WHERE id = ' . $v['id'];
+									Yii::app()->db->createCommand($sql)->execute();
+								}
+							}
+						}
+
+//print_r($tree);
+//break;
+					}
+				break;
+
+				case "del":
+					//УДАЛЕНИЕ ВАРИАНТА (ЕСЛИ ПРЕДОК, ТО ДОЛЖЕН БЫТЬ БЕЗ ПОТОМКОВ)
+					//УДАЛЯЕМ ТОЛЬКО НЕ СВЯЗАННЫЕ С ПОЛЬЗОВАТЕЛЯМИ ВАРИАНТЫ
+					$tree = CProductVariant::getProductVariantsTree($id);
+					foreach ($vst as $v)
+					{
+//						if (($v['childs'] != ',,') && !empty($v['childs']))
+						if (!empty($tree[$v['id']]['childsInfo']))
+						{
+							//ЭТО ВАРИАНТ-ПРЕДОК, ПРОПУСКАЕМ
+							continue;
+						}
+						$relations = CProductVariant::getVariantRelations($v['id']);
+						if (empty($relations['typedfiles']))
+						{
+							//ЕСЛИ НЕТ СВЯЗИ ВАРИАНТА С ПОЛЬЗОВАТЕЛЯМИ, ГРОХАЕМ ВАРИАНТ И ВСЕ СВЯЗИ
+							foreach ($relations as $rk => $rv)
+							{
+								$sql = 'DELETE FROM {{' . $rk . '}} WHERE variant_id = ' . $v['id'];
+								Yii::app()->db->createCommand($sql)->execute();
+							}
+							$sql = 'DELETE FROM {{product_variants}} WHERE id = ' . $v['id'];
+							Yii::app()->db->createCommand($sql)->execute();
+						}
+						else
+						{
+							//СКРЫВАЕМ ВАРИАНТ ДЛЯ ПОЛЬЗОВАТЕЛЕЙ
+						}
+					}
+
+				break;
+			}
+		}
+	}
+
+	/**
+	 * действие сохранения данных модальной формы редактирования варианта
+	 *
+	 * @param integer $id
+	 */
+	public function actionEditvariant($id = 0)
+	{
+		$result = 0;
+		if (!empty($_POST['VariantForm']))
+		{
+	        $variantForm = new VariantForm();
+            $variantForm->attributes = $_POST['VariantForm'];
+
+            if ($variantForm->validate()) {
+                //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
+                //$variants = new CProductVariant();
+
+				$variants = CProductVariant::model()->findByPk($id);
+                $attrs = $variantForm->getAttributes();
+                foreach ($attrs as $k => $v) {
+                    $variants->{$k} = $v;
+                }
+
+                $variants->isNewRecord = false;
+                $variants->id = $id;
+                if (empty($attrs['online_only']))
+                	$variants->online_only = 0;
+                else
+                	$variants->online_only = 1;
+
+                $variants->save();
+                Yii::app()->user->setFlash('success', Yii::t('products', 'Variant saved'));
+            }
+            else
+            {
+            	$result = 1;//ВЗВОДИМ ОШИБКУ
+            }
+
+			foreach ($_POST['VariantForm']['params'] as $id => $value)
+			{
+				$sql = 'UPDATE {{product_param_values}} SET value=:value WHERE id=:id';
+				$cmd = Yii::app()->db->createCommand($sql);
+				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$cmd->bindParam(':value', $value, PDO::PARAM_STR);
+				$result += $cmd->execute();
+			}
+		}
+		$this->render('/products/editvariant', array('result' => $result));
+	}
+
+    /**
+     * действие редактирования продукта (одновременное редактирование данных продукта и всех его вариантов)
      *
      */
     public function actionEdit($id = 0) {
@@ -472,11 +904,14 @@ exit;
                 ->queryAll();
 		$tLst = Utils::arrayToKeyValues($types, 'id', 'title');
 
+		/*
         $partners = Yii::app()->db->createCommand()
                 ->select('id, title')
                 ->from('{{partners}}')
                 ->queryAll();
 		$pLst = Utils::arrayToKeyValues($partners, 'id', 'title');
+		*/
+		$pLst = Utils::arrayToKeyValues(CPartners::getPartnerList(), 'id', 'title');
 
         $productForm = new ProductForm();
         if (isset($_POST['ProductForm'])) {
@@ -597,6 +1032,10 @@ exit;
 			{
 				case "typeparams":
 					$result['variantId'] = 0;
+					if (!empty($_POST['variantId']))
+					{
+						$result['variantId'] = $_POST['variantId'];
+					}
 					if (!empty($_POST['typeId']))
 						$typeId = $_POST['typeId'];
 					$cmd = Yii::app()->db->createCommand()
@@ -605,12 +1044,45 @@ exit;
 						->join('{{product_types_type_params}} pttp', 'pttp.param_id = ptp.id')
 						->where('pttp.type_id = :id')
 						->order('ptp.srt DESC');
+//echo $cmd->getText();
 					$cmd->bindParam(':id', $typeId, PDO::PARAM_INT);
 					$result['lst'] = $cmd->queryAll();
+				break;
+
+				case "variantparams":
+					$result['variantId'] = 0;
+					$info = array();
 					if (!empty($_POST['variantId']))
 					{
-						$result['variantId'] = $_POST['variantId'];
+						$result['variantId'] = intval($_POST['variantId']);
+						$info = Yii::app()->db->createCommand()
+							->select('*')
+							->from('{{product_variants}}')
+							->where('id = ' . $result['variantId'])
+							->queryRow();
 					}
+
+			        $variantForm = new VariantForm();
+			        $result['variantForm'] = $variantForm;
+			        $result['info'] = $info;
+
+					$cmd = Yii::app()->db->createCommand()
+						->select('ptp.id, ptp.title, ptp.description, ppv.id AS vlid, ppv.value, vq.preset_id')
+						->from('{{product_type_params}} ptp')
+						->join('{{product_types_type_params}} pttp', 'pttp.param_id = ptp.id')
+						->leftJoin('{{product_param_values}} ppv', 'ppv.param_id = ptp.id')
+						->leftJoin('{{variant_qualities}} vq', 'vq.id = ppv.variant_quality_id')
+						->where('ppv.variant_id = :vid')
+						->group('ppv.id')
+						->order('ptp.srt DESC');
+//echo $cmd->getText();
+					$cmd->bindParam(':vid', $result['variantId'], PDO::PARAM_INT);
+					$result['lst'] = $cmd->queryAll();
+					$sLst = Yii::app()->db->createCommand()
+						->select('id, title')
+						->from('{{variant_subs}}')
+						->queryAll();
+					$result['sLst'] = Utils::arrayToKeyValues($sLst, 'id', 'title');
 				break;
 
 				case "wizardtypeparams":
@@ -629,9 +1101,9 @@ exit;
 			}
 		}
 
-		if (!empty($typeId) && ($typeId == 1))//ПОКА ПОДДЕРЖКА ТОЛЬКО ВИДЕО
+		if (($subAction == 'variantparams') || (!empty($typeId) && ($typeId == 1)))//ПОКА ПОДДЕРЖКА ТОЛЬКО ВИДЕО
 		{
-	        $this->render('ajax', array('subAction' => $subAction, 'result' => $result, 'typeId' => $typeId));
+	        $this->render('/products/ajax', array('subAction' => $subAction, 'result' => $result, 'typeId' => $typeId));
 		}
 	}
 
@@ -1049,16 +1521,7 @@ exit;
 					{
 						$childsDefValue = '';//ЗНАЧЕНИЕ ПОЛЕ childs ДЛЯ ПОДВАРИАНТОВ
 						$childs = explode(',', $parentVariant['childs']);
-						//$childIds = array_combine($childIds, $childIds);//ПОЛУЧИЛИ МАССИВ, В КОТОРОМ КЛЮЧИ РАВНЫ ЗНАЧЕНИЯМ
-						$childIds = array();
-						foreach ($childs as $v)
-						{
-							$v = intval($v);
-							if (!empty($v))
-							{
-								$childIds[$v] = $v;
-							}
-						}
+						$childIds = CProductVariant::getChildsIds($parentVariant['childs']);
 						if (!empty($childIds))
 						{
 							$podVariants = Yii::app()->db->createCommand()

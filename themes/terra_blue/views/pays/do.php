@@ -47,9 +47,9 @@
 		$disabled = false;
 		foreach($lst as $l)
 		{
+			$disabled = (($l['active'] > $userPower) || ($l['active'] == 1));
 			$select[$l['id']] = $l['title'];
 			$selectHtml[$l['id']] = array('disabled' => $disabled);
-			$disabled = true;
 
 			if ($l['is_ajax'])
 			{
@@ -63,6 +63,7 @@
 	{
 		sid = document.startPayForm.paysystem_id.value;
 		summa = document.startPayForm.summa.value;
+		document.startPayForm.action = "/pays/payment/" + sid;
 		if (<?php echo $jsCondition; ?>)
 		{
 <?php
@@ -85,6 +86,7 @@
 		}
 		else
 		{
+			document.startPayForm.submit();
 			return true;
 		}
 		return false;
@@ -160,10 +162,44 @@
 	});
 <?php
 		}
+	function sign() {
+		$params = func_get_args();
+		$prehash = implode("::", $params);
+		return md5($prehash);
+	}
 ?>
 </script>
 <?php
 		}
+/*
+//ДЛЯ ЭМУЛЯЦИИ ОТВЕТА ОТ ПЛАТЕЖНОЙ СИСТЕМЫ
+	$( "#dosmscointest" )
+				.button()
+				.click(function() {
+					$.post('/pays/process/6', {s_purse: '<?php echo $purse; ?>', s_order_id: '<?php echo $order_id; ?>', s_amount: '<?php echo $amount; ?>', s_clear_amount: '<?php echo $amount; ?>', s_inv: '<?php echo $inv; ?>', s_phone: '<?php echo $phone; ?>', s_sign_v2: '<?php echo $s; ?>'}, function(response)
+					{
+						alert(response);
+					});
+				});
+	$code = Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['code'];
+	$purse = 6997;
+	$order_id = 133;
+	$amount = 1;
+	$clear_amount = $amount;
+	$inv = 133;
+	$phone = '89137396455';
+
+	$s = sign($code,
+	$purse,
+	$order_id,
+	$amount,
+	$clear_amount,
+	$inv,
+	$phone);
+
+	echo '<button id="dosmscointest">test SMSCoin (sign = "' . $s . '")</button>';
+*/
 ?>
 	</div>
 </div>
+

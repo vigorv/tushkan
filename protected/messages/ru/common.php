@@ -140,8 +140,9 @@ return array (
   'Are you sure?'			=> 'Вы уверены?',
 	'File size'				=> 'Размер файла',
 
-  'Nothing have been selected'	=> 'Ничего не выбрано',
-  'Request cannot be processed'	=> 'Запрос не может быть выполнен',
+  'Changes was successfully saved'	=> 'Изменения сохранены',
+  'Nothing have been selected'		=> 'Ничего не выбрано',
+  'Request cannot be processed'		=> 'Запрос не может быть выполнен',
 
   'Access denied. Authentication required'			=> 'Отказано в доступе. Tребуется аутентификация.',
   'Letters of verify code are not case-sensitive.'	=> 'Символы проверочного кода не чувствительны к регистру.',

@@ -66,6 +66,12 @@
 		</div>
 
 	<div id="content">
+<?php
+
+//	$controllerName = Yii::app()->getController()->getId();
+//	if (!empty($controllerName) && ($controllerName <> 'index') && ($controllerName <> 'universe'))
+		echo $content;
+?>
 	</div>
 
 		<div id="m_devices" class="span12 no-horizontal-margin connected">
@@ -105,6 +111,9 @@
 			<script langauge="javascript">
             $(document).ready(function() {
 				$.address.change(function(event) {
+
+					if (event.value == '/') return; <?php /* ЗАГЛУШКА НА ПРЯМЫЕ УРЛИ */ ?>
+
 					console.log(event.value);
 					$('#content').load(event.value, function(){
 						$('#content a').click(function(){

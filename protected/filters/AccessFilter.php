@@ -54,7 +54,13 @@ class AccessFilter extends CFilter
 				case "ProductsController":
 					$access = ($userPower >= _IS_USER_);
 
-					if (($filterChain->action->id == 'admin') || ($filterChain->action->id == 'edit') || ($filterChain->action->id == 'form'))
+					if (($filterChain->action->id == 'admin') ||
+						($filterChain->action->id == 'edit') ||
+						($filterChain->action->id == 'editproduct') ||
+						($filterChain->action->id == 'editvariant') ||
+						($filterChain->action->id == 'form') ||
+						($filterChain->action->id == 'group')
+						)
 						$access = ($userPower >= _IS_MODERATOR_);
 					if ($filterChain->action->id == 'tocloud')
 						$access = ($userPower >= _IS_USER_);

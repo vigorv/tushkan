@@ -15,7 +15,7 @@ class SmsCoinPay
 
 	public function start($payInfo)
 	{
-		$order_id		= $payInfo['id'];
+		$order_id		= $payInfo['payment_id'];
 		$secret_code	= Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['code'];
 		$purse			= Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['bank_id'];
 		$amount			= $payInfo['summa'];
@@ -73,7 +73,7 @@ class SmsCoinPay
 			if (!empty($payInfo))
 			{
 				// service secret code
-				$secret_code = Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['secret_code'];
+				$secret_code = Yii::app()->params['tushkan']['paySystems']['SmsCoinPay']['code'];
 
 				// collecting required data
 				$purse        = $requestInfo["s_purse"];        // sms:bank id
@@ -106,6 +106,7 @@ class SmsCoinPay
 	 */
 	public function ok($requestInfo)
 	{
+
 	}
 
 	/**
@@ -114,6 +115,14 @@ class SmsCoinPay
 	 */
 	public function fail($requestInfo)
 	{
+		$answerInfo = '';
+		if (!empty($requestInfo['s_order_id']))
+		{
+			$answerInfo['payment_id'] = $requestInfo['s_order_id'];
+			$answerInfo['result_id'] = _PS_CANCELED_;
+			$answerInfo['msg'] = '';
+		}
+		return $answerInfo;
 	}
 
 	public function getOrderId($requestInfo)

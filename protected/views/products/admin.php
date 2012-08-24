@@ -30,11 +30,22 @@ if (!empty($msg))
 	if (!empty($products))
 	{
 ?>
-	<form name="massForm" action="/products/group" method="POST">
+	<script type="text/javascript">
+		function confirmGroup(f)
+		{
+			if (f.operation.value == 3)
+			{
+				return confirm('Продукт(ы) будут удалены безвозвратно. Продолжить?');
+			}
+			return true;
+		}
+	</script>
+	<form name="massForm" action="/products/group" method="POST" onsubmit="return confirmGroup(this)">
 <?php
 		foreach ($products as $p)
 		{
-			$href = Yii::app()->createUrl('/products/edit/' . $p['id']);
+			//$href = Yii::app()->createUrl('/products/edit/' . $p['id']); СТАРОЕ ДЕЙСТВИЕ
+			$href = Yii::app()->createUrl('/products/editproduct/' . $p['id']);
 			echo '<div class="chess">';
 			echo '<input type="checkbox" name="group_ids[' . $p['id']. ']" />';
 			echo '<a href="' . $href . '">';

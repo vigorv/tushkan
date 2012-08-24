@@ -106,7 +106,14 @@ class SmsCoinPay
 	 */
 	public function ok($requestInfo)
 	{
-
+		$answerInfo = '';
+		if (!empty($requestInfo['s_order_id']))
+		{
+			$answerInfo['payment_id'] = $requestInfo['s_order_id'];
+			$answerInfo['result_id'] = _PS_PAYED_;
+			$answerInfo['msg'] = '';
+		}
+		return $answerInfo;
 	}
 
 	/**
@@ -125,6 +132,7 @@ class SmsCoinPay
 		return $answerInfo;
 	}
 
+/* DEPRECATED
 	public function getOrderId($requestInfo)
 	{
 		$orderId = 0;
@@ -134,4 +142,5 @@ class SmsCoinPay
 		}
 		return $orderId;
 	}
+*/
 }

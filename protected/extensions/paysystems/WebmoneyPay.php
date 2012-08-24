@@ -92,7 +92,14 @@ class WebmoneyPay
 	 */
 	public function ok($requestInfo)
 	{
-
+		$answerInfo = '';
+		if (!empty($requestInfo['LMI_PAYMENT_NO']))
+		{
+			$answerInfo['payment_id'] = $requestInfo['LMI_PAYMENT_NO'];
+			$answerInfo['result_id'] = _PS_PAYED_;
+			$answerInfo['msg'] = '';
+		}
+		return $answerInfo;
 	}
 
 	/**
@@ -101,8 +108,15 @@ class WebmoneyPay
 	 */
 	public function fail($requestInfo)
 	{
-		if (empty($requestInfo['LMI_PAYMENT_NO']))
-			return;
+		$answerInfo = '';
+		if (!empty($requestInfo['LMI_PAYMENT_NO']))
+		{
+			$answerInfo['payment_id'] = $requestInfo['LMI_PAYMENT_NO'];
+			$answerInfo['result_id'] = _PS_CANCELED_;
+			$answerInfo['msg'] = '';
+		}
+		return $answerInfo;
+		/* КОД ВЫНЕСЕН В PaysController
 
 		$cmd = Yii::app()->db->createCommand()
 			->select('*')
@@ -117,8 +131,10 @@ class WebmoneyPay
 			$cmd->bindParam(':id', $requestInfo['LMI_PAYMENT_NO'], PDO::PARAM_INT);
 			$cmd->query();
 		}
+		*/
 	}
 
+/* DEPRECATED
 	public function getOrderId($requestInfo)
 	{
 		$orderId = 0;
@@ -128,4 +144,5 @@ class WebmoneyPay
 		}
 		return $orderId;
 	}
+*/
 }

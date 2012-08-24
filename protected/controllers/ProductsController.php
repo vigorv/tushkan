@@ -305,17 +305,17 @@ class ProductsController extends Controller
 		if (!empty($_POST['group_ids']) && !empty($_POST['operation']))
 		{
 			$errorResult = '';
+			$ids = array();
+			$group_ids = array_keys($_POST['group_ids']);
+			foreach ($group_ids as $id)
+			{
+				$id = intval($id);
+				if (empty($productId)) $productId = $id;//ЭТО ДЛЯ ОПЕРАЦИИ ОБЪЕДИНЕНИЯ
+				$ids[$id] = $id;
+			}
 			switch ($_POST['operation'])
 			{
 				case 1://объединить
-					$ids = array();
-					$group_ids = array_keys($_POST['group_ids']);
-					foreach ($group_ids as $id)
-					{
-						$id = intval($id);
-						if (empty($productId)) $productId = $id;
-						$ids[$id] = $id;
-					}
 					if (count($ids) > 1)
 					{
 						//ВЫБИРАЕМ ВАРИАНТЫ УКАЗАННЫХ ПРОДУКТОВ
@@ -397,6 +397,14 @@ exit;
 				case 2://скрыть
 				break;
 				case 3://удалить
+					if (empty($ids)) break;
+
+					foreach ($ids as $id)
+					{
+						CProduct::deleteProduct($id);
+					}
+					$operationResult = 'Продукт удален';
+
 				break;
 			}
 			if (!empty($operationResult))
@@ -433,6 +441,17 @@ exit;
 		{
 			$filterCondition['partner'] = 'p.partner_id = :partner';
 		}
+
+		if (!empty($filterInfo['from']))
+		{
+			$filterCondition['from'] = 'p.created >= :ffrom';
+		}
+
+		if (!empty($filterInfo['to']))
+		{
+			$filterCondition['to'] = 'p.created <= :fto';
+		}
+
 		$cmd = Yii::app()->db->createCommand()
 			->select('count(p.id) AS cnt')
 			->from('{{products}} p');
@@ -450,12 +469,20 @@ exit;
 			{
 				$cmd->bindParam(':partner', $filterInfo['partner']['value'], PDO::PARAM_INT);
 			}
+			if (!empty($filterInfo['from']))
+			{
+				$cmd->bindParam(':ffrom', $filterInfo['from']['value'], PDO::PARAM_STR);
+			}
+			if (!empty($filterInfo['to']))
+			{
+				$cmd->bindParam(':fto', $filterInfo['to']['value'], PDO::PARAM_STR);
+			}
 		}
 		$count = $cmd->queryScalar();
 /*
 echo $cmd->getText();
 exit;
-*/
+//*/
 		$paginationParams = Utils::preparePagination('/products/admin', $count);
 		$products = array();
 
@@ -493,6 +520,14 @@ exit;
 			if (!empty($filterInfo['partner']))
 			{
 				$cmd->bindParam(':partner', $filterInfo['partner']['value'], PDO::PARAM_INT);
+			}
+			if (!empty($filterInfo['from']))
+			{
+				$cmd->bindParam(':ffrom', $filterInfo['from']['value'], PDO::PARAM_STR);
+			}
+			if (!empty($filterInfo['to']))
+			{
+				$cmd->bindParam(':fto', $filterInfo['to']['value'], PDO::PARAM_STR);
 			}
 			$pst = $cmd->queryAll();
 
@@ -808,6 +843,22 @@ exit;
                 //$variants = new CProductVariant();
 
 				$variants = CProductVariant::model()->findByPk($id);
+
+				if (empty($variants['child']))
+				{
+					//ЗНАЧИТ - ЭТО ПОТОМОК, ПРОВЕРЯЕМ НАЛИЧИЕ ПРЕДКА
+					$parent = Yii::app()->db->createCommand()
+						->select('id')
+						->from('{{product_variants}}')
+						->where('childs LIKE ",' . $variants['id'] . ',"')
+						->queryRow();
+					if (empty($parent))
+					{
+						//ПРЕДКА НЕ НАШЛИ. ПРАВИМ СТРУКТУРУ
+						$variants['childs'] = ',,';
+					}
+				}
+
                 $attrs = $variantForm->getAttributes();
                 foreach ($attrs as $k => $v) {
                     $variants->{$k} = $v;

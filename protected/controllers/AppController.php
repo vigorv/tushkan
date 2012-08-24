@@ -261,6 +261,7 @@ class AppController extends ControllerApp
             $search = '';
             if (isset($_REQUEST['search']))
                 $search = filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING);
+            Yii::log(implode(',',$_REQUEST),CLogger::LEVEL_ERROR);
             $list = CAppHandler::getPartnerProductsForUser($search, $partner_id, $page);
 
             $count = count($list);

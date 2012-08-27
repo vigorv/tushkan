@@ -449,7 +449,7 @@ exit;
 
 		if (!empty($filterInfo['to']))
 		{
-			$filterCondition['to'] = 'p.created <= :fto';
+			$filterCondition['to'] = 'p.created < :fto';
 		}
 
 		$cmd = Yii::app()->db->createCommand()
@@ -475,11 +475,13 @@ exit;
 			}
 			if (!empty($filterInfo['to']))
 			{
-				$cmd->bindParam(':fto', $filterInfo['to']['value'], PDO::PARAM_STR);
+				$to = date('Y-m-d', strtotime($filterInfo['to']['value']) + 3600*24);
+				$cmd->bindParam(':fto', $to, PDO::PARAM_STR);
 			}
 		}
 		$count = $cmd->queryScalar();
 /*
+echo $to;
 echo $cmd->getText();
 exit;
 //*/

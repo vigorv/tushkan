@@ -20,7 +20,10 @@ echo '</pre>';
 
     <div class="row">
         <?php echo $form->label($model, 'partner_id', array('label' => Yii::t('common', 'Partner'))); ?>
-        <?php echo $form->dropdownlist($model, 'partner_id', $pLst, array('class' => 'text')); ?>
+        <?php echo $form->dropdownlist($model, 'partner_id', $pLst, array(
+        	'options' => array($info['partner_id'] => array('selected' => 'selected')),
+        	'class' => 'text'
+        	)); ?>
     </div>
 
     <div class="row">
@@ -127,12 +130,16 @@ echo '</pre>';
 		foreach ($variantsTree as $vt)
 		{
 			$actions = array('/products/editajax');
+			if (empty($vt['title']))
+				$vt['title'] = 'no title';
 			echo '<li><input type="checkbox" name="group_ids[' . $vt['id'] . ']" value="1" /> <a href="#" onclick="return openModalForm(' . $vt['id'] . ');">' . $vt['title'] . '</a> (id = ' . $vt['id'] . ')';
 			if (!empty($vt['childsInfo']))
 			{
 				echo '<ul>';
 				foreach ($vt['childsInfo'] as $ci)
 				{
+					if (empty($ci['title']))
+						$ci['title'] = 'no title';
 					echo '<li><input type="checkbox" name="group_ids[' . $ci['id'] . ']" value="1" /> <a href="#" onclick="return openModalForm(' . $ci['id'] . ');">' . $ci['title'] . '</a> (id = ' . $ci['id'] . ')</li>';
 				}
 				echo '</ul>';//ЗАКРЫВАЕМ СПИСОК ПОТОМКОВ

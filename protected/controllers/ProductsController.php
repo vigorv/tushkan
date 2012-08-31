@@ -1047,6 +1047,7 @@ exit;
                     $products->{$k} = $v;
                 }
                 $products->original_id = 0;
+                $products->active = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАННО
                 if (empty($products->srt))
                 	$products->srt = 0;
                 $products->created = date('Y-m-d H:i:s');
@@ -1083,6 +1084,10 @@ exit;
 			}
 			switch ($subAction)
 			{
+				case "contentinbox":
+					//ВСЕ ДЕЛАЕМ ВО ВЬЮХЕ
+				break;
+
 				case "typeparams":
 					$result['variantId'] = 0;
 					if (!empty($_POST['variantId']))
@@ -1154,7 +1159,7 @@ exit;
 			}
 		}
 
-		if (($subAction == 'variantparams') || (!empty($typeId) && ($typeId == 1)))//ПОКА ПОДДЕРЖКА ТОЛЬКО ВИДЕО
+		if (($subAction == 'contentinbox') || ($subAction == 'variantparams') || (!empty($typeId) && ($typeId == 1)))//ПОКА ПОДДЕРЖКА ТОЛЬКО ВИДЕО
 		{
 	        $this->render('/products/ajax', array('subAction' => $subAction, 'result' => $result, 'typeId' => $typeId));
 		}

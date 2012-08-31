@@ -38,6 +38,37 @@
     <?php echo '<h4>' . Yii::t('common', 'Variants') . '</h4>'; ?>
     <div id="variants_params" class="row stolb">
 <script type="text/javascript">
+	function getInboxList()
+	{
+		$('#inboxlistdiv').load('/products/ajax', {action: "contentinbox"});
+		return false;
+	}
+
+	function fillValue(vid, v)
+	{
+		$("input[name=ProductForm\\[params\\]\\[" + vid + "\\]\\[4\\]\\[value\\]]").val(v);
+	}
+
+	function generateVariants()
+	{
+		$('#inboxlistdiv input').each(function(n,element){
+			if($(element).attr('checked') == 'checked'){
+				vid = newVariantId;
+				did = 'variants' + vid + 'type_id';
+				newVariant();
+				ts = $('#' + did);
+				ts.val(1);
+				variantParams(vid, document.getElementById(did));
+				cmd = 'fillValue(' + vid + ', "' + $(element).val() + '");';
+				window.setTimeout(cmd, 1000);
+			}
+		});
+
+		$('#inboxlistdiv').text('');
+
+		return false;
+	}
+
 	variantNum = 1;
 	newVariantId = <?php echo (count($variants)*(-1)-1); ?>;
 	function variantParams(vId, selObj)
@@ -130,9 +161,13 @@
     ?>
     </div>
 	<a href="" onclick="return newVariant();">Новый вариант</a>
+	<div id="inboxlistdiv">
+		<a href="" onclick="return getInboxList();">Выбрать файлы</a>
+	</div>
 
+	<br />
     <div class="row submit">
-        <?php echo CHtml::submitButton(Yii::t('products', 'Add product')); ?>
+        <?php echo CHtml::submitButton(Yii::t('products', 'Add product'), array('class' => 'btn')); ?>
     </div>
 
 <?php $this->endWidget(); ?>

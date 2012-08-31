@@ -95,7 +95,9 @@ Y.one("#overallProgress").set("text", "Uploader type: " + Y.Uploader.TYPE);
        uploader.on("uploadcomplete", function (event) {
             var fileRow = Y.one("#" + event.file.get("id") + "_row");
                 fileRow.one(".percentdone").set("text", "<?php echo Yii::t('common', "Finished"); ?>!");
-                fileRow.one(".serverdata").setHTML(event.data);
+                msg = event.data;
+                if (msg == '') msg = "<?php echo Yii::t('common', "Server error"); ?>";
+                fileRow.one(".serverdata").setHTML();
        });
 
        uploader.on("totaluploadprogress", function (event) {

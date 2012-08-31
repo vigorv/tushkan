@@ -29,8 +29,9 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 						//ЭТО НОВЫЙ ВАРИАНТ
 //print_r($variant);
 //exit;
-						$sql = 'INSERT INTO {{product_variants}} (id, product_id, online_only, type_id, active, title, description, original_id, childs, sub_id)
-							VALUES(null, :product_id, ' . $variant['online_only'] . ', :type_id, :active, "", "", 0, ",,", 0)
+						//ПО УМОЛЧАНИЮ ВАРИАНТ НЕ СОВМЕСТИМ С ВИТРИНАМИ (ДОЛЖЕН БЫТЬ СКОНВЕРТИРОВАН КОМПРЕССОРОМ)
+						$sql = 'INSERT INTO {{product_variants}} (id, product_id, online_only, type_id, active, title, description, original_id, childs, sub_id, cloud_ready, cloud_state, cloud_compressor)
+							VALUES(null, :product_id, ' . $variant['online_only'] . ', :type_id, :active, "", "", 0, ",,", 0, 0, 0, 0)
 						';
 						$cmd = Yii::app()->db->createCommand($sql);
 						$cmd->bindParam(":product_id", $variant['product_id'], PDO::PARAM_INT);

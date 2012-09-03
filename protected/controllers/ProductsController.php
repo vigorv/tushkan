@@ -607,7 +607,7 @@ exit;
 
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
-                $products = new Cproduct();
+                $products = new CProduct();
 
                 $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {
@@ -972,7 +972,7 @@ exit;
 
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
-                $products = new Cproduct();
+                $products = new CProduct();
 
                 $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {
@@ -1040,7 +1040,7 @@ exit;
 
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
-                $products = new Cproduct();
+                $products = new CProduct();
 
                 $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {

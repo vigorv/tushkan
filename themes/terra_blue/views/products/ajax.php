@@ -2,6 +2,43 @@
 
 switch ($subAction)
 {
+	case "contentinbox":
+		function dirwalk($dir)
+		{
+			echo '<ul>' . basename($dir);
+			$dh = opendir($dir);
+			while (($file = readdir($dh)) !== false)
+			{
+				if (($file == '.') || ($file == '..'))
+					continue;
+				echo '<li>';
+				if (is_dir($dir . '/' . $file))
+					dirwalk($dir . '/' . $file);
+				else
+				{
+					$baseDir = Yii::app()->params['tushkan']['content_inbox'];
+					$file = str_replace($baseDir, '', $dir . '/' . $file);
+					echo '<input type="checkbox" value="' . ($file) . '" />' . basename($file);
+				}
+				echo '</li>';
+        	}
+        	echo '</ul>';
+			closedir($dh);
+		}
+
+		$dir = Yii::app()->params['tushkan']['content_inbox'];
+		echo '<h3>Входящий контент ' . $dir . '</h3>';
+		if (file_exists($dir) && is_dir($dir))
+		{
+			dirwalk($dir);
+			echo'<button class="btn" onclick="return generateVariants();">Ok</button>';
+		}
+		else
+		{
+			echo 'Ошибка доступа к директории входящего контента';
+		}
+	break;
+
 	case "typeparams":
 		if (!empty($result['lst']))
 		{

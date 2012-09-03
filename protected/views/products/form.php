@@ -12,27 +12,27 @@
 
     <div class="row">
         <?php echo $form->label($model, 'title', array('label' => Yii::t('common', 'Title'))); ?>
-        <?php echo $form->textField($model, 'title', array('class' => 'text ui-widget-content ui-corner-all')); ?>
+        <?php echo $form->textField($model, 'title', array('class' => 'text')); ?>
     </div>
 
     <div class="row">
         <?php echo $form->label($model, 'partner_id', array('label' => Yii::t('common', 'Partner'))); ?>
-        <?php echo $form->dropdownlist($model, 'partner_id', $pLst, array('class' => 'text ui-widget-content ui-corner-all')); ?>
+        <?php echo $form->dropdownlist($model, 'partner_id', $pLst, array('class' => 'text')); ?>
     </div>
 
     <div class="row">
         <?php echo $form->label($model, 'description', array('label' => Yii::t('common', 'Description'))); ?>
-        <?php echo $form->textArea($model, 'description', array('class' => 'text ui-widget-content ui-corner-all')); ?>
+        <?php echo $form->textArea($model, 'description', array('class' => 'text')); ?>
     </div>
 
     <div class="row">
         <?php echo $form->label($model, 'active', array('label' => Yii::t('common', 'Active'))); ?>
-        <?php echo $form->dropdownlist($model, 'active', $aLst, array('class' => 'text ui-widget-content ui-corner-all')); ?>
+        <?php echo $form->dropdownlist($model, 'active', $aLst, array('class' => 'text')); ?>
     </div>
 
     <div class="row">
         <?php echo $form->label($model, 'srt', array('label' => Yii::t('common', 'Srt'))); ?>
-        <?php echo $form->textField($model, 'srt', array('class' => 'text ui-widget-content ui-corner-all')); ?>
+        <?php echo $form->textField($model, 'srt', array('class' => 'text')); ?>
     </div>
 
     <?php echo '<h4>' . Yii::t('common', 'Variants') . '</h4>'; ?>

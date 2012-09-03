@@ -36,6 +36,7 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 						$cmd = Yii::app()->db->createCommand($sql);
 						$cmd->bindParam(":product_id", $variant['product_id'], PDO::PARAM_INT);
 						$cmd->bindParam(":type_id", $variant['type_id'], PDO::PARAM_INT);
+						$variant['active'] = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАНО
 						$cmd->bindParam(":active", $variant['active'], PDO::PARAM_INT);
 						$cmd->execute();
 						$variant['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');

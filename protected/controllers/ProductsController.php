@@ -1047,7 +1047,7 @@ exit;
                     $products->{$k} = $v;
                 }
                 $products->original_id = 0;
-                $products->active = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАННО
+                $products->active = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАНО
                 if (empty($products->srt))
                 	$products->srt = 0;
                 $products->created = date('Y-m-d H:i:s');
@@ -1055,7 +1055,7 @@ exit;
 
                 $products->save();
                 Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
-                $this->redirect('/products/edit/' . $products->id);
+                $this->redirect('/products/editproduct/' . $products->id);
             }
             else
             {

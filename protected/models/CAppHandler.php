@@ -116,7 +116,8 @@ class CAppHandler
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->where('tf.user_id =' . $user_id . $type_str.' AND tf.title LIKE "%'.$search.'%"')
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
+            ->where('tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
             ->queryScalar();
     }
 
@@ -169,19 +170,20 @@ class CAppHandler
     public static function countPartnerProductsForUser($search='',$partner_id=0){
         $searchCondition = '';
         if (!($search == '')) {
-            $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
+            $searchCondition = ' AND (p.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")';
         }
         $partnerCondition='';
         if ($partner_id){
-            $partnerCondition = 'AND prt.id = '.$partner_id;
+            $partnerCondition = ' AND prt.id = '.$partner_id;
         }
 
         $cmd = Yii::app()->db->createCommand()
             ->select('Count(p.id)')
             ->from('{{products}} p')
-            ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
+            ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<='.Yii::app()->user->userPower.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->where('p.active <= ' . Yii::app()->user->userPower. ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition);
         return $cmd->queryScalar();
     }

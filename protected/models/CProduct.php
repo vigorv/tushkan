@@ -149,4 +149,61 @@ class CProduct extends CActiveRecord
         }
         return array("tFiles" => $tFiles, "fParams" => $fParams);
     }
+
+    /**
+     * получить все связи продукта в виде структуры
+     *
+     * @param integer $variantId
+     * @return mixed
+     */
+    public static function getProductRelations($productId = 0)
+    {
+    	$result = array();
+    	$productId = intval($productId);
+
+    	if (empty($productId))
+    		return $result;
+    	$relations = array(
+    		'countries_products',
+    		'income_queue',
+    		'product_collections',
+    		'product_descriptions',
+    		'product_pictures',
+    		'product_variants',
+    	);
+    	foreach ($relations as $r)
+    	{
+    		$result[$r] = Yii::app()->db->createCommand()
+    			->select('*')
+    			->from('{{' . $r . '}}')
+    			->where('product_id = ' . $productId)
+    			->queryAll();
+    	}
+    	return $result;
+    }
+
+    public static function deleteProduct($id = 0)
+    {
+    	$id = intval($id);
+    	if (empty($id)) return;
+
+		$relations = CProduct::getProductRelations($id);
+		if (empty($relations)) return;
+
+		if (!empty($relations['product_variants']))
+		{
+			foreach ($relations['product_variants'] as $vk => $vv)
+			{
+				CProductVariant::deleteVariant($vv['id']);
+			}
+		}
+
+		foreach ($relations as $rk => $rv)
+		{
+			$sql = 'DELETE FROM {{' . $rk . '}} WHERE product_id = ' . $id;
+			Yii::app()->db->createCommand($sql)->execute();
+		}
+		$sql = 'DELETE FROM {{products}} WHERE id = ' . $id;
+		Yii::app()->db->createCommand($sql)->execute();
+    }
 }

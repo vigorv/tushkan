@@ -6,6 +6,7 @@ define('_BANREASON_ABONENTFEE_', 0);
 define('_BANREASON_VIOLATION_', 1);
 define('_CURRENCY_', 'rur');
 
+define('_VIDEO_ULTRA_', 4);
 define('_VIDEO_HIGH_', 3);
 define('_VIDEO_MEDIUM_', 2);
 define('_VIDEO_LOW_', 1);
@@ -269,6 +270,7 @@ class Utils {
      */
     public static function getVideoConverterQuality($ret = 'id') {
 	$qArr = array(
+	    _VIDEO_ULTRA_ => 'Ultra',
 	    _VIDEO_HIGH_ => 'High',
 	    _VIDEO_MEDIUM_ => 'Medium',
 	    _VIDEO_LOW_ => 'Low',

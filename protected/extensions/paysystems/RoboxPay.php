@@ -93,6 +93,7 @@ class RoboxPay
 	{
 	}
 
+/* DEPRECATED
 	public function getOrderId($requestInfo)
 	{
 		$orderId = 0;
@@ -102,4 +103,5 @@ class RoboxPay
 		}
 		return $orderId;
 	}
+*/
 }

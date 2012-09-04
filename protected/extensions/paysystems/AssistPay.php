@@ -262,6 +262,7 @@ class AssistPay
 	 * @param mixed $requestInfo - параметры ответа от платежной системы
 	 * @return integer
 	 */
+/* DEPRECATED
 	public function getOrderId($requestInfo)
 	{
 		$orderId = 0;
@@ -271,4 +272,5 @@ class AssistPay
 		}
 		return $orderId;
 	}
+*/
 }

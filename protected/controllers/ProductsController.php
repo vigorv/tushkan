@@ -305,17 +305,17 @@ class ProductsController extends Controller
 		if (!empty($_POST['group_ids']) && !empty($_POST['operation']))
 		{
 			$errorResult = '';
+			$ids = array();
+			$group_ids = array_keys($_POST['group_ids']);
+			foreach ($group_ids as $id)
+			{
+				$id = intval($id);
+				if (empty($productId)) $productId = $id;//ЭТО ДЛЯ ОПЕРАЦИИ ОБЪЕДИНЕНИЯ
+				$ids[$id] = $id;
+			}
 			switch ($_POST['operation'])
 			{
 				case 1://объединить
-					$ids = array();
-					$group_ids = array_keys($_POST['group_ids']);
-					foreach ($group_ids as $id)
-					{
-						$id = intval($id);
-						if (empty($productId)) $productId = $id;
-						$ids[$id] = $id;
-					}
 					if (count($ids) > 1)
 					{
 						//ВЫБИРАЕМ ВАРИАНТЫ УКАЗАННЫХ ПРОДУКТОВ
@@ -397,6 +397,14 @@ exit;
 				case 2://скрыть
 				break;
 				case 3://удалить
+					if (empty($ids)) break;
+
+					foreach ($ids as $id)
+					{
+						CProduct::deleteProduct($id);
+					}
+					$operationResult = 'Продукт удален';
+
 				break;
 			}
 			if (!empty($operationResult))
@@ -433,6 +441,17 @@ exit;
 		{
 			$filterCondition['partner'] = 'p.partner_id = :partner';
 		}
+
+		if (!empty($filterInfo['from']))
+		{
+			$filterCondition['from'] = 'p.created >= :ffrom';
+		}
+
+		if (!empty($filterInfo['to']))
+		{
+			$filterCondition['to'] = 'p.created < :fto';
+		}
+
 		$cmd = Yii::app()->db->createCommand()
 			->select('count(p.id) AS cnt')
 			->from('{{products}} p');
@@ -450,12 +469,22 @@ exit;
 			{
 				$cmd->bindParam(':partner', $filterInfo['partner']['value'], PDO::PARAM_INT);
 			}
+			if (!empty($filterInfo['from']))
+			{
+				$cmd->bindParam(':ffrom', $filterInfo['from']['value'], PDO::PARAM_STR);
+			}
+			if (!empty($filterInfo['to']))
+			{
+				$to = date('Y-m-d', strtotime($filterInfo['to']['value']) + 3600*24);
+				$cmd->bindParam(':fto', $to, PDO::PARAM_STR);
+			}
 		}
 		$count = $cmd->queryScalar();
 /*
+echo $to;
 echo $cmd->getText();
 exit;
-*/
+//*/
 		$paginationParams = Utils::preparePagination('/products/admin', $count);
 		$products = array();
 
@@ -493,6 +522,14 @@ exit;
 			if (!empty($filterInfo['partner']))
 			{
 				$cmd->bindParam(':partner', $filterInfo['partner']['value'], PDO::PARAM_INT);
+			}
+			if (!empty($filterInfo['from']))
+			{
+				$cmd->bindParam(':ffrom', $filterInfo['from']['value'], PDO::PARAM_STR);
+			}
+			if (!empty($filterInfo['to']))
+			{
+				$cmd->bindParam(':fto', $filterInfo['to']['value'], PDO::PARAM_STR);
 			}
 			$pst = $cmd->queryAll();
 
@@ -570,7 +607,7 @@ exit;
 
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
-                $products = new Cproduct();
+                $products = new CProduct();
 
                 $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {
@@ -808,6 +845,22 @@ exit;
                 //$variants = new CProductVariant();
 
 				$variants = CProductVariant::model()->findByPk($id);
+
+				if (empty($variants['child']))
+				{
+					//ЗНАЧИТ - ЭТО ПОТОМОК, ПРОВЕРЯЕМ НАЛИЧИЕ ПРЕДКА
+					$parent = Yii::app()->db->createCommand()
+						->select('id')
+						->from('{{product_variants}}')
+						->where('childs LIKE ",' . $variants['id'] . ',"')
+						->queryRow();
+					if (empty($parent))
+					{
+						//ПРЕДКА НЕ НАШЛИ. ПРАВИМ СТРУКТУРУ
+						$variants['childs'] = ',,';
+					}
+				}
+
                 $attrs = $variantForm->getAttributes();
                 foreach ($attrs as $k => $v) {
                     $variants->{$k} = $v;
@@ -919,7 +972,7 @@ exit;
 
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
-                $products = new Cproduct();
+                $products = new CProduct();
 
                 $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {
@@ -987,13 +1040,14 @@ exit;
 
             if ($productForm->validate()) {
                 //СОХРАНЕНИЕ ДАННЫХ C УЧЕТОМ ВСЕХ СВЯЗЕЙ
-                $products = new Cproduct();
+                $products = new CProduct();
 
                 $attrs = $productForm->getAttributes();
                 foreach ($attrs as $k => $v) {
                     $products->{$k} = $v;
                 }
                 $products->original_id = 0;
+                $products->active = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАНО
                 if (empty($products->srt))
                 	$products->srt = 0;
                 $products->created = date('Y-m-d H:i:s');
@@ -1001,7 +1055,7 @@ exit;
 
                 $products->save();
                 Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
-                $this->redirect('/products/edit/' . $products->id);
+                $this->redirect('/products/editproduct/' . $products->id);
             }
             else
             {
@@ -1030,6 +1084,10 @@ exit;
 			}
 			switch ($subAction)
 			{
+				case "contentinbox":
+					//ВСЕ ДЕЛАЕМ ВО ВЬЮХЕ
+				break;
+
 				case "typeparams":
 					$result['variantId'] = 0;
 					if (!empty($_POST['variantId']))
@@ -1101,7 +1159,7 @@ exit;
 			}
 		}
 
-		if (($subAction == 'variantparams') || (!empty($typeId) && ($typeId == 1)))//ПОКА ПОДДЕРЖКА ТОЛЬКО ВИДЕО
+		if (($subAction == 'contentinbox') || ($subAction == 'variantparams') || (!empty($typeId) && ($typeId == 1)))//ПОКА ПОДДЕРЖКА ТОЛЬКО ВИДЕО
 		{
 	        $this->render('/products/ajax', array('subAction' => $subAction, 'result' => $result, 'typeId' => $typeId));
 		}
@@ -1122,8 +1180,8 @@ exit;
 		$result = 'bad original ID or bad partner ID';
 		if (!empty($_GET['oid']) && !empty($_GET['pid']))
 		{
-			$partnerId = $_GET['pid'];
-			$originalId = $_GET['oid'];
+			$partnerId = intval($_GET['pid']);
+			$originalId = intval($_GET['oid']);
 			$result = 'user not registered';
 			if (!empty($this->userInfo['id']))
 			{
@@ -1457,7 +1515,15 @@ exit;
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmdInfo = $cmd->queryRow();
-			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
+
+			 if ($cmdInfo['partner_id'] <= 0)
+			 {
+			 	//ОТ ЭТИХ ПАРТНЕРОВ ДОБАВЛЯТЬ В ВИТРИНЫ НЕ НАДО
+			 	//ТАКОЙ КОНТЕНТ ОБРАБАТЫВАЕТСЯ ОСОБЫМ ПОРЯДКОМ (ЧЕРЕЗ ТРАНСПОРТ КОНВЕРТЕРА, ПП и т.д.)
+			 	exit;
+			 }
+
+			if (!empty($cmdInfo))
 			{
 /**
  * ДОБАВЛЕНИЕ В ВИТРИНЫ. начало

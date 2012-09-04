@@ -221,6 +221,7 @@ class PayPalPay
 	}
 
 
+/* DEPRECATED
 	public function getOrderId($requestInfo)
 	{
 		$orderId = 0;
@@ -230,4 +231,5 @@ class PayPalPay
 		}
 		return $orderId;
 	}
+*/
 }

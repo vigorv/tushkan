@@ -97,7 +97,7 @@ class CProductVariant extends CActiveRecord {
 					}
 
 					if (!$parentExists)
-						$cv['title'] .= $errMsg;
+						$vi['title'] .= $errMsg;
 					else
 						continue;
 				}
@@ -160,5 +160,22 @@ class CProductVariant extends CActiveRecord {
     			->queryAll();
     	}
     	return $result;
+    }
+
+    public static function deleteVariant($id = 0)
+    {
+    	$id = intval($id);
+    	if (empty($id)) return;
+
+		$relations = CProductVariant::getVariantRelations($id);
+		if (empty($relations)) return;
+
+		foreach ($relations as $rk => $rv)
+		{
+			$sql = 'DELETE FROM {{' . $rk . '}} WHERE variant_id = ' . $id;
+			Yii::app()->db->createCommand($sql)->execute();
+		}
+		$sql = 'DELETE FROM {{product_variants}} WHERE id = ' . $id;
+		Yii::app()->db->createCommand($sql)->execute();
     }
 }

@@ -2,14 +2,11 @@
 
 /**
  * @property $id
+ * @property $title
+ * @property $active
+ * @property $sprintf_url
+ * @property $approved
  * @property $hkey
- * @property $service_uri
- * @property $service_cat
- * @property $service_items
- * @property $service_itemInfo
- * @property $fields_cat
- * @property $fields_items
- * @property $fields_itemInfo
  */
 class CPartners extends CActiveRecord {
 
@@ -67,7 +64,6 @@ class CPartners extends CActiveRecord {
 
     public static function getPartnerList(){
     	$userPower = Yii::app()->user->getState('dmUserPower');
-
 		return Yii::app()->db->createCommand()
 		->select('title,id,sprintf_url AS url')
 		->from('{{partners}}')
@@ -75,5 +71,20 @@ class CPartners extends CActiveRecord {
 		->queryAll();
     }
 
+    /**
+     * @param int $product_id
+     * @param int $partner_id
+     * @return int
+     */
+
+    public static function setPartnerItemUpdate($partner_item_id=0,$partner_id=0){
+        return Yii::app()->db
+            ->createCommand("INSERT IGNORE INTO {{user_product_updates}} (user_id,product_id)"
+            ." (SELECT tf.user_id as user_id,pv.product_id as product_id FROM {{products}} p"
+            ." JOIN {{product_variants}} pv ON pv.product_id = p.id"
+            ." JOIN {{typedfiles}} tf ON tf.variant_id = pv.id"
+            ." WHERE p.original_id=".$partner_item_id." AND p.partner_id =".$partner_id.")" )->execute();
+
+    }
 
 }

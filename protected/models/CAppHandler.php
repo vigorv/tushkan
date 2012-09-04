@@ -18,12 +18,13 @@ class CAppHandler
         } else
             $type_str = '';
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, ppv.value as poster,pv.id as variant_id')
+            ->select('tf.title,tf.id, ppv.value as poster,pv.id as variant_id, COALESCE(ppvT.value,"-")  as original_title')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
             ->where('tf.user_id =' . $user_id . $type_str)
             ->limit($count, $offset)
             ->queryAll();
@@ -46,22 +47,31 @@ class CAppHandler
     }
 
 
-    public static function getVtrItemA($item_id = 0, $user_id = 0)
+    public static function getVtrItemA($item_id = 0, $user_id = 0, $preset = 2)
     {
+        switch ($preset){
+            case 3:
+                break;
+            default:
+                $preset=2;
+                break;
+        }
+
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description')
+            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title, pf.fname as fname, pd.description')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{products}} p', ' p.id = pv.product_id')
-            ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')   //poster
             ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year
             ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
             ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
         //links in the ass
         // 10 - poster
             ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
-            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
+            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = '.$preset)
             ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $item_id)->limit(1)->query();
     }
 
@@ -82,13 +92,14 @@ class CAppHandler
         } else
             $type_str = '';
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, ppv.value as poster,pv.id as variant_id')
+            ->select('tf.title,tf.id, ppv.value as poster,pv.id as variant_id, COALESCE(ppvT.value,"-")  as original_title')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->where('tf.user_id =' . $user_id . $type_str.' AND tf.title LIKE "%'.$search.'%"')
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
+            ->where('tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
             ->limit($count, $offset)
             ->queryAll();
     }
@@ -105,7 +116,8 @@ class CAppHandler
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->where('tf.user_id =' . $user_id . $type_str.' AND tf.title LIKE "%'.$search.'%"')
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
+            ->where('tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
             ->queryScalar();
     }
 
@@ -132,22 +144,24 @@ class CAppHandler
         $offset = ($page - 1) * $count;
         $searchCondition = '';
         if (!($search == '')) {
-            $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
+            $searchCondition = ' AND (p.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")';
         }
         $partnerCondition='';
         if ($partner_id){
-            $partnerCondition = 'AND prt.id = '.$partner_id;
+            $partnerCondition =' AND prt.id = '.$partner_id;
         }
 
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(tf.id,0) as cloud_id')
+            ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(ppvT.value,"-")  as original_title, COALESCE(tf.id,0) as cloud_id')
             ->from('{{products}} p')
-            ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
+            ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<='.Yii::app()->user->userPower.$partnerCondition)
+            ->leftJoin('{{partners_tariffs}} pt','pt.partner_id = prt.id')
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1) AND tf.user_id = '.Yii::app()->user->id )
             ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
-            ->where('pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
+            ->where('pt.partner_id is NULL AND pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . $searchCondition)
             ->order('pv.id ASC')
             ->group('p.id')
             ->limit($count,$offset);
@@ -157,20 +171,23 @@ class CAppHandler
     public static function countPartnerProductsForUser($search='',$partner_id=0){
         $searchCondition = '';
         if (!($search == '')) {
-            $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
+            $searchCondition = ' AND (p.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")';
         }
         $partnerCondition='';
         if ($partner_id){
-            $partnerCondition = 'AND prt.id = '.$partner_id;
+            $partnerCondition = ' AND prt.id = '.$partner_id;
         }
 
         $cmd = Yii::app()->db->createCommand()
             ->select('Count(p.id)')
             ->from('{{products}} p')
-            ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
+            ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<='.Yii::app()->user->userPower.$partnerCondition)
+            ->leftJoin('{{partners_tariffs}} pt','pt.partner_id = prt.id')
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->where('p.active <= ' . Yii::app()->user->userPower. ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition);
+            ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
+            ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
+            ->where('pt.partner_id is NULL AND pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower. ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition);
         return $cmd->queryScalar();
     }
 
@@ -189,13 +206,14 @@ class CAppHandler
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
                 //->select('*')
-                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud_id')
+                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as poster, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud_id')
                 ->from('{{product_variants}} pv')
                 ->join('{{products}} p','product_id = p.id')
                 ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
                 ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year
                 ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
                 ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
+                ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
             //links in the ass
             // 10 - poster
                 ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')

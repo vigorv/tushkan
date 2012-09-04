@@ -71,6 +71,9 @@ class AppController extends ControllerApp
                     $device->generateDeviceLoginHash();
                     $device->save();
                 }
+                $_SESSION['device_id'] = $device->id;
+                $_SESSION['device_preset'] = $device->max_preset;
+
                 //  Yii::app()->db->createCommand('UPDATE {{users}} SET last_ip = "' . Yii::app()->request->getUserHostAddress() . '" where user_id=' . $user['user_id'])->execute();
 
                 //     if (($user['confirmed_email'] == 1) && (Yii::app()->params['email_confirm']==true)) {
@@ -122,10 +125,13 @@ class AppController extends ControllerApp
             } else {
                 $page = 0;
             }
+            $search = '';
+            if (isset($_REQUEST['search']))
+                $search = trim(filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING));
             $list = CAppHandler::getVtrList(Yii::app()->user->id, 1, $page, $per_page);
             $total_count = CAppHandler::countVtrList(Yii::app()->user->id, 1);
             $count = count($list);
-            echo json_encode(array('cmd' => "FilmList", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
+            echo json_encode(array('cmd' => "FilmList", 'error' => 0, 'Data' => $list, 'count' => $count, 'total_count' => $total_count,'search'=>$search));
         } else {
             echo json_encode(array('cmd' => 'FilmList', 'error' => 1, 'error_msg' => 'Please login'));
         }
@@ -155,7 +161,10 @@ class AppController extends ControllerApp
         if (Yii::app()->user->id) {
             if (isset($_REQUEST['fc_id'])) {
                 $fc_id = (int)$_REQUEST['fc_id'];
-                $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id);
+                if(isset($_SESSION['device_preset'])){
+                    $preset = $_SESSION['device_preset'];
+                } else $preset = 0;
+                $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id,$preset);
                 if ($res = $list->read()) {
                     if ($res['fname']) {
                         $partnerInfo = Yii::app()->db->createCommand()
@@ -172,7 +181,7 @@ class AppController extends ControllerApp
                                 $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 1);
                                 break;
                             default:
-                                echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown parnter'));
+                                echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown partner'));
                                 Yii::app()->end();
                         }
                         $res['link'] = $link;
@@ -195,7 +204,10 @@ class AppController extends ControllerApp
         if (Yii::app()->user->id) {
             if (isset($_REQUEST['fc_id'])) {
                 $fc_id = (int)$_REQUEST['fc_id'];
-                $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id);
+                if(isset($_SESSION['device_preset'])){
+                    $preset = $_SESSION['device_preset'];
+                } else $preset = 0;
+                $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id,$preset);
                 if ($res = $list->read()) {
                     if ($res['fname']) {
                         $partnerInfo = Yii::app()->db->createCommand()
@@ -212,7 +224,7 @@ class AppController extends ControllerApp
                                 $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
                                 break;
                             default:
-                                echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown parnter'));
+                                echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown partner'));
                                 Yii::app()->end();
                         }
                         $data = array('id' => $res['id'], 'link' => $link);
@@ -335,6 +347,21 @@ class AppController extends ControllerApp
             Yii::app()->end();
         } else {
             $result = array("Cat_list" => "OK");
+        }
+    }
+
+    public function actionSetDeviceParams(){
+        if (Yii::app()->user->id) {
+            if (isset($_SESSION['device_id'])) {
+                $device_id = $_SESSION['device_id'];
+                $device = CDevices::model()->find('id=:id',array(':id'=>$device_id));
+                /** @var CDevices $device  */
+                if($device){
+                    if (isset($_REQUEST['quality']))
+                        $device->max_preset= (int) $_REQUEST['quality'];
+                    $device->save();
+                }
+            }
         }
     }
 

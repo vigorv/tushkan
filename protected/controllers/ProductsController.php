@@ -1180,8 +1180,8 @@ exit;
 		$result = 'bad original ID or bad partner ID';
 		if (!empty($_GET['oid']) && !empty($_GET['pid']))
 		{
-			$partnerId = $_GET['pid'];
-			$originalId = $_GET['oid'];
+			$partnerId = intval($_GET['pid']);
+			$originalId = intval($_GET['oid']);
 			$result = 'user not registered';
 			if (!empty($this->userInfo['id']))
 			{
@@ -1515,7 +1515,15 @@ exit;
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmdInfo = $cmd->queryRow();
-			if (!empty($cmdInfo) && !empty($cmdInfo['partner_id']))
+
+			 if ($cmdInfo['partner_id'] <= 0)
+			 {
+			 	//ОТ ЭТИХ ПАРТНЕРОВ ДОБАВЛЯТЬ В ВИТРИНЫ НЕ НАДО
+			 	//ТАКОЙ КОНТЕНТ ОБРАБАТЫВАЕТСЯ ОСОБЫМ ПОРЯДКОМ (ЧЕРЕЗ ТРАНСПОРТ КОНВЕРТЕРА, ПП и т.д.)
+			 	exit;
+			 }
+
+			if (!empty($cmdInfo))
 			{
 /**
  * ДОБАВЛЕНИЕ В ВИТРИНЫ. начало

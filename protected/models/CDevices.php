@@ -1,8 +1,12 @@
 <?php
 
+define("_DT_PAD_", 1);
+define("_DT_MOBILE_", 2);
+define("_DT_PLAYER_", 3);
+define("_DT_TVSET_", 4);
+
 /**
  * ActiveRecord class for device
- *
  * @property $id
  * @property $user_id
  * @property $device_type_id
@@ -10,12 +14,8 @@
  * @property $guid
  * @property $active
  * @property $app_hash
- */
-define("_DT_PAD_", 1);
-define("_DT_MOBILE_", 2);
-define("_DT_PLAYER_", 3);
-define("_DT_TVSET_", 4);
-
+ * @property $max_preset
+ **/
 class CDevices extends CActiveRecord {
 
     /**
@@ -24,7 +24,7 @@ class CDevices extends CActiveRecord {
      * @return CDevices
      */
     public static function model($className = __CLASS__) {
-	return parent::model($className);
+	    return parent::model($className);
     }
 
     public static function getDeviceTypes()
@@ -54,7 +54,7 @@ class CDevices extends CActiveRecord {
     }
 
     public function tableName() {
-	return '{{userdevices}}';
+    	return '{{userdevices}}';
     }
 
     public static function generateGUID($info_string=''){

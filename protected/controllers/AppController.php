@@ -72,7 +72,7 @@ class AppController extends ControllerApp
                     $device->save();
                 }
                 $_SESSION['device_id'] = $device->id;
-                $_SESSION['device_preset'] = $device->preset;
+                $_SESSION['device_preset'] = $device->max_preset;
 
                 //  Yii::app()->db->createCommand('UPDATE {{users}} SET last_ip = "' . Yii::app()->request->getUserHostAddress() . '" where user_id=' . $user['user_id'])->execute();
 

@@ -155,12 +155,13 @@ class CAppHandler
             ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(ppvT.value,"-")  as original_title, COALESCE(tf.id,0) as cloud_id')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<='.Yii::app()->user->userPower.$partnerCondition)
+            ->leftJoin('{{partners_tariffs}} pt','pt.partner_id = prt.id')
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1) AND tf.user_id = '.Yii::app()->user->id )
             ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
-            ->where('pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
+            ->where('pt.partner_id is NULL AND pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . $searchCondition)
             ->order('pv.id ASC')
             ->group('p.id')
             ->limit($count,$offset);
@@ -181,10 +182,11 @@ class CAppHandler
             ->select('Count(p.id)')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<='.Yii::app()->user->userPower.$partnerCondition)
+            ->leftJoin('{{partners_tariffs}} pt','pt.partner_id = prt.id')
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
-            ->where('p.active <= ' . Yii::app()->user->userPower. ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition);
+            ->where('pt.partner_id is NULL AND p.active <= ' . Yii::app()->user->userPower. ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition);
         return $cmd->queryScalar();
     }
 

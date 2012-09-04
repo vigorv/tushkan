@@ -147,13 +147,13 @@ class CAppHandler
         }
         $partnerCondition='';
         if ($partner_id){
-            $partnerCondition = 'AND prt.id = '.$partner_id;
+            $partnerCondition =' AND prt.id = '.$partner_id;
         }
 
         $cmd = Yii::app()->db->createCommand()
             ->select('p.id, p.title AS ptitle,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(ppvT.value,"-")  as original_title, COALESCE(tf.id,0) as cloud_id')
             ->from('{{products}} p')
-            ->join('{{partners}} prt', 'p.partner_id=prt.id '.$partnerCondition)
+            ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<='.Yii::app()->user->userPower.$partnerCondition)
             ->join('{{product_variants}} pv', 'pv.product_id=p.id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')

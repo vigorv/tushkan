@@ -28,7 +28,7 @@ exit;
 //*/
 	$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
 
-	$playList = '';
+	$playList = $activateTab = '';
 	foreach ($qs as $k => $val)
 	{
 		$qualityVariantId = $val[0][2];

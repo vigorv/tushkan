@@ -6,6 +6,11 @@
 		{
 			$info = array();
 			$title= 'от партнера ' . $q['title'];
+			if (empty($q['title']))
+			{
+				$title = 'конвертирование';
+			}
+
 			$img = 'video_mp4.png';
 			$start = strtotime($q['date_start']);
 			if ($start <= 0)

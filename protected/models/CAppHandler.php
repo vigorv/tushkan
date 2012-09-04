@@ -99,7 +99,7 @@ class CAppHandler
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-            ->where('tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR original_title LIKE "%'.$search.'%")')
+            ->where('tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
             ->limit($count, $offset)
             ->queryAll();
     }
@@ -143,7 +143,7 @@ class CAppHandler
         $offset = ($page - 1) * $count;
         $searchCondition = '';
         if (!($search == '')) {
-            $searchCondition = ' AND (p.title LIKE "%' . $search . '%" OR original_title LIKE "%' . $search . '%")';
+            $searchCondition = ' AND (p.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")';
         }
         $partnerCondition='';
         if ($partner_id){

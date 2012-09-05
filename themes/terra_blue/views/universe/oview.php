@@ -277,4 +277,13 @@ $(document).ready(function() {
 </script>
 <?php
 	}
+	else
+	{
+		$msg = '<div id="flashDiv" class="alert alert-error">
+			<a class="close" data-dismiss="alert" href="#">×</a>
+			<h4 class="alert-heading">' . Yii::t('files', 'Error data structure') . '</h4>
+			' . Yii::t('files', 'File not found') . '
+		</div>';
+		echo $msg;
+	}
 }

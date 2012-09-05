@@ -181,6 +181,17 @@ exit;
 		}
 		echo '<p><strong>' . Yii::t('params', $param) . ':</strong> ' . $value . '</p>';
 	}
+
+	if (empty($currentVariantId) && empty($qualityVariantId))
+	{
+		$msg = '<div id="flashDiv" class="alert alert-error">
+			<a class="close" data-dismiss="alert" href="#">×</a>
+			<h4 class="alert-heading">' . Yii::t('files', 'Error data structure') . '</h4>
+			' . Yii::t('files', 'File not found') . '
+		</div>';
+		echo $msg;
+	}
+
 ?>
 	</div>
 <?php
@@ -199,9 +210,10 @@ exit;
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 
 	if (empty($currentVariantId) && !empty($qualityVariantId))
-	{
 		$currentVariantId = $qualityVariantId;
 
+	if (!empty($currentVariantId))
+	{
 	$playerCode = '
 	<div id="flowplayerdiv" class="modal" style="width:640px; height:580px; display: none">
 		<div class="modal-header">
@@ -276,14 +288,5 @@ $(document).ready(function() {
 ?>
 </script>
 <?php
-	}
-	else
-	{
-		$msg = '<div id="flashDiv" class="alert alert-error">
-			<a class="close" data-dismiss="alert" href="#">×</a>
-			<h4 class="alert-heading">' . Yii::t('files', 'Error data structure') . '</h4>
-			' . Yii::t('files', 'File not found') . '
-		</div>';
-		echo $msg;
 	}
 }

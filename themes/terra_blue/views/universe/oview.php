@@ -198,7 +198,8 @@ exit;
 
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . "/js/flowplayer/flowplayer.ipad-3.2.1.js");
 
-	if (empty($currentVariantId))
+	if (empty($currentVariantId) && !empty($qualityVariantId))
+	{
 		$currentVariantId = $qualityVariantId;
 
 	$playerCode = '
@@ -275,4 +276,5 @@ $(document).ready(function() {
 ?>
 </script>
 <?php
+	}
 }

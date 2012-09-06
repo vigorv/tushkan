@@ -67,6 +67,12 @@ class CProduct extends CActiveRecord
         }
         $select_str ='p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid';
 
+    	$zFlag = Yii::app()->user->UserInZone;
+    	$zSql = '';
+    	if (!$zFlag)
+    	{
+    		$zSql = ' AND p.flag_zone = 0';
+    	}
 
         $cmd = Yii::app()->db->createCommand()
             ->from('{{products}} p')
@@ -90,7 +96,7 @@ class CProduct extends CActiveRecord
             $select_str.=', ppvC.value as country';
         }
         $cmd->select($select_str);
-        $cmd->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
+        $cmd->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition . $zSql)
             ->order('pv.id ASC')
             ->limit($count, $offset);
         return $cmd->queryAll();

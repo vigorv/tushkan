@@ -54,6 +54,22 @@ class UserIdentity extends CUserIdentity
 	public function checkAuthInfo()
 	{
 		$cookies = Yii::app()->request->getCookies();
+
+		$zones = Yii::app()->user->UserZones;
+		if (empty($zones))
+		{
+			$zones = CZones::getActiveZones($_SERVER['REMOTE_ADDR']);
+			Yii::app()->user->UserZones = $zones;
+			if (!empty($zones) && count($zones) > 1)
+			{
+				Yii::app()->user->UserInZone = 1;
+			}
+			else
+			{
+				Yii::app()->user->UserInZone = 0;
+			}
+		}
+
 		if (!empty($cookies['dmUserId']))
 		{
 			$dmUserId = $cookies['dmUserId']->value;

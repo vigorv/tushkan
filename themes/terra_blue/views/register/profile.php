@@ -14,6 +14,12 @@
 <div class="span12 no-horizontal-margin inside-movie my-catalog">
 <?php
 	echo '<h1>Hi, <a href="/register/personal">' . Yii::app()->user->name . '</a>!</h1>';
+
+//	$zones = Yii::app()->user->UserZones;
+//	$flag = Yii::app()->user->UserInZone;
+//	var_dump($flag);
+
+
 ?>
 	<div class="pad-content">
 <?php

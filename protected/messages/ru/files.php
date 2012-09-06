@@ -5,4 +5,6 @@ return array (
   'delete all qualities' => 'удалить все качества',
   'cancel' => 'отменить',
   'convert' => 'конвертировать',
+  'Error data structure' => 'Ошибка структуры данных',
+  'File not found' => 'Файл не найден',
 );

@@ -1516,18 +1516,18 @@ exit;
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmdInfo = $cmd->queryRow();
 
-			 if ($cmdInfo['partner_id'] <= 0)
-			 {
-			 	//ОТ ЭТИХ ПАРТНЕРОВ ДОБАВЛЯТЬ В ВИТРИНЫ НЕ НАДО
-			 	//ТАКОЙ КОНТЕНТ ОБРАБАТЫВАЕТСЯ ОСОБЫМ ПОРЯДКОМ (ЧЕРЕЗ ТРАНСПОРТ КОНВЕРТЕРА, ПП и т.д.)
-			 	exit;
-			 }
-
 			if (!empty($cmdInfo))
 			{
 /**
  * ДОБАВЛЕНИЕ В ВИТРИНЫ. начало
  */
+				if ($cmdInfo['partner_id'] <= 0)
+				{
+					//ОТ ЭТИХ ПАРТНЕРОВ ДОБАВЛЯТЬ В ВИТРИНЫ НЕ НАДО
+					//ТАКОЙ КОНТЕНТ ОБРАБАТЫВАЕТСЯ ОСОБЫМ ПОРЯДКОМ (ЧЕРЕЗ ТРАНСПОРТ КОНВЕРТЕРА, ПП и т.д.)
+					exit;
+				}
+
 				$info = unserialize($cmdInfo['info']);
 				$onlineOnly = (!empty($info['just_online']));
 				$presets = CPresets::getPresets();

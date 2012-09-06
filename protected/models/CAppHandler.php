@@ -225,12 +225,6 @@ class CAppHandler
     }
 
     public static function getProductFullInfo($variant_id){
-	    	$zFlag = Yii::app()->user->UserInZone;
-	    	$zSql = '';
-	    	if (!$zFlag)
-	    	{
-	    		$zSql = ' AND p.flag_zone = 0';
-	    	}
 
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
@@ -249,7 +243,7 @@ class CAppHandler
                 ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
                 ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = '.Yii::app()->user->id )
                 ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
-                ->where('pv.id = :variant_id' . $zSql, array(':variant_id'=>$variant_id))
+                ->where('pv.id = :variant_id' , array(':variant_id'=>$variant_id))
                 ->limit(1)->query();
     }
 

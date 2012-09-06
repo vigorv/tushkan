@@ -57,12 +57,7 @@ class CAppHandler
                 break;
         }
 
-    	$zFlag = Yii::app()->user->UserInZone;
-    	$zSql = '';
-    	if (!$zFlag)
-    	{
-    		$zSql = ' AND p.flag_zone = 0';
-    	}
+
 
         return Yii::app()->db->createCommand()
             ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title, pf.fname as fname, pd.description')
@@ -79,7 +74,7 @@ class CAppHandler
             ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
             ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = '.$preset)
-            ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $item_id . $zSql)->limit(1)->query();
+            ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $item_id )->limit(1)->query();
     }
 
 
@@ -225,7 +220,12 @@ class CAppHandler
     }
 
     public static function getProductFullInfo($variant_id){
-
+        $zFlag = Yii::app()->user->UserInZone;
+        $zSql = '';
+        if (!$zFlag)
+        {
+            $zSql = ' AND p.flag_zone = 0';
+        }
             return Yii::app()->db->createCommand()
             //->select('pv.product_id')
                 //->select('*')
@@ -243,7 +243,7 @@ class CAppHandler
                 ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
                 ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = '.Yii::app()->user->id )
                 ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
-                ->where('pv.id = :variant_id' , array(':variant_id'=>$variant_id))
+                ->where('pv.id = :variant_id'.$zSql , array(':variant_id'=>$variant_id))
                 ->limit(1)->query();
     }
 

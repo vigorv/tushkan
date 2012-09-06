@@ -56,6 +56,7 @@ return array (
   'of'						=> 'из',
   'Over a period'			=> 'За период',
   'online only'				=> 'только онлайн',
+  'check IP zone'				=> 'проверять IP зону',
   'Variants'				=> 'Варианты',
   'Variant'					=> 'Вариант',
   'Upload'					=> 'Загрузить',

@@ -34,7 +34,9 @@
         <?php echo $form->label($model, 'srt', array('label' => Yii::t('common', 'Srt'))); ?>
         <?php echo $form->textField($model, 'srt', array('class' => 'text')); ?>
     </div>
-
+<?php
+    echo '<input type="checkbox" name="ProductForm[flag_zone]" class="text" /> ' .  Yii::t('common', 'check IP zone')
+?>
     <?php echo '<h4>' . Yii::t('common', 'Variants') . '</h4>'; ?>
     <div id="variants_params" class="row stolb">
 <script type="text/javascript">

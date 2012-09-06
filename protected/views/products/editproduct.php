@@ -49,6 +49,15 @@ echo '</pre>';
         <?php echo $form->textField($model, 'srt', array('value' => $info['srt'], 'class' => 'text')); ?>
     </div>
 
+<?php
+	$checked = '';
+	if (empty($info['flag_zone']))
+		$info['flag_zone'] = '';
+	if (($info['flag_zone'] == 'on') || ($info['flag_zone'] == '1'))
+		$checked = 'checked';
+    echo '<input type="checkbox" ' . $checked . ' name="ProductForm[flag_zone]" class="text" /> ' .  Yii::t('common', 'check IP zone')
+?>
+
     <div class="row submit">
         <?php echo CHtml::submitButton(Yii::t('common', 'Save')); ?>
     </div>

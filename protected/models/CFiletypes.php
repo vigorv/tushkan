@@ -36,6 +36,12 @@ class CFiletypes {
 				foreach ($array as $object) {
 					$ftype = pathinfo($object['title'], PATHINFO_EXTENSION);
 					$img = Utils::getMimeImg($ftype);
+					$params = array();
+					if (!empty($object['params']))
+						$params = $object['params'];
+
+					if (!empty($params['usertitle']))
+						$object['title'] = $params['usertitle'];
 					?>
 					<li><a href="/universe/oview/<?= $object['id']; ?>">
 							<img  src="<?= $img_path . $img ?> " />

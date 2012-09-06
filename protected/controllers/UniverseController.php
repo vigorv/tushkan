@@ -408,7 +408,8 @@ class UniverseController extends Controller {
 				$productsPagination = Utils::preparePagination('/universe/block/lib/v/with/products', $productsCount, 0, 0, "userproductsdiv");
 				$productsInfo = CProduct::model()->getUserProducts($this->user_id,$type_id);
 
-				$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
+				//$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
+				$mb_content_items = CUserObjects::model()->getExtList($this->user_id, $type_id);
 				$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
 				$this->render('library', array('mb_content_items' => $mb_content_items,
 					'productsInfo' => $productsInfo,

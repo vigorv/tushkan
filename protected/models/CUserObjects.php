@@ -43,6 +43,47 @@ class CUserObjects extends CActiveRecord
             ->queryAll();
     }
 
+    /**
+     * Получить список типизированного с дополнительными параметрами
+     *
+     * @param integer $user_id
+     * @param integer $type_id
+     * @param integer $page
+     * @param integer $count
+     * @return mixed
+     */
+    public function getExtList($user_id, $type_id = -1, $page = 1, $count = 100)
+    {
+    	$items = $this->getList($user_id, $type_id, $page, $count);
+    	if (!empty($items))
+    	{
+    		$items = Utils::pushIndexToKey('id', $items);
+    		$idSql = ' AND pv.object_id IN (' . implode(',', array_keys($items)) . ')';
+
+    	//ТЕПЕРЬ ДОВЫБИРАЕМ ПАРАМЕТРЫ
+    		$params = Yii::app()->db->createCommand()
+    			->select('pv.value, pv.object_id, tp.title')
+    			->from('{{userobjects_param_values}} pv')
+    			->join('{{product_type_params}} tp', 'tp.id = pv.param_id')
+    			->where('pv.value <> ""' . $idSql)
+    			->queryAll();
+    		if (!empty($params))
+    		{
+    			foreach ($params as $p)
+    			{
+    				if (empty($items[$p['object_id']]['params']))
+    				{
+    					$items[$p['object_id']]['params'] = array();
+    				}
+    				$items[$p['object_id']]['params'][$p['title']] = $p['value'];
+    			}
+    		}
+    	}
+//var_dump($items);
+//exit;
+		return $items;
+    }
+
     public function getObjectsLike($user_id, $like, $page = 1, $per_page = 10, $type_id = -1)
     {
         $offset = ($page - 1) * $per_page;

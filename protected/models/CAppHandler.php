@@ -187,7 +187,7 @@ class CAppHandler
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
-            ->where('pt.partner_id is NULL AND pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower. ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition);
+            ->where('pt.partner_id is NULL AND pr.price is NULL AND p.active <= ' . Yii::app()->user->userPower . $searchCondition);
         return $cmd->queryScalar();
     }
 

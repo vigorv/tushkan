@@ -84,13 +84,20 @@ class ProductsController extends Controller
 				$search = '%' . $_GET['search'] . '%';
 			}
 			$paramIds = $this->getShortParamsIds();
+	    	$zFlag = Yii::app()->user->UserInZone;
+	    	$zSql = '';
+	    	if (!$zFlag)
+	    	{
+	    		$zSql = ' AND p.flag_zone = 0';
+	    	}
+
 			$cmd = Yii::app()->db->createCommand()
 				->select('p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid, ppv.value, ppv.param_id as ppvid')
 				->from('{{products}} p')
 				->join('{{partners}} prt', 'p.partner_id=prt.id')
 				->join('{{product_variants}} pv', 'pv.product_id=p.id')
 				->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-				->where('prt.id IN (' . implode(',', array_keys($lst)) . ') AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition)
+				->where('prt.id IN (' . implode(',', array_keys($lst)) . ') AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition . $zSql)
 				->order('pv.id ASC');
 			if (!empty($searchCondition))
 			{
@@ -162,10 +169,17 @@ class ProductsController extends Controller
 		$paginationParams = array();
 		if (!empty($pInfo))
 		{
+	    	$zFlag = Yii::app()->user->UserInZone;
+	    	$zSql = '';
+	    	if (!$zFlag)
+	    	{
+	    		$zSql = ' AND p.flag_zone = 0';
+	    	}
+
 			$cmd = Yii::app()->db->createCommand()
 				->select('count(p.id)')
 				->from('{{products}} p')
-				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower);
+				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower . $zSql);
 			$count = $cmd->queryScalar();
 			$paginationParams = Utils::preparePagination('/products/partner/id/' . $id, $count);
 
@@ -174,7 +188,7 @@ class ProductsController extends Controller
 				$cmd = Yii::app()->db->createCommand()
 					->select('p.id')
 					->from('{{products}} p')
-					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower)
+					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower . $zSql)
 					->limit($paginationParams['limit'], $paginationParams['offset']);
 				$pst = $cmd->queryAll();
 				if (!empty($pst))
@@ -213,10 +227,17 @@ class ProductsController extends Controller
 		$Order = new COrder();
 		$userId = intval(Yii::app()->user->getId());
 		$orders = $actualRents = $typedFiles = array();
+    	$zFlag = Yii::app()->user->UserInZone;
+    	$zSql = '';
+    	if (!$zFlag)
+    	{
+    		$zSql = ' AND p.flag_zone = 0';
+    	}
+
 		$cmd = Yii::app()->db->createCommand()
 			->select('id, title, partner_id')
 			->from('{{products}}')
-			->where('id = :id AND active <= ' . $this->userPower);
+			->where('id = :id AND active <= ' . $this->userPower . $zSql);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$productInfo = $cmd->queryRow();
 

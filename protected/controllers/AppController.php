@@ -165,13 +165,20 @@ class AppController extends ControllerApp
                     $preset = $_SESSION['device_preset'];
                 } else $preset = 0;
                 $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id,$preset);
+		    	$zFlag = Yii::app()->user->UserInZone;
+		    	$zSql = '';
+		    	if (!$zFlag)
+		    	{
+		    		$zSql = ' AND p.flag_zone = 0';
+		    	}
+
                 if ($res = $list->read()) {
                     if ($res['fname']) {
                         $partnerInfo = Yii::app()->db->createCommand()
                             ->select('prt.id, prt.title, prt.sprintf_url, p.original_id')
                             ->from('{{products}} p')
                             ->join('{{partners}} prt', 'prt.id = p.partner_id')
-                            ->where('p.id = ' . $res['product_id'])->queryRow();
+                            ->where('p.id = ' . $res['product_id'] . $zSql)->queryRow();
                         switch ($res['partner_id']) {
                             case 2:
                                 $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
@@ -208,13 +215,20 @@ class AppController extends ControllerApp
                     $preset = $_SESSION['device_preset'];
                 } else $preset = 0;
                 $list = CAppHandler::getVtrItemA($fc_id, Yii::app()->user->id,$preset);
+		    	$zFlag = Yii::app()->user->UserInZone;
+		    	$zSql = '';
+		    	if (!$zFlag)
+		    	{
+		    		$zSql = ' AND p.flag_zone = 0';
+		    	}
+
                 if ($res = $list->read()) {
                     if ($res['fname']) {
                         $partnerInfo = Yii::app()->db->createCommand()
                             ->select('prt.id, prt.title, prt.sprintf_url, p.original_id')
                             ->from('{{products}} p')
                             ->join('{{partners}} prt', 'prt.id = p.partner_id')
-                            ->where('p.id = ' . $res['product_id'])->queryRow();
+                            ->where('p.id = ' . $res['product_id'] . $zSql)->queryRow();
                         $fn = basename($res['fname'], PATHINFO_FILENAME);
                         switch ($res['partner_id']) {
                             case 2:

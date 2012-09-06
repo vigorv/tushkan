@@ -116,7 +116,7 @@ class CZones extends CActiveRecord
      * @param bool $conv
      * @return array
      */
-    public function getActiveZones($ip, $conv = true) {
+    public static function getActiveZones($ip, $conv = true) {
         if ($conv)
             $ip = sprintf('%u', ip2long($ip));
         return Yii::app()->db->cache(10)->createCommand()
@@ -135,8 +135,8 @@ class CZones extends CActiveRecord
      * @param bool $conv
      * @return string
      */
-    public function getActiveZoneslst($ip, $conv = true) {
-        $zones_active_list = $this->getActiveZones($ip, $conv);
+    public static function getActiveZoneslst($ip, $conv = true) {
+        $zones_active_list = CZones::getActiveZones($ip, $conv);
         $ar_active_zones = array();
         foreach ($zones_active_list as $zone) {
             $ar_active_zones [] = $zone['zone_id'];

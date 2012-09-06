@@ -47,5 +47,36 @@
             return Yii::app()->user->setState('__UserGroupId',$value);
         }
 
+        /**
+         * @return mixed
+         */
+        public function getUserZones(){
+            return Yii::app()->user->getState('__UserZones');
+        }
+
+        /**
+         * @param mixed $value
+         */
+
+        public function setUserZones($value){
+            return Yii::app()->user->setState('__UserZones',$value);
+        }
+
+
+        /**
+         * @return mixed
+         */
+        public function getUserInZone(){
+            return Yii::app()->user->getState('__UserInZone');
+        }
+
+        /**
+         * @param mixed $value
+         */
+
+        public function setUserInZone($value){
+            return Yii::app()->user->setState('__UserInZone',$value);
+        }
+
 
     }

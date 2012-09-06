@@ -64,11 +64,34 @@ class CPartners extends CActiveRecord {
 
     public static function getPartnerList(){
     	$userPower = Yii::app()->user->getState('dmUserPower');
-		return Yii::app()->db->createCommand()
+		$result = Yii::app()->db->createCommand()
 		->select('title,id,sprintf_url AS url')
 		->from('{{partners}}')
-		->where('active <= ' . $userPower)
+         ->where('active <= :userpower',array(':userpower'=>$userPower))
 		->queryAll();
+        $partners = array();
+        foreach ($result as $partner){
+            $product_count = CPartners::countPartnerProductForUser($partner['id']);
+            if ($product_count){
+                $partners[] = $partner;
+            }
+        }
+        return $partners;
+    }
+
+    public static function countPartnerProductForUser($partner_id = 0, $zone=0){
+        $userPower = Yii::app()->user->getState('dmUserPower');
+        $cmd = Yii::app()->db->createCommand()
+            ->select('count(id)')
+            ->from('{{products}}')
+            ->where('active <= :userpower AND partner_id=:partner_id ',array(':userpower'=>$userPower,':partner_id'=>$partner_id));
+        if ($zone=0){
+            $cmd->where('flag_zone=0');
+        } else {
+            // TODO: zones checks
+            // For now if user has zone<>0 he get all
+        }
+        return $cmd -> queryScalar();
     }
 
     /**

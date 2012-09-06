@@ -95,6 +95,17 @@ exit;
 	}
 	if (empty($title))
 		$title = $prms[0]['uotitle'];
+
+	if (!empty($params['usertitle']))
+	{
+		$title = $params['usertitle'];
+		unset($params['usertitle']);
+	}
+	if (!empty($params['title_en']))
+	{
+		$title .= ' &laquo;' . $params['title_en'] . '&raquo;';
+		unset($params['title_en']);
+	}
 ?>
 <script type="text/javascript">
 	function doRemoveAll(ufid)

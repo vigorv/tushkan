@@ -405,6 +405,7 @@ class Utils {
 
     public static function getMimeImg($ftype)
     {
+    	$ftype = strtolower($ftype);
 		switch ($ftype) {
 			case 'txt':
 				$img = 'txt.png';

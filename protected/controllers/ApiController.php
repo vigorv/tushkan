@@ -10,6 +10,10 @@ class ApiController extends Controller {
     public $layout = '//layouts/ajax';
     var $user_id;
 
+    /*
+     * clients funcs
+     */
+
     public function actionStatusImage(){
         if (isset($_REQUEST['partner_id']) && isset($_REQUEST['partner_item_id'])){
             $partner_id = (int) $_REQUEST['partner_id'];
@@ -95,6 +99,10 @@ class ApiController extends Controller {
         }
     }
 
+    /*
+     * Server funcs
+     */
+
     public function actionUpdatePartnerData(){
         if(YII_DEBUG){
             $item_id = (int)$_REQUEST['item_id'];
@@ -106,6 +114,12 @@ class ApiController extends Controller {
             ." JOIN {{typedfiles}} tf ON tf.variant_id = pv.id"
             ." WHERE p.original_id=".$item_id." AND p.partner_id =".$partner_id)->queryAll();
         var_dump($result);
+            $queue = new CConvertQueue();
+            $queue -> original_variant_id = $item_id;
+            $queue -> partner_id = $partner_id;
+            $queue -> user_id = 0;
+            $queue -> priority = 200;
+            $queue ->save();
         $affected = Yii::app()->db
             ->createCommand("INSERT IGNORE INTO {{user_product_updates}} (user_id,product_id)"
             ." (SELECT tf.user_id as user_id,pv.product_id as product_id FROM {{products}} p"
@@ -119,19 +133,31 @@ class ApiController extends Controller {
         }
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata']) && isset($_REQUEST['partner_id'])) {
             $partner_id = (int) $_REQUEST['partner_id'];
-            $partner = CPartners::model()->findByAttributes(array('id'=>$partner_id));
+            $partner = CPartners::model()->findByAttributes(array('id'=>$partner_id,'approved'=>1));
             // CPartners partner
-            $sdata = hash('sha512',$_REQUEST['fdata'].$partner->hkey);
+            if ($partner)
+                $sdata = hash('sha512',$_REQUEST['fdata'].$partner->hkey);
+            else
+                return;
             if ($sdata == $_REQUEST['sdata']){
                 $fdata = unserialize(base64_encode($_REQUEST['fdata']));
                 if (isset($fdata['item_id'])){
                     $item_id = $fdata['item_id'];
+                    $queue = new CConvertQueue();
+                    $queue -> original_variant_id = $item_id;
+                    $queue -> partner_id = $partner_id;
+                    $queue -> user_id = 0;
+                    $queue -> priority = 200;
+                    $queue ->save();
+                    /*
                     $affected = Yii::app()->db
                         ->createCommand("INSERT IGNORE INTO {{user_product_updates}} (user_id,product_id)"
                         ." (SELECT tf.user_id as user_id,pv.product_id as product_id FROM {{products}} p"
                         ." JOIN {{product_variants}} pv ON pv.product_id = p.id"
                         ." JOIN {{typedfiles}} tf ON tf.variant_id = pv.id"
                         ." WHERE p.original_id=".$item_id." AND p.partner_id =".$partner_id.")" )->execute();
+                    */
+                    $affected = CPartners::setPartnerItemUpdate($item_id,$partner_id);
                     echo serialize(array('count'=>$affected));
                 }
             }else{

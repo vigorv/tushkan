@@ -14,6 +14,7 @@ class ProductForm extends CFormModel
 	public $partner_id;
 	public $created;
 	public $modified;
+	public $flag_zone;
 
 	public function rules()
 	{
@@ -27,6 +28,7 @@ class ProductForm extends CFormModel
 			array('partner_id', 'numerical'),
 			array('created', 'safe'),
 			array('modified', 'safe'),
+			array('flag_zone', 'safe'),
 		);
 	}
 }

@@ -634,6 +634,10 @@ exit;
                 foreach ($attrs as $k => $v) {
                     $products->{$k} = $v;
                 }
+                if (empty($products->flag_zone))
+                	$products->flag_zone = 0;
+                else
+                	$products->flag_zone = 1;
                 $products->original_id = 0;
                 if (empty($products->srt))
                 	$products->srt = 0;
@@ -644,7 +648,7 @@ exit;
                 $products->id = $info['id'];
                 $products->save();
                 Yii::app()->user->setFlash('success', Yii::t('products', 'Product saved'));
-                $this->redirect('/products/edit/' . $id);
+                $this->redirect('/products/editproduct/' . $id);
             }
             else
             {
@@ -1067,6 +1071,10 @@ exit;
                 foreach ($attrs as $k => $v) {
                     $products->{$k} = $v;
                 }
+                if (empty($products->flag_zone))
+                	$products->flag_zone = 0;
+                else
+                	$products->flag_zone = 1;
                 $products->original_id = 0;
                 $products->active = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАНО
                 if (empty($products->srt))

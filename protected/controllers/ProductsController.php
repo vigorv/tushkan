@@ -231,7 +231,7 @@ class ProductsController extends Controller
     	$zSql = '';
     	if (!$zFlag)
     	{
-    		$zSql = ' AND p.flag_zone = 0';
+    		$zSql = ' AND flag_zone = 0';
     	}
 
 		$cmd = Yii::app()->db->createCommand()

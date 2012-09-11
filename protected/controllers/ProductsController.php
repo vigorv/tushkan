@@ -1349,11 +1349,9 @@ exit;
 	{
 		$this->layout = '/layouts/ajax';
 		$result = $this->checkQueue();
-		$subAction = 'addtocloud';
 
 		if (($result == 'ok') || ($result == 'queue') || (intval($result) > 0))
 		{
-			$state = $result;
 			$partnerId = intval($_GET['pid']);
 			$originalId = intval($_GET['oid']);
 			if (!empty($_GET['vid']))
@@ -1544,7 +1542,7 @@ exit;
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmdInfo = $cmd->queryRow();
-
+			$partnerFlagZone = 0;
 			if (!empty($cmdInfo))
 			{
 /**
@@ -1640,6 +1638,11 @@ exit;
 				$productInfoIndex = 0;
 				if (empty($productInfo))
 				{
+					$partnerInfo = CPartners::model()->findByPk($cmdInfo['partner_id']);
+					if (!empty($partnerInfo['flag_zone']))
+					{
+						$partnerFlagZone = $partnerInfo['flag_zone'];
+					}
 					//ПРОДУКТ ЕЩЕ НЕ СОЗДАВАЛИ (БЕЗ ВАРИАНТОВ ПРОДУКТА НЕ МОЖЕТ БЫТЬ)
 					$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ
 					//(КАК ЕСЛИ БЫ ЭТО БЫЛ РЕЗУЛЬТАТ ВЫБОРКИ С ПОЛЯМИ id, pvid, original_id, pvoriginal_id)
@@ -1652,6 +1655,7 @@ exit;
 						'original_id'		=> $originalId,
 						'created'			=> date('Y-m-d H:i:s'),
 						'modified'			=> date('Y-m-d H:i:s'),
+						'flag_zone'			=> $partnerFlagZone,
 					);
 					$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
 					$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');

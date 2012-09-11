@@ -32,7 +32,7 @@ class CPartners extends CActiveRecord {
 //*/
     	$partners = array();
 		$pst = Yii::app()->db->createCommand()
-		->select('title,id,sprintf_url')
+		->select('title, id, sprintf_url, flag_zone')
 		->from('{{partners}}')
 		->queryAll();
 		if (!empty($pst))

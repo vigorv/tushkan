@@ -28,9 +28,17 @@ switch ($subAction)
 
 		$dir = Yii::app()->params['tushkan']['content_inbox'];
 		echo '<h3>Входящий контент ' . $dir . '</h3>';
-		if (file_exists($dir) && is_dir($dir))
+		$fileList = file_get_contents('http://95.191.130.184:84/files/incomeList');
+		if (!empty($fileList) && ($fileList = unserialize($fileList)))
+//		if (file_exists($dir) && is_dir($dir))
 		{
-			dirwalk($dir);
+			foreach ($fileList['list'] as $f)
+			{
+				$baseDir = Yii::app()->params['tushkan']['content_inbox'];
+				$file = str_replace($baseDir, '', $f);
+				echo '<input type="checkbox" value="' . ($file) . '" />' . $file . '<br />';
+			}
+			//dirwalk($dir);
 			echo'<button class="btn" onclick="return generateVariants();">Ok</button>';
 		}
 		else

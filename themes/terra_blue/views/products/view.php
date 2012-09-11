@@ -326,7 +326,7 @@ if(!empty($info))
 		</ul>
 	</div>
 <?php
-	$curVariantId = 0;
+	$curVariantId = $activateTab = 0;
 	$variantsParams = array(); //ЗДЕСЬ СОБИРАЕМ ВСЕ ПАРАМЕТРЫ ВСЕХ ВАРИАНТОВ
 	foreach ($info as $variant)
 	{

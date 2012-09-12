@@ -121,9 +121,11 @@ class ProductsController extends Controller
 		$partnerTariffs = $cmd->queryAll();
 		$userTariffs = Yii::app()->user->getState('dmUserTariffs');
 
+		$partnerId = 0;
 		$this->warning18plus = '';
 		if (!empty($partnerTariffs))
 		{
+			$partnerId = $id;
 			$partnerAllowed = false;
 			if (!empty($userTariffs))
 			{
@@ -140,7 +142,13 @@ class ProductsController extends Controller
 			}
 
 			if (!$partnerAllowed) $url ='';
-			$this->warning18plus = $this->renderPartial('/products/warning18plus', array('url' => $url), true);
+
+			$alreadyWarning18 = Yii::app()->user->getState('warning18');
+
+			if (!$alreadyWarning18[$partnerId])
+			{
+				$this->warning18plus = $this->renderPartial('/products/warning18plus', array('url' => $url, 'partnerId' => $partnerId), true);
+			}
 		}
 		return $partnerAllowed;
 	}
@@ -231,7 +239,7 @@ class ProductsController extends Controller
     	$zSql = '';
     	if (!$zFlag)
     	{
-    		$zSql = ' AND p.flag_zone = 0';
+    		$zSql = ' AND flag_zone = 0';
     	}
 
 		$cmd = Yii::app()->db->createCommand()
@@ -240,10 +248,10 @@ class ProductsController extends Controller
 			->where('id = :id AND active <= ' . $this->userPower . $zSql);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$productInfo = $cmd->queryRow();
-
 		if (!empty($productInfo))
 		{
-			$partnerAllowed = $this->checkPartnerAllow($productInfo['partner_id'], '/products/view/' . $id);
+			$partnerId = $productInfo['partner_id'];
+			$partnerAllowed = $this->checkPartnerAllow($partnerId, '/products/view/' . $id);
 			if (!$partnerAllowed && !empty($this->warning18plus))
 			{
 				$productInfo = array();
@@ -1113,6 +1121,22 @@ exit;
 			}
 			switch ($subAction)
 			{
+				case "warning18":
+					if (!empty($_REQUEST['partnerId']))
+					{
+						$partnerId = intval($_REQUEST['partnerId']);
+						$allowPartner = $this->checkPartnerAllow($partnerId);
+						if ($allowPartner)
+						{
+							//СОХРАНЯЕМ В СЕССИИ ПРИЗНАК ТОГО ЧТО ПРЕДУПРЕЖДАЛИ ОБ ОГРАНИЧЕНИЯХ ДЛЯ ВИТРИНЫ ДАННОГО ПАРТНЕРА
+							$warning18 = Yii::app()->user->getState('warning18');
+							$warning18[$partnerId] = $partnerId;
+							Yii::app()->user->setState('warning18', $warning18);
+						}
+					}
+
+				break;
+
 				case "contentinbox":
 					//ВСЕ ДЕЛАЕМ ВО ВЬЮХЕ
 				break;
@@ -1349,11 +1373,9 @@ exit;
 	{
 		$this->layout = '/layouts/ajax';
 		$result = $this->checkQueue();
-		$subAction = 'addtocloud';
 
 		if (($result == 'ok') || ($result == 'queue') || (intval($result) > 0))
 		{
-			$state = $result;
 			$partnerId = intval($_GET['pid']);
 			$originalId = intval($_GET['oid']);
 			if (!empty($_GET['vid']))
@@ -1544,7 +1566,7 @@ exit;
 			$cmd = Yii::app()->db->createCommand($sql);
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$cmdInfo = $cmd->queryRow();
-
+			$partnerFlagZone = 0;
 			if (!empty($cmdInfo))
 			{
 /**
@@ -1640,6 +1662,11 @@ exit;
 				$productInfoIndex = 0;
 				if (empty($productInfo))
 				{
+					$partnerInfo = CPartners::model()->findByPk($cmdInfo['partner_id']);
+					if (!empty($partnerInfo['flag_zone']))
+					{
+						$partnerFlagZone = $partnerInfo['flag_zone'];
+					}
 					//ПРОДУКТ ЕЩЕ НЕ СОЗДАВАЛИ (БЕЗ ВАРИАНТОВ ПРОДУКТА НЕ МОЖЕТ БЫТЬ)
 					$productInfo = array();//ЗДЕСЬ СОБИРАЕМ ИНФУ ПО ПРОДУКТУ С ЕГО ВАРИАНТАМИ
 					//(КАК ЕСЛИ БЫ ЭТО БЫЛ РЕЗУЛЬТАТ ВЫБОРКИ С ПОЛЯМИ id, pvid, original_id, pvoriginal_id)
@@ -1652,6 +1679,7 @@ exit;
 						'original_id'		=> $originalId,
 						'created'			=> date('Y-m-d H:i:s'),
 						'modified'			=> date('Y-m-d H:i:s'),
+						'flag_zone'			=> $partnerFlagZone,
 					);
 					$cmd = Yii::app()->db->createCommand()->insert('{{products}}', $pInfo);
 					$pInfo['id'] = Yii::app()->db->getLastInsertID('{{products}}');

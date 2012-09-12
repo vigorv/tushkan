@@ -195,7 +195,8 @@ exit;
 
 			if (empty($partnerInfo['sprintf_url']))
 			{
-				$v[0] = Yii::app()->params['tushkan']['safelib_video'] . $v[0];
+				//$v[0] = Yii::app()->params['tushkan']['safelib_video'] . $v[0];
+				$v[0] = CFileservers::getServerByZone() . $v[0];
 				$online = '<a href="#" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</a>';
 				$download = '<a href="#" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</a>';
 			}

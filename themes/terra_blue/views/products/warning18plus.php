@@ -5,6 +5,10 @@
 <script type="text/javascript">
 function hideWarning()
 {
+<?php
+	if (!empty($partnerId))
+		echo '$.post("/products/ajax", {action: "warning18", partnerId: ' . $partnerId . '});';
+?>
 	d = document.getElementById("d_100");
 	d.style.display = 'none';
 	return false;

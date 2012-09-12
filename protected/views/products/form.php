@@ -43,6 +43,7 @@
 	function getInboxList()
 	{
 		$('#inboxlistdiv').load('/products/ajax', {action: "contentinbox"});
+		$('#addButtonId').attr('disabled', 'disabled');
 		return false;
 	}
 
@@ -67,6 +68,7 @@
 		});
 
 		$('#inboxlistdiv').text('');
+		$('#addButtonId').attr('disabled', false);
 
 		return false;
 	}
@@ -169,7 +171,7 @@
 
 	<br />
     <div class="row submit">
-        <?php echo CHtml::submitButton(Yii::t('products', 'Add product'), array('class' => 'btn')); ?>
+        <?php echo CHtml::submitButton(Yii::t('products', 'Add product'), array('id' => 'addButtonId', 'class' => 'btn')); ?>
     </div>
 
 <?php $this->endWidget(); ?>

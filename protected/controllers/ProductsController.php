@@ -121,9 +121,11 @@ class ProductsController extends Controller
 		$partnerTariffs = $cmd->queryAll();
 		$userTariffs = Yii::app()->user->getState('dmUserTariffs');
 
+		$partnerId = 0;
 		$this->warning18plus = '';
 		if (!empty($partnerTariffs))
 		{
+			$partnerId = $id;
 			$partnerAllowed = false;
 			if (!empty($userTariffs))
 			{
@@ -140,7 +142,13 @@ class ProductsController extends Controller
 			}
 
 			if (!$partnerAllowed) $url ='';
-			$this->warning18plus = $this->renderPartial('/products/warning18plus', array('url' => $url), true);
+
+			$alreadyWarning18 = Yii::app()->user->getState('warning18');
+
+			if (!$alreadyWarning18[$partnerId])
+			{
+				$this->warning18plus = $this->renderPartial('/products/warning18plus', array('url' => $url, 'partnerId' => $partnerId), true);
+			}
 		}
 		return $partnerAllowed;
 	}
@@ -240,10 +248,10 @@ class ProductsController extends Controller
 			->where('id = :id AND active <= ' . $this->userPower . $zSql);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$productInfo = $cmd->queryRow();
-
 		if (!empty($productInfo))
 		{
-			$partnerAllowed = $this->checkPartnerAllow($productInfo['partner_id'], '/products/view/' . $id);
+			$partnerId = $productInfo['partner_id'];
+			$partnerAllowed = $this->checkPartnerAllow($partnerId, '/products/view/' . $id);
 			if (!$partnerAllowed && !empty($this->warning18plus))
 			{
 				$productInfo = array();
@@ -1113,6 +1121,22 @@ exit;
 			}
 			switch ($subAction)
 			{
+				case "warning18":
+					if (!empty($_REQUEST['partnerId']))
+					{
+						$partnerId = intval($_REQUEST['partnerId']);
+						$allowPartner = $this->checkPartnerAllow($partnerId);
+						if ($allowPartner)
+						{
+							//СОХРАНЯЕМ В СЕССИИ ПРИЗНАК ТОГО ЧТО ПРЕДУПРЕЖДАЛИ ОБ ОГРАНИЧЕНИЯХ ДЛЯ ВИТРИНЫ ДАННОГО ПАРТНЕРА
+							$warning18 = Yii::app()->user->getState('warning18');
+							$warning18[$partnerId] = $partnerId;
+							Yii::app()->user->setState('warning18', $warning18);
+						}
+					}
+
+				break;
+
 				case "contentinbox":
 					//ВСЕ ДЕЛАЕМ ВО ВЬЮХЕ
 				break;

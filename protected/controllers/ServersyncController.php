@@ -253,7 +253,7 @@ class ServersyncController extends ControllerSync
                         if (CUserfiles::DidUserHaveVariant($rdata['uid'], $variant_id)) {
                             $server_ip = $rdata['server_ip'];
                             $user_ip = (int)$rdata['user_ip'];
-                            $zone = CZones::model()->GetZoneByIp($user_ip);
+                            $zones = CZones::getActiveZones($user_ip);
                             $server = CServers::model()->findByAttributes(array('ip' => $server_ip, 'downloads' => 1));
                             if ($server) {
                                 $locations = CFilelocations::model()->findByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
@@ -266,7 +266,8 @@ class ServersyncController extends ControllerSync
                                     $answer['error_msg'] = "File not found";
                                 }
                             } else {
-                                $locations = CFilelocations::getLocationByZone($variant_id, $zone);
+                                if (count($zones))
+                                  $locations = CFilelocations::getLocationByZone($variant_id, $zones[0]['zone_id']);
                                 if (!empty($locations)) {
                                     $answer['server'] = $locations['server_ip'];
                                 }

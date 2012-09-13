@@ -311,7 +311,8 @@ class ServersyncController extends ControllerSync
                     */
                     $file_id = (int)$rdata['file_id'];
                     if (CUser::getDownloadSign($file_id.$rdata['uid'])) {
-                        if ($data = CTypedfiles::GetPartnerFileData($file_id)) {
+                        $data = CTypedfiles::GetPartnerFileData($file_id);
+                        if (!empty($data)) {
                             $server_ip = $rdata['server_ip'];
                             $user_ip = (int)$rdata['user_ip'];
                             $zones = CZones::getActiveZones($user_ip);
@@ -320,8 +321,8 @@ class ServersyncController extends ControllerSync
                                 //$locations = CFilelocations::model()->findByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
                                 //if ($locations){
                                    /// $answer['folder'] = $locations->folder;
-                                    $answer['partner_id'] = $data['partner_id'];
-                                    $answer['fname'] = $data['fname'];
+                                    $answer['partner_id'] = $data[0]['partner_id'];
+                                    $answer['fname'] = $data[0]['fname'];
                                 //} else{
                                 //    $answer['error'] = 1;
                                 //    $answer['error_msg'] = "File not found";

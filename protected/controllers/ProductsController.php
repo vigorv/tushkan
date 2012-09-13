@@ -456,11 +456,11 @@ exit;
             Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
             Yii::t('products', 'Administrate products'),
         );
-		$userPower = Yii::app()->user->getState('dmUserPower');
+		//$userPower = Yii::app()->user->getState('dmUserPower');
 
 		$filterCondition = array();
 		$filterInfo = Utils::getFilterInfo();
-		$filterInfo['active'] = $userPower;
+		$filterInfo['active'] = Yii::app()->user->userPower;
 		$filterCondition['active'] = 'p.active <= :active';
 		if (!empty($filterInfo['search']))
 		{
@@ -1199,12 +1199,12 @@ exit;
 				case "wizardtypeparams":
 					if (!empty($_POST['typeId']))
 						$typeId = $_POST['typeId'];
-					$userPower = Yii::app()->user->getState('dmUserPower');
+					//$userPower = Yii::app()->user->getState('dmUserPower');
 					$cmd = Yii::app()->db->createCommand()
 						->select('ptp.id, ptp.title, ptp.description')
 						->from('{{product_type_params}} ptp')
 						->join('{{product_types_type_params}} pttp', 'pttp.param_id = ptp.id')
-						->where('pttp.type_id = :id AND ptp.active <= ' . $userPower)
+						->where('pttp.type_id = :id AND ptp.active <= ' . Yii::app()->user->userPower)
 						->order('ptp.srt DESC');
 					$cmd->bindParam(':id', $typeId, PDO::PARAM_INT);
 					$result['lst'] = $cmd->queryAll();

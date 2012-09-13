@@ -68,11 +68,11 @@ class UniverseController extends Controller {
 		$quality = Utils::getVideoConverterQuality();
 
 //ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
-		$userPower = Yii::app()->user->getState('dmUserPower');
+		//$userPower = Yii::app()->user->getState('dmUserPower');
 		$types = Yii::app()->db->createCommand()
 				->select('id, title')
 				->from('{{product_types}}')
-				->where('active <= ' . $userPower)
+				->where('active <= ' . Yii::app()->user->userPower)
 				->queryAll();
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
 
@@ -267,11 +267,11 @@ class UniverseController extends Controller {
 	 */
 	public function actionUpload() {
 //ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
-		$userPower = Yii::app()->user->getState('dmUserPower');
+		//$userPower = Yii::app()->user->getState('dmUserPower');
 		$types = Yii::app()->db->createCommand()
 				->select('id, title')
 				->from('{{product_types}}')
-				->where('active <= ' . $userPower)
+				->where('active <= ' . Yii::app()->user->userPower)
 				->queryAll();
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
 //$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
@@ -433,12 +433,12 @@ class UniverseController extends Controller {
 	 */
 	public function actionDevices($id = 0) {
 		$tst = CDevices::getDeviceTypes();
-		$userPower = Yii::app()->user->getState('dmUserPower');
+		//$userPower = Yii::app()->user->getState('dmUserPower');
 		$cmd = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{userdevices}}')
 				->where('user_id = ' . Yii::app()->user->getId() . ' AND device_type_id > 0 AND active <= :power');
-		$cmd->bindParam(':power', $userPower, PDO::PARAM_INT);
+		$cmd->bindParam(':power', Yii::app()->user->userPower, PDO::PARAM_INT);
 		$dst = $cmd->queryAll();
 		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
 		//$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));

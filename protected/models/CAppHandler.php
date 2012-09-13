@@ -57,8 +57,6 @@ class CAppHandler
                 break;
         }
 
-
-
         return Yii::app()->db->createCommand()
             ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as poster,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title, pf.fname as fname, pd.description')
             ->from('{{typedfiles}} tf')
@@ -138,7 +136,7 @@ class CAppHandler
         ->select('p.title,p.id')
         ->from('{{partners}} p')
         ->leftJoin('{{partners_tariffs}} pt','pt.partner_id = p.id')
-        ->where('pt.partner_id is NULL && p.active <='.Yii::app()->user->userPower)
+        ->where('pt.partner_id is NULL && p.active <='.$userPower)
         ->queryAll();
     }
 
@@ -267,9 +265,60 @@ class CAppHandler
         return false;
     }
 
-    public  static function removeFromUser($item_id=0){
+    public static function removeFromUser($item_id=0){
         Yii::app()->db->createCommand()
             ->delete('{{typedfiles}}','id = :item_id AND user_id = :user_id',array(':item_id'=>$item_id,':user_id'=>Yii::app()->user->id));
+    }
+
+
+    public static function getUserObjects($user_id ,$type_id, $page =1, $count = 10){
+        $offset = ($page - 1) * $count;
+        if ($type_id >= 0) {
+            $type_str = ' AND uo.type_id=' . $type_id;
+        } else
+            $type_str = '';
+        return Yii::app()->db->createCommand()
+            ->select('uo.id,uo.title, uo.type_id,  opv.value as poster')
+            ->from('{{userobjects}} uo')
+            ->join('{{userfiles}} uf', ' uf.object_id = uo.id')
+            ->join('{{userobjects_param_values}} opv', 'uo.id=opv.object_id AND opv.param_id = 10')//poster
+           // ->leftJoin('{{userobjects_param_values}} opvT', 'uo.id=opvT.object_id AND opvT.param_id = 12')//original_title
+            ->where('uo.user_id =' . $user_id . $type_str)
+            ->limit($count, $offset)
+            ->queryAll();
+    }
+
+    public static function countUserObjects($user_id, $type_id = -1)
+    {
+
+        if ($type_id >= 0) {
+            $type_str = ' AND pv.type_id=' . $type_id;
+        } else
+            $type_str = '';
+        return Yii::app()->db->createCommand()
+            ->select('count(uo.id) as count')
+            ->from('{{userobjects}} uo')
+            ->join('{{userfiles}} uf', ' uf.object_id = uo.id')
+            ->join('{{userobjects_param_values}} opv', 'uo.id=opv.object_id AND opv.param_id = 10')//poster
+        // ->leftJoin('{{userobjects_param_values}} opvT', 'uo.id=opvT.object_id AND opvT.param_id = 12')//original_title
+            ->where('uo.user_id =' . $user_id . $type_str)
+            ->queryScalar();
+    }
+
+    public static function getUserObjectsA($object_id = 0, $user_id = 0, $preset = 2)
+    {
+        switch ($preset){
+            case 3:
+                break;
+            default:
+                $preset=2;
+                break;
+        }
+        return Yii::app()->db->createCommand()
+            ->select('uo.title, uo.id, ')
+            ->from('{{userobjects}} uo')
+            ->join('{{userfiles}} uf', 'uo.id = uf.object_id')
+            ->where('uo.user_id =' . $user_id . ' AND uo.id =  ' . $object_id )->limit(1)->query();
     }
 
 

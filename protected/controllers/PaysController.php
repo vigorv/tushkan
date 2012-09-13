@@ -103,11 +103,11 @@ class PaysController extends Controller
 	 */
 	public function actionDo($id)
 	{
-		$userPower = intval(Yii::app()->user->getState('dmUserPower'));
+		//$userPower = intval(Yii::app()->user->getState('dmUserPower'));
 		$lst = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{paysystems}}')
-			->where('active <= ' . $userPower)
+			->where('active <= ' . Yii::app()->user->userPower)
 			->order('srt DESC')->queryAll();
 		$balance = Yii::app()->db->createCommand()
 			->select('*')
@@ -145,7 +145,7 @@ class PaysController extends Controller
 			Yii::app()->user->setFlash('error', Yii::t('pays', 'Payment initialisation error.'));
 			$this->redirect('/universe/error');
 		}
-		$this->render('/pays/do', array('lst' => $lst, 'oInfo' => $oInfo, 'balance' => $balance, 'postInfo' => $postInfo, 'orderInfo' => $orderInfo, 'userPower' => $userPower));
+		$this->render('/pays/do', array('lst' => $lst, 'oInfo' => $oInfo, 'balance' => $balance, 'postInfo' => $postInfo, 'orderInfo' => $orderInfo, 'userPower' => Yii::app()->user->userPower));
 	}
 
 	/**
@@ -202,7 +202,7 @@ class PaysController extends Controller
 		$this->layout = '/layouts/ajax';
 		if (!empty($_POST))
 		{
-			$userPower = Yii::app()->user->getState('dmUserPower');
+			//$userPower = Yii::app()->user->getState('dmUserPower');
 			if (!empty($id))
 			{
 				//ПРОВЕРЯЕМ ДОСТУПНА ЛИ ДАННАЯ ПЛАТЕЖНАЯ СИСТЕМА ЮЗЕРУ
@@ -211,7 +211,7 @@ class PaysController extends Controller
 					->from('{{paysystems}}')
 					->where('id = :id AND active <= :power');
 				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-				$cmd->bindParam(':power', $userPower, PDO::PARAM_INT);
+				$cmd->bindParam(':power', Yii::app()->user->userPower, PDO::PARAM_INT);
 				$paysystemInfo = $cmd->queryRow();
 			}
 			else

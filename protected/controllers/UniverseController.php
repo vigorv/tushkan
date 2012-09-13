@@ -437,8 +437,7 @@ class UniverseController extends Controller {
 		$cmd = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{userdevices}}')
-				->where('user_id = ' . Yii::app()->user->getId() . ' AND device_type_id > 0 AND active <= :power');
-		$cmd->bindParam(':power', Yii::app()->user->userPower, PDO::PARAM_INT);
+				->where('user_id = ' . Yii::app()->user->getId() . ' AND device_type_id > 0 AND active <= :power',array(':power'=> Yii::app()->user->userPower));
 		$dst = $cmd->queryAll();
 		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
 		//$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));

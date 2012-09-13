@@ -41,7 +41,7 @@ class CTypedfiles extends CActiveRecord{
             ->from('{{product_files}} pf')
             ->join('{{variant_qualities}} vq','vq.id = pf.variant_quality_id')
             ->join('{{product_variants}} pv', 'pv.id = vq.variant_id')
-            ->join('{{product}} p', 'pv.product_id = p.id')
+            ->join('{{products}} p', 'pv.product_id = p.id')
             ->join('{{typed_files}} tf', 'tf.variant_id = pv.id')
             ->where('pf.id =:file_id',array('file_id'=>$file_id))
             ->queryAll();

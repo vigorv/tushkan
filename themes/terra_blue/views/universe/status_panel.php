@@ -66,8 +66,8 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 						<div class="ann">(<?php echo @$userInfo['email']; ?>)</div>
 						<ul class="dropdown-menu pull-right">
 <?php
-		$userPower = Yii::app()->user->getState('dmUserPower');
-		$isAdmin = ($userPower >= _IS_ADMIN_);
+		//$userPower = Yii::app()->user->getState('dmUserPower');
+		$isAdmin = (Yii::app()->user->userPower >= _IS_ADMIN_);
 		if ($isAdmin)
 		{
 ?>

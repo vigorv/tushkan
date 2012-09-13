@@ -67,16 +67,69 @@ class CFileservers extends CActiveRecord {
 
 		if (!empty($info))
 		{
-			$addr = 'http://' . $info[0]['ip'];
-			if (!empty($info[0]['port']))
+			$i = 0;
+			if (count($info) > 1)
 			{
-				$addr .= ':' . $info[0]['port'];
+				//ВЫБИРАЕМ СЛУЧАЙНЫЙ ИЗ СПИСКА
+				$i = rand(0, count($info) - 1);
+			}
+			$addr = 'http://' . $info[$i]['ip'];
+			if (!empty($info[$i]['port']))
+			{
+				$addr .= ':' . $info[$i]['port'];
 			}
 		}
 
     	return $addr;
     }
 
+    /**
+     * определить сервер для партнера с учетом зоны пользователя
+     *
+     * @param integer $partnerId
+     * @param integer $zoneId - идентификатор зоны. по умолчанию действует автоопределение зоны (либо указать "-1")
+     */
+    public static function getServerByPartnerZone($partnerId, $zoneId = -1)
+    {
+    	$addr = $ids = '';
+    	if ($zoneId < 0)
+    	{
+    		//АВТОМАТИЧЕСКОЕ ОПРЕДЕЛЕНИЕ ПО IP
+    		$zones = Yii::app()->user->UserZones;
+    		if (!empty($zones[0]['zone_id']))
+    		{
+    			$ids = Utils::pushIndexToKey('zone_id', $zones);
+    			$ids = ' AND zone_id IN (' . implode(',', array_keys($ids)) . ')';
+    		}
+    	}
+		else
+			$ids = ' AND zone_id = ' . $zoneId;
+
+		if (!empty($ids))
+			$info = Yii::app()->db->createCommand()
+				->select('ip, port')
+				->from('{{fileservers}} fs')
+				->join('{{partners_zones}} pz', 'pz.server_id = fs.id')
+				->where('active = 1 AND pz.partner_id = :partner_id ' . $ids)
+				->queryAll();
+
+		if (!empty($info))
+		{
+			$i = 0;
+			if (count($info) > 1)
+			{
+				//ВЫБИРАЕМ СЛУЧАЙНЫЙ ИЗ СПИСКА
+				$i = rand(0, count($info) - 1);
+			}
+			$addr = 'http://' . $info[$i]['ip'];
+			if (!empty($info[$i]['port']))
+			{
+				$addr .= ':' . $info[$i]['port'];
+			}
+		}
+
+    	return $addr;
+    }
 }
 
 ?>

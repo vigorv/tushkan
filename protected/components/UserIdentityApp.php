@@ -41,7 +41,7 @@ class UserIdentityApp extends CUserIdentity {
 
             $ukey= CUser::UKey($record);
             Yii::app()->user->setState('ukey',$ukey);
-            Yii::app()->user->setState('__UserGroupId',$record->group_id);
+            Yii::app()->user->userGroupId = $record->group_id;
 
             $userPower = Yii::app()->db->cache(10)->createCommand()
                     ->select('power')
@@ -49,8 +49,7 @@ class UserIdentityApp extends CUserIdentity {
                     ->where('id = '.$record->group_id)
                     ->queryScalar();
 
-            Yii::app()->user->setState('__UserPower',$userPower);
-
+            Yii::app()->user->userPower = $userPower;
             $this->email = $record->email;
         }
         return !$this->errorCode;

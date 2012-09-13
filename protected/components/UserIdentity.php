@@ -197,8 +197,11 @@ class UserIdentity extends CUserIdentity
 
 		//СОХРАНИЛИ В СЕССИЮ
 		Yii::app()->user->setState('dmUserId', $id);
-		Yii::app()->user->setState('dmUserEmail', $userInfo['email']);
-		Yii::app()->user->setState('dmUserGroupId', $userInfo['group_id']);
+		//Yii::app()->user->setState('dmUserEmail', $userInfo['email']);
+        //Yii::app()->user->setState('dmUserGroupId', $userInfo['group_id']);
+        Yii::app()->user->email = $userInfo['email'];
+        Yii::app()->user->userGroupId = $userInfo['group_id'];
+
 		Yii::app()->user->setState('dmUserHash', $hash);
 		Yii::app()->user->setState('dmUserIp', $ip);
 		Yii::app()->user->setState('dmHashExpired', time() + Yii::app()->params['tushkan']['hashDuration']);

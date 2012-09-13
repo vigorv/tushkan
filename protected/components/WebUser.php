@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * @property $email
+ * @property $userPower
+ * @property $userGroupId
+ * @property $userZones
+ * @property $userInZone
+ */
+
     class WebUser extends CBehavior{
         /**
          * @return mixed the unique identifier for the user. If null, it means the user is a guest.

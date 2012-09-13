@@ -197,7 +197,7 @@ exit;
 			{
 				//$v[0] = Yii::app()->params['tushkan']['safelib_video'] . $v[0];
 				//$v[0] = CFileservers::getServerByZone() . $v[0];//ВАРИАНТ С ПРЯМЫМИ ССЫЛКАМИ
-				$v[0] = '/universe/download?';//ВАРИАНТ С ПОЛУЧЕНИЕМ АДРЕСА
+				$v[0] = '/universe/download?fid=' . $v[1];//ПЕРЕДАЕМ ID ФАЙЛА. ССЫЛКА НА СКАЧИВАНИЕ БУДЕТ СФОРМИРОВАНА ФАЙЛОВЫМ СЕРВЕРОМ
 				$online = '<a href="#" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</a>';
 				$download = '<a href="#" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</a>';
 			}

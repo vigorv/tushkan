@@ -86,8 +86,10 @@
 		$('#variantId' + newVariantId).append('<input type="hidden" name="ProductForm[variants][' + newVariantId + '][id]" value="' + newVariantId + '" />');
 		$('#variantId' + newVariantId).append('<input type="checkbox" name="ProductForm[variants][' + newVariantId + '][online_only]" class="text" /> <?php echo Yii::t('common', 'online only');?><br />');
 		$('#variantId' + newVariantId).append('<select name="ProductForm[variants][' + newVariantId + '][active]" id="variants' + newVariantId + 'active" class="text"></select><br />');
-		$('#variantId' + newVariantId).append('<select name="ProductForm[variants][' + newVariantId + '][type_id]"onchange="return variantParams(' + newVariantId + ', this);" id="variants' + newVariantId + 'type_id" class="text"></select>');
+		$('#variantId' + newVariantId).append('<select name="ProductForm[variants][' + newVariantId + '][type_id]" onchange="return variantParams(' + newVariantId + ', this);" id="variants' + newVariantId + 'type_id" class="text"></select><br />');
 		$('#variants' + newVariantId + 'type_id').append($('<option value="0">Выберите тип</option>'));
+		$('#variantId' + newVariantId).append('<select name="ProductForm[variants][' + newVariantId + '][sub_id]" id="variants' + newVariantId + 'sub_id" class="text"></select><br />');
+		$('#variants' + newVariantId + 'sub_id').append($('<option value="0">Выберите субтип</option>'));
 
 <?php
 	foreach ($qLst as $k => $v)
@@ -108,6 +110,13 @@
 	{
 ?>
 		$('#variants' + newVariantId + 'type_id').append($('<option value="<?php echo $k;?>"><?php echo $v;?></option>'));
+<?php
+	}
+
+	foreach ($sLst as $k => $v)
+	{
+?>
+		$('#variants' + newVariantId + 'sub_id').append($('<option value="<?php echo $k;?>"><?php echo $v;?></option>'));
 <?php
 	}
 ?>

@@ -914,4 +914,27 @@ class UniverseController extends Controller {
 			}
 		}
 	}*/
+
+	/**
+	 * действие перенаправления по адресу на скачивание файла продукта облачного партнера
+	 *
+	 */
+    public function actionDownload() {
+        if (isset($_GET['vid']) && ((int)$_GET['vid']>0)){
+        $variant_id = (int) $_GET['vid'];
+            $allowed_download = CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id, $variant_id);
+            if ($allowed_download){
+                $sign = CUser::getDownloadSign($variant_id . $this->user_id);
+                $server = CFileservers::getServerByZone();
+                if ($server){
+					$this->redirect($server . '/files/partnerdownload?vid=' . $variant_id. '&user_id=' . $this->user_id .'&key='.$sign);
+                }
+            exit();
+            } else {
+                throw new CHttpException(403);
+            }
+        } else {
+            throw new CHttpException(404, 'The specified file cannot be found.');
+        }
+    }
 }

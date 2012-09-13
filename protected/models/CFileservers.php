@@ -36,6 +36,12 @@ class CFileservers extends CActiveRecord {
             ->queryRow();
     }
 
+    /**
+     * получить адрес сервера по зоне
+     *
+     * @param integer $zoneId - идентификатор зоны. по умолчанию действует автоопределение зоны (либо указать "-1")
+     * @return string
+     */
     public static function getServerByZone($zoneId = -1)
     {
     	$addr = $ids = '';

@@ -1058,6 +1058,11 @@ exit;
                 ->queryAll();
 		$tLst = Utils::arrayToKeyValues($types, 'id', 'title');
 
+		$sLst = Yii::app()->db->createCommand()
+			->select('id, title')
+			->from('{{variant_subs}}')
+			->queryAll();
+		$sLst = Utils::arrayToKeyValues($sLst, 'id', 'title');
 
         $partners = Yii::app()->db->createCommand()
                 ->select('id, title')
@@ -1105,7 +1110,7 @@ exit;
 
         }
         $this->render('/products/form', array('model' => $productForm,
-        	'tLst' => $tLst, 'pLst' => $pLst,
+        	'tLst' => $tLst, 'pLst' => $pLst, 'sLst' => $sLst,
         	'variants' => $variants, 'params' => $params));
     }
 

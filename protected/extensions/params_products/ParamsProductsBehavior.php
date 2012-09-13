@@ -31,13 +31,18 @@ class ParamsProductsBehavior extends CActiveRecordBehavior
 //exit;
 						//ПО УМОЛЧАНИЮ ВАРИАНТ НЕ СОВМЕСТИМ С ВИТРИНАМИ (ДОЛЖЕН БЫТЬ СКОНВЕРТИРОВАН КОМПРЕССОРОМ)
 						$sql = 'INSERT INTO {{product_variants}} (id, product_id, online_only, type_id, active, title, description, original_id, childs, sub_id, cloud_ready, cloud_state, cloud_compressor)
-							VALUES(null, :product_id, ' . $variant['online_only'] . ', :type_id, :active, "", "", 0, ",,", 0, 0, 0, 0)
+							VALUES(null, :product_id, ' . $variant['online_only'] . ', :type_id, :active, "", "", 0, ",,", :sub_id, 0, 0, 0)
 						';
 						$cmd = Yii::app()->db->createCommand($sql);
 						$cmd->bindParam(":product_id", $variant['product_id'], PDO::PARAM_INT);
 						$cmd->bindParam(":type_id", $variant['type_id'], PDO::PARAM_INT);
 						$variant['active'] = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАНО
 						$cmd->bindParam(":active", $variant['active'], PDO::PARAM_INT);
+
+						if (empty($variant['sub_id']))
+							$variant['sub_id'] = 1;
+
+						$cmd->bindParam(":sub_id", $variant['sub_id'], PDO::PARAM_INT);
 						$cmd->execute();
 						$variant['id'] = Yii::app()->db->getLastInsertID('{{product_variants}}');
 					}

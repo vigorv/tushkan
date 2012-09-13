@@ -294,7 +294,7 @@ class UniverseController extends Controller {
 
 	public function actionGoodsTop($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
-		$pst = CProduct::model()->getProductList(array(10), $this->userPower, $search,0,Yii::app()->params['product_top_count']*2);
+		$pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,0,Yii::app()->params['product_top_count']*2);
 		$this->render('/products/top', array('pst' => $pst));
 	}
 
@@ -303,7 +303,7 @@ class UniverseController extends Controller {
 		$lst = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{partners}}')
-			->where('active <= ' . $this->userPower)
+			->where('active <= ' . Yii::app()->user->userPower)
 			->queryAll();
 
 		$searchCondition = '';
@@ -319,7 +319,7 @@ class UniverseController extends Controller {
 			->join('{{partners}} prt', 'p.partner_id=prt.id')
 			->join('{{product_variants}} pv', 'pv.product_id=p.id')
 			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-			->where('p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition)
+			->where('p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
 			->order('pv.id ASC');
 		if (!empty($searchCondition))
 		{
@@ -337,7 +337,7 @@ class UniverseController extends Controller {
 	public function actionSearch($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
 		$lst = array();
-		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $this->userPower, $search);
+		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), Yii::app()->user->userPower, $search);
 		$pstContent = $this->renderPartial('/products/sresult', array('pst' => $pst), true);
 
 		$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
@@ -582,7 +582,7 @@ class UniverseController extends Controller {
 								->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 								->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 								->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
-								->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . $this->userPower . $presetCondition)
+								->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . Yii::app()->user->userPower . $presetCondition)
 								->group('ppv.id')
 								->order('pv.id ASC, ptp.srt DESC')->queryAll();
 				$vIds = array();

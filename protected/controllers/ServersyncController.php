@@ -292,6 +292,67 @@ class ServersyncController extends ControllerSync
         }
     }
 
+
+
+    public function actionPartnerFiledata()
+    {
+        $answer = array();
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['uploads_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = unserialize(base64_decode($_REQUEST['fdata']));
+                if ($rdata) {
+                    /*
+                        $syncData['file_id'] = $fid;
+                        $syncData['user_ip'] = $user_ip;
+                        $syncData['server_ip'] = Yii::app()->params['server_ip'];
+                        $syncData['uid'] = $user_id;
+                        $syncData['key'] = $user_key;
+                    */
+                    $file_id = (int)$rdata['file_id'];
+                    if (CUser::getDownloadSign($file_id.$rdata['uid'])) {
+                        if ($data = CTypedfiles::GetPartnerFileData($file_id)) {
+                            $server_ip = $rdata['server_ip'];
+                            $user_ip = (int)$rdata['user_ip'];
+                            $zones = CZones::getActiveZones($user_ip);
+                            $server = CServers::model()->findByAttributes(array('ip' => $server_ip, 'downloads' => 1));
+                            if ($server) {
+                                //$locations = CFilelocations::model()->findByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
+                                //if ($locations){
+                                   /// $answer['folder'] = $locations->folder;
+                                    $answer['partner_id'] = $data['partner_id'];
+                                    $answer['fname'] = $data['fname'];
+                                //} else{
+                                //    $answer['error'] = 1;
+                                //    $answer['error_msg'] = "File not found";
+                                // }
+                            } else {
+                                //if (count($zones))
+                                //    $locations = CFilelocations::getLocationByZone($variant_id, $zones[0]['zone_id']);
+                                //if (!empty($locations)) {
+                                 //   $answer['server'] = $locations['server_ip'];
+                                //}
+                            }
+                        } else {
+                            $answer['error'] = 1;
+                            $answer['error_msg']="User ".$rdata['uid']." Partners didn't have file $file_id";
+                        }
+                    } else {
+                        $answer['error'] = 1;
+                        $answer['error_msg']="Bad key";
+                    }
+                } else {
+                    $answer['error'] = 1;
+                }
+            } else {
+                $answer['error'] = 1;
+            }
+            echo base64_encode(serialize($answer));
+        } else {
+            die();
+        }
+    }
+
     /**
      * действие обработки запроса файлового сервера по загруженным пользователем файлам
      * вся информация о пользователе, файле и параметрах приходит в $_POST в виде структуры

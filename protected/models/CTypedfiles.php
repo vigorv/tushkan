@@ -1,7 +1,7 @@
 <?php
 
 /***
- *
+ * Product that user add to self
  * @property $id
  * @property $variant_id
  * @property $user_id
@@ -34,4 +34,17 @@ class CTypedfiles extends CActiveRecord{
             ->where('tf.user_id = :user_id AND tf.variant_id = :variant_id',array(':user_id'=>$user_id,':variant_id'=>$partner_variant_id))
             ->queryScalar();
     }
+
+    public static function GetPartnerFileData($file_id){
+        return Yii::app()->db->createCommand()
+            ->select('p.partner_id,pf.fname')
+            ->from('{{product_files}} pf')
+            ->join('{{variant_qualities}} vq','vq.id = pf.variant_quality_id')
+            ->join('{{product_variants}} pv', 'pv.id = vq.variant_id')
+            ->join('{{product}} p', 'pv.product_id = p.id')
+            ->join('{{typed_files}} tf', 'tf.variant_id = pv.id')
+            ->where('pf.id =:file_id',array('file_id'=>$file_id))
+            ->queryAll();
+    }
+
 }

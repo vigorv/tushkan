@@ -63,11 +63,11 @@ class CPartners extends CActiveRecord {
      */
 
     public static function getPartnerList(){
-    	$userPower = Yii::app()->user->getState('dmUserPower');
+    	//$userPower = Yii::app()->user->getState('dmUserPower');
 		$result = Yii::app()->db->createCommand()
 		->select('title,id,sprintf_url AS url')
 		->from('{{partners}}')
-         ->where('active <= :userpower',array(':userpower'=>$userPower))
+         ->where('active <= :userpower',array(':userpower'=>Yii::app()->user->userPower))
 		->queryAll();
         $partners = array();
         foreach ($result as $partner){
@@ -80,11 +80,11 @@ class CPartners extends CActiveRecord {
     }
 
     public static function countPartnerProductForUser($partner_id = 0, $zone=0){
-        $userPower = Yii::app()->user->getState('dmUserPower');
+       // $userPower = Yii::app()->user->getState('dmUserPower');
         $cmd = Yii::app()->db->createCommand()
             ->select('count(id)')
             ->from('{{products}}')
-            ->where('active <= :userpower AND partner_id=:partner_id ',array(':userpower'=>$userPower,':partner_id'=>$partner_id));
+            ->where('active <= :userpower AND partner_id=:partner_id ',array(':userpower'=>Yii::app()->user->userPower,':partner_id'=>$partner_id));
         if ($zone=0){
             $cmd->where('flag_zone=0');
         } else {

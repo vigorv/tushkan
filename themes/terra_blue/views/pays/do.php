@@ -47,7 +47,7 @@
 		$disabled = false;
 		foreach($lst as $l)
 		{
-			$disabled = (($l['active'] > $userPower) || ($l['active'] == 1));
+			$disabled = (($l['active'] > Yii::app()->user->userPower) || ($l['active'] == 1));
 			$select[$l['id']] = $l['title'];
 			$selectHtml[$l['id']] = array('disabled' => $disabled);
 

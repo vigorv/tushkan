@@ -27,7 +27,7 @@
                     array('label' => Yii::t('common', 'Logout') . ' (' . Yii::app()->user->name . ')',
                         'url' => array('/register/logout'), 'visible' => !Yii::app()->user->isGuest
                     ),
-                    array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => (Yii::app()->user->getState('dmUserPower') >= _IS_MODERATOR_))
+                    array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => (Yii::app()->user->userPower >= _IS_MODERATOR_))
                 ),
             ));
             ?>

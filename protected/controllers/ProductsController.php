@@ -41,7 +41,7 @@ class ProductsController extends Controller
 			->select('p.id, p.title, pt.tariff_id')
 			->from('{{partners}} p')
 			->leftJoin('{{partners_tariffs}} pt', 'p.id = pt.partner_id')
-			->where('active <= ' . $this->userPower)
+			->where('active <= ' . Yii::app()->user->userPower)
 			->queryAll();
 
 		$userTariffs = Yii::app()->user->getState('dmUserTariffs');
@@ -97,7 +97,7 @@ class ProductsController extends Controller
 				->join('{{partners}} prt', 'p.partner_id=prt.id')
 				->join('{{product_variants}} pv', 'pv.product_id=p.id')
 				->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-				->where('prt.id IN (' . implode(',', array_keys($lst)) . ') AND p.active <= ' . $this->userPower . ' AND prt.active <= ' . $this->userPower . $searchCondition . $zSql)
+				->where('prt.id IN (' . implode(',', array_keys($lst)) . ') AND p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition . $zSql)
 				->order('pv.id ASC');
 			if (!empty($searchCondition))
 			{
@@ -169,7 +169,7 @@ class ProductsController extends Controller
 		$cmd = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{partners}}')
-			->where('id = :id AND active <= ' . $this->userPower);
+			->where('id = :id AND active <= ' . Yii::app()->user->userPower);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$pInfo = $cmd->queryRow();
 		$pst = array();
@@ -187,7 +187,7 @@ class ProductsController extends Controller
 			$cmd = Yii::app()->db->createCommand()
 				->select('count(p.id)')
 				->from('{{products}} p')
-				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower . $zSql);
+				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . Yii::app()->user->userPower . $zSql);
 			$count = $cmd->queryScalar();
 			$paginationParams = Utils::preparePagination('/products/partner/id/' . $id, $count);
 
@@ -196,7 +196,7 @@ class ProductsController extends Controller
 				$cmd = Yii::app()->db->createCommand()
 					->select('p.id')
 					->from('{{products}} p')
-					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $this->userPower . $zSql)
+					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . Yii::app()->user->userPower . $zSql)
 					->limit($paginationParams['limit'], $paginationParams['offset']);
 				$pst = $cmd->queryAll();
 				if (!empty($pst))
@@ -245,7 +245,7 @@ class ProductsController extends Controller
 		$cmd = Yii::app()->db->createCommand()
 			->select('id, title, partner_id')
 			->from('{{products}}')
-			->where('id = :id AND active <= ' . $this->userPower . $zSql);
+			->where('id = :id AND active <= ' . Yii::app()->user->userPower . $zSql);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$productInfo = $cmd->queryRow();
 		if (!empty($productInfo))
@@ -268,7 +268,7 @@ class ProductsController extends Controller
 		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 		        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 		        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
-				->where('pv.product_id = ' . $productInfo['id'] . ' AND pv.active <= ' . $this->userPower . ' AND ptp.active <= ' . $this->userPower)
+				->where('pv.product_id = ' . $productInfo['id'] . ' AND pv.active <= ' . Yii::app()->user->userPower . ' AND ptp.active <= ' . Yii::app()->user->userPower)
 				->group('ppv.id')
 				->order('pv.id ASC, ptp.srt DESC')->queryAll();
 
@@ -456,11 +456,11 @@ exit;
             Yii::t('common', 'Admin index') => array($this->createUrl('admin')),
             Yii::t('products', 'Administrate products'),
         );
-		$userPower = Yii::app()->user->getState('dmUserPower');
+		//$userPower = Yii::app()->user->getState('dmUserPower');
 
 		$filterCondition = array();
 		$filterInfo = Utils::getFilterInfo();
-		$filterInfo['active'] = $userPower;
+		$filterInfo['active'] = Yii::app()->user->userPower;
 		$filterCondition['active'] = 'p.active <= :active';
 		if (!empty($filterInfo['search']))
 		{
@@ -1204,12 +1204,12 @@ exit;
 				case "wizardtypeparams":
 					if (!empty($_POST['typeId']))
 						$typeId = $_POST['typeId'];
-					$userPower = Yii::app()->user->getState('dmUserPower');
+					//$userPower = Yii::app()->user->getState('dmUserPower');
 					$cmd = Yii::app()->db->createCommand()
 						->select('ptp.id, ptp.title, ptp.description')
 						->from('{{product_type_params}} ptp')
 						->join('{{product_types_type_params}} pttp', 'pttp.param_id = ptp.id')
-						->where('pttp.type_id = :id AND ptp.active <= ' . $userPower)
+						->where('pttp.type_id = :id AND ptp.active <= ' . Yii::app()->user->userPower)
 						->order('ptp.srt DESC');
 					$cmd->bindParam(':id', $typeId, PDO::PARAM_INT);
 					$result['lst'] = $cmd->queryAll();

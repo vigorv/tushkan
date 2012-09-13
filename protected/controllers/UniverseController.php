@@ -919,14 +919,21 @@ class UniverseController extends Controller {
 	 *
 	 */
     public function actionDownload() {
-        if (isset($_GET['vid']) && ((int)$_GET['vid']>0)){
-        $variant_id = (int) $_GET['vid'];
-            $allowed_download = CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id, $variant_id);
-            if ($allowed_download){
-                $sign = CUser::getDownloadSign($variant_id . $this->user_id);
+        if (isset($_GET['fid']) && ((int)$_GET['fid']>0)){
+        $file_id = (int) $_GET['fid'];
+        	$variant_id = Yii::app()->db->createCommand()
+        		->select('variant_id')
+        		->from('{{product_files}} pf')
+        		->join('{{variant_qualities}} vq', 'vq.id = pf.variant_quality_id')
+        		->where('pf.id = ' . $file_id)
+        		->queryScalar();
+            if ($variant_id)
+            	$allowed_download = CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id, $variant_id);
+            if (!empty($allowed_download)){
+                $sign = CUser::getDownloadSign($file_id . $this->user_id);
                 $server = CFileservers::getServerByZone();
                 if ($server){
-					$this->redirect($server . '/files/partnerdownload?vid=' . $variant_id. '&user_id=' . $this->user_id .'&key='.$sign);
+					$this->redirect($server . '/files/partnerdownload?fid=' . $file_id. '&user_id=' . $this->user_id .'&key='.$sign);
                 }
             exit();
             } else {

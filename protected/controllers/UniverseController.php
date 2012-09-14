@@ -714,9 +714,9 @@ class UniverseController extends Controller {
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$files = $cmd->queryAll();
 
-            $item = CUserfiles::model()->getFileInfo($this->userInfo['id'], $files[0]['file_id']);
 			if (!empty($files) && empty($files[0]['preset_id']))
 			{
+	            $item = CUserfiles::model()->getFileInfo($this->userInfo['id'], $files[0]['file_id']);
 	            $zone = 0;
 	            if (!empty($item)) {
 		            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);

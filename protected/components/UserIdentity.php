@@ -195,6 +195,24 @@ class UserIdentity extends CUserIdentity
 			->where('user_id = ' . $id)
 			->queryAll();
 
+		if (empty($tariffsInfo))
+		{
+			if (RegisterController::setTrialMode($userInfo))
+			{
+				$tariffsInfo = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{tariffs_users}}')
+					->where('user_id = ' . $id)
+					->queryAll();
+			}
+			else
+			{
+	    		$this->dropAuthInfo();
+	            Yii::app()->request->redirect('/register/confirm');
+	            return;
+			}
+		}
+
 		//СОХРАНИЛИ В СЕССИЮ
 		Yii::app()->user->setState('dmUserId', $id);
 		//Yii::app()->user->setState('dmUserEmail', $userInfo['email']);

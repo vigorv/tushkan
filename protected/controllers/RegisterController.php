@@ -279,7 +279,7 @@ class RegisterController extends Controller {
 	 *
 	 * @return boolean
 	 */
-	public function setTrialMode($userInfo, $trial = array())
+	public static function setTrialMode($userInfo, $trial = array())
 	{
 		if (empty($trial))
 		{
@@ -307,9 +307,18 @@ class RegisterController extends Controller {
 			//ПОДКЛЮЧАЕМ ПЕРИОДИЧЕСКУЮ УСЛУГУ
 			$operationId = Yii::app()->params['tushkan']['abonentFeeId'];
 			$paidBy = date('Y-m-d H:i:s', time() + Utils::parsePeriod($trial['period']));//ДЛЯ ТРИАЛА
-			$sql = 'INSERT INTO {{user_subscribes}} (id, user_id, operation_id, period, paid_by, tariff_id, eof_period)
-				VALUES (NULL, ' . $userInfo['id'] . ', ' . $operationId . ', "", "' . $paidBy . '", ' . $trial['id'] . ', "' . date('Y-m-d H:i:s', time() + Utils::parsePeriod($trial['period'])) . '")';
-			Yii::app()->db->createCommand($sql)->execute();;
+
+			$already = Yii::app()->db->createCommand()
+				->select('user_id')
+				->from('{{user_subscribes}}')
+				->where('operation_id = ' . $operationId . ' AND tariff_id = ' . $trial['id'] . ' AND user_id = ' . $userInfo['id'])
+				->queryScalar();
+			if (!$already)
+			{
+				$sql = 'INSERT INTO {{user_subscribes}} (id, user_id, operation_id, period, paid_by, tariff_id, eof_period)
+					VALUES (NULL, ' . $userInfo['id'] . ', ' . $operationId . ', "", "' . $paidBy . '", ' . $trial['id'] . ', "' . date('Y-m-d H:i:s', time() + Utils::parsePeriod($trial['period'])) . '")';
+				Yii::app()->db->createCommand($sql)->execute();;
+			}
 
 			//КОРРЕКТИРУЕМ ЛИМИТ ПП
 			$sql = 'UPDATE {{users}} SET free_limit = ' . $trial['size_limit'] . ' WHERE id = ' . $userInfo['id'];
@@ -327,7 +336,7 @@ class RegisterController extends Controller {
 			{
 				$sum = 50;//ДЛЯ ТЕСТИРОВАНИЯ ВЫДАЕМ 50 монет
 				$now = date('Y-m-d H:i:s');
-				$hash = PaysController::createPaymentHash(array('user_id' => $this->userInfo['id'], 'date' => $now, 'summa' => $sum));
+				$hash = PaysController::createPaymentHash(array('user_id' => $userInfo['id'], 'date' => $now, 'summa' => $sum));
 				$sql = 'INSERT INTO {{balance}} (user_id, balance, hash, modified) VALUES
 				(' . $userInfo['id'] . ', ' . $sum . ', "' . $hash . '", "' . $now . '")';
 				Yii::app()->db->createCommand($sql)->execute();

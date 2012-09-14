@@ -141,7 +141,7 @@ class ApiController extends Controller {
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata']) && isset($_REQUEST['partner_id'])) {
             $partner_id = (int) $_REQUEST['partner_id'];
             $partner = CPartners::model()->findByAttributes(array('id'=>$partner_id,'approved'=>1));
-            // CPartners partner
+            /** @var CPartners partner */
             if ($partner)
                 $sdata = hash('sha512',$_REQUEST['fdata'].$partner->hkey);
             else
@@ -156,14 +156,6 @@ class ApiController extends Controller {
                     $queue -> user_id = 0;
                     $queue -> priority = 200;
                     $queue ->save();
-                    /*
-                    $affected = Yii::app()->db
-                        ->createCommand("INSERT IGNORE INTO {{user_product_updates}} (user_id,product_id)"
-                        ." (SELECT tf.user_id as user_id,pv.product_id as product_id FROM {{products}} p"
-                        ." JOIN {{product_variants}} pv ON pv.product_id = p.id"
-                        ." JOIN {{typedfiles}} tf ON tf.variant_id = pv.id"
-                        ." WHERE p.original_id=".$item_id." AND p.partner_id =".$partner_id.")" )->execute();
-                    */
                     $affected = CPartners::setPartnerItemUpdate($item_id,$partner_id);
                     echo serialize(array('count'=>$affected));
                 }

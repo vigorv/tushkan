@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @property $email
- * @property $userPower
+ * @property string $email
+ * @property int $userPower
  * @property $userGroupId
  * @property $userZones
- * @property $userInZone
+ * @property bool $userInZone
  */
 
     class WebUser extends CBehavior{

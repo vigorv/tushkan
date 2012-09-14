@@ -2,30 +2,12 @@
 
 class UniverseController extends Controller {
 
-	var $user_id;
-
-	//public $panel;
-	//public $goods
-	//
 	var $layout = 'concept1';
 
-//*
-//В ПРЕДКЕ ОПИСАН ДОСТУП ЧЕРЕЗ ФИЛЬТРЫ
-	public function beforeAction($action) {
-		parent::beforeAction($action);
-		$this->user_id = Yii::app()->user->id;
-		return true;
-//		if ($this->user_id)
-//			return true;
-//		else
-//			Yii::app()->request->redirect('/register/login');
-	}
-/*
-	public function accessRules() {
-
-	}
-*/
-	public function actionError() {
+    /**
+     * Страница ошибок
+     */
+    public function actionError() {
 		$error = Yii::app()->errorHandler->error;
 		if ($error) {
 			if (Yii::app()->request->isAjaxRequest)
@@ -42,7 +24,7 @@ class UniverseController extends Controller {
 	}
 
 	public function actionIndexOld() {
-//ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
+        //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
 		$tFiles = Yii::app()->db->createCommand()
 				->select('id, variant_id, title')
 				->from('{{typedfiles}}')
@@ -285,7 +267,7 @@ class UniverseController extends Controller {
 	}
 
 	public function actionPanel() {
-		$userInfo = CUser::model()->getUserInfo($this->user_id);
+		$userInfo = CUser::model()->getUserInfo(Yii::app()->user->id);
 		$partners = CPartners::model()->getPartnerList();
 		$this->render('status_panel', array('userInfo' => $userInfo, 'partners' => $partners));
 	}
@@ -340,8 +322,8 @@ class UniverseController extends Controller {
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), Yii::app()->user->userPower, $search);
 		$pstContent = $this->renderPartial('/products/sresult', array('pst' => $pst), true);
 
-		$obj = CUserObjects::model()->getObjectsLike($this->user_id, $search);
-		$unt = CUserfiles::model()->getFilesLike($this->user_id, $search);
+		$obj = CUserObjects::model()->getObjectsLike(Yii::app()->user->id, $search);
+		$unt = CUserfiles::model()->getFilesLike(Yii::app()->user->id, $search);
 
 		$this->render('search', array('pstContent' => $pstContent,'unt'=>$unt,'obj'=>$obj));
 	}
@@ -373,7 +355,7 @@ class UniverseController extends Controller {
 				$mediaList = Utils::getMediaList();
 				$productsCount = CProduct::model()->getUserProductsCount($uid, $type_id);
 				$paginationParams = Utils::preparePagination('/universe/block/lib/v/with/products', $productsCount, 0, 0, "userproductsdiv");
-				$productsInfo = CProduct::model()->getUserProducts($this->user_id, $type_id, $paginationParams['offset'], $paginationParams['limit']);
+				$productsInfo = CProduct::model()->getUserProducts(Yii::app()->user->id, $type_id, $paginationParams['offset'], $paginationParams['limit']);
 				$this->render('/universe/block', array('productsInfo' => $productsInfo, 'paginationParams' => $paginationParams));
 		}
 	}
@@ -404,13 +386,13 @@ class UniverseController extends Controller {
 
 				$type_id = Utils::getSectionIdByAlias($lib);
 				$mediaList = Utils::getMediaList();
-				$productsCount = CProduct::model()->getUserProductsCount($this->user_id,$type_id);
+				$productsCount = CProduct::model()->getUserProductsCount(Yii::app()->user->id,$type_id);
 				$productsPagination = Utils::preparePagination('/universe/block/lib/v/with/products', $productsCount, 0, 0, "userproductsdiv");
-				$productsInfo = CProduct::model()->getUserProducts($this->user_id,$type_id);
+				$productsInfo = CProduct::model()->getUserProducts(Yii::app()->user->id,$type_id);
 
-				//$mb_content_items = CUserObjects::model()->getList($this->user_id, $type_id);
-				$mb_content_items = CUserObjects::model()->getExtList($this->user_id, $type_id);
-				$mb_content_items_unt = CUserfiles::model()->getFileListUnt($this->user_id);
+				//$mb_content_items = CUserObjects::model()->getList(Yii::app()->user->id, $type_id);
+				$mb_content_items = CUserObjects::model()->getExtList(Yii::app()->user->id, $type_id);
+				$mb_content_items_unt = CUserfiles::model()->getFileListUnt(Yii::app()->user->id);
 				$this->render('library', array('mb_content_items' => $mb_content_items,
 					'productsInfo' => $productsInfo,
 					'qstContent' => $qstContent,
@@ -930,10 +912,10 @@ class UniverseController extends Controller {
             if ($variant_id)
             	$allowed_download = CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id, $variant_id);
             if (!empty($allowed_download)){
-                $sign = CUser::getDownloadSign($file_id . $this->user_id);
+                $sign = CUser::getDownloadSign($file_id . Yii::app()->user->id);
                 $server = CFileservers::getServerByZone();
                 if ($server){
-					$this->redirect($server . '/files/partnerdownload?fid=' . $file_id. '&user_id=' . $this->user_id .'&key='.$sign);
+					$this->redirect($server . '/files/partnerdownload?fid=' . $file_id. '&user_id=' . Yii::app()->user->id .'&key='.$sign);
                 }
             exit();
             } else {

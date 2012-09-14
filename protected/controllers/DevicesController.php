@@ -8,21 +8,17 @@ class DevicesController extends Controller {
      */
     public function actionAdd($id = 0) {
     	$result = '';
-    	$sql = 'INSERT INTO {{userdevices}} (id, user_id, title, device_type_id, guid, active, hash)
-    		VALUES (null, ' . Yii::app()->user->getId() . ', "", :type, "", 10, "")
-    	';
-    	$cmd = Yii::app()->db->createCommand($sql);
-    	$cmd->bindParam(':type', $id, PDO::PARAM_INT);
-    	if ($cmd->execute())
-    	{
-    		//$result = 'ok';
-    		$result = Yii::app()->db->getLastInsertID('{{userdevices}}');
-    	}
+        $device = new CDevices();
+        $device -> user_id = Yii::app()->user->id;
+        $device -> active = 10;
+        $device -> device_type_id = (int) $id;
+        if ($device->save()){
+            $result = $device->id;
+        }
     	$this->render('/devices/add', array('result' => $result));
     }
 
     public function actionView($id = 0) {
-        //$device_count = CDevices::model()->count('user_id=' . Yii::app()->user->id);
         $info = CDevices::model()->findByPk(array('id' => $id, 'user_id' => Yii::app()->user->getId(), 'device_type_id' => '?0'));
         $this->render('/devices/view', array('info' => $info));
     }
@@ -34,10 +30,7 @@ class DevicesController extends Controller {
      */
     public function actionRemove($id) {
     	$result = '';
-        $sql = 'DELETE FROM {{userdevices}} WHERE id = :id AND user_id = ' . Yii::app()->user->getId();
-    	$cmd = Yii::app()->db->createCommand($sql);
-    	$cmd->bindParam(':id', $id, PDO::PARAM_INT);
-    	if ($cmd->execute())
+    	if ( CDevices::model()->delete('id = :id and user_id = :user_id',array(':id'=>(int)$id,':user_id'=>Yii::app()->user->id)))
     		$result = 'ok';
     	$this->render('/devices/remove', array('result' => $result));
     }
@@ -54,7 +47,7 @@ class DevicesController extends Controller {
 		$dst = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{userdevices}}')
-			->where('user_id = ' . Yii::app()->user->getId())
+			->where('user_id = :user_id', array(':user_id'=>Yii::app()->user->id))
 			->queryAll();
 		$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));
     }

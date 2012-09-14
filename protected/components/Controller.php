@@ -9,8 +9,6 @@ class Controller extends CController {
 	public $menu = array();
 	public $breadcrumbs = array();
 	public $identity = null;
-	//public $userPower;
-	//public $userGroupId;
 	public $userInfo;
 	public $active = 0; //СОДЕРЖИМОЕ ПОЛЯ active ТЕКУЩЕГО ОБЪЕКТА
 
@@ -38,8 +36,6 @@ class Controller extends CController {
 	}
 
 	public function beforeAction($action) {
-		//$this->userGroupId = intval(Yii::app()->user->getState('dmUserGroupId'));
-		//$this->userPower = intval(Yii::app()->user->getState('dmUserPower'));
 		$this->userInfo = Yii::app()->user->getState('dmUserInfo');
 		if (!empty($this->userInfo)) {
 			$this->userInfo = unserialize($this->userInfo);
@@ -62,7 +58,6 @@ class Controller extends CController {
 	}
 
 	public function beforeRender($view) {
-		//$userPower = Yii::app()->user->getState('dmUserPower');
 		if (!empty($this->active)) {
 			if (Yii::app()->user->userPower < $this->active) {
 				//Yii::app()->request->redirect('access_denied');

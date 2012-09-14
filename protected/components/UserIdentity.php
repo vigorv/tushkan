@@ -95,9 +95,9 @@ class UserIdentity extends CUserIdentity
 			$cmd = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{users}}')
-				->where('id = :id')
+				->where('id = :id',array(':id'=>$dmUserId))
 				->limit(1);
-			$cmd->bindParam(':id', $dmUserId, PDO::PARAM_INT);
+		//	$cmd->bindParam(':id', $dmUserId, PDO::PARAM_INT);
 			$userInfo = $cmd->queryRow();
 
 			if (($userInfo['sess_id'] == $dmUserHash)

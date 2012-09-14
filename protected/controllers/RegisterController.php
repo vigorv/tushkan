@@ -656,6 +656,15 @@ class RegisterController extends Controller {
 				Yii::app()->user->setFlash('error', Yii::t('users', 'The tariff is not available'));
 			}
 		}
+		if ($result == 'ok')
+		{
+			$tariffsInfo = Yii::app()->db->createCommand()
+				->select('*')
+				->from('{{tariffs_users}}')
+				->where('user_id = ' . $userId)
+				->queryAll();
+			Yii::app()->user->setState('dmUserTariffs', $tariffsInfo);
+		}
 		$this->render('tariff', array('result' => $result));
     }
 

@@ -190,10 +190,16 @@ class FilesController extends Controller {
             $zone = 0;
             if (!empty($item)) {
 	            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
-                $queue = CConvertQueue::model()->findAllByAttributes(array('original_id' => $item['id'], 'partner_id' => 0, 'cmd_id' => '<50'));
+                $queue = Yii::app()->db->createCommand()
+                	->select('*')
+                	->from('{{income_queue}}')
+                	->where('cmd_id < 50 AND original_id = ' . $item['id'] . ' AND partner_id = 0')
+                	->queryAll();
+
+				$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
             }
         }
-        $this->render('fview', array('item' => $item, 'queue' => $queue, 'variants' => $variants));
+        $this->render('fview', array('item' => $item, 'queue' => $queue, 'qstContent' => $qstContent, 'variants' => $variants));
     }
 
     /* Deprecated

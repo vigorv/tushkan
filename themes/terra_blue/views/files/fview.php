@@ -84,6 +84,9 @@ return false;
 ?>
 	<div class="pad-content">
 <?php
+	if (!empty($qstContent))//ВЫВОДИМ ИНФО ОБ ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+		echo $qstContent;
+
 	if (strtotime($item['created']) > 0)
     	echo '<p>Дата загрузки: ' . $item['created'] . '</p>';
     echo '<p>Размер: ' . Utils::sizeFormat($item['fsize']) . '</p>';
@@ -94,10 +97,6 @@ return false;
 
     	if (!empty($detectedType) && empty($item['object_id']))
     		$actions[] = '<a class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</a>';
-	    if (!empty($queue)) {
-            echo '<p>Состояние: добавление в пространство<br />';
-            echo 'Текущая операция: конвертирование<br /></p>';
-	    }
     }
 
     if (!empty($item['type_id']))

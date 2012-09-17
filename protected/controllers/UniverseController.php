@@ -724,6 +724,13 @@ class UniverseController extends Controller {
 	            }
 			}
 
+$userId = intval(Yii::app()->user->getId());
+if ($userId == 2)
+{
+	print_r($item);
+	print_r($queue);
+}
+
 			if (!empty($files[0]['preset_id']))
 			{
 				$cmd = Yii::app()->db->createCommand()

@@ -21,16 +21,6 @@ if (!empty($prms))
 	$autoActionLink = '';
 	$currentQuality = '';
 
-	if (empty($queue)) {
-		if (!empty($files[0]['preset_id']))
-			$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
-	}
-	else
-	{
-	    echo '<p>Состояние: добавление в пространство<br />';
-	    echo 'Текущая операция: конвертирование<br /><p>';
-	}
-
 /*
 	echo'<pre>';
 	print_r($qs);
@@ -65,6 +55,16 @@ $commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕ�
 		}
 
 		//$actions[] = '<a href="#" onclick="return doRemove(' . $val[0][1] . ')">' . Yii::t('files', 'delete') . '</a>';
+	if (empty($queue)) {
+		if (!empty($files[0]['preset_id']))
+			$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
+	}
+	else
+	{
+	    echo '<p>Состояние: добавление в пространство<br />';
+	    echo 'Текущая операция: конвертирование<br /><p>';
+	}
+
 		$dLink = '/files/download?vid=' . $qualityVariantId;
 
 		$aContent .= '<p id="autostart" rel="#video' . $qualityVariantId . '"></p>';

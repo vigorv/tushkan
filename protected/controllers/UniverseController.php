@@ -720,7 +720,7 @@ class UniverseController extends Controller {
 	            $zone = 0;
 	            if (!empty($item)) {
 		            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
-	                $queue = CConvertQueue::model()->findAllByAttributes(array('cmd_id<' => '50', 'original_id' => $item['id'], 'partner_id' => 0));
+	                $queue = CConvertQueue::model()->findAllByAttributes(array(/*'cmd_id' => '50',*/ 'original_id' => $item['id'], 'partner_id' => 0));
 	            }
 			}
 

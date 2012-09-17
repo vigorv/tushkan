@@ -198,7 +198,7 @@ $commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕ�
 		echo '<p><strong>' . Yii::t('params', $param) . ':</strong> ' . $value . '</p>';
 	}
 
-	if (empty($currentVariantId) && empty($qualityVariantId))
+	if (empty($qstContent) && empty($currentVariantId) && empty($qualityVariantId))
 	{
 		$msg = '<div id="flashDiv" class="alert alert-error">
 			<a class="close" data-dismiss="alert" href="#">×</a>

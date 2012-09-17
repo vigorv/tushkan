@@ -720,7 +720,11 @@ class UniverseController extends Controller {
 	            $zone = 0;
 	            if (!empty($item)) {
 		            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
-	                $queue = CConvertQueue::model()->findAllByAttributes(array('cmd_id' => '<50', 'original_id' => $item['id'], 'partner_id' => 0));
+	                $queue = Yii::app()->db->createCommand()
+	                	->select('*')
+	                	->from('{{income_queue}}')
+	                	->where('cmd_id < 50 AND original_id = ' . $item['id'] . ' AND partner_id = 0')
+	                	->queryRow();
 	            }
 			}
 

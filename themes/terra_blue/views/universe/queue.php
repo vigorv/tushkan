@@ -28,6 +28,10 @@
 			if (!empty($q['info']))
 			{
 				$info = unserialize($q['info']);
+				if (!empty($info['files']) && !empty($info['files'][0]))
+				{
+					$title .= ' ' . basename($info['files'][0]);
+				}
                 if ((isset($info['tags'])) && !empty($q['title']))
 				    $title .= ' (от ' . $q['title'] . ') ';
 			}

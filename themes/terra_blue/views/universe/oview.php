@@ -26,7 +26,8 @@ if (!empty($prms))
 	echo'</pre>';
 exit;
 //*/
-	$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
+	//$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
+$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
 
 	$playList = $activateTab = '';
 	foreach ($qs as $k => $val)

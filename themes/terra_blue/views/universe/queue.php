@@ -5,6 +5,8 @@
 		foreach ($qst as $q)
 		{
 			$info = array();
+			if (empty($q['title']))
+				$q['title'] = '';
 			$title= 'от партнера ' . $q['title'];
 			if (empty($q['title']))
 			{

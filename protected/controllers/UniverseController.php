@@ -728,13 +728,6 @@ class UniverseController extends Controller {
 	            }
 			}
 
-$userId = intval(Yii::app()->user->getId());
-if ($userId == 2)
-{
-	print_r($item);
-	print_r($queue);
-}
-
 			if (!empty($files[0]['preset_id']))
 			{
 				$cmd = Yii::app()->db->createCommand()
@@ -774,8 +767,11 @@ if ($userId == 2)
 				}
 			}
 		}
+
+		$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
+
 		$this->render('oview', array('id' => $id, 'prms' => $prms, 'params' => $params, 'files' => $files,
-			'subAction' => $subAction, 'variants' => $variants, 'queue' => $queue,
+			'subAction' => $subAction, 'variants' => $variants, 'queue' => $queue, 'qstContent' => $qstContent,
 			'qualities' => $qualities, 'item' => $item,
 			));
 	}

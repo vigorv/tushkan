@@ -161,6 +161,9 @@ $commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕ�
 				</ul>
 			</div>
 <?php
+	if (!empty($qstContent))//ВЫВОДИМ ИНФО ОБ ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+		echo $qstContent;
+
 	if (!empty($neededQuality))
 		$activateTab = $neededQuality;
 	$tabsContent = str_replace(	'<li id="linkQuality' . $activateTab . '"><a',

@@ -701,7 +701,7 @@ class UniverseController extends Controller {
 	 * @param integer $id - идентификатор объекта в ПП
 	 */
 	public function actionOview($id = 0) {
-		$prms = $params = $files = $variants = $queue = $qualities = $item = array();
+		$prms = $params = $files = $variants = $queue = $qualities = $item = $qstContent = array();
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
 			$cmd = Yii::app()->db->createCommand()
@@ -724,7 +724,9 @@ class UniverseController extends Controller {
 	                	->select('*')
 	                	->from('{{income_queue}}')
 	                	->where('cmd_id < 50 AND original_id = ' . $item['id'] . ' AND partner_id = 0')
-	                	->queryRow();
+	                	->queryAll();
+
+					$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
 	            }
 			}
 
@@ -767,8 +769,6 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-
-		$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
 
 		$this->render('oview', array('id' => $id, 'prms' => $prms, 'params' => $params, 'files' => $files,
 			'subAction' => $subAction, 'variants' => $variants, 'queue' => $queue, 'qstContent' => $qstContent,

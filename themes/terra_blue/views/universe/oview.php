@@ -35,7 +35,7 @@ if (Yii::app()->user->getId() == 2)
 	if (!empty($files) && !empty($files[0]['file_id']))
 	{
 		$commonActions[] = '<a href="#" onclick="return doRemoveAll(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'delete all qualities') . '</a>';
-		if (empty($files[0]['preset_id']))
+		if (empty($files[0]['preset_id']) && empty($qstContent))
 			$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
 	}
 

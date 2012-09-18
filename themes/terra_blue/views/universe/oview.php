@@ -25,7 +25,7 @@ if (!empty($prms))
 if (Yii::app()->user->getId() == 2)
 {
 	echo'<pre>';
-	print_r($qs);
+	print_r($qualities);
 	echo'</pre>';
 }
 //exit;

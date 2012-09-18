@@ -245,7 +245,7 @@ class FilesController extends Controller {
         	{
                 $mediaList = Utils::getMediaList();
                 $fi = pathinfo(strtolower($fInfo['fname']));
-				if (!empty($fInfo['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts']))
+				if (!empty($fi['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts']))
 				{
 					$partnerId = 0;
 					$queue = array(
@@ -258,7 +258,7 @@ class FilesController extends Controller {
 						'priority'		=> 200,
 						'state'			=> 0,
 						'station_id'	=> 0,
-						'partner_id'	=> 0,
+						'partner_id'	=> $partnerId,
 						'user_id'		=> $userId,
 						'original_variant_id'	=> 0,
 					);

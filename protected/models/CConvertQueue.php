@@ -56,7 +56,7 @@ class CConvertQueue extends CActiveRecord {
     	$cmd = Yii::app()->db->createCommand()
     		->select('id')
     		->from('{{income_queue}}')
-    		->where('id = :qid AND user_id = :uid');
+    		->where('id = :qid AND user_id = :uid AND original_id > 0');
     	$cmd->bindParam(':qid', $qid, PDO::PARAM_INT);
     	$cmd->bindParam(':uid', $uid, PDO::PARAM_INT);
     	$info = $cmd->queryScalar();

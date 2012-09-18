@@ -373,7 +373,7 @@ class UniverseController extends Controller {
 				if (!empty($uid))
 				{
 					$qst = Yii::app()->db->createCommand()
-						->select('iq.id, iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')
+						->select('iq.id, iq.original_id, iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')
 						->from('{{income_queue}} iq')
 						->leftJoin('{{partners}} p', 'p.id=iq.partner_id')
 						->where('iq.cmd_id < 50 AND iq.user_id = ' . $uid)

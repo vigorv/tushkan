@@ -65,8 +65,8 @@
 				    $title .= ' (от ' . $q['title'] . ') ';
 			}
 			$btn = '<a id="queue' . $q['id'] . '" class="btn" onclick="return cancelConvert(' . $q['id'] . ')">' . Yii::t('common', 'cancel'). '</a>';
-			if ($q['state'] == 10)
-				$btn .= ' <a class="btn">' . Yii::t('common', 'restart'). '</a>';
+			if (($q['state'] == 10) && !empty($q['original_id']))
+				$btn .= ' <a class="btn" onclick="return restartQueue(' . $q['id'] . ', ' . $q['original_id'] . ')">' . Yii::t('common', 'restart'). '</a>';
 			echo '<li id="queue' . $q['id'] . 'li"><img src="/images/64x64/mimetypes/' . $img . '">' . $title . $start . ' <i>' . $state . '</i> <nobr>' . $btn . '</nobr></li>';
 		}
 		echo '</ul>';

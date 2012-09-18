@@ -9,7 +9,7 @@
         }
         globalValue = qid;
         $.post('/files/cancelconvert', {id: qid}, function(){
-        	$('#queue' + globalValue + 'li').drgsfdg1111111111
+        	$('#queue' + globalValue + 'li').remove();
         });
 
 
@@ -19,7 +19,6 @@
 	function restartQueue(qid, oid)
 	{
 		globalValue = oid;
-return false;
         $.post('/files/restartqueue', {id: qid}. function(){
         	$('#content').load('/files/fview/' + globalValue);
         });

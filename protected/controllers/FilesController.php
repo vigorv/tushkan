@@ -229,7 +229,7 @@ class FilesController extends Controller {
 //TO DO:delete all files
         if (!empty($_POST['id']))
         {
-	        CConvertQueue::model()->deleteUserQueue($this->user_id, $id);
+	        CConvertQueue::model()->deleteUserQueue($this->user_id, $_POST['id']);
         }
     }
 
@@ -237,7 +237,7 @@ class FilesController extends Controller {
 //TO DO:delete all files
         if (!empty($_POST['id']))
         {
-	        CConvertQueue::model()->restartUserQueue($this->user_id, $id);
+	        CConvertQueue::model()->restartUserQueue($this->user_id, $_POST['id']);
         }
     }
 

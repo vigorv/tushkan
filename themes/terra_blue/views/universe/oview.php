@@ -21,11 +21,14 @@ if (!empty($prms))
 	$autoActionLink = '';
 	$currentQuality = '';
 
-/*
+//*
+if (Yii::app()->user->getId() == 2)
+{
 	echo'<pre>';
 	print_r($qs);
 	echo'</pre>';
-exit;
+}
+//exit;
 //*/
 	//$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
 	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ

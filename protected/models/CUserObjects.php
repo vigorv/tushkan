@@ -99,4 +99,48 @@ class CUserObjects extends CActiveRecord
             ->queryAll();
     }
 
+    /**
+     * Удаление типизированного объекта пользователя со связями и физическими файлами
+     *
+     * @param integer $uid - идентификатор владельца (пользователя)
+     * @param integer $oid - идентификатор объекта
+     * @return boolean - результат удаления (удалено/не удалено)
+     */
+    public static function deleteUserObject($uid, $oid)
+    {
+    	//ВЫБИРАЕМ ОБЪЕКТ И ЕГО ФАЙЛЫ
+    	$cmd = Yii::app()->db->createCommand()
+    		->select('uo.id, uf.id as fid')
+    		->from('{{userobjects}} uo')
+    		->join('{{userfiles}}', 'uo.id = uf.object_id')
+    		->where('uo.id = :oid AND uo.user_id = :uid');
+
+    	$cmd->bindParam(':uid', $uid, PDO::PARAM_INT);
+    	$cmd->bindParam(':oid', $oid, PDO::PARAM_INT);
+
+    	$ost = $cmd->queryAll();
+    	if (!empty($ost))
+    	{
+    		//УДАЛЯЕМ ПАРАМЕТРЫ ТИПИЗАЦММ
+    		$sql = 'DELETE FROM {{userobjects_param_values}} WHERE object_id = :oid';
+    		$cmd = Yii::app()->db->createCommand($sql);
+	    	$cmd->bindParam(':oid', $oid, PDO::PARAM_INT);
+	    	$cmd->query();
+
+    		//УДАЛЯЕМ ФАЙЛЫ, ВАРИАНТЫ, ЛОКАЦИИ
+	    	foreach ($ost as $o)
+	    	{
+	    		CUserfiles::RemoveFile($uid, $o['fid']);
+	    	}
+
+    		//УДАЛЯЕМ ОБЪЕКТ
+    		$sql = 'DELETE FROM {{userobjects}} WHERE id = :oid';
+    		$cmd = Yii::app()->db->createCommand($sql);
+	    	$cmd->bindParam(':oid', $oid, PDO::PARAM_INT);
+	    	$cmd->query();
+
+	    	return true;
+    	}
+    	return false;
+    }
 }

@@ -99,8 +99,6 @@ return false;
     		$actions[] = '<a class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</a>';
     }
 
-    if (!empty($item['type_id']))
-        $actions[] = '<a class="btn" onclick="return queue(\'add\');">' . Yii::t('files', 'convert') . '</a>';
     if (!empty($actions)) {
         echo implode(' ', $actions);
     }

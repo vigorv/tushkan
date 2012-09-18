@@ -225,6 +225,22 @@ class FilesController extends Controller {
         $this->renders('types');
     }
 
+    public function actionCancelconvert() {
+//TO DO:delete all files
+        if (!empty($_POST['id']))
+        {
+	        CConvertQueue::model()->deleteUserQueue($this->user_id, $id);
+        }
+    }
+
+    public function actionRestartqueue() {
+//TO DO:delete all files
+        if (!empty($_POST['id']))
+        {
+	        CConvertQueue::model()->restartUserQueue($this->user_id, $id);
+        }
+    }
+
     public function actionRemove() {
 //TO DO:delete all files
         if (!isset($_POST['id']))

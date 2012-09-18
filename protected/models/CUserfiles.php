@@ -115,7 +115,7 @@ class CUserfiles extends CActiveRecord {
      * @param int $fid
      * @return mixed
      */
-    public function getFileMeta($user_id, $fid) {
+    public static function getFileMeta($user_id, $fid) {
 	return Yii::app()->db->createCommand()
 			->select('uf.*')
 			->from('{{userfiles}} uf')
@@ -148,12 +148,12 @@ class CUserfiles extends CActiveRecord {
     }
 
     /**
-     *  Remove only if file| not object
+     * Remove only if file| not object
      * @param int $user_id
      * @param int $id
      */
-    public function RemoveFile($user_id, $fid) {
-	    $file = $this->getFileMeta($user_id, $fid);
+    public static function RemoveFile($user_id, $fid) {
+	    $file = CUserfiles::getFileMeta($user_id, $fid);
 	    if (($file) && ($file['object_id'] == 0)) {
 	         $file_variants = CFilesvariants::model()->findAllByAttributes(array('file_id' => $file['id']));
 

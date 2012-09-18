@@ -1,3 +1,31 @@
+<script type="text/javascript">
+	var globalValue;
+
+	function cancelConvert(qid)
+	{
+        if (!confirm("<?php echo Yii::t('common', 'Are you sure?'); ?>"))
+        {
+            return false;
+        }
+        globalValue = qid;
+        $.post('/files/cancelconvert', {id: qid}, function(){
+        	$('#queue' + globalValue + 'li').drgsfdg1111111111
+        });
+
+
+        return false;
+	}
+
+	function restartQueue(qid, oid)
+	{
+		globalValue = oid;
+return false;
+        $.post('/files/restartqueue', {id: qid}. function(){
+        	$('#content').load('/files/fview/' + globalValue);
+        });
+	}
+</script>
+
 <?php
 	if (!empty($qst))
 	{
@@ -37,7 +65,10 @@
                 if ((isset($info['tags'])) && !empty($q['title']))
 				    $title .= ' (от ' . $q['title'] . ') ';
 			}
-			echo '<li><img src="/images/64x64/mimetypes/' . $img . '">' . $title . $start . ' <i>' . $state . '</i></li>';
+			$btn = '<a id="queue' . $q['id'] . '" class="btn" onclick="return cancelConvert(' . $q['id'] . ')">' . Yii::t('common', 'cancel'). '</a>';
+			if ($q['state'] == 10)
+				$btn .= ' <a class="btn">' . Yii::t('common', 'restart'). '</a>';
+			echo '<li id="queue' . $q['id'] . 'li"><img src="/images/64x64/mimetypes/' . $img . '">' . $title . $start . ' <i>' . $state . '</i> <nobr>' . $btn . '</nobr></li>';
 		}
 		echo '</ul>';
 	}

@@ -234,8 +234,8 @@ class FilesController extends Controller {
         	$cmd = Yii::app()->db->createCommand()
         		->select('uf.id, fv.preset_id, fl.fname')
         		->from('{{userfiles}} uf')
-        		->join('files_variants fv', 'fv.file_id=uf.id')
-        		->join('filelocations fl', 'fl.id=fv.id')
+        		->join('{{files_variants}} fv', 'fv.file_id=uf.id')
+        		->join('{{filelocations}} fl', 'fl.id=fv.id')
         		->where('uf.id = :id AND fv.preset_id=0');
         	$cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
         	$fInfo = $cmd->queryRow();

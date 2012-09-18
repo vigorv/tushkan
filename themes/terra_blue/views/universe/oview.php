@@ -21,7 +21,7 @@ if (!empty($prms))
 	$autoActionLink = '';
 	$currentQuality = '';
 
-//*
+/*
 if (Yii::app()->user->getId() == 2)
 {
 	echo'<pre>';
@@ -32,7 +32,6 @@ if (Yii::app()->user->getId() == 2)
 //*/
 	//$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
 	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
-	if (empty($qstContent) && !empty($qualities[0]['ufid']) && empty($qualities[0]['preset_id']))
 	if (!empty($files) && empty($files[0]['preset_id']) && !empty($files[0]['file_id']))
 	{
 		$commonActions[] = array('<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>');

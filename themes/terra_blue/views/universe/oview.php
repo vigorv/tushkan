@@ -32,9 +32,11 @@ if (Yii::app()->user->getId() == 2)
 //*/
 	//$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
 	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
-	if (!empty($files) && empty($files[0]['preset_id']) && !empty($files[0]['file_id']))
+	if (!empty($files) && !empty($files[0]['file_id']))
 	{
-		$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
+		$commonActions[] = '<a href="#" onclick="return doRemoveAll(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'delete all qualities') . '</a>';
+		if (empty($files[0]['preset_id']))
+			$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
 	}
 
 	$playList = $activateTab = '';
@@ -112,11 +114,24 @@ if (Yii::app()->user->getId() == 2)
 	}
 ?>
 <script type="text/javascript">
+	function startConvert(ufid)
+	{
+		$.post('/files/startconvert', {id: ufid}, function(data){
+			if (data == 'queue')
+			{
+				$('#content').load('/universe/oview/<?php echo $id; ?>');
+			}
+		});
+		return false;
+	}
+
 	function doRemoveAll(ufid)
 	{
 		if (confirm('<?php echo Yii::t('common', 'Are you sure?'); ?>'))
 		{
-
+			$.post('/files/remove', {id: ufid}, function(){
+				$('#content').load('/universe/library?lib=v');
+			});
 		}
 		return false;
 	}

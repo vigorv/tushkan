@@ -29,7 +29,7 @@ exit;
 //*/
 	//$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
 	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
-	if (empty($qs) && empty($qstContent) && !empty($qualities[0]['ufid']))
+	if (empty($qstContent) && !empty($qualities[0]['ufid']) && empty($qualities[0]['preset_id']))
 		$commonActions[] = array('<a href="#" onclick="return startConvert(' . $qualities[0]['ufid'] . ')">' . Yii::t('files', 'convert') . '</a>');
 
 	$playList = $activateTab = '';

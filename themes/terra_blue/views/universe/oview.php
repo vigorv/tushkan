@@ -28,7 +28,9 @@ if (!empty($prms))
 exit;
 //*/
 	//$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
-$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
+	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
+	if (empty($qs) && empty($qstContent) && !empty($qualities[0]['ufid']))
+		$commonActions[] = array('<a href="#" onclick="return startConvert(' . $qualities[0]['ufid'] . ')">' . Yii::t('files', 'convert') . '</a>');
 
 	$playList = $activateTab = '';
 	foreach ($qs as $k => $val)
@@ -58,11 +60,6 @@ $commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕ�
 	if (empty($queue)) {
 		if (!empty($files[0]['preset_id']))
 			$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
-	}
-	else
-	{
-	    echo '<p>Состояние: добавление в пространство<br />';
-	    echo 'Текущая операция: конвертирование<br /><p>';
 	}
 
 		$dLink = '/files/download?vid=' . $qualityVariantId;

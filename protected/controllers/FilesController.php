@@ -225,6 +225,51 @@ class FilesController extends Controller {
         $this->renders('types');
     }
 
+    public function actionStartconvert()
+    {
+        if (!empty($_POST['id']))
+        {
+        	$userId = Yii::app()->user->getId();
+        	//ВЫБИРАЕМ ИНФУ О ФАЙЛЕ И ЕГО ВАРИАНТАХ, КОТОРЫЕ ЕЩЕ НЕСКОНВЕРТИРОВАНЫ (preset_id=0)
+        	$cmd = Yii::app()->db->createCommand()
+        		->select('uf.id, fv.preset_id, fl.fname')
+        		->from('{{userfiles}} uf')
+        		->join('files_variants fv', 'fv.file_id=uf.id')
+        		->join('filelocations fl', 'fl.id=fv.id')
+        		->where('uf.id = :id AND fv.preset_id=0');
+        	$cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
+        	$fInfo = $cmd->queryRow();
+
+        	//ПРОВЕРЯЕМ ВОЗМОЖНО ЛИ КОНВЕРТИРОВАИНЕ
+        	if (!empty($fInfo))
+        	{
+                $mediaList = Utils::getMediaList();
+                $fi = pathinfo(strtolower($fInfo['fname']));
+				if (!empty($fInfo['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts']))
+				{
+					$partnerId = 0;
+					$queue = array(
+						'id'			=> null,
+						'product_id'	=> 0,
+						'original_id'	=> $fInfo['id'],
+						'task_id'		=> 0,
+						'cmd_id'		=> 0,
+						'info'			=> "",
+						'priority'		=> 200,
+						'state'			=> 0,
+						'station_id'	=> 0,
+						'partner_id'	=> 0,
+						'user_id'		=> $userId,
+						'original_variant_id'	=> 0,
+					);
+					$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
+					$result = 'queue';
+					echo $result;
+				}
+			}
+        }
+    }
+
     public function actionCancelconvert() {
 //TO DO:delete all files
         if (!empty($_POST['id']))

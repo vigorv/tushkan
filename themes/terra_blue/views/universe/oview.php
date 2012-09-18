@@ -34,7 +34,7 @@ if (Yii::app()->user->getId() == 2)
 	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
 	if (!empty($files) && empty($files[0]['preset_id']) && !empty($files[0]['file_id']))
 	{
-		$commonActions[] = array('<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>');
+		$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
 	}
 
 	$playList = $activateTab = '';

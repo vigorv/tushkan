@@ -19,7 +19,7 @@
 	function restartQueue(qid, oid)
 	{
 		globalValue = oid;
-        $.post('/files/restartqueue', {id: qid}. function(){
+        $.post('/files/restartqueue', {id: qid}, function(){
         	$('#content').load('/files/fview/' + globalValue);
         });
 	}

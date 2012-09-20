@@ -1,6 +1,6 @@
 <?php
 $mediaList = Utils::getMediaList();
-if (!$type_id)
+if (!empty($type_id))
 {
 ?>
 <div class="tabbable"> <!-- Only required for left/right tabs -->

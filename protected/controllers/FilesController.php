@@ -183,6 +183,7 @@ class FilesController extends Controller {
     public function actionFview($id) {
         //if (Yii::app()->request->isAjaxRequest) {
         $variants = $item = $queue = array();
+        $qstContent = '';
 
         if ($id > 0) {
             $item = CUserfiles::model()->getFileInfo($this->user_id, $id);
@@ -190,10 +191,17 @@ class FilesController extends Controller {
             $zone = 0;
             if (!empty($item)) {
 	            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
-                $queue = CConvertQueue::model()->findAllByAttributes(array('original_id' => $item['id'], 'partner_id' => 0, 'cmd_id' => '<50'));
+                $queue = Yii::app()->db->createCommand()
+                	->select('*')
+                	->from('{{income_queue}}')
+                	->where('cmd_id < 50 AND original_id = ' . $item['id'] . ' AND partner_id = 0')
+                	->queryAll();
+
+				if (!empty($queue))
+					$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
             }
         }
-        $this->render('fview', array('item' => $item, 'queue' => $queue, 'variants' => $variants));
+        $this->render('fview', array('item' => $item, 'queue' => $queue, 'qstContent' => $qstContent, 'variants' => $variants));
     }
 
     /* Deprecated
@@ -217,6 +225,67 @@ class FilesController extends Controller {
 
     public function actionTypes($fid) {
         $this->renders('types');
+    }
+
+    public function actionStartconvert()
+    {
+        if (!empty($_POST['id']))
+        {
+        	$userId = Yii::app()->user->getId();
+        	//ВЫБИРАЕМ ИНФУ О ФАЙЛЕ И ЕГО ВАРИАНТАХ, КОТОРЫЕ ЕЩЕ НЕСКОНВЕРТИРОВАНЫ (preset_id=0)
+        	$cmd = Yii::app()->db->createCommand()
+        		->select('uf.id, fv.preset_id, fl.fname')
+        		->from('{{userfiles}} uf')
+        		->join('{{files_variants}} fv', 'fv.file_id=uf.id')
+        		->join('{{filelocations}} fl', 'fl.id=fv.id')
+        		->where('uf.id = :id AND fv.preset_id=0');
+        	$cmd->bindParam(':id', $_POST['id'], PDO::PARAM_INT);
+        	$fInfo = $cmd->queryRow();
+
+        	//ПРОВЕРЯЕМ ВОЗМОЖНО ЛИ КОНВЕРТИРОВАИНЕ
+        	if (!empty($fInfo))
+        	{
+                $mediaList = Utils::getMediaList();
+                $fi = pathinfo(strtolower($fInfo['fname']));
+				if (!empty($fi['extension']) && !empty($mediaList[1]['exts']) && in_array($fi['extension'], $mediaList[1]['exts']))
+				{
+					$partnerId = 0;
+					$queue = array(
+						'id'			=> null,
+						'product_id'	=> 0,
+						'original_id'	=> $fInfo['id'],
+						'task_id'		=> 0,
+						'cmd_id'		=> 0,
+						'info'			=> "",
+						'priority'		=> 200,
+						'state'			=> 0,
+						'station_id'	=> 0,
+						'partner_id'	=> $partnerId,
+						'user_id'		=> $userId,
+						'original_variant_id'	=> 0,
+					);
+					$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
+					$result = 'queue';
+					echo $result;
+				}
+			}
+        }
+    }
+
+    public function actionCancelconvert() {
+//TO DO:delete all files
+        if (!empty($_POST['id']))
+        {
+	        CConvertQueue::model()->deleteUserQueue($this->user_id, $_POST['id']);
+        }
+    }
+
+    public function actionRestartqueue() {
+//TO DO:delete all files
+        if (!empty($_POST['id']))
+        {
+	        CConvertQueue::model()->restartUserQueue($this->user_id, $_POST['id']);
+        }
     }
 
     public function actionRemove() {

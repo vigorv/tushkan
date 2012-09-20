@@ -20,13 +20,24 @@ if (!empty($prms))
 	$btnsContent = '<div class="tab-content">';
 	$autoActionLink = '';
 	$currentQuality = '';
+
 /*
+if (Yii::app()->user->getId() == 2)
+{
 	echo'<pre>';
-	print_r($qs);
+	print_r($files);
 	echo'</pre>';
-exit;
+}
+//exit;
 //*/
-	$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
+	//$commonActions = array('<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>');
+	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
+	if (!empty($files) && !empty($files[0]['file_id']))
+	{
+		$commonActions[] = '<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>';
+		if (empty($files[0]['preset_id']) && empty($qstContent))
+			$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
+	}
 
 	$playList = $activateTab = '';
 	foreach ($qs as $k => $val)
@@ -53,15 +64,10 @@ exit;
 		}
 
 		//$actions[] = '<a href="#" onclick="return doRemove(' . $val[0][1] . ')">' . Yii::t('files', 'delete') . '</a>';
-		if (empty($queue)) {
-			if (!empty($files[0]['preset_id']))
-				$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
-		}
-		else
-		{
-		    echo '<p>Состояние: добавление в пространство<br />';
-		    echo 'Текущая операция: конвертирование<br /><p>';
-		}
+	if (empty($queue)) {
+		if (!empty($files[0]['preset_id']))
+			$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
+	}
 
 		$dLink = '/files/download?vid=' . $qualityVariantId;
 
@@ -108,11 +114,24 @@ exit;
 	}
 ?>
 <script type="text/javascript">
-	function doRemoveAll(ufid)
+	function startConvert(ufid)
+	{
+		$.post('/files/startconvert', {id: ufid}, function(data){
+			if (data == 'queue')
+			{
+				$('#content').load('/universe/oview/<?php echo $id; ?>');
+			}
+		});
+		return false;
+	}
+
+	function doRemoveAll(oid)
 	{
 		if (confirm('<?php echo Yii::t('common', 'Are you sure?'); ?>'))
 		{
-
+			$.post('/universe/oremove/' + oid, function(){
+				$('#content').load('/universe/library?lib=v');
+			});
 		}
 		return false;
 	}
@@ -159,6 +178,9 @@ exit;
 				</ul>
 			</div>
 <?php
+	if (!empty($qstContent))//ВЫВОДИМ ИНФО ОБ ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+		echo $qstContent;
+
 	if (!empty($neededQuality))
 		$activateTab = $neededQuality;
 	$tabsContent = str_replace(	'<li id="linkQuality' . $activateTab . '"><a',
@@ -193,7 +215,7 @@ exit;
 		echo '<p><strong>' . Yii::t('params', $param) . ':</strong> ' . $value . '</p>';
 	}
 
-	if (empty($currentVariantId) && empty($qualityVariantId))
+	if (empty($qstContent) && empty($currentVariantId) && empty($qualityVariantId))
 	{
 		$msg = '<div id="flashDiv" class="alert alert-error">
 			<a class="close" data-dismiss="alert" href="#">×</a>
@@ -270,6 +292,12 @@ exit;
 										backgroundGradient: "none",
 										backgroundColor: "#000000"
 									},
+
+									onBlur: function(){
+										alert("blur")
+										this.unload();
+									},
+
 									playlist: [
 										{ url: path, scaling: "fit" }
 									]

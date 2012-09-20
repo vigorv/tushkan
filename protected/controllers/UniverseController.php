@@ -373,7 +373,7 @@ class UniverseController extends Controller {
 				if (!empty($uid))
 				{
 					$qst = Yii::app()->db->createCommand()
-						->select('iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')
+						->select('iq.id, iq.original_id, iq.info, p.title, iq.cmd_id, iq.state, iq.date_start')
 						->from('{{income_queue}} iq')
 						->leftJoin('{{partners}} p', 'p.id=iq.partner_id')
 						->where('iq.cmd_id < 50 AND iq.user_id = ' . $uid)
@@ -701,7 +701,7 @@ class UniverseController extends Controller {
 	 * @param integer $id - идентификатор объекта в ПП
 	 */
 	public function actionOview($id = 0) {
-		$prms = $params = $files = $variants = $queue = $qualities = $item = array();
+		$prms = $params = $files = $variants = $queue = $qualities = $item = $qstContent = array();
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
 			$cmd = Yii::app()->db->createCommand()
@@ -713,14 +713,21 @@ class UniverseController extends Controller {
 					->group('fl.id');
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$files = $cmd->queryAll();
-
-            $item = CUserfiles::model()->getFileInfo($this->userInfo['id'], $files[0]['file_id']);
+			$qstContent = '';
 			if (!empty($files) && empty($files[0]['preset_id']))
 			{
+	            $item = CUserfiles::model()->getFileInfo($this->userInfo['id'], $files[0]['file_id']);
 	            $zone = 0;
 	            if (!empty($item)) {
 		            $variants = CUserfiles::model()->GetVarWithLoc($item['id'], $zone);
-	                $queue = CConvertQueue::model()->findAllByAttributes(array('original_id' => $item['id'], 'partner_id' => 0));
+	                $queue = Yii::app()->db->createCommand()
+	                	->select('*')
+	                	->from('{{income_queue}}')
+	                	->where('cmd_id < 50 AND original_id = ' . $item['id'] . ' AND partner_id = 0')
+	                	->queryAll();
+
+	                if (!empty($queue))
+						$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
 	            }
 			}
 
@@ -763,16 +770,29 @@ class UniverseController extends Controller {
 				}
 			}
 		}
+
 		$this->render('oview', array('id' => $id, 'prms' => $prms, 'params' => $params, 'files' => $files,
-			'subAction' => $subAction, 'variants' => $variants, 'queue' => $queue,
+			'subAction' => $subAction, 'variants' => $variants, 'queue' => $queue, 'qstContent' => $qstContent,
 			'qualities' => $qualities, 'item' => $item,
 			));
 	}
 
 	/**
-	 * УДАЛИТЬ ОБЪЕКТ ИЗ ПП
+	 * УДАЛИТЬ ТИПИЗИРОВАННЫЙ ОБЪЕКТ ПОЛЬЗОВАТЕЛЯ ИЗ ПП
 	 *
-	 * @param integer $id - идентификатор объекта в ПП
+	 * @param integer $id - идентификатор объекта в ПП (добавленного из витрин)
+	 */
+	public function actionOremove($id = 0) {
+		if (CUserObjects::deleteUserObject(Yii::app()->user->getId(), $id))
+		{
+			echo 'ok';
+		}
+	}
+
+	/**
+	 * УДАЛИТЬ ОБЪЕКТ ИЗ ПП (добавленного из витрин)
+	 *
+	 * @param integer $id - идентификатор объекта в ПП (добавленного из витрин)
 	 */
 	public function actionRemove($id = 0) {
 		$result = '';

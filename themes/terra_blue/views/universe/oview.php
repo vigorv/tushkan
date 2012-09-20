@@ -266,6 +266,9 @@ if (Yii::app()->user->getId() == 2)
 			   $("#flowplayerdiv").modal("show");
 			   $(".close").click(function(){
 			   		$("#flowplayerdiv").modal("hide");
+					$f("*").each(function() {
+					    this.unload();
+					});
 			   });
 			});
 
@@ -291,11 +294,6 @@ if (Yii::app()->user->getId() == 2)
 										// remove default canvas gradient
 										backgroundGradient: "none",
 										backgroundColor: "#000000"
-									},
-
-									onBlur: function(){
-										alert("blur")
-										this.unload();
 									},
 
 									playlist: [

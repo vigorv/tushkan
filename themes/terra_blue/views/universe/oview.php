@@ -265,8 +265,9 @@ if (Yii::app()->user->getId() == 2)
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
 			   $(".close").click(function(){
-			   		$("#flowplayerdiv").modal("hide");
+					console.log(111);
 			   		$f().stop();
+			   		$("#flowplayerdiv").modal("hide");
 					//$f("*").each(function() {
 					 //   this.unload();
 					//});

@@ -34,7 +34,7 @@ if (Yii::app()->user->getId() == 2)
 	$commonActions = array();//ПОКА НИКАКИХ ДЕЙСТВИЙ НЕ ДАЕМ
 	if (!empty($files) && !empty($files[0]['file_id']))
 	{
-		$commonActions[] = '<a href="#" onclick="return doRemoveAll(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'delete all qualities') . '</a>';
+		$commonActions[] = '<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>';
 		if (empty($files[0]['preset_id']) && empty($qstContent))
 			$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
 	}
@@ -125,11 +125,11 @@ if (Yii::app()->user->getId() == 2)
 		return false;
 	}
 
-	function doRemoveAll(ufid)
+	function doRemoveAll(oid)
 	{
 		if (confirm('<?php echo Yii::t('common', 'Are you sure?'); ?>'))
 		{
-			$.post('/files/remove', {id: ufid}, function(){
+			$.post('/universe/oremove/' + oid, function(){
 				$('#content').load('/universe/library?lib=v');
 			});
 		}
@@ -266,6 +266,7 @@ if (Yii::app()->user->getId() == 2)
 			   $("#flowplayerdiv").modal("show");
 			   $(".close").click(function(){
 			   		$("#flowplayerdiv").modal("hide");
+			   		$("#flowplayerdiv").remove();
 			   });
 			});
 

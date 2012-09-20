@@ -713,7 +713,7 @@ class UniverseController extends Controller {
 					->group('fl.id');
 			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 			$files = $cmd->queryAll();
-
+			$qstContent = '';
 			if (!empty($files) && empty($files[0]['preset_id']))
 			{
 	            $item = CUserfiles::model()->getFileInfo($this->userInfo['id'], $files[0]['file_id']);
@@ -726,7 +726,8 @@ class UniverseController extends Controller {
 	                	->where('cmd_id < 50 AND original_id = ' . $item['id'] . ' AND partner_id = 0')
 	                	->queryAll();
 
-					$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
+	                if (!empty($queue))
+						$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
 	            }
 			}
 
@@ -777,9 +778,21 @@ class UniverseController extends Controller {
 	}
 
 	/**
-	 * УДАЛИТЬ ОБЪЕКТ ИЗ ПП
+	 * УДАЛИТЬ ТИПИЗИРОВАННЫЙ ОБЪЕКТ ПОЛЬЗОВАТЕЛЯ ИЗ ПП
 	 *
-	 * @param integer $id - идентификатор объекта в ПП
+	 * @param integer $id - идентификатор объекта в ПП (добавленного из витрин)
+	 */
+	public function actionOremove($id = 0) {
+		if (CUserObjects::deleteUserObject(Yii::app()->user->getId(), $id))
+		{
+			echo 'ok';
+		}
+	}
+
+	/**
+	 * УДАЛИТЬ ОБЪЕКТ ИЗ ПП (добавленного из витрин)
+	 *
+	 * @param integer $id - идентификатор объекта в ПП (добавленного из витрин)
 	 */
 	public function actionRemove($id = 0) {
 		$result = '';

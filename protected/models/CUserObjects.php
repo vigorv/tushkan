@@ -112,7 +112,7 @@ class CUserObjects extends CActiveRecord
     	$cmd = Yii::app()->db->createCommand()
     		->select('uo.id, uf.id as fid')
     		->from('{{userobjects}} uo')
-    		->join('{{userfiles}}', 'uo.id = uf.object_id')
+    		->join('{{userfiles}} uf', 'uo.id = uf.object_id')
     		->where('uo.id = :oid AND uo.user_id = :uid');
 
     	$cmd->bindParam(':uid', $uid, PDO::PARAM_INT);

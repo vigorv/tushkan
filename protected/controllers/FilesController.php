@@ -183,6 +183,7 @@ class FilesController extends Controller {
     public function actionFview($id) {
         //if (Yii::app()->request->isAjaxRequest) {
         $variants = $item = $queue = array();
+        $qstContent = '';
 
         if ($id > 0) {
             $item = CUserfiles::model()->getFileInfo($this->user_id, $id);
@@ -196,7 +197,8 @@ class FilesController extends Controller {
                 	->where('cmd_id < 50 AND original_id = ' . $item['id'] . ' AND partner_id = 0')
                 	->queryAll();
 
-				$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
+				if (!empty($queue))
+					$qstContent = $this->renderPartial('/universe/queue', array('qst' => $queue), true);
             }
         }
         $this->render('fview', array('item' => $item, 'queue' => $queue, 'qstContent' => $qstContent, 'variants' => $variants));

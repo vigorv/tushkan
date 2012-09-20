@@ -19,38 +19,6 @@ if (!empty($item)) {
     			}
     		}
     	?>
-        function queue(subaction)
-        {
-return false;
-            $.post('/files/queue', {id: <?php echo $item['id']; ?>, subaction: subaction}, function(data){
-                result = '';
-                if (data)
-                {
-                    answer = $.parseJSON(data);
-                    result = answer.result;
-                }
-                if (result == 'ok')
-                {
-                    $.address.value("/files/fview/<?php echo $item['id']; ?>");
-
-                    //$("#content").load("/files/fview/<?php echo $item['id']; ?>");
-                }
-                else
-                {
-                    if (answer.err_code){
-                        switch(answer.err_code){
-                            case 1: "alert('Произошла ошибка при попытке конвертации. Попробуйте позднее');";
-                            case 2: "alert('Уже выполняется')";
-                        }
-
-                    }
-                    else
-                        alert('Ошибка создания очереди конвертирования');
-                }
-            });
-            return false;
-        }
-
         function doType(type_id)
         {
             $.post("/products/ajax", {typeId: type_id, action: "wizardtypeparams"}, function(html){
@@ -68,7 +36,7 @@ return false;
             }
 
             $.post('/files/remove', {id: <?php echo $item['id']; ?>}, function(){
-                $.address.value("<?php echo $mediaList[$item['type_id']]['link']; ?>");
+                $('#content').load("/universe/library?lib=v");
             });
             return false;
         }
@@ -77,6 +45,18 @@ return false;
         {
             return false;
         }
+
+		function startConvert(ufid)
+		{
+			$.post('/files/startconvert', {id: ufid}, function(data){
+				if (data == 'queue')
+				{
+					$('#content').load('/files/fview/<?php echo $item['id']; ?>');
+				}
+			});
+			return false;
+		}
+
     </script>
 <div class="span12 no-horizontal-margin inside-movie my-catalog">
     <?php
@@ -98,6 +78,12 @@ return false;
     	if (!empty($detectedType) && empty($item['object_id']))
     		$actions[] = '<a class="btn" onclick="return doType(' . $detectedType . ');">' . Yii::t('common', 'Typify') . ' ' . Yii::t('common', 'as') . ' "' . $detectedTypeName . '"</a>';
     }
+
+
+	if (empty($variants[0]['preset_id']) && empty($qstContent) && ($detectedType == 1)) //ПОКА КОНВЕРТИРОВАТЬ МОЖЕМ ТОЛЬКО КАК ВИДЕО
+	{
+		$actions[] = '<a href="#" class="btn" onclick="return startConvert(' . $item['id'] . ')">' . Yii::t('files', 'convert') . '</a>';
+	}
 
     if (!empty($actions)) {
         echo implode(' ', $actions);

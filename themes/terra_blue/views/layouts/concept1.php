@@ -6,7 +6,8 @@
 
 		<link href="/css/bootstrap.min.css" rel="stylesheet">
 		<link href="/css/tushkan.css" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/css/carousel/skin.css" />
+        <link rel="stylesheet/less" type="text/css" href="/less/concept1.less"/>
+
 		<style>body {padding-top: 25px; background: #ededed url('/img/body-bg.png') top left repeat-x;}</style>
 		<!--[if lt IE 9]>
 			<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -21,13 +22,13 @@
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.cookie.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.form.js');
 	Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.address-1.4.min.js');
-    Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jcarousel.min.js');
+    Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.jcarousel-all.js');
+
     //Yii::app()->getClientScript()->registerScriptFile(Yii::app()->request->baseUrl . '/js/jquery.caret.js');
 
 ?>
-
 		<script src="/js/bootstrap.min.js"></script>
-
+        <script src="/js/less-1.2.2.min.js"></script>
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 	</head>
 <body>

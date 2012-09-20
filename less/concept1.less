@@ -1,0 +1,92 @@
+.goods_top_carousel {
+  height: 150px;
+  position: relative;
+  overflow: hidden;
+  margin: 0 50px;
+  ul {
+    width: 20000em;
+    position: absolute;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    float: left;
+    width: 95px;
+    height: 130px;
+    margin-left: 0;
+    margin-right: 10px;
+  }
+}
+
+.jcarousel-next-horizontal {
+  position: absolute;
+  top: 43px;
+  right: 5px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  background: transparent url(/img/next-horizontal.png) no-repeat 0 0;
+  &:hover, &:focus {
+    background-position: -32px 0;
+  }
+  &:active {
+    background-position: -64px 0;
+  }
+  &.disabled {
+    cursor: default;
+    background-position: -96px 0;
+  }
+}
+
+.jcarousel-prev-horizontal {
+  position: absolute;
+  top: 43px;
+  left: 5px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  background: transparent url(/img/prev-horizontal.png) no-repeat 0 0;
+  &:hover, &:focus {
+    background-position: -32px 0;
+  }
+  &:active {
+    background-position: -64px 0;
+  }
+  &.disabled {
+    cursor: default;
+    background-position: -96px 0;
+  }
+}
+
+#m_goods_carousel_pages {
+  float: right;
+  overflow: hidden;
+  padding: 15px 0 0 45px;
+  height: 13px;
+  .item {
+    float: left;
+    display: block;
+    width: 13px;
+    height: 13px;
+    padding-left: 10px;
+    background: url('../img/movie-pages.png') top left no-repeat;
+    &:hover {
+      float: left;
+      display: block;
+      width: 13px;
+      height: 13px;
+      padding-left: 10px;
+      background: url('../img/movie-pages-active.png') top left no-repeat;
+    }
+  }
+  .active {
+    float: left;
+    display: block;
+    width: 13px;
+    height: 13px;
+    padding-left: 10px;
+    background: url('../img/movie-pages-active.png') top left no-repeat;
+  }
+
+}

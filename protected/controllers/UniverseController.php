@@ -276,7 +276,7 @@ class UniverseController extends Controller {
 
 	public function actionGoodsTop($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
-		$pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,0,Yii::app()->params['product_top_count']*2);
+		$pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,0,Yii::app()->params['product_top_count']*5);
 		$this->render('/products/top', array('pst' => $pst));
 	}
 

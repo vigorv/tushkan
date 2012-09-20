@@ -270,7 +270,6 @@ if (Yii::app()->user->getId() == 2)
 
 			function closePlayer()
 			{
-				console.log(111);
 		   		$f().stop();
 		   		$("#flowplayerdiv").modal("hide");
 		   		return false;

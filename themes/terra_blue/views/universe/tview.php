@@ -339,6 +339,7 @@ exit;
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
 			   $(".close").click(function(){
+			   		$f().stop();
 			   		$("#flowplayerdiv").modal("hide");
 			   });
 			});

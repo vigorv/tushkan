@@ -265,7 +265,7 @@ if (Yii::app()->user->getId() == 2)
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
 			   $(".close").click(function(){
-			   		$f("ipad").remove();
+			   		$("ipad").remove();
 			   		$("#flowplayerdiv").modal("hide");
 			   });
 			});

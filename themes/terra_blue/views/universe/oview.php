@@ -265,8 +265,8 @@ if (Yii::app()->user->getId() == 2)
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
 			   $(".close").click(function(){
-					$("#video' . $currentVariantId . ' p").trigger("click");
 			   		$("#flowplayerdiv").modal("hide");
+					$("#video' . $currentVariantId . ' p").trigger("click");
 			   });
 			});
 

@@ -218,7 +218,7 @@ if (Yii::app()->user->getId() == 2)
 	if (empty($qstContent) && empty($currentVariantId) && empty($qualityVariantId))
 	{
 		$msg = '<div id="flashDiv" class="alert alert-error">
-			<a class="close" href="#" onclick="return closePlayer()">×</a>
+			<a class="close" data-dismiss="modal" href="#">×</a>
 			<h4 class="alert-heading">' . Yii::t('files', 'Error data structure') . '</h4>
 			' . Yii::t('files', 'File not found') . '
 		</div>';
@@ -266,14 +266,11 @@ if (Yii::app()->user->getId() == 2)
 
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
+			   $(".close").click(function(){
+			   		$f().stop();
+			   		$("#flowplayerdiv").modal("hide");
+			   });
 			});
-
-			function closePlayer()
-			{
-		   		$f().stop();
-		   		$("#flowplayerdiv").modal("hide");
-		   		return false;
-			}
 
 			function addVideo(num, path) {
 //alert(path);

@@ -1,4 +1,9 @@
-	<div class="tabbable"> <!-- Only required for left/right tabs -->
+<?php
+$mediaList = Utils::getMediaList();
+if (!$type_id)
+{
+?>
+<div class="tabbable"> <!-- Only required for left/right tabs -->
 		<ul class="nav inside-nav nav-pills inside-nav-pills">
 		<?php
 			foreach ($mediaList as $ml)
@@ -12,6 +17,9 @@
 		?>
 		</ul>
 	</div>
+<?php
+}
+?>
 	<div class="tab-content">
 		<div class="tab-pane active">
 			<div class="span12 no-horizontal-margin inside-movie my-catalog">

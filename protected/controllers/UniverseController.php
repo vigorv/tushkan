@@ -539,7 +539,7 @@ class UniverseController extends Controller {
 	 */
 	public function actionTview($id = 0) {
 		$Order = new COrder();
-		$dsc = $info = $params = array();
+		$dsc = $info = $params = $type_id = array();
 		$userId = intval(Yii::app()->user->getId());
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
@@ -568,6 +568,7 @@ class UniverseController extends Controller {
 								->order('pv.id ASC, ptp.srt DESC')->queryAll();
 				$vIds = array();
 				if (!empty($prms)) {
+					$type_id = $prms[0]['type_id'];
 					$dsc = Yii::app()->db->createCommand()
 									->select('*')
 									->from('{{product_descriptions}}')
@@ -685,12 +686,10 @@ class UniverseController extends Controller {
 				}
 			}
 		}
-		$type_id = $prms[0]['type_id'];
-		$mediaList = Utils::getMediaList();
 		$this->render('tview', array('info' => $info, 'params' => $params, 'dsc' => $dsc,
 			'qualities' => $qualities, 'fid' => $fid, 'orders' => $orders,
 			'subAction' => $subAction, 'neededQuality' => $neededQuality,
-			'type_id' => $type_id, 'mediaList' => $mediaList,
+			'type_id' => $type_id,
 			'partnerInfo' => $partnerInfo
 		));
 	}

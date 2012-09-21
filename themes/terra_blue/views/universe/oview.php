@@ -73,7 +73,7 @@ if (Yii::app()->user->getId() == 2)
 	{
 		//ПОКА НЕ СКОНВЕРТИРОВАН ДАЕМ СКАЧАТЬ ОРИГИНАЛ
 //		$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
-		$actions[] = '<a onclick="window.open(' . "'/files/download?vid=" . $files[0]['variant_id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
+		$commonActions[] = '<a onclick="window.open(' . "'/files/download?vid=" . $files[0]['variant_id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
 	}
 
 		$dLink = '/files/download?vid=' . $qualityVariantId;

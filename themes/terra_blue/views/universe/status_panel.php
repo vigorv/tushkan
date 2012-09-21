@@ -46,7 +46,7 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 						</ul>
 					</li>
 					<li>
-						<a href="/"><?php echo Yii::t('users', 'Userspace'); ?></a>
+						<a href="/#/universe/library?lib=v"><?php echo Yii::t('users', 'Userspace'); ?></a>
 						<div class="ann">(<?php echo @$space_busy; ?>MB : <?php echo @$userInfo['size_limit'] ?>MB)</div>
 					</li>
 					<li>

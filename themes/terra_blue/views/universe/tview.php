@@ -1,6 +1,6 @@
 <?php
 $mediaList = Utils::getMediaList();
-if (!$type_id)
+if (!empty($type_id))
 {
 ?>
 <div class="tabbable"> <!-- Only required for left/right tabs -->
@@ -339,6 +339,7 @@ exit;
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
 			   $(".close").click(function(){
+			   		$f().stop();
 			   		$("#flowplayerdiv").modal("hide");
 			   });
 			});

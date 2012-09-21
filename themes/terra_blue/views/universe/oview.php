@@ -35,8 +35,13 @@ if (Yii::app()->user->getId() == 2)
 	if (!empty($files) && !empty($files[0]['file_id']))
 	{
 		$commonActions[] = '<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>';
-		if (empty($files[0]['preset_id']) && empty($qstContent))
-			$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
+		if (empty($files[0]['preset_id']))
+		{
+			//ПОКА НЕ СКОНВЕРТИРОВАН ДАЕМ СКАЧАТЬ ОРИГИНАЛ
+			$commonActions[] = '<a onclick="window.open(' . "'/files/download?vid=" . $files[0]['variant_id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
+			if (empty($qstContent))
+				$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
+		}
 	}
 
 	$playList = $activateTab = '';
@@ -218,9 +223,9 @@ if (Yii::app()->user->getId() == 2)
 	if (empty($qstContent) && empty($currentVariantId) && empty($qualityVariantId))
 	{
 		$msg = '<div id="flashDiv" class="alert alert-error">
-			<a class="close" data-dismiss="alert" href="#" onclick="return closePlayer()">×</a>
+			<a class="close" data-dismiss="modal" href="#">×</a>
 			<h4 class="alert-heading">' . Yii::t('files', 'Error data structure') . '</h4>
-			' . Yii::t('files', 'File not found') . '
+			' . Yii::t('files', 'File not converted') . '
 		</div>';
 		echo $msg;
 	}
@@ -259,20 +264,18 @@ if (Yii::app()->user->getId() == 2)
 	</div>
 
 		<script type="text/javascript">
-			$("#flowplayerdiv").on("show", function () {
-				$("#video' . $currentVariantId . ' p").trigger("click");
-			});
+			$("#flowplayerdiv").on("show", function ()
+				{
+					$("#video' . $currentVariantId . ' p").trigger("click");
+				});
+
 			$("#autostart").click(function(){
 			   $("#flowplayerdiv").modal("show");
+			   $(".close").click(function(){
+			   		$f().stop();
+			   		$("#flowplayerdiv").modal("hide");
+			   });
 			});
-
-			function closePlayer()
-			{
-				console.log(111);
-		   		$f().stop();
-		   		$("#flowplayerdiv").modal("hide");
-		   		return false;
-			}
 
 			function addVideo(num, path) {
 //alert(path);

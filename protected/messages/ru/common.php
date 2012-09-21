@@ -91,11 +91,14 @@ return array (
   'Current progress'		=> 'Текущая загрузка',
   'Supported types'			=> 'Поддерживаемые типы',
 
-  'Processing'				=> 'В процессе добавления',
+  'Processing'				=> 'Добавляется в библиотеку',
   'Garbage'					=> 'Свалка',
   'Typed'					=> 'Типизированные',
   'Untyped'					=> 'Нетипизированные',
   'From partners'			=> 'Добавлено с витрин',
+  'Uploaded'                => 'Загруженное',
+  'My Library'              => 'Моя библиотека',
+
 
   'Back to list'			=> 'Вернуться к списку',
   'Back'					=> 'Назад',

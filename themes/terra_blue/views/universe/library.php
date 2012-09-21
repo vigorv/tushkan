@@ -71,36 +71,35 @@
 								$this->widget('ext.pagination.EPaginationWidget', array('params' => $productsPagination));
 							}
 							if (empty($pHeader1)) echo $pHeader2;
-
-							if (!empty($qstContent)) {
+                       		if (!empty($mb_content_items)) {
 								?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Processing');?></a></div>
-						<div class="span12 no-horizontal-margin type">
-								<?php
-								echo $qstContent;
-								?>
-						</div>
-								<?php
-							}
-							if (!empty($mb_content_items)) {
-								?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Typed');?></a></div>
+						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'My Library');?></a></div>
 						<div class="span12 no-horizontal-margin type">
 
-							<ul class="nav inside-nav nav-pills">
+							<ul>
 							<?php
-								echo CFiletypes::ParsePrint($mb_content_items, 'TL1');
+								echo CFiletypes::ParsePrint($mb_content_items, 'TL2');
 							?>
 							</ul>
 						</div>
 						<?php
 							}
+                        if (!empty($qstContent)) {
+                            ?>
+                            <div class="span12 no-horizontal-margin more-link"><a href="#" onClick="$('#untyped-processed').toggle();return false;"><?php echo Yii::t('common', 'Processing');?> (<?=$qst_total;?>)</a></div>
+                            <div id="untyped-processed" class="span12 no-horizontal-margin type" style="display:none;">
+                                <?php
+                                echo $qstContent;
+                                ?>
+                            </div>
+                            <?php
+                        }
 
 							if (!empty($mb_content_items_unt)) {
 							?>
-						<div class="span12 no-horizontal-margin more-link"><a href="#"><?php echo Yii::t('common', 'Untyped');?><?php //(echo Yii::t('common', 'Garbage') );?></a></div>
-						<div class="span12 no-horizontal-margin type">
-							<ul class="nav inside-nav nav-pills ">
+						<div class="span12 no-horizontal-margin more-link"><a href="#" onClick="$('#untyped-files').toggle();return false;"><?php echo Yii::t('common', 'Uploaded');?> (<?=$mb_content_items_unt_total;?>)<?php //(echo Yii::t('common', 'Garbage') );?></a></div>
+						<div id="untyped-files" class="span12 no-horizontal-margin type" style="display:none;">
+							<ul class="nav inside-nav nav-pills files_list">
 								<?= CFiletypes::ParsePrint($mb_content_items_unt, 'UTL1'); ?>
 							</ul>
 						</div>

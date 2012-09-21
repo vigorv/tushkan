@@ -49,14 +49,32 @@ class CFiletypes {
 					<?
 				}
 				break;
+            case 'TL2':
+                foreach ($array as $object) {
+                    $ftype = pathinfo($object['title'], PATHINFO_EXTENSION);
+                    $img = Utils::getMimeImg($ftype);
+                    $params = array();
+                    if (!empty($object['params']))
+                        $params = $object['params'];
+
+                    if (!empty($params['usertitle']))
+                        $object['title'] = $params['usertitle'];
+                    ?>
+                <li class="chess"><a href="/universe/oview/<?= $object['id']; ?>">
+                    <img  src="<?= $img_path . $img ?> " />
+                    <?= $object['title']; ?></a></li>
+                <?
+                }
+                break;
 
 			case 'UTL1':
+              //  $img_path = '/images/16x16/mimetypes/';
 				foreach ($array as $object) {
 					$ftype = pathinfo($object['title'], PATHINFO_EXTENSION);
 					$img = Utils::getMimeImg($ftype);
 					?>
 					<li><a href="/files/fview/<?= $object['id']; ?>">
-							<img  src="<?= $img_path . $img ?> " />
+							<img width="32px" height="32px" src="<?= $img_path . $img ?> " />
 							<span><?= $object['title']; ?></span></a></li>
 					<?php
 				}

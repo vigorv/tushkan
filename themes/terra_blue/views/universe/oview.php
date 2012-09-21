@@ -69,6 +69,13 @@ if (Yii::app()->user->getId() == 2)
 			$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
 	}
 
+	if (empty($files[0]['preset_id']))
+	{
+		//ПОКА НЕ СКОНВЕРТИРОВАН ДАЕМ СКАЧАТЬ ОРИГИНАЛ
+//		$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
+		$actions[] = '<a onclick="window.open(' . "'/files/download?vid=" . $files[0]['variant_id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
+	}
+
 		$dLink = '/files/download?vid=' . $qualityVariantId;
 
 		$aContent .= '<p id="autostart" rel="#video' . $qualityVariantId . '"></p>';
@@ -220,7 +227,7 @@ if (Yii::app()->user->getId() == 2)
 		$msg = '<div id="flashDiv" class="alert alert-error">
 			<a class="close" data-dismiss="modal" href="#">×</a>
 			<h4 class="alert-heading">' . Yii::t('files', 'Error data structure') . '</h4>
-			' . Yii::t('files', 'File not found') . '
+			' . Yii::t('files', 'File not converted') . '
 		</div>';
 		echo $msg;
 	}

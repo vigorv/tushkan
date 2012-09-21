@@ -7,4 +7,5 @@ return array (
   'convert' => 'конвертировать',
   'Error data structure' => 'Ошибка структуры данных',
   'File not found' => 'Файл не найден',
+  'File not converted' => 'Файл не сконвертирован',
 );

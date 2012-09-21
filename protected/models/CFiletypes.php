@@ -43,7 +43,7 @@ class CFiletypes {
 					if (!empty($params['usertitle']))
 						$object['title'] = $params['usertitle'];
 					?>
-					<li><a href="/universe/oview/<?= $object['id']; ?>">
+					<li><a href="/#/universe/oview/<?= $object['id']; ?>">
 							<img  src="<?= $img_path . $img ?> " />
 							<?= $object['title']; ?></a></li>
 					<?

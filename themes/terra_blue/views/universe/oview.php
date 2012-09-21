@@ -35,8 +35,13 @@ if (Yii::app()->user->getId() == 2)
 	if (!empty($files) && !empty($files[0]['file_id']))
 	{
 		$commonActions[] = '<a href="#" onclick="return doRemoveAll(' . $id . ')">' . Yii::t('files', 'delete all qualities') . '</a>';
-		if (empty($files[0]['preset_id']) && empty($qstContent))
-			$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
+		if (empty($files[0]['preset_id']))
+		{
+			//ПОКА НЕ СКОНВЕРТИРОВАН ДАЕМ СКАЧАТЬ ОРИГИНАЛ
+			$commonActions[] = '<a onclick="window.open(' . "'/files/download?vid=" . $files[0]['variant_id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
+			if (empty($qstContent))
+				$commonActions[] = '<a href="#" onclick="return startConvert(' . $files[0]['file_id'] . ')">' . Yii::t('files', 'convert') . '</a>';
+		}
 	}
 
 	$playList = $activateTab = '';
@@ -67,13 +72,6 @@ if (Yii::app()->user->getId() == 2)
 	if (empty($queue)) {
 		if (!empty($files[0]['preset_id']))
 			$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
-	}
-
-	if (empty($files[0]['preset_id']))
-	{
-		//ПОКА НЕ СКОНВЕРТИРОВАН ДАЕМ СКАЧАТЬ ОРИГИНАЛ
-//		$actions[] = '<a href="#" onclick="$.address.value(\'/universe/oview/id/' . $id . '/do/online/quality/' . $k . '\'); return false;">смотреть онлайн</a>';
-		$commonActions[] = '<a onclick="window.open(' . "'/files/download?vid=" . $files[0]['variant_id'] . "'" . ');" >' . Yii::t('files', 'download') . '</a>';
 	}
 
 		$dLink = '/files/download?vid=' . $qualityVariantId;

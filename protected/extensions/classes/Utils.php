@@ -328,7 +328,7 @@ class Utils {
 						'title' => Yii::t('users', 'Audio'),
 						'exts'	=> array('mp3', 'm4a', 'flac', 'ogg', 'wma'),
 //						'link' => '/universe/library?lib=' . $a,
-						'link' => '/#/pages/3#audio',
+						'link' => '/pages/3#audio',
 						'hidden' => false,
 				    );
 				break;
@@ -339,7 +339,7 @@ class Utils {
 						'title' => Yii::t('users', 'Photo'),
 						'exts'=>array('jpg','jpeg','png'),
 //						'link' => '/universe/library?lib=' . $a,
-						'link' => '/#/pages/3#foto',
+						'link' => '/pages/3#foto',
 						'hidden' => false,
 				    );
 				break;
@@ -350,7 +350,7 @@ class Utils {
 						'title' => Yii::t('users', 'Docs'),
 						'exts' => array('txt', 'doc'),
 //						'link' => '/universe/library?lib=' . $a,
-						'link' => '/#/pages/3#docs',
+						'link' => '/pages/3#docs',
 						'hidden' => false,
 				    );
 				break;

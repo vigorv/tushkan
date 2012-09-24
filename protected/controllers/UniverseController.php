@@ -367,8 +367,8 @@ class UniverseController extends Controller {
 			case 'a':
 			case 'd':
 			case 'p':
-
 				$qstContent = '';
+                $qst_total=0;
 				$uid = Yii::app()->user->getId();
 				if (!empty($uid))
 				{
@@ -381,6 +381,7 @@ class UniverseController extends Controller {
 					if ($qst)
 					{
 						$qstContent = $this->renderPartial('/universe/queue', array('qst' => $qst), true);
+                        $qst_total = count($qst);
 					}
 				}
 
@@ -393,12 +394,16 @@ class UniverseController extends Controller {
 				//$mb_content_items = CUserObjects::model()->getList(Yii::app()->user->id, $type_id);
 				$mb_content_items = CUserObjects::model()->getExtList(Yii::app()->user->id, $type_id);
 				$mb_content_items_unt = CUserfiles::model()->getFileListUnt(Yii::app()->user->id);
+                $mb_content_items_unt_total = count($mb_content_items_unt);
 				$this->render('library', array('mb_content_items' => $mb_content_items,
 					'productsInfo' => $productsInfo,
 					'qstContent' => $qstContent,
+                    'qst_total' => $qst_total,
 					'type_id' => $type_id,
 					'mediaList' => $mediaList,
-					'mb_content_items_unt' => $mb_content_items_unt,'nav_lib'=>$lib,
+					'mb_content_items_unt' => $mb_content_items_unt,
+                    'mb_content_items_unt_total' => $mb_content_items_unt_total,
+                    'nav_lib'=>$lib,
 					'productsPagination' => $productsPagination
 				));
 				break;

@@ -1,17 +1,20 @@
 			<div class="span10 no-horizontal-margin">
 <?php
+//*
+//ОРИГИНАЛЬНАЯ ВЕРСТКА
+	echo '
+				<div class="span2 margin-left-only">
+					<a class="device ipad" href="/pages/3/#devices">iPad 3</a>
+				</div>
+				<div class="span2 margin-left-only">
+					<a class="device ipod-shuffle" href="/pages/3/#devices">iPod</a>
+				</div>
+				<div class="span2 margin-left-only">
+					<a class="device iphone" href="/pages/3/#devices">Мобильный</a>
+				</div>
+	';
+//*/
 /*
-ОРИГИНАЛЬНАЯ ВЕРСТКА
-				<div class="span2 margin-left-only">
-					<a class="device ipad" href="#">Мой новый iPad 3</a>
-				</div>
-				<div class="span2 margin-left-only">
-					<a class="device ipod-shuffle" href="#">iPod сестры</a>
-				</div>
-				<div class="span2 margin-left-only">
-					<a class="device iphone" href="#">Папина мобилка</a>
-				</div>
-*/
 	foreach ($dst as $d)
 	{
 	    $title = $d["title"];
@@ -24,14 +27,7 @@
 
 <?php
 	}
-?>
-			</div>
-			<div class="span2 margin-left-only">
-				<div class="span2 margin-left-only">
-					<a id="linkdevice" class="device new-device" href="#">Добавить новое устройство</a>
-				</div>
-			</div>
-<script type="text/javascript">
+в блон JS
     $( ".device" ).click(function(){
     	id = $(this).attr('rel');
     	if (id != null)
@@ -40,6 +36,21 @@
     	}
     	return false;
     });
+в блон JS
+
+//*/
+?>
+			</div>
+<?php
+/*
+			<div class="span2 margin-left-only">
+				<div class="span2 margin-left-only">
+					<a id="linkdevice" class="device new-device" href="#">Добавить новое устройство</a>
+				</div>
+			</div>
+*/
+?>
+<script type="text/javascript">
 
     $( "#linkdevice" )
     .button()

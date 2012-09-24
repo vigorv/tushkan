@@ -642,10 +642,10 @@ exit;
                 foreach ($attrs as $k => $v) {
                     $products->{$k} = $v;
                 }
-                if (empty($products->flag_zone))
-                	$products->flag_zone = 0;
-                else
-                	$products->flag_zone = 1;
+
+                empty($products->flag_zone) ? $products->flag_zone = 0 : $products->flag_zone = 1;
+                empty($products->on_top) ? $products->on_top = 0 : $products->on_top = 1;
+
                 $products->original_id = 0;
                 if (empty($products->srt))
                 	$products->srt = 0;
@@ -1084,10 +1084,10 @@ exit;
                 foreach ($attrs as $k => $v) {
                     $products->{$k} = $v;
                 }
-                if (empty($products->flag_zone))
-                	$products->flag_zone = 0;
-                else
-                	$products->flag_zone = 1;
+
+                empty($products->flag_zone) ? $products->flag_zone = 0 : $products->flag_zone = 1;
+                empty($products->on_top) ? $products->on_top = 0 : $products->on_top = 1;
+
                 $products->original_id = 0;
                 $products->active = _IS_ADMIN_;//ДОБАВЛЕННЫЕ С АДМИНКИ СКРЫВАЕМ, ПОКА НЕ БУДЕТ СКОНВЕРТИРОВАНО
                 if (empty($products->srt))

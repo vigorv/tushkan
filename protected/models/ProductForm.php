@@ -15,6 +15,7 @@ class ProductForm extends CFormModel
 	public $created;
 	public $modified;
 	public $flag_zone;
+	public $on_top;
 
 	public function rules()
 	{
@@ -29,6 +30,7 @@ class ProductForm extends CFormModel
 			array('created', 'safe'),
 			array('modified', 'safe'),
 			array('flag_zone', 'safe'),
+			array('on_top', 'safe'),
 		);
 	}
 }

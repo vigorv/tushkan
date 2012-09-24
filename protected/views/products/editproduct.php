@@ -55,7 +55,16 @@ echo '</pre>';
 		$info['flag_zone'] = '';
 	if (($info['flag_zone'] == 'on') || ($info['flag_zone'] == '1'))
 		$checked = 'checked';
-    echo '<input type="checkbox" ' . $checked . ' name="ProductForm[flag_zone]" class="text" /> ' .  Yii::t('common', 'check IP zone')
+    echo '<input type="checkbox" ' . $checked . ' name="ProductForm[flag_zone]" class="text" /> ' .  Yii::t('common', 'check IP zone');
+
+    echo '<br />';
+
+	$checked = '';
+	if (empty($info['on_top']))
+		$info['on_top'] = '';
+	if (($info['on_top'] == 'on') || ($info['on_top'] == '1'))
+		$checked = 'checked';
+    echo '<input type="checkbox" ' . $checked . ' name="ProductForm[on_top]" class="text" /> ' .  Yii::t('common', 'fix on top');
 ?>
 
     <div class="row submit">

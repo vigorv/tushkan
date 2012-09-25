@@ -423,6 +423,7 @@ class Utils {
 				break;
 			case 'avi':
 			case 'mp4':
+			case 'mkv':
 			case 'm4v':
 			case 'mov':
 			case 'vob':

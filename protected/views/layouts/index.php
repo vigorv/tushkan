@@ -37,6 +37,7 @@
 
             <div id="mainmenu">
                 <?php
+                $userPower = Yii::app()->user->UserPower;
                 $this->widget('zii.widgets.CMenu', array(
                     'items' => array(
                         array('label' => Yii::t('common', 'Home'), 'url' => array(' /')),
@@ -57,7 +58,7 @@
                             'url' => array('/register/logout'), 'visible' => !Yii::app()->user->isGuest
                         ),
                         array('label' => Yii::t('common', 'Feedback'), 'url' => array('/register/feedback', 'visible' => true)),
-                        array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => (Yii::app()->user->userPower >= _IS_MODERATOR_))
+                        array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => ($userPower >= _IS_MODERATOR_))
                     ),
                 ));
                 ?>

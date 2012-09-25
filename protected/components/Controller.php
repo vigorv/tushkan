@@ -59,7 +59,7 @@ class Controller extends CController {
 
 	public function beforeRender($view) {
 		if (!empty($this->active)) {
-			if (Yii::app()->user->userPower < $this->active) {
+			if (Yii::app()->user->UserPower < $this->active) {
 				//Yii::app()->request->redirect('access_denied');
 				//return false;
 			}

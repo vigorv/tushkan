@@ -49,7 +49,7 @@ class UserIdentityApp extends CUserIdentity {
                     ->where('id = :id',array(':id'=>$record->group_id))
                     ->queryScalar();
 
-            Yii::app()->user->userPower = $userPower;
+            Yii::app()->user->UserPower = $userPower;
             $this->email = $record->email;
         }
         return !$this->errorCode;

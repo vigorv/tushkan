@@ -2,6 +2,7 @@
 <h1><?php echo Yii::t('common', 'Partners'); ?></h1>
 	<div class="pad-content">
 <?php
+/*
 	if (!empty($lst))
 	{
 		echo '<ul>';
@@ -9,6 +10,7 @@
 			echo '<li><a href="/products/partner/' . $l['id'] . '">' . $l['title'] . '</a></li>';
 		echo '</ul>';
 	}
+*/
 	echo $pstContent;
 ?>
 	</div>

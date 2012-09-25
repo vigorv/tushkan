@@ -15,8 +15,9 @@ class AccessFilter extends CFilter
     {
     	//$userGroupId = Yii::app()->user->getState('dmUserGroupId');
     	//$userPower = Yii::app()->user->getState('dmUserPower');
+    	$userPower = Yii::app()->user->UserPower;
 
-    	if ((empty(Yii::app()->user->userPower)) && (!empty(Yii::app()->user->userGroupId)))
+    	if ((empty($userPower)) && (!empty(Yii::app()->user->userGroupId)))
     	{
 	    	$groups = Yii::app()->db->createCommand()
 	    		->select('*')
@@ -26,7 +27,7 @@ class AccessFilter extends CFilter
 	    	{
 	    		if ($g['id'] == Yii::app()->user->userGroupId)
 	    		{
-                    Yii::app()->user->userPower = $g['power'];
+                    Yii::app()->user->UserPower = $g['power'];
 	    		//	Yii::app()->user->setState('dmUserPower', $userPower);
 	    		}
 	    	}
@@ -43,16 +44,16 @@ class AccessFilter extends CFilter
 				case "DevicesController":
 				case "UniverseController":
 				case "AppController":
-					$access = (Yii::app()->user->userPower >= _IS_USER_);
+					$access = (Yii::app()->user->UserPower >= _IS_USER_);
 					if (($filterChain->action->id == 'typify') || ($filterChain->action->id == 'error'))
 						$access = true;
 
 				break;
 				case "PagesController":
-					$access = (Yii::app()->user->userPower >= _IS_USER_);
+					$access = (Yii::app()->user->UserPower >= _IS_USER_);
 				break;
 				case "ProductsController":
-					$access = (Yii::app()->user->userPower >= _IS_USER_);
+					$access = (Yii::app()->user->UserPower >= _IS_USER_);
 
 					if (($filterChain->action->id == 'admin') ||
 						($filterChain->action->id == 'edit') ||
@@ -61,9 +62,9 @@ class AccessFilter extends CFilter
 						($filterChain->action->id == 'form') ||
 						($filterChain->action->id == 'group')
 						)
-						$access = (Yii::app()->user->userPower >= _IS_MODERATOR_);
+						$access = (Yii::app()->user->UserPower >= _IS_MODERATOR_);
 					if ($filterChain->action->id == 'tocloud')
-						$access = (Yii::app()->user->userPower >= _IS_USER_);
+						$access = (Yii::app()->user->UserPower >= _IS_USER_);
 					if (($filterChain->action->id == 'fillpartnerproducts') || ($filterChain->action->id == 'addfromqueue'))
 					{
 						$access = Yii::app()->user->getIsGuest();
@@ -78,7 +79,7 @@ class AccessFilter extends CFilter
 						|| ($filterChain->action->id == 'tariff')
 						|| ($filterChain->action->id == 'feedback')
 					)
-						$access = (Yii::app()->user->userPower >= _IS_USER_);
+						$access = (Yii::app()->user->UserPower >= _IS_USER_);
 				break;
 
 				case "PersonaldataparamsController":
@@ -86,11 +87,11 @@ class AccessFilter extends CFilter
 				case "TypesController":
 				case "PaysystemsController":
 				case "AdminController":
-					$access = (Yii::app()->user->userPower >= _IS_MODERATOR_);
+					$access = (Yii::app()->user->UserPower >= _IS_MODERATOR_);
 				break;
 
 				case "UsersController":
-					$access = (Yii::app()->user->userPower >= _IS_ADMIN_);
+					$access = (Yii::app()->user->UserPower >= _IS_ADMIN_);
 				break;
 
 				case "PaysController":

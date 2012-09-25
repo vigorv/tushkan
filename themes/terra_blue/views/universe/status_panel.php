@@ -42,7 +42,7 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 						<ul class="dropdown-menu pull-right">
 			<li><a href="/pays/do/1" ><?= Yii::t('users', 'Fill up balance'); ?></a></li>
 			<li><a href="/pays" ><?= Yii::t('users', 'Payments history'); ?></a></li>
-			<li><a href="/orders" ><?= Yii::t('orders', 'Orders'); ?></a></li>
+			<!-- <li><a href="/orders" ><?= Yii::t('orders', 'Orders'); ?></a></li> -->
 						</ul>
 					</li>
 					<li>
@@ -67,7 +67,8 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 						<ul class="dropdown-menu pull-right">
 <?php
 		//$userPower = Yii::app()->user->getState('dmUserPower');
-		$isAdmin = (Yii::app()->user->userPower >= _IS_ADMIN_);
+		$userPower = Yii::app()->user->UserPower;
+		$isAdmin = ($userPower >= _IS_ADMIN_);
 		if ($isAdmin)
 		{
 ?>

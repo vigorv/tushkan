@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ru" lang="ru">
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />        
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <title><?php echo CHtml::encode($this->pageTitle); ?></title>
         <?php
         Yii::app()->getClientScript()->registerCoreScript('jquery');
@@ -27,7 +27,7 @@
                     array('label' => Yii::t('common', 'Logout') . ' (' . Yii::app()->user->name . ')',
                         'url' => array('/register/logout'), 'visible' => !Yii::app()->user->isGuest
                     ),
-                    array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => (Yii::app()->user->userPower >= _IS_MODERATOR_))
+                    array('label' => Yii::t('common', 'Admin index'), 'url' => array('/admin'), 'visible' => ($userPower >= _IS_MODERATOR_))
                 ),
             ));
             ?>

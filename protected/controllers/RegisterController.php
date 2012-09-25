@@ -357,7 +357,8 @@ class RegisterController extends Controller {
 		$ml = new SimpleMail();
 
 		//$userPower = Yii::app()->user->getState('dmUserPower');
-		$isAdmin = (Yii::app()->user->userPower >= _IS_ADMIN_);
+		$userPower = Yii::app()->user->UserPower;
+		$isAdmin = ($userPower >= _IS_ADMIN_);
 
 		if (empty(Yii::app()->params['tushkan']['ZBT']) || $isAdmin)
 		{
@@ -484,10 +485,11 @@ class RegisterController extends Controller {
 		if (!empty($userId) && !empty($_POST['tariff_id']))
 		{
 	    	//$userPower = Yii::app()->user->getState('dmUserPower');
+	    	$userPower = Yii::app()->user->UserPower;
 			$cmd = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{tariffs}}')
-				->where('id = :id AND is_option=0 AND is_archive=0 AND active <= ' . Yii::app()->user->userPower);
+				->where('id = :id AND is_option=0 AND is_archive=0 AND active <= ' . $userPower);
 			$cmd->bindParam(':id', $_POST['tariff_id'], PDO::PARAM_INT);
 			$tariff = $cmd->queryRow();
 			if (!empty($tariff))
@@ -687,11 +689,12 @@ class RegisterController extends Controller {
 
     		if (!empty($info))
     		{
+    			$userPower = Yii::app()->user->UserPower;
     			$personalParams = Yii::app()->db->createCommand()
     				->select('p.id AS pid, p.title, p.tp, p.required, p.parent_id, v.id AS vid, v.text_value, v.textarea_value, v.int_value')
     				->from('{{personaldata_params}} p')
     				->leftJoin('{{personaldata_values}} v', 'v.param_id = p.id AND v.user_id = ' . $userId)
-    				->where('p.active <= ' . Yii::app()->user->userPower)
+    				->where('p.active <= ' . $userPower)
     				->group('p.id')
     				->order('p.parent_id ASC, p.srt DESC')
     				->queryAll();
@@ -779,7 +782,7 @@ class RegisterController extends Controller {
 	    							$paramInfo = Yii::app()->db->createCommand()
 	    								->select('tp')
 	    								->from('{{personaldata_params}}')
-	    								->where('id = ' . $pid . ' AND active <= ' . Yii::app()->user->userPower)
+	    								->where('id = ' . $pid . ' AND active <= ' . $userPower)
 	    								->queryRow();
 	    						}
 
@@ -853,6 +856,7 @@ class RegisterController extends Controller {
     public function actionProfile()
     {
     	$userId = Yii::app()->user->id;
+    	$userPower = Yii::app()->user->UserPower;
     	$info = $balance = $subscribes = $tariffs = $tariff = $newTariff = array();
     	if (!empty($userId))
     	{
@@ -881,7 +885,7 @@ class RegisterController extends Controller {
 			$tariffs = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{tariffs}}')
-				->where('id <> ' . $tid . ' AND active <= ' . Yii::app()->user->userPower . ' AND is_archive=0 AND is_option=0')
+				->where('id <> ' . $tid . ' AND active <= ' . $userPower . ' AND is_archive=0 AND is_option=0')
 				->queryAll();
 			$subscribes = Yii::app()->db->createCommand()
 				->select('us.paid_by, us.period, bo.title AS botitle, t.title AS ttitle, t.price')
@@ -895,7 +899,7 @@ class RegisterController extends Controller {
 				$newTariff = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{tariffs}}')
-				->where('id = ' . $tariff['switch_to'] . ' AND active <= ' . Yii::app()->user->userPower)
+				->where('id = ' . $tariff['switch_to'] . ' AND active <= ' . $userPower)
 				->queryRow();
 			}
     	}
@@ -911,10 +915,11 @@ class RegisterController extends Controller {
     public function actionTariffs()
     {
     	//$userPower = intval(Yii::app()->user->getState('dmUserPower'));
+    	$userPower = Yii::app()->user->UserPower;
 		$lst = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{tariffs}}')
-			->where('active <= ' . Yii::app()->user->userPower)
+			->where('active <= ' . $userPower)
 			->queryAll();
 		$this->render('tariffs', array('lst' => $lst));
     }

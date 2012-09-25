@@ -51,10 +51,11 @@ class UniverseController extends Controller {
 
 //ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
 		//$userPower = Yii::app()->user->getState('dmUserPower');
+		$userPower = Yii::app()->user->UserPower;
 		$types = Yii::app()->db->createCommand()
 				->select('id, title')
 				->from('{{product_types}}')
-				->where('active <= ' . Yii::app()->user->userPower)
+				->where('active <= ' . $userPower)
 				->queryAll();
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
 
@@ -250,10 +251,11 @@ class UniverseController extends Controller {
 	public function actionUpload() {
 //ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
 		//$userPower = Yii::app()->user->getState('dmUserPower');
+		$userPower = Yii::app()->user->UserPower;
 		$types = Yii::app()->db->createCommand()
 				->select('id, title')
 				->from('{{product_types}}')
-				->where('active <= ' . Yii::app()->user->userPower)
+				->where('active <= ' . $userPower)
 				->queryAll();
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
 //$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
@@ -275,17 +277,19 @@ class UniverseController extends Controller {
 
 
 	public function actionGoodsTop($text='') {
+		$userPower = Yii::app()->user->UserPower;
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
-		$pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,0,Yii::app()->params['product_top_count']*5);
+		$pst = CProduct::model()->getProductList(array(10), $userPower, $search,0,Yii::app()->params['product_top_count']*5);
 		$this->render('/products/top', array('pst' => $pst));
 	}
 
 	public function actionProducts(){
 
+		$userPower = Yii::app()->user->UserPower;
 		$lst = Yii::app()->db->createCommand()
 			->select('*')
 			->from('{{partners}}')
-			->where('active <= ' . Yii::app()->user->userPower)
+			->where('active <= ' . $userPower)
 			->queryAll();
 
 		$searchCondition = '';
@@ -301,7 +305,7 @@ class UniverseController extends Controller {
 			->join('{{partners}} prt', 'p.partner_id=prt.id')
 			->join('{{product_variants}} pv', 'pv.product_id=p.id')
 			->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id IN (' . implode(',', $paramIds) . ')')
-			->where('p.active <= ' . Yii::app()->user->userPower . ' AND prt.active <= ' . Yii::app()->user->userPower . $searchCondition)
+			->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition)
 			->order('pv.id ASC');
 		if (!empty($searchCondition))
 		{
@@ -317,9 +321,10 @@ class UniverseController extends Controller {
 
 
 	public function actionSearch($text='') {
+		$userPower = Yii::app()->user->UserPower;
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
 		$lst = array();
-		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), Yii::app()->user->userPower, $search);
+		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), $userPower, $search);
 		$pstContent = $this->renderPartial('/products/sresult', array('pst' => $pst), true);
 
 		$obj = CUserObjects::model()->getObjectsLike(Yii::app()->user->id, $search);
@@ -420,11 +425,12 @@ class UniverseController extends Controller {
 	 */
 	public function actionDevices($id = 0) {
 		$tst = CDevices::getDeviceTypes();
+		$userPower = Yii::app()->user->UserPower;
 		//$userPower = Yii::app()->user->getState('dmUserPower');
 		$cmd = Yii::app()->db->createCommand()
 				->select('*')
 				->from('{{userdevices}}')
-				->where('user_id = ' . Yii::app()->user->getId() . ' AND device_type_id > 0 AND active <= :power',array(':power'=> Yii::app()->user->userPower));
+				->where('user_id = ' . Yii::app()->user->getId() . ' AND device_type_id > 0 AND active <= :power',array(':power'=> $userPower));
 		$dst = $cmd->queryAll();
 		$this->render('/universe/devices', array('tst' => $tst, 'dst' => $dst));
 		//$this->render('/devices/index', array('tst' => $tst, 'dst' => $dst));
@@ -546,6 +552,7 @@ class UniverseController extends Controller {
 		$Order = new COrder();
 		$dsc = $info = $params = $type_id = array();
 		$userId = intval(Yii::app()->user->getId());
+		$userPower = Yii::app()->user->UserPower;
 		$subAction = 'view';
 		if (!empty($this->userInfo) && !empty($id)) {
 			$cmd = Yii::app()->db->createCommand()
@@ -568,7 +575,7 @@ class UniverseController extends Controller {
 								->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 								->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 								->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
-								->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . Yii::app()->user->userPower . $presetCondition)
+								->where('pv.id = ' . $info['variant_id'] . ' AND ptp.active <= ' . $userPower . $presetCondition)
 								->group('ppv.id')
 								->order('pv.id ASC, ptp.srt DESC')->queryAll();
 				$vIds = array();
@@ -900,7 +907,7 @@ class UniverseController extends Controller {
 					$sum = sha1($sfile . $serverId);
 
 					//ЗАПРОС ЧЕРЕЗ CURL
-					$ch = curl_init("http://myicloud.ws/serversync/upload");
+					$ch = curl_init("http://safelib.com/serversync/upload");
 					curl_setopt($ch, CURLOPT_HEADER, 0);
 					curl_setopt($ch, CURLOPT_POST, true);
 					curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');

@@ -23,80 +23,6 @@ class UniverseController extends Controller {
 		$this->render('library');
 	}
 
-	public function actionIndexOld() {
-        //ВЫБОРКА КОНТЕНТА ДОБАВЛЕННОГО С ВИТРИН
-		$tFiles = Yii::app()->db->createCommand()
-				->select('id, variant_id, title')
-				->from('{{typedfiles}}')
-				->where('variant_id > 0 AND user_id = ' . $this->userInfo['id'])
-				->queryAll();
-		$fParams = array();
-		if (!empty($tFiles)) {
-			$tfIds = array();
-			foreach ($tFiles as $tf) {
-				$tfIds[$tf['variant_id']] = $tf['variant_id'];
-			}
-			$fParams = Yii::app()->db->createCommand()
-							->select('pv.id, ptp.title, ppv.value')
-							->from('{{product_variants}} pv')
-							->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
-							->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
-							->where('pv.id IN (' . implode(', ', $tfIds) . ')')
-							->group('ppv.id')
-							->order('pv.id ASC, ptp.srt DESC')->queryAll();
-		}
-
-		$uploadServer = CServers::model()->getServer(UPLOAD_SERVER);
-		$quality = Utils::getVideoConverterQuality();
-
-//ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
-		//$userPower = Yii::app()->user->getState('dmUserPower');
-		$types = Yii::app()->db->createCommand()
-				->select('id, title')
-				->from('{{product_types}}')
-				->where('active <= ' . Yii::app()->user->userPower)
-				->queryAll();
-		$types = Utils::arrayToKeyValues($types, 'id', 'title');
-
-//ВЫБОРКА ТИПИЗИРОВАННОГО КОНТЕНТА
-		$tObjects = Yii::app()->db->createCommand()
-				->select('uo.id, uo.title, ptp.title, uopv.value')
-				->from('{{userobjects}} uo')
-				->join('{{userobjects_param_values}} uopv', 'uopv.object_id=uo.id')
-				->join('{{product_type_params}} ptp', 'ptp.id=uopv.param_id')
-				->where('user_id = ' . $this->userInfo['id'])
-				->group('uopv.id')
-				->queryAll();
-		$oParams = array();
-		if (!empty($tObjects)) {
-			/*
-			  $toIds = array();
-			  foreach ($tObjects as $to) {
-			  $toIds[$to['id']] = $to['id'];
-			  }
-			  $oParams = Yii::app()->db->createCommand()
-			  ->select('fv.id, fv.file_id')
-			  ->from('{{filevariants}} fv')
-			  ->join('{{filelocations}} fl', 'fl.id=fv.id')
-			  ->where('fv.file_id IN (' . implode(', ', $toIds) . ')')
-			  ->group('fpv.id')
-			  ->order('fv.id ASC, ptp.srt DESC')->queryAll();
-			 */
-		}
-
-//ВЫБОРКА НЕТИПИЗИРОВАННЫХ ФАЙЛОВ
-		/*
-		  $uFiles = Yii::app()->db->createCommand()
-		  ->select('uf.id, uf.title, uf.type_id')
-		  ->from('{{userfiles}} uf')
-		  ->where('uf.object_id = 0 AND uf.user_id = ' . $this->userInfo['id'])
-		  ->queryAll();
-		 */
-		$this->render('index', array('tFiles' => $tFiles, 'fParams' => $fParams,
-			'uploadServer' => $uploadServer, 'quality' => $quality,
-			'types' => $types, 'tObjects' => $tObjects, 'oParams' => $oParams));
-	}
-
 	/**
 	 * проверяем состояние очереди по параметрам запроса на типизацию(конвертирование)
 	 *
@@ -248,7 +174,7 @@ class UniverseController extends Controller {
 	 *
 	 */
 	public function actionUpload() {
-//ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
+        //ВЫБОРКА ТИПОВ ДЛЯ ФОРМЫ ЗАГРУЗКИ
 		//$userPower = Yii::app()->user->getState('dmUserPower');
 		$types = Yii::app()->db->createCommand()
 				->select('id, title')
@@ -256,7 +182,7 @@ class UniverseController extends Controller {
 				->where('active <= ' . Yii::app()->user->userPower)
 				->queryAll();
 		$types = Utils::arrayToKeyValues($types, 'id', 'title');
-//$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
+        //$kpt = file_get_contents(Yii::app()->params['tushkan']['siteURL'] . '/files/KPT');
 
 		$this->render('uploadFile', array('types' => $types, 'user_id' => $this->userInfo['id'], /* 'kpt' => $kpt */));
 	}
@@ -271,8 +197,6 @@ class UniverseController extends Controller {
 		$partners = CPartners::model()->getPartnerList();
 		$this->render('status_panel', array('userInfo' => $userInfo, 'partners' => $partners));
 	}
-
-
 
 	public function actionGoodsTop($text='') {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
@@ -320,12 +244,14 @@ class UniverseController extends Controller {
 		$search = filter_var($text, FILTER_SANITIZE_STRING);
 		$lst = array();
 		$pst = CProduct::model()->getProductList(CProduct::getShortParamsIds(), Yii::app()->user->userPower, $search);
+        $pstTotal = CProduct::getProductListTotal(Yii::app()->user->userPower,$search);
 		$pstContent = $this->renderPartial('/products/sresult', array('pst' => $pst), true);
 
-		$obj = CUserObjects::model()->getObjectsLike(Yii::app()->user->id, $search);
+		$obj = CUserObjects::getObjectsLike(Yii::app()->user->id, $search);
+        $objTotal = CUserObjects::getObjectsLikeTotal(Yii::app()->user->id, $search);
 		$unt = CUserfiles::model()->getFilesLike(Yii::app()->user->id, $search);
 
-		$this->render('search', array('pstContent' => $pstContent,'unt'=>$unt,'obj'=>$obj));
+		$this->render('search', array('pstContent' => $pstContent,'pstTotal'=>$pstTotal,'unt'=>$unt,'obj'=>$obj,'objTotal'=>$objTotal));
 	}
 
 	public function actionBlock()

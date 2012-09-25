@@ -63,7 +63,7 @@ class CProduct extends CActiveRecord
     {
         $searchCondition = '';
         if (!($search == '')) {
-            $searchCondition = ' AND p.title LIKE "%' . $search . '%"';
+            $searchCondition = ' AND (p.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")';
         }
         $select_str ='p.id, p.title AS ptitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS pvid';
 
@@ -101,6 +101,26 @@ class CProduct extends CActiveRecord
             ->limit($count, $offset);
         return $cmd->queryAll();
     }
+
+   public static function getProductListTotal($userPower ,$search = ''){
+       $searchCondition = '';
+       if (!($search == '')) {
+           $searchCondition = ' AND (p.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")';
+       }
+       $zFlag = Yii::app()->user->UserInZone;
+       $zSql = '';
+       if (!$zFlag) {
+           $zSql = ' AND p.flag_zone = 0';
+       }
+       $cmd = Yii::app()->db->createCommand()
+           ->select('COUNT(p.id)')
+           ->from('{{products}} p')
+           ->join('{{product_variants}} pv', 'pv.product_id=p.id')
+           ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
+           ->join('{{partners}} prt', 'p.partner_id=prt.id')
+           ->where('p.active <= ' . $userPower . ' AND prt.active <= ' . $userPower . $searchCondition . $zSql);
+       return $cmd->queryAll();
+   }
 
     public function getUserProductsCount($userId, $type_id = 0)
     {

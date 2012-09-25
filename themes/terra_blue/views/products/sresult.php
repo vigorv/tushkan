@@ -42,8 +42,9 @@ if (!empty($pst)) {
 ?>
 
 
-<div class="span2 margin-left-only">
-    <img class="small-poster" src="<?=$item['poster'];?>" alt="<?=$item['ptitle'];?>" title="<?=$item['ptitle'];?>">
-    <a class="top-film" href="/products/view/<?=$item['id'];?>"><?=$item['ptitle'];?></a>
+<div class="chess">
+    <a  href="/products/view/<?=$item['id'];?>">
+    <img align="left" width="80" height="120" src="<?=$item['poster'];?>" alt="<?=$item['ptitle'];?>" title="<?=$item['ptitle'];?>" />
+    <b><?=$item['ptitle'];?></b></a>
 </div>
 <? endforeach;?>

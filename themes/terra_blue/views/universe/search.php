@@ -21,6 +21,7 @@
                             <?php echo CFiletypes::ParsePrint($obj, 'TL2'); ?>
                         </ul>
                     </div>
+                    <div class="clear"></div>
                     <?php endif;
                 if (!empty($unt)):
                     $results++; ?>

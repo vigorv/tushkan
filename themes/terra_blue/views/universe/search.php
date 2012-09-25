@@ -16,12 +16,12 @@
                     $results++;
                     ?>
                     <div class="span12 no-horizontal-margin more-link"><a href="#">Моя Библиотека</a></div>
-                    <div class="pad-content">
+                    <div class="pad-content clearfix">
                         <ul>
                             <?php echo CFiletypes::ParsePrint($obj, 'TL2'); ?>
                         </ul>
                     </div>
-                    <div class="clear"></div>
+
                     <?php endif;
                 if (!empty($unt)):
                     $results++; ?>

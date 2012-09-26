@@ -43,6 +43,7 @@ $balance.=' ' . Yii::t('pays', _CURRENCY_);
 			<li><a href="/pays/do/1" ><?= Yii::t('users', 'Fill up balance'); ?></a></li>
 			<li><a href="/pays" ><?= Yii::t('users', 'Payments history'); ?></a></li>
 			<!-- <li><a href="/orders" ><?= Yii::t('orders', 'Orders'); ?></a></li> -->
+			<li><a href="/register/tariffs" ><?= Yii::t('common', 'Tariffs'); ?></a></li>
 						</ul>
 					</li>
 					<li>

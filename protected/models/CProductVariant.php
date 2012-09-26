@@ -2,13 +2,25 @@
 
 /**
  * модель вариантов товаров
- *
+ * @property int(10) $id
+ * @property int(10) $product_id
+ * @property tinyint(3) $online_only
+ * @property int(10) $type_id
+ * @property int(10) $active
+ * @property varchar(255) $title
+ * @property varchar(255) $decription
+ * @property int(10) $original_id
+ * @property text $childs
+ * @property int(10) $sub_id
+ * @property tinyint(1) $cloud_ready
+ * @property tinyint(1) $cloud_state
+ * @property tinyint(1) $cloud_compressor
  */
 class CProductVariant extends CActiveRecord {
     /**
      *
      * @param string $className
-     * @return CActiveRecord
+     * @return CProductVariant
      */
     public static function model($className = __CLASS__) {
         return parent::model($className);

@@ -472,6 +472,70 @@ class ServersyncController extends ControllerSync
         echo base64_encode(serialize($answer));
     }
 
+
+
+    public function actionConverterData(){
+        $answer = array();
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = unserialize(base64_decode($_REQUEST['fdata']));
+
+                /*
+                   $syncData = array();
+                   $syncData['md5'] = $_POST['Filedata_md5'];
+                   $syncData['size'] = $_POST['Filedata_size'];
+                   $syncData['name'] = $fname;
+                   $syncData['path'] = $dpath;
+                   $syncData['src'] = $fname;
+                   $syncData['key'] = filter_var($_POST['key'], FILTER_SANITIZE_STRING);
+                   $syncData['uid'] = $uid;
+                   $syncData['server_ip'] = Yii::app()->params['server_ip'];
+                 */
+
+                $product = new CProduct();
+                $product->active = 0;
+                $product->partner_id = $rdata['partner_id'];
+                $product->title = $rdata['title'];
+                switch($rdata['partner_id']){
+                    case 5:
+                    case 6:
+                        $product->flag_zone = 1;
+                    default:
+                        return;
+                }
+                $product->original_id =$rdata['original_id'];
+                if ($product->save()){
+                    $product_variant = new CProductVariant();
+                    $product_variant->product_id = $product->id;
+                    $product_variant->type_id = $rdata['type_id'];
+                    $product_variant->title = $rdata['variant_title'];
+                    $product_variant->description = '';
+                    $product_variant->original_id = $rdata['original_variant_id'];
+                    $product_variant->sub_id = $rdata['sub_id'];
+                    if($product_variant->save()){
+                        $saved_files = array();
+                        foreach ($files as $file){
+                            $product_files = new CProductFiles();
+                            $product_files->size = $file['size'];
+                            $product_files->variant_quality_id = $file['variant_quality_id'];
+                            $product_files->fname = $file['name'];
+                            $product_files->md5 = $file['md5'];
+                            $product_files->preset_id = $file['preset_id'];
+                            if($product_files->save()){
+                                $saved_files[]="Y";
+                            }else
+                                $saved_files[]="N";
+                            $answer['saved_files']=$saved_files;
+                        }
+                    } else
+                        $answer['error_code'] = 2;
+                } else
+                    $answer['error_code'] = 1;
+                echo base64_encode(serialize($answer));
+            }
+        }
+    }
     /*
 public function actionUploadIvan()
 {

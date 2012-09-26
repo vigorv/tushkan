@@ -61,7 +61,7 @@ class CFiletypes {
                         $object['title'] = $params['usertitle'];
                     ?>
                 <li class="chess"><a href="/universe/oview/<?= $object['id']; ?>">
-                    <img  src="<?= $img_path . $img ?> " />
+                    <img align="left" src="<?= $img_path . $img ?> " />
                     <?= $object['title']; ?></a></li>
                 <?
                 }
@@ -74,7 +74,7 @@ class CFiletypes {
 					$img = Utils::getMimeImg($ftype);
 					?>
 					<li><a href="/files/fview/<?= $object['id']; ?>">
-							<img width="32px" height="32px" src="<?= $img_path . $img ?> " />
+							<img  width="32px" height="32px" src="<?= $img_path . $img ?> " />
 							<span><?= $object['title']; ?></span></a></li>
 					<?php
 				}

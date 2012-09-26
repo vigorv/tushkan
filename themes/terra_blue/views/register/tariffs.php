@@ -1,14 +1,19 @@
+<div class="span12 no-horizontal-margin inside-movie my-catalog">
+<div class="pad-content">
 <?php
 echo '
-	<h2>' . Yii::t('common', 'Tariffs') . '!</h2>
-	<table>
+	<h2>' . Yii::t('common', 'Tariffs') . '</h2>
+	<table class="table table-hover">
+	<thead>
 		<tr>
-			<td>' . Yii::t('common', 'Title') . '</td>
-			<td>' . Yii::t('common', 'Space') . '</td>
-			<td>' . Yii::t('common', 'Device count') . '</td>
-			<td>' . Yii::t('common', 'Period') . '</td>
-			<td>' . Yii::t('common', 'Price') . '</td>
+			<th>' . Yii::t('common', 'Title') . '</th>
+			<th>' . Yii::t('common', 'Space') . '</th>
+			<th>' . Yii::t('common', 'Device count') . '</th>
+			<th>' . Yii::t('common', 'Period') . '</th>
+			<th>' . Yii::t('common', 'Price') . '</th>
 		</tr>
+	</thead>
+	<tbody>
 ';
 
 foreach ($lst as $l)
@@ -27,4 +32,7 @@ foreach ($lst as $l)
 		</tr>
 	';
 }
-echo'</table>';
+echo'</tbody></table>';
+?>
+</div>
+</div>

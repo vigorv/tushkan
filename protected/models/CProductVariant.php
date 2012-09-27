@@ -190,4 +190,13 @@ class CProductVariant extends CActiveRecord {
 		$sql = 'DELETE FROM {{product_variants}} WHERE id = ' . $id;
 		Yii::app()->db->createCommand($sql)->execute();
     }
+
+    public function setParamValue($param_id,$param_value){
+        $paramValue = new CProductParamValues();
+        $paramValue->variant_id = $this->id;
+        $paramValue->param_id = $param_id;
+        $paramValue->value = $param_value;
+        return $paramValue->save();
+    }
+
 }

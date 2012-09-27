@@ -3,6 +3,15 @@
 Yii::import('ext.classes.Utils');
 //Yii::import('ext.yii-detectmobilebrowser.XDetectMobileBrowser');
 
+function DebugEcho($data){
+    if (YII_DEBUG === TRUE){
+        echo"<pre>";
+        var_dump($data);
+        echo "</pre>";
+    }
+}
+
+
 class Controller extends CController {
 
 	public $layout = '//layouts/concept1';
@@ -86,4 +95,6 @@ class Controller extends CController {
 			$this->redirect($url);
 		}
 	}
+
+
 }

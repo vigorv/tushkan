@@ -479,20 +479,27 @@ class ServersyncController extends ControllerSync
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
             $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
             if ($check_data == $_REQUEST['sdata']) {
-                $rdata = unserialize(base64_decode($_REQUEST['fdata']));
+                $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
 
                 /*
                    $syncData = array();
-                   $syncData['md5'] = $_POST['Filedata_md5'];
-                   $syncData['size'] = $_POST['Filedata_size'];
-                   $syncData['name'] = $fname;
-                   $syncData['path'] = $dpath;
-                   $syncData['src'] = $fname;
-                   $syncData['key'] = filter_var($_POST['key'], FILTER_SANITIZE_STRING);
-                   $syncData['uid'] = $uid;
-                   $syncData['server_ip'] = Yii::app()->params['server_ip'];
+                   $syncData['partner_id'] = $_POST['partner_id'];
+                   $syncData['title'] = $_POST['title'];
+                   $syncData['original_id'] = $_POST['original_id];
+                   $syncData['type_id'] = $_POST['type_id'];
+                   $syncData['variant_title'] = $_POST['variant_title'];
+                   $syncData['original_variant_id'] = $_POST['original_variant_id'];
+                   $syncData['sub_id'] = $_POST['sub_id'];
+                   $syncData['files'] = array(
+                        'low'=>array(
+                            'size' => 100,
+                            'variant_quality_id'=>1,
+                            'name' => 'name',
+                            'md5' => '35dfghdsfgsdfgsdfgsdf',
+                            'preset_id'=> 1,
+                        )
+                    );
                  */
-
                 $product = new CProduct();
                 $product->active = 0;
                 $product->partner_id = $rdata['partner_id'];
@@ -501,7 +508,9 @@ class ServersyncController extends ControllerSync
                     case 5:
                     case 6:
                         $product->flag_zone = 1;
+                        break;
                     default:
+                        echo "Bad Partner ".$rdata['partner_id'];
                         return;
                 }
                 $product->original_id =$rdata['original_id'];
@@ -514,7 +523,41 @@ class ServersyncController extends ControllerSync
                     $product_variant->original_id = $rdata['original_variant_id'];
                     $product_variant->sub_id = $rdata['sub_id'];
                     if($product_variant->save()){
+                        if (isset($rdata['poster'])){
+                            $product_variant->setParamValue(10,$rdata['poster']);
+                        } else {
+                            $answer = array(
+                                'error_code'=>3,
+                                'error_msg' => "NO POSTER");
+                            echo base64_encode(serialize($answer)); return;
+                        }
+                        if (isset($rdata['year'])){
+                            $product_variant->setParamValue(13,$rdata['year']);
+                        } else {
+                            $answer = array(
+                                'error_code'=>3,
+                                'error_msg' => "NO Year");
+                            echo base64_encode(serialize($answer)); return;
+                        }
+                        if (isset($rdata['title_en'])){
+                            $product_variant->setParamValue(12,$rdata['title_en']);
+                        } else {
+                            $answer = array(
+                                'error_code'=>3,
+                                'error_msg' => "NO Title_en");
+                            echo base64_encode(serialize($answer)); return;
+                        }
+                        if (isset($rdata['country'])){
+                            $product_variant->setParamValue(14,$rdata['country']);
+                        } else {
+                            $answer = array(
+                                'error_code'=>3,
+                                'error_msg' => "NO Country");
+                            echo base64_encode(serialize($answer)); return;
+                        }
+
                         $saved_files = array();
+                        $files = $rdata['files'];
                         foreach ($files as $file){
                             $product_files = new CProductFiles();
                             $product_files->size = $file['size'];
@@ -532,9 +575,10 @@ class ServersyncController extends ControllerSync
                         $answer['error_code'] = 2;
                 } else
                     $answer['error_code'] = 1;
+
                 echo base64_encode(serialize($answer));
-            }
-        }
+            } else echo "BAD DATA";
+        } else echo "NO DATA";
     }
     /*
 public function actionUploadIvan()

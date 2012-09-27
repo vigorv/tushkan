@@ -166,7 +166,7 @@ class ProductsController extends Controller
 		{
 			$id = 0;
 		}
-
+        DebugEcho($id);
 		$userPower = Yii::app()->user->UserPower;
 		$cmd = Yii::app()->db->createCommand()
 			->select('*')
@@ -175,7 +175,7 @@ class ProductsController extends Controller
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$pInfo = $cmd->queryRow();
 		$pst = array();
-
+        DebugEcho($pInfo);
 		$paginationParams = array();
 		if (!empty($pInfo))
 		{

@@ -1,5 +1,6 @@
 <?php
 
+
 class ServersyncController extends ControllerSync
 {
     var $layout = 'ajax';
@@ -249,7 +250,7 @@ class ServersyncController extends ControllerSync
                         $syncData['key'] = $user_key;
                     */
                     $variant_id = (int)$rdata['variant_id'];
-                    if (CUser::getDownloadSign($variant_id.$rdata['uid'])) {
+                    if (CUser::getDownloadSign($variant_id . $rdata['uid'])) {
                         if (CUserfiles::DidUserHaveVariant($rdata['uid'], $variant_id)) {
                             $server_ip = $rdata['server_ip'];
                             $user_ip = (int)$rdata['user_ip'];
@@ -257,28 +258,28 @@ class ServersyncController extends ControllerSync
                             $server = CServers::model()->findByAttributes(array('ip' => $server_ip, 'downloads' => 1));
                             if ($server) {
                                 $locations = CFilelocations::model()->findByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
-                                if ($locations){
+                                if ($locations) {
                                     $answer['folder'] = $locations->folder;
                                     $answer['fname'] = $locations->fname;
                                     $answer['fsize'] = $locations->fsize;
-                                } else{
+                                } else {
                                     $answer['error'] = 1;
                                     $answer['error_msg'] = "File not found";
                                 }
                             } else {
                                 if (count($zones))
-                                  $locations = CFilelocations::getLocationByZone($variant_id, $zones[0]['zone_id']);
+                                    $locations = CFilelocations::getLocationByZone($variant_id, $zones[0]['zone_id']);
                                 if (!empty($locations)) {
                                     $answer['server'] = $locations['server_ip'];
                                 }
                             }
                         } else {
                             $answer['error'] = 1;
-                            $answer['error_msg']="User ".$rdata['uid']." didn't have variant $variant_id";
+                            $answer['error_msg'] = "User " . $rdata['uid'] . " didn't have variant $variant_id";
                         }
                     } else {
                         $answer['error'] = 1;
-                        $answer['error_msg']="Bad key";
+                        $answer['error_msg'] = "Bad key";
                     }
                 } else {
                     $answer['error'] = 1;
@@ -291,7 +292,6 @@ class ServersyncController extends ControllerSync
             die();
         }
     }
-
 
 
     public function actionPartnerFiledata()
@@ -310,7 +310,7 @@ class ServersyncController extends ControllerSync
                         $syncData['key'] = $user_key;
                     */
                     $file_id = (int)$rdata['file_id'];
-                    if (CUser::getDownloadSign($file_id.$rdata['uid'])) {
+                    if (CUser::getDownloadSign($file_id . $rdata['uid'])) {
                         $data = CTypedfiles::GetPartnerFileData($file_id);
                         if (!empty($data)) {
                             $server_ip = $rdata['server_ip'];
@@ -320,9 +320,9 @@ class ServersyncController extends ControllerSync
                             if ($server) {
                                 //$locations = CFilelocations::model()->findByAttributes(array('id' => $variant_id, 'server_id' => $server['id']));
                                 //if ($locations){
-                                   /// $answer['folder'] = $locations->folder;
-                                    $answer['partner_id'] = $data[0]['partner_id'];
-                                    $answer['fname'] = $data[0]['fname'];
+                                /// $answer['folder'] = $locations->folder;
+                                $answer['partner_id'] = $data[0]['partner_id'];
+                                $answer['fname'] = $data[0]['fname'];
                                 //} else{
                                 //    $answer['error'] = 1;
                                 //    $answer['error_msg'] = "File not found";
@@ -331,16 +331,16 @@ class ServersyncController extends ControllerSync
                                 //if (count($zones))
                                 //    $locations = CFilelocations::getLocationByZone($variant_id, $zones[0]['zone_id']);
                                 //if (!empty($locations)) {
-                                 //   $answer['server'] = $locations['server_ip'];
+                                //   $answer['server'] = $locations['server_ip'];
                                 //}
                             }
                         } else {
                             $answer['error'] = 1;
-                            $answer['error_msg']="User ".$rdata['uid']." Partners didn't have file $file_id";
+                            $answer['error_msg'] = "User " . $rdata['uid'] . " Partners didn't have file $file_id";
                         }
                     } else {
                         $answer['error'] = 1;
-                        $answer['error_msg']="Bad key";
+                        $answer['error_msg'] = "Bad key";
                     }
                 } else {
                     $answer['error'] = 1;
@@ -418,34 +418,33 @@ class ServersyncController extends ControllerSync
                                         $fl->fname = $rdata['name'];
                                         $fl->folder = $rdata['path'];
                                         if ($fl->save(false)) {
-                                            CUser::UpdateSpaceInfo($user_id,$fv->fsize);
+                                            CUser::UpdateSpaceInfo($user_id, $fv->fsize);
                                             $fileLocationId = $fl->id;
                                             $answer['success'] = 1;
                                             $answer['id'] = $userFileId;
                                             //СОХРАНЕНИЕ ЗАВЕРШЕНО
 
-                                        $mediaList = Utils::getMediaList();
-                                        $fInfo = pathinfo(strtolower($rdata['name']));
-										if (!empty($fInfo['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts']))
-										{
-											$partnerId = 0;
-											$queue = array(
-												'id'			=> null,
-												'product_id'	=> 0,
-												'original_id'	=> $userFileId,
-												'task_id'		=> 0,
-												'cmd_id'		=> 0,
-												'info'			=> "",
-												'priority'		=> 200,
-												'state'			=> 0,
-												'station_id'	=> 0,
-												'partner_id'	=> $partnerId,
-												'user_id'		=> $rdata['uid'],
-												'original_variant_id'	=> 0,
-											);
-											$cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
-											$result = 'queue';
-										}
+                                            $mediaList = Utils::getMediaList();
+                                            $fInfo = pathinfo(strtolower($rdata['name']));
+                                            if (!empty($fInfo['extension']) && !empty($mediaList[1]['exts']) && in_array($fInfo['extension'], $mediaList[1]['exts'])) {
+                                                $partnerId = 0;
+                                                $queue = array(
+                                                    'id' => null,
+                                                    'product_id' => 0,
+                                                    'original_id' => $userFileId,
+                                                    'task_id' => 0,
+                                                    'cmd_id' => 0,
+                                                    'info' => "",
+                                                    'priority' => 200,
+                                                    'state' => 0,
+                                                    'station_id' => 0,
+                                                    'partner_id' => $partnerId,
+                                                    'user_id' => $rdata['uid'],
+                                                    'original_variant_id' => 0,
+                                                );
+                                                $cmd = Yii::app()->db->createCommand()->insert('{{income_queue}}', $queue);
+                                                $result = 'queue';
+                                            }
 
                                             echo base64_encode(serialize($answer));
                                             Yii::app()->end();
@@ -473,8 +472,129 @@ class ServersyncController extends ControllerSync
     }
 
 
+    public function actionCompletePartners()
+    {
+        function makeDataAds($fileName)
+        {
+            preg_match('/s([0-9]{1,2})e([0-9]{1,2})/i', $fileName, $matches);
+            if (!$matches[1]) {
+                return array(
+                    's' => $matches[1],
+                    'e' => $matches[2]
+                );
+            } else return NULL;
+        }
 
-    public function actionConverterData(){
+        function getSubId($fileName)
+        {
+            /*
+             1.Film
+             2.Part
+             3.One seria
+             4.Serial
+            */
+            preg_match('/e([0-9]{2,})/i', $fileName, $matches); //ИЩЕМ НУМЕРАЦИЮ ЭПИЗОДА
+            if (!empty($matches[1])) {
+                return 3;
+            }
+            preg_match('/part/i', $fileName, $matches); //ИЩЕМ НУМЕРАЦИЮ ЭПИЗОДА
+            if (!empty($matches[1])) {
+                return 2;
+            }
+            return 1;
+        }
+
+        $qualityStrings = array(
+            'low' => 1,
+            'medium' => 2,
+            'high' => 3,
+            'ultra' => 4
+        );
+
+        $answer = array();
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
+                $id = (int)$rdata['id'];
+                /** @var CConvertQueue $queue  */
+                $queue = CConvertQueue::model()->find('id=:id', array(':id' => $id));
+                //echo "<pre>";
+                //echo $id;
+                // echo $queue->info;
+               // var_dump($rdata);
+                if ($queue) {
+                    $info = unserialize($queue->info);
+                    // var_dump($rdata);
+                    $product = new CProduct();
+                    $product->active = 0;
+                    $product->partner_id = $queue->partner_id;
+                    $product->title = $info['title'];
+                    switch ($queue->partner_id) {
+                        case 5:
+                        case 6:
+                            $product->flag_zone = 1;
+                            break;
+                        default:
+                            echo "Bad Partner " . $queue->partner_id;
+                            return;
+                    }
+                    $product->original_id = $queue->original_id;
+                    if ($product->save()) {
+                        foreach ($rdata['variants']['files'] as $quality_files) {
+                            $product_variant = new CProductVariant();
+                            $product_variant->product_id = $product->id;
+                            $product_variant->type_id = 1; // VIDEO
+                            $product_variant->title = $info['title'];
+                            $product_variant->original_id = $queue->original_variant_id;
+                            if ($product_variant->save()) {
+                                $product_variant->setParamValue(10, $rdata['variants']['poster']);
+                                $product_variant->setParamValue(13, $info['movie']['year']);
+                                $product_variant->setParamValue(12, $info['movie']['original_title']);
+                                $product_variant->setParamValue(14, $info['movie']['country']);
+                                foreach ($quality_files as $preset => $file) {
+                                    $product_variant_quality = new CProductVariantQualities();
+                                    $product_variant_quality->preset_id = $qualityStrings[$preset];
+                                    $product_variant_quality->variant_id = $product_variant->id;
+                                    if ($product_variant_quality->save()) {
+                                        $product_files = new CProductFiles();
+                                        $product_files->size = $file['size'];
+                                        $product_files->fname = $file['name'];
+                                        $product_files->md5 = $file['md5'];
+                                        $product_files->preset_id = $qualityStrings[$preset];
+                                        $product_files->variant_quality_id = $product_variant_quality->id;
+                                        if ($product_files->save()) {
+                                            $saved_files[] = "Y";
+                                        } else
+                                            $saved_files[] = "N";
+                                        $answer['saved_files'] = $saved_files;
+                                    } else {
+                                        $answer['error'] = 1;
+                                        $answer['error_msg'] = 'Error: save variant_quality';
+                                    }
+                                }
+                            } else {
+                                $answer['error'] = 1;
+                                $answer['error_msg'] = 'Error: save product_variant';
+                            }
+                        }
+                    } else {
+                        $answer['error'] = 1;
+                        $answer['error_msg'] = 'Error: save product';
+                    }
+                } else {
+                    $answer['error'] = 1;
+                    $answer['error_msg'] = 'Error: unknown task';
+                }
+                echo base64_encode(serialize($answer));
+            } else echo "BAD DATA";
+        } else echo "NO DATA";
+    }
+
+
+    public
+    function actionConverterDataOLD()
+    {
         $answer = array();
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
             $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
@@ -482,39 +602,39 @@ class ServersyncController extends ControllerSync
                 $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
 
                 /*
-                   $syncData = array();
-                   $syncData['partner_id'] = $_POST['partner_id'];
-                   $syncData['title'] = $_POST['title'];
-                   $syncData['original_id'] = $_POST['original_id];
-                   $syncData['type_id'] = $_POST['type_id'];
-                   $syncData['variant_title'] = $_POST['variant_title'];
-                   $syncData['original_variant_id'] = $_POST['original_variant_id'];
-                   $syncData['sub_id'] = $_POST['sub_id'];
-                   $syncData['files'] = array(
-                        'low'=>array(
-                            'size' => 100,
-                            'variant_quality_id'=>1,
-                            'name' => 'name',
-                            'md5' => '35dfghdsfgsdfgsdfgsdf',
-                            'preset_id'=> 1,
-                        )
-                    );
-                 */
+                  $syncData = array();
+                  $syncData['partner_id'] = $_POST['partner_id'];
+                  $syncData['title'] = $_POST['title'];
+                  $syncData['original_id'] = $_POST['original_id];
+                  $syncData['type_id'] = $_POST['type_id'];
+                  $syncData['variant_title'] = $_POST['variant_title'];
+                  $syncData['original_variant_id'] = $_POST['original_variant_id'];
+                  $syncData['sub_id'] = $_POST['sub_id'];
+                  $syncData['files'] = array(
+                       'low'=>array(
+                           'size' => 100,
+                           'variant_quality_id'=>1,
+                           'name' => 'name',
+                           'md5' => '35dfghdsfgsdfgsdfgsdf',
+                           'preset_id'=> 1,
+                       )
+                   );
+                */
                 $product = new CProduct();
                 $product->active = 0;
                 $product->partner_id = $rdata['partner_id'];
                 $product->title = $rdata['title'];
-                switch($rdata['partner_id']){
+                switch ($rdata['partner_id']) {
                     case 5:
                     case 6:
                         $product->flag_zone = 1;
                         break;
                     default:
-                        echo "Bad Partner ".$rdata['partner_id'];
+                        echo "Bad Partner " . $rdata['partner_id'];
                         return;
                 }
-                $product->original_id =$rdata['original_id'];
-                if ($product->save()){
+                $product->original_id = $rdata['original_id'];
+                if ($product->save()) {
                     $product_variant = new CProductVariant();
                     $product_variant->product_id = $product->id;
                     $product_variant->type_id = $rdata['type_id'];
@@ -522,54 +642,58 @@ class ServersyncController extends ControllerSync
                     $product_variant->description = '';
                     $product_variant->original_id = $rdata['original_variant_id'];
                     $product_variant->sub_id = $rdata['sub_id'];
-                    if($product_variant->save()){
-                        if (isset($rdata['poster'])){
-                            $product_variant->setParamValue(10,$rdata['poster']);
+                    if ($product_variant->save()) {
+                        if (isset($rdata['poster'])) {
+                            $product_variant->setParamValue(10, $rdata['poster']);
                         } else {
                             $answer = array(
-                                'error_code'=>3,
+                                'error_code' => 3,
                                 'error_msg' => "NO POSTER");
-                            echo base64_encode(serialize($answer)); return;
+                            echo base64_encode(serialize($answer));
+                            return;
                         }
-                        if (isset($rdata['year'])){
-                            $product_variant->setParamValue(13,$rdata['year']);
+                        if (isset($rdata['year'])) {
+                            $product_variant->setParamValue(13, $rdata['year']);
                         } else {
                             $answer = array(
-                                'error_code'=>3,
+                                'error_code' => 3,
                                 'error_msg' => "NO Year");
-                            echo base64_encode(serialize($answer)); return;
+                            echo base64_encode(serialize($answer));
+                            return;
                         }
-                        if (isset($rdata['title_en'])){
-                            $product_variant->setParamValue(12,$rdata['title_en']);
+                        if (isset($rdata['title_en'])) {
+                            $product_variant->setParamValue(12, $rdata['title_en']);
                         } else {
                             $answer = array(
-                                'error_code'=>3,
+                                'error_code' => 3,
                                 'error_msg' => "NO Title_en");
-                            echo base64_encode(serialize($answer)); return;
+                            echo base64_encode(serialize($answer));
+                            return;
                         }
-                        if (isset($rdata['country'])){
-                            $product_variant->setParamValue(14,$rdata['country']);
+                        if (isset($rdata['country'])) {
+                            $product_variant->setParamValue(14, $rdata['country']);
                         } else {
                             $answer = array(
-                                'error_code'=>3,
+                                'error_code' => 3,
                                 'error_msg' => "NO Country");
-                            echo base64_encode(serialize($answer)); return;
+                            echo base64_encode(serialize($answer));
+                            return;
                         }
 
                         $saved_files = array();
                         $files = $rdata['files'];
-                        foreach ($files as $file){
+                        foreach ($files as $file) {
                             $product_files = new CProductFiles();
                             $product_files->size = $file['size'];
                             $product_files->variant_quality_id = $file['variant_quality_id'];
                             $product_files->fname = $file['name'];
                             $product_files->md5 = $file['md5'];
                             $product_files->preset_id = $file['preset_id'];
-                            if($product_files->save()){
-                                $saved_files[]="Y";
-                            }else
-                                $saved_files[]="N";
-                            $answer['saved_files']=$saved_files;
+                            if ($product_files->save()) {
+                                $saved_files[] = "Y";
+                            } else
+                                $saved_files[] = "N";
+                            $answer['saved_files'] = $saved_files;
                         }
                     } else
                         $answer['error_code'] = 2;
@@ -580,19 +704,118 @@ class ServersyncController extends ControllerSync
             } else echo "BAD DATA";
         } else echo "NO DATA";
     }
+
+
+    public
+    function actionCreateVariantData()
+    {
+        $answer = array();
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
+
+                /*
+                  $syncData = array();
+                  $syncData['partner_id'] = $_POST['partner_id'];
+                  $syncData['title'] = $_POST['title'];
+                  $syncData['original_id'] = $_POST['original_id];
+                  $syncData['type_id'] = $_POST['type_id'];
+                  $syncData['variant_title'] = $_POST['variant_title'];
+                  $syncData['original_variant_id'] = $_POST['original_variant_id'];
+                  $syncData['sub_id'] = $_POST['sub_id'];
+                  $syncData['files'] = array(
+                       'low'=>array(
+                           'size' => 100,
+                           'variant_quality_id'=>1,
+                           'name' => 'name',
+                           'md5' => '35dfghdsfgsdfgsdfgsdf',
+                           'preset_id'=> 1,
+                       )
+                   );
+                */
+                $product_variant = new CProductVariant();
+                $product_variant->type_id = $rdata['type_id'];
+                $product_variant->title = $rdata['variant_title'];
+                $product_variant->description = '';
+                $product_variant->original_id = $rdata['original_variant_id'];
+                $product_variant->sub_id = $rdata['sub_id'];
+                if ($product_variant->save()) {
+                    $answer['variant_id'] = $product_variant->id;
+                    if (isset($rdata['poster'])) {
+                        $product_variant->setParamValue(10, $rdata['poster']);
+                    } else {
+                        $answer = array(
+                            'error_code' => 3,
+                            'error_msg' => "NO POSTER");
+                        echo base64_encode(serialize($answer));
+                        return;
+                    }
+                    if (isset($rdata['year'])) {
+                        $product_variant->setParamValue(13, $rdata['year']);
+                    } else {
+                        $answer = array(
+                            'error_code' => 3,
+                            'error_msg' => "NO Year");
+                        echo base64_encode(serialize($answer));
+                        return;
+                    }
+                    if (isset($rdata['title_en'])) {
+                        $product_variant->setParamValue(12, $rdata['title_en']);
+                    } else {
+                        $answer = array(
+                            'error_code' => 3,
+                            'error_msg' => "NO Title_en");
+                        echo base64_encode(serialize($answer));
+                        return;
+                    }
+                    if (isset($rdata['country'])) {
+                        $product_variant->setParamValue(14, $rdata['country']);
+                    } else {
+                        $answer = array(
+                            'error_code' => 3,
+                            'error_msg' => "NO Country");
+                        echo base64_encode(serialize($answer));
+                        return;
+                    }
+
+                    $saved_files = array();
+                    $files = $rdata['files'];
+                    foreach ($files as $file) {
+                        $product_files = new CProductFiles();
+                        $product_files->size = $file['size'];
+                        $product_files->variant_quality_id = $file['variant_quality_id'];
+                        $product_files->fname = $file['name'];
+                        $product_files->md5 = $file['md5'];
+                        $product_files->preset_id = $file['preset_id'];
+                        if ($product_files->save()) {
+                            $saved_files[] = "Y";
+                        } else
+                            $saved_files[] = "N";
+                        $answer['saved_files'] = $saved_files;
+
+                    }
+                } else
+                    $answer['error_code'] = 2;
+                echo base64_encode(serialize($answer));
+            } else echo "BAD DATA";
+        } else echo "NO DATA";
+    }
+
+
     /*
-public function actionUploadIvan()
-{
-function nothingEr($n, $s)
-{
+    public function actionUploadIvan()
+    {
+    function nothingEr($n, $s)
+    {
     throw new Exception($s);
-}
+    }
 
-//		set_error_handler("nothingEr");
+    //		set_error_handler("nothingEr");
 
-$result = '';
-//ПРОВЕРКА КЛЮЧА ПОЛЬЗОВАТЕЛЯ (С УЧЕТОМ ПЕРЕХОДА ЧЕРЕЗ НАЧАЛО СУТОК)
-if (!empty($_POST['key']) && !empty($_POST['uid'])) {
+    $result = '';
+    //ПРОВЕРКА КЛЮЧА ПОЛЬЗОВАТЕЛЯ (С УЧЕТОМ ПЕРЕХОДА ЧЕРЕЗ НАЧАЛО СУТОК)
+    if (!empty($_POST['key']) && !empty($_POST['uid'])) {
     $userId = $_POST['uid'];
     $key = $_POST['key'];
     $key1 = CUser::getfishkey($_POST['uid'], date('Y-m-d'));
@@ -600,9 +823,9 @@ if (!empty($_POST['key']) && !empty($_POST['uid'])) {
     if (($key == $key1) || ($key == $key2)) {
         $result = 'key ok';
     }
-}
+    }
 
-if (!empty($result) && !empty($_POST['sfile'])) {
+    if (!empty($result) && !empty($_POST['sfile'])) {
     try {
         $fileInfo = unserialize($_POST['sfile']);
     } catch (Exception $e) {
@@ -617,9 +840,9 @@ if (!empty($result) && !empty($_POST['sfile'])) {
             $result = 'info ok';
         }
     }
-} else $result = '';
+    } else $result = '';
 
-if (!empty($result)) {
+    if (!empty($result)) {
     //СОХРАНЕНИЕ INFO О ФАЙЛЕ В БД
     /* ИСХОДНЫЕ ДАННЫЕ
         $fileInfo["file_original"];
@@ -629,8 +852,8 @@ if (!empty($result)) {
         $fileInfo["file_size"];
         $fileInfo["server_ip"];
     */
-    //СОЗДАЕМ ЗАПИСЬ В userobjects ТОЛЬКО ПОСЛЕ ТИПИЗАЦИИ
-    //СОЗДАЕМ ЗАПИСЬ В userfiles
+//СОЗДАЕМ ЗАПИСЬ В userobjects ТОЛЬКО ПОСЛЕ ТИПИЗАЦИИ
+//СОЗДАЕМ ЗАПИСЬ В userfiles
     /*    $uf = new CUserfiles();
                 $uf->title = $fileInfo["file_original"];
                 $uf->object_id = 0; //ДО ТЕХ ПОР, ПОКА НЕ БУДЕТ ТИПИЗИРОВАН
@@ -688,139 +911,139 @@ if (!empty($result)) {
         }
     */
     /*
-    public function actionDownload($user_id = 0)
-    {
-        if ($user_id > 0) {
-//OK
-//WHat is server doing this
+        public function actionDownload($user_id = 0)
+        {
+            if ($user_id > 0) {
+    //OK
+    //WHat is server doing this
 
-            if (!isset($_GET['data']))
-                die('not enough data');
-            $input = @unserialize($_GET['data']);
-            if ($input) {
-                $fileloc = new CFilelocations();
-                $fileloc->id = $input['fid'];
-                $fileloc->server_id = $this->server['id'];
-                $fileloc->user_id = $user_id;
-                $fileloc->fsize = $input['fsize'];
-                $fileloc->fname = $input['save'];
-                if (isset($input['folder']))
-                    $fileloc->folder = (int)$input['folder'];
-                $fileloc->save();
-                echo "OK";
-                exit();
-            } else {
-                echo "Bad data";
-                exit();
-            }
-        } else
-            die("Bad User");
-    }
-*/
+                if (!isset($_GET['data']))
+                    die('not enough data');
+                $input = @unserialize($_GET['data']);
+                if ($input) {
+                    $fileloc = new CFilelocations();
+                    $fileloc->id = $input['fid'];
+                    $fileloc->server_id = $this->server['id'];
+                    $fileloc->user_id = $user_id;
+                    $fileloc->fsize = $input['fsize'];
+                    $fileloc->fname = $input['save'];
+                    if (isset($input['folder']))
+                        $fileloc->folder = (int)$input['folder'];
+                    $fileloc->save();
+                    echo "OK";
+                    exit();
+                } else {
+                    echo "Bad data";
+                    exit();
+                }
+            } else
+                die("Bad User");
+        }
+    */
     /*
-    public
-    function actionTypify($user_id = 0, $data = '')
-    {
-        if ($user_id > 0) {
-            $input = @unserialize($data);
-            if (!($input === false)) {
-                $result = 1;
-//$folder = $convertInfo['folder'];
-                $server_id = $this->server->id;
-                $fid = (int)$input['file_id'];
-                $filename = $input['save'];
-                $fsize = $input['fsize'];
-                $folder = $input['folder'];
-                $task_id = (int)$input['task_id'];
-                if ($task_id > 0) {
-                    $queue = CConvertQueue::model()->findByAttributes(array('task_id' => $task_id));
-                    if (!(queue == null)) { //ЕСЛИ ЕСТЬ ИНФО О ЗАДАНИИ
-//ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
-                        if (!empty($result)) {
-//ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
-                        } else {
-//ЧТЕНИЕ ИНФО О ФАЙЛЕ
-                            $cmd = Yii::app()->db->createCommand()
-                                ->select('*')
-                                ->from('{{userfiles}}')
-                                ->where('id = ' . $queue['id']);
-                            $fileInfo = $cmd->queryRow();
-//ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
-                            $cmd = Yii::app()->db->createCommand()
-                                ->select('*')
-                                ->from('{{filelocations}}')
-                                ->where('id = ' . $queue['id']);
-                            $locInfo = $cmd->queryRow();
-//ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
-//СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
-                            $objInfo = array(
-                                'id' => $fid,
-                                'user_id' => $user_id,
-                                'title' => $filename,
-                                'type_id' => $queue->preset_id,
-                            );
+        public
+        function actionTypify($user_id = 0, $data = '')
+        {
+            if ($user_id > 0) {
+                $input = @unserialize($data);
+                if (!($input === false)) {
+                    $result = 1;
+    //$folder = $convertInfo['folder'];
+                    $server_id = $this->server->id;
+                    $fid = (int)$input['file_id'];
+                    $filename = $input['save'];
+                    $fsize = $input['fsize'];
+                    $folder = $input['folder'];
+                    $task_id = (int)$input['task_id'];
+                    if ($task_id > 0) {
+                        $queue = CConvertQueue::model()->findByAttributes(array('task_id' => $task_id));
+                        if (!(queue == null)) { //ЕСЛИ ЕСТЬ ИНФО О ЗАДАНИИ
+    //ПРОВЕРКА РЕЗУЛЬТАТА ТИПИЗАЦИИ
+                            if (!empty($result)) {
+    //ОБРАБОТКА ОШИБКИ ТИПИЗАЦИИ
+                            } else {
+    //ЧТЕНИЕ ИНФО О ФАЙЛЕ
+                                $cmd = Yii::app()->db->createCommand()
+                                    ->select('*')
+                                    ->from('{{userfiles}}')
+                                    ->where('id = ' . $queue['id']);
+                                $fileInfo = $cmd->queryRow();
+    //ЧТЕНИЕ ИНФО О ЛОКАЦИИ ФАЙЛА
+                                $cmd = Yii::app()->db->createCommand()
+                                    ->select('*')
+                                    ->from('{{filelocations}}')
+                                    ->where('id = ' . $queue['id']);
+                                $locInfo = $cmd->queryRow();
+    //ЧТО ДЕЛАТЬ С ЗАПИСЯМИ О ФАЙЛЕ? УТОЧНИТЬ
+    //СОЗДАНИЕ ЗАПИСИ ТИПИЗИРОВАННОГО ОБЪЕКТА
+                                $objInfo = array(
+                                    'id' => $fid,
+                                    'user_id' => $user_id,
+                                    'title' => $filename,
+                                    'type_id' => $queue->preset_id,
+                                );
 
-//CREATE METAFILE
-                            $sql = 'INSERT INTO {{typedfiles}} (id, variant_id, user_id, fsize, title, userobject_id)
-			    		VALUES (null, 0, ' . $objInfo['user_id'] . ', :fsize, "' . $objInfo['title'] . '", ' . $objInfo['id'] . ')';
-                            $cmd = Yii::app()->db->createCommand($sql);
-                            $cmd->bindParam(':fsize', $fsize, PDO::PARAM_LOB);
-                            $cmd->execute();
+    //CREATE METAFILE
+                                $sql = 'INSERT INTO {{typedfiles}} (id, variant_id, user_id, fsize, title, userobject_id)
+                            VALUES (null, 0, ' . $objInfo['user_id'] . ', :fsize, "' . $objInfo['title'] . '", ' . $objInfo['id'] . ')';
+                                $cmd = Yii::app()->db->createCommand($sql);
+                                $cmd->bindParam(':fsize', $fsize, PDO::PARAM_LOB);
+                                $cmd->execute();
 
-//CREATE FILELOC
-                            $sql = 'INSERT INTO {{usertobjects}} (id, user_id, title, type_id)
-			    		VALUES (' . $objInfo['id'] . ', ' . $objInfo['user_id'] . ', "' . $objInfo['title'] . '", ' . $objInfo['type_id'] . ')';
-                            Yii::app()->db->createCommand($sql)->execute();
+    //CREATE FILELOC
+                                $sql = 'INSERT INTO {{usertobjects}} (id, user_id, title, type_id)
+                            VALUES (' . $objInfo['id'] . ', ' . $objInfo['user_id'] . ', "' . $objInfo['title'] . '", ' . $objInfo['type_id'] . ')';
+                                Yii::app()->db->createCommand($sql)->execute();
 
-//ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
-                            $cmd = Yii::app()->db->createCommand()
-                                ->select('ptp.id, ptp.title')
-                                ->from('{{product_type_params}} ptp')
-                                ->join('{{product_types_type_params}} pttp', 'ptp.id = pttp.param_id')
-                                ->where('pttp.type_id = :id');
-                            $cmd->bindParam(':id', $type_id, PDO::PARAM_INT);
-                            $params = $cmd->queryAll();
+    //ВЫБИРАЕМ ПЕРЕЧЕНЬ ПАРАМЕТРОВ ДЛЯ ОБЪЕКТОВ ДАННОГО ТИПА
+                                $cmd = Yii::app()->db->createCommand()
+                                    ->select('ptp.id, ptp.title')
+                                    ->from('{{product_type_params}} ptp')
+                                    ->join('{{product_types_type_params}} pttp', 'ptp.id = pttp.param_id')
+                                    ->where('pttp.type_id = :id');
+                                $cmd->bindParam(':id', $type_id, PDO::PARAM_INT);
+                                $params = $cmd->queryAll();
 
-                            $height = 200;
-                            $width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
-//ВООБЩЕ ПАРАМЕТРЫ ДОЛЖНЫ ПРИХОДИТЬ ОТДЕЛЬНО. К ОБСУЖДЕНИЮ: ОТКУДА?
-                            if (!empty($params)) {
-//СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
-                                foreach ($params as $p) {
-                                    if (!empty($$p['title'])) {
-                                        $p_id = $p['id'];
-                                        $p_vl = $$p['title'];
-                                        $sql = 'INSERT INTO {{tobjects_param_values}} (id, param_id, value, userobject_id)
-						    		VALUES (null, ' . $p_id . ',
-						    		"' . $p_vl . '", ' . $objInfo['id'] . ')';
-                                        Yii::app()->db->createCommand($sql)->execute();
+                                $height = 200;
+                                $width = 400; //ПАРАМЕТРЫ ДЛЯ ТЕСТА
+    //ВООБЩЕ ПАРАМЕТРЫ ДОЛЖНЫ ПРИХОДИТЬ ОТДЕЛЬНО. К ОБСУЖДЕНИЮ: ОТКУДА?
+                                if (!empty($params)) {
+    //СОХРАНЯЕМ ЗНАЧЕНИЯ ПАРАМЕТРОВ ДЛЯ ОБЪЕКОВ ДАННОГО ТИПА
+                                    foreach ($params as $p) {
+                                        if (!empty($$p['title'])) {
+                                            $p_id = $p['id'];
+                                            $p_vl = $$p['title'];
+                                            $sql = 'INSERT INTO {{tobjects_param_values}} (id, param_id, value, userobject_id)
+                                        VALUES (null, ' . $p_id . ',
+                                        "' . $p_vl . '", ' . $objInfo['id'] . ')';
+                                            Yii::app()->db->createCommand($sql)->execute();
+                                        }
                                     }
                                 }
+
+    //СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
+                                $objLocInfo = array(
+                                    'id' => $locInfo['id'],
+                                    'user_id' => $locInfo['user_id'],
+                                    'server_id' => intval($server_id),
+                                    'state' => 0, // ?? ЧТО СЮДА ПРОПИСАТЬ ??
+                                    'fsize' => $fsize,
+                                    'fname' => $filename,
+                                    'folder' => $folder,
+                                );
+                                $sql = 'INSERT INTO {{userobjectlocations}} (id, user_id, server_id, state, fsize, fname, folder)
+                            VALUES (' . $locInfo['id'] . ', ' . $locInfo['user_id'] . ', ' . $locInfo['server_id'] . ',
+                            ' . $locInfo['state'] . ', ' . $locInfo['fsize'] . ', "' . $locInfo['fname'] . '", ' . $locInfo['folder'] . ')';
+                                Yii::app()->db->createCommand($sql)->execute();
+
+    //ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
+                                $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
+                                Yii::app()->db->createCommand($sql)->execute();
                             }
-
-//СОЗДАНИЕ ЛОКАЦИИ ОБЪЕКТА
-                            $objLocInfo = array(
-                                'id' => $locInfo['id'],
-                                'user_id' => $locInfo['user_id'],
-                                'server_id' => intval($server_id),
-                                'state' => 0, // ?? ЧТО СЮДА ПРОПИСАТЬ ??
-                                'fsize' => $fsize,
-                                'fname' => $filename,
-                                'folder' => $folder,
-                            );
-                            $sql = 'INSERT INTO {{userobjectlocations}} (id, user_id, server_id, state, fsize, fname, folder)
-			    		VALUES (' . $locInfo['id'] . ', ' . $locInfo['user_id'] . ', ' . $locInfo['server_id'] . ',
-			    		' . $locInfo['state'] . ', ' . $locInfo['fsize'] . ', "' . $locInfo['fname'] . '", ' . $locInfo['folder'] . ')';
-                            Yii::app()->db->createCommand($sql)->execute();
-
-//ЧИСТКА ОЧЕРЕДИ КОНВЕРТИРОВАНИЯ
-                            $sql = 'DELETE FROM {{convert_queue}} WHERE id=' . $queue['id'];
-                            Yii::app()->db->createCommand($sql)->execute();
                         }
                     }
                 }
             }
         }
-    }
-*/
+    */
 }

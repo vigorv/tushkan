@@ -1,5 +1,5 @@
 <?php
-
+Yii::import('ext.classes.Utils');
 class ControllerApp extends CController {
 
     public $layout = '//layouts/ajax';

@@ -247,6 +247,10 @@ class CAppHandler
                 ->limit(1)->query();
     }
 
+    /**
+     * @param int $variant_id
+     * @return mixed
+     */
     public static function addProductToUser($variant_id=0){
         $found = Yii::app()->db->createCommand()
             ->select('count(id)')->from('{{typedfiles}}')
@@ -258,13 +262,16 @@ class CAppHandler
                 ->leftjoin('{{prices}} pr','pr.variant_id = '.(int)$variant_id.' and pr.variant_quality_id = 2')
                 ->where('pv.id = :variant_id and pv.online_only = 0',array(':variant_id'=>$variant_id))->queryRow();
             if ($variant && !$variant['price']){
-              $rows = Yii::app()->db->createCommand()
+                $rows = Yii::app()->db->createCommand()
                     ->insert('{{typedfiles}}',array('variant_id'=>$variant_id,'user_id'=>Yii::app()->user->id,'title'=>$variant['title'],'variant_quality_id'=>2));
                 if ($rows)
                     return  Yii::app()->db->getLastInsertID();
+                return -3;
             }
-        }
-        return false;
+             return -2;
+        } else
+            return -1;
+        return 0;
     }
 
     public static function removeFromUser($item_id=0){

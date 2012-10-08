@@ -320,7 +320,7 @@ class AppController extends ControllerApp
                 if ($res = CAppHandler::addProductToUser($variant_id)) {
                     echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 0, 'cloud_id' => $res));
                 } else
-                    echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 1));
+                    echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 1 , 'err_code' => $res));
             } else
                 echo json_encode(array('cmd' => "AddItemFromPartner", 'error' => 1, "error_msg" => 'Unknown item'));
         } else

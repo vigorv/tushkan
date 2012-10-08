@@ -472,7 +472,7 @@ class UniverseController extends Controller {
 	 *
 	 * @param integer $id - идентификатор объекта в ПП
 	 */
-	public function actionTview($id = 0) {
+	public function actionTview__OLD($id = 0) {
 		$Order = new COrder();
 		$dsc = $info = $params = $type_id = array();
 		$userId = intval(Yii::app()->user->getId());
@@ -626,6 +626,212 @@ class UniverseController extends Controller {
 			'qualities' => $qualities, 'fid' => $fid, 'orders' => $orders,
 			'subAction' => $subAction, 'neededQuality' => $neededQuality,
 			'type_id' => $type_id,
+			'partnerInfo' => $partnerInfo
+		));
+	}
+
+	/**
+	 * Отображение подробной информации по объекту витрины в ПП (пространстве пользователя)
+	 * ! теперь с поддержкой нескольких вариантов
+	 *
+	 * @param integer $id - идентификатор объекта в ПП
+	 */
+	public function actionTview($id = 0) {
+		$Order = new COrder();
+		$dsc = $info = $params = $type_id = $subs = array();
+		$userId = intval(Yii::app()->user->getId());
+		$userPower = Yii::app()->user->UserPower;
+
+		$subAction = 'view';
+		if (!empty($this->userInfo) && !empty($id)) {
+			$cmd = Yii::app()->db->createCommand()
+					->select('pv.product_id')
+					->from('{{typedfiles}} tf')
+					->join('{{product_variants}} pv', 'tf.variant_id=pv.id')
+					->where('tf.id = :id AND tf.user_id = ' . $this->userInfo['id']);
+			$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+			$productInfo = $cmd->queryRow();
+
+			if (!empty($productInfo)) {
+				$vst = Yii::app()->db->createCommand()
+					->select('id')
+					->from('{{product_variants}}')
+					->where('product_id = ' . $productInfo['product_id'])
+					->queryAll();
+				$vst = Utils::arrayToKeyValues($vst, 'id', 'id');
+				$vstSql = 'IN (' . implode(',', $vst) . ')';
+
+				$cmd = Yii::app()->db->createCommand()
+						->select('tf.id, tf.title, tf.variant_id, vq.preset_id')
+						->from('{{typedfiles}} tf')
+						->leftJoin('{{variant_qualities}} vq', 'tf.variant_quality_id=vq.id')
+						->where('tf.variant_id ' . $vstSql . ' AND tf.user_id = ' . $this->userInfo['id']);
+				$cmd->bindParam(':id', $id, PDO::PARAM_INT);
+				$info = $cmd->queryAll();
+				$vst = Utils::arrayToKeyValues($info, 'variant_id', 'variant_id');
+				$vstSql = 'IN (' . implode(',', $vst) . ')';
+
+				//ВЫБИРАЕМ МАКСИМАЛЬНОЕ КАЧЕСТВО
+				$maxPreset = 0;
+				foreach ($info as $ik => $iv)
+				{
+					if ($iv['preset_id'] > $maxPreset)
+						$maxPreset = $iv['preset_id'];
+				}
+				if (!empty($maxPreset))
+					$presetCondition = ' AND vq.preset_id <= ' . $maxPreset;
+				else
+					$presetCondition = '';
+				//ВЫБИРАЕМ ПАРАМЕТРЫ ВСЕХ ВАРИАНТОВ
+				$prms = Yii::app()->db->createCommand()
+								->select('pv.id, pv.product_id, pv.online_only, pv.type_id, pv.sub_id, ptp.title, ppv.value, pr.id AS price_id, r.id AS rent_id')
+								->from('{{product_variants}} pv')
+								->join('{{variant_qualities}} vq', 'pv.id=vq.variant_id')
+								->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
+								->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
+								->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
+								->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
+								->where('pv.id ' . $vstSql . ' AND ptp.active <= ' . $userPower . $presetCondition)
+								->order('pv.id ASC, ptp.srt DESC')->queryAll();
+
+				if (!empty($prms)) {
+					$type_id = $prms[0]['type_id'];
+					$dsc = Yii::app()->db->createCommand()
+									->select('*')
+									->from('{{product_descriptions}}')
+									->where('product_id = ' . $prms[0]['product_id'])->queryRow();
+
+					$partnerInfo = Yii::app()->db->createCommand()
+						->select('prt.id, prt.title, prt.sprintf_url, p.original_id')
+						->from('{{products}} p')
+						->join('{{partners}} prt', 'prt.id = p.partner_id')
+						->where('p.id = ' . $prms[0]['product_id'])->queryRow();
+
+					$params = array();
+					//РАСПРЕДЕЛЯЕМ ПАРАМЕТРЫ ПО ВАРИАНТАМ ПРОДУКТА
+					foreach ($info as $ki => $inf)
+					{
+						foreach ($prms as $p) {
+							if ($p['id'] != $inf['variant_id']) continue;
+
+							$params[$ki][$p['title']] = $p['value'];
+							$info[$ki]['online_only'] = $p['online_only'];
+							if (!empty($p['price_id']))
+								$info[$ki]['price_id'] = $p['price_id'];
+							if (!empty($p['rent_id']))
+							{
+								$info[$ki]['rent_id'] = $p['rent_id'];
+								$rentPersist = true;
+							}
+						}
+					}
+				}
+
+				$subs = Yii::app()->db->createCommand()
+					->select('*')
+					->from('{{variant_subs}}')
+					->queryAll();
+				$subs = Utils::arrayToKeyValues($subs, 'id', 'title');
+
+				$orders = Yii::app()->db->createCommand()
+					->select('o.id AS oid, o.state, oi.id AS iid, oi.variant_id, oi.price_id, oi.rent_id, oi.price, oi.variant_quality_id, vq.preset_id')
+					->from('{{orders}} o')
+			        ->join('{{order_items}} oi', 'o.id=oi.order_id')
+			        ->leftJoin('{{variant_qualities}} vq', 'vq.id=oi.variant_quality_id')
+					->where('o.user_id = ' . $userId)
+					->order('o.state DESC, o.created DESC')->queryAll();
+
+				$qualities = array();
+				if (!empty($vstSql))
+					$qualities = Yii::app()->db->createCommand()
+						->select('pf.id AS pfid, vq.variant_id, pf.preset_id, pf.fname')
+						->from('{{variant_qualities}} vq')
+						->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id')
+						->where('vq.variant_id ' . $vstSql . ' ' . $presetCondition)
+						//->group('vq.preset_id')
+						->queryAll();
+
+				$subAction = 'view';
+				if (!empty($_GET['do'])) {
+					$subAction = $_GET['do'];
+				}
+
+				if (!empty($rentPersist)) {
+					$rents = Yii::app()->db->createCommand()
+							->select('*')
+							->from('{{actual_rents}}')
+							->where('variant_id ' . $vstSql . ' AND user_id = ' . $this->userInfo['id'])
+							->order('start DESC')//СНАЧАЛА ИСПОЛЬЗУЕМ СТАРТОВАВШУЮ АРЕНДУ
+							->queryAll();
+					if (!empty($rents)) {
+						//ПРИ ЛЮБОМ ДЕЙСТВИИ ПРОВЕРЯЕМ ТЕКУЩИЕ АРЕНДЫ
+						foreach ($rents as $r) {
+							if (strtotime($r['start']) > 0) {
+								$info['start'] = $r['start'];
+								$info['period'] = $r['period'];
+								if (strtotime($r['start']) + Utils::parsePeriod($r['period'], $r['start']) - time() <= 0) {
+									//СРОК АРЕНДЫ ИСТЕК
+									$sql = 'DELETE FROM {{actual_rents}} WHERE id=' . $r['id'];
+									Yii::app()->db->createCommand($sql)->execute();
+
+									//УДАЛЯЕМ ИЗ ЛИЧНОГО ПРОСТРАНСТВА
+									$sql = 'DELETE FROM {{typedfiles}} WHERE variant_id=' . $r['variant_id'] . ' AND user_id = ' . $r['user_id'];
+									Yii::app()->db->createCommand($sql)->execute();
+
+									$subAction = 'view';
+									$info['start'] = '';
+									$info['period'] = '';
+								}
+							}
+						}
+					}
+				}
+
+				//ЕСЛИ НЕТ ЦЕН НИ ПОКУПКИ НИ АРЕНДЫ, ТО ДОСТУПНО И СКАЧКА И ОНЛАЙН
+				$neededQuality = ''; $fid = 0;
+				if (!empty($_GET['quality']))
+				{
+					$neededQuality = $_GET['quality'];
+				}
+				if (!empty($_GET['fid']))
+				{
+					$fid = $_GET['fid'];
+				}
+				switch ($subAction) {
+					case "download":
+						if ($info['online_only']) {
+							//СКАЧКА ЗАПРЕЩЕНА
+							$subAction = 'view';
+							break;
+						}
+
+					case "online":
+						/*
+						  в случае аренды стартуем аренду (поле start таблицы actual_rents)
+						  не забыть учесть, что товар может быть арендован многократно
+						  в этом случае новую аренду не стартуем до тех пора пока не истечет предыдущая аренда
+						 */
+						if (!empty($rents)) {
+							foreach ($rents as $r) {
+								if (strtotime($r['start']) <= 0) {
+									$start = date('Y-m-d H:i:s');
+									$sql = 'UPDATE {{actual_rents}} SET start="' . $start . '" WHERE id=' . $r['id'];
+									Yii::app()->db->createCommand($sql)->execute();
+									$subAction = 'online'; //ПОДТВЕРЖДАЕМ ДЕЙСТВИЕ ТК МОЖЕТ БЫТЬ СБРОШЕНО ПРЕДЫДУЩЕЙ ИСТЕКШЕЙ АРЕНДОЙ
+									$info['start'] = $start;
+									$info['period'] = $r['period'];
+									break;
+								}
+							}
+						}
+						break;
+				}
+			}
+		}
+		$this->render('tview', array('info' => $info, 'params' => $params, 'dsc' => $dsc,
+			'qualities' => $qualities, 'fid' => $fid, 'orders' => $orders,
+			'subAction' => $subAction, 'neededQuality' => $neededQuality,
+			'type_id' => $type_id, 'subs' => $subs,
 			'partnerInfo' => $partnerInfo
 		));
 	}

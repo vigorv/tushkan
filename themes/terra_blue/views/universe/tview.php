@@ -33,7 +33,7 @@ if (!empty($info))
 //*/
 	$presets = CPresets::getPresets();
 
-	$title = $info['title'];
+	$title = $info[0]['title'];
 	echo '<h1>' . $title . '</h1>';
 ?>
 	<div class="back-button">
@@ -61,12 +61,27 @@ if (!empty($info))
 </script>
 <?php
 	echo '<div id="productdetail">';
-	if (!empty($params['poster']))
+	$poster = '';
+	if (!empty($params))
 	{
-		$poster = $params['poster'];
-		unset($params['poster']);
+		foreach ($params as $pk => $pv)
+		{
+			unset($params[$pk]['url']);
+			unset($params[$pk]['width']);
+			unset($params[$pk]['height']);
+			unset($params[$pk]['onlineurl']);
+
+			if (!empty($pv['poster']))
+			{
+				$posterInfo = pathinfo($pv['poster']);
+				if (!empty($posterInfo['extension']))
+					$poster = $pv['poster'];
+				unset($params[$pk]['poster']);
+			}
+		}
 	}
-	else
+
+	if (empty($poster))
 	{
 		$poster = '/images/films/noposter.jpg';
 	}
@@ -104,12 +119,12 @@ if (!empty($info))
 	}
 	else
 		$links[$fk] = '';
-//*/
 
 	unset($params['url']);
 	unset($params['width']);
 	unset($params['height']);
 	unset($params['onlineurl']);
+//*/
 
 	$qs = array();
 	foreach ($qualities as $q)
@@ -144,13 +159,23 @@ exit;
 		$isOwned = false;
 		$qualityVariantId = $val[0][2];
 		$qualityPresetId = $val[0][3];
+
+		//ИЩЕМ - КАКОЙ ВАРИАНТ СООТВЕТСВУЕТ ЭТОМУ КАЧСЕИВУ
+		$infoKey = 0;
+		foreach ($info as $ik => $iv)
+		{
+			if ($iv['variant_id'] == $qualityVariantId)
+			{
+				$infoKey = $ik;
+			}
+		}
+
 		$actions = array();
-		$actions[] = '<a onclick="return doRemove(' . $info['id'] . ')">' . Yii::t('files', 'delete') . '</a>';
 		if (!empty($orders))
 		{
 			foreach ($orders as $order)
 			{
-				if ($order['variant_id'] == $info['variant_id'])
+				if ($order['variant_id'] == $info[$infoKey]['variant_id'])
 				{
 /*
 	echo'<pre>';
@@ -191,6 +216,7 @@ exit;
 			$currentQuality = $activateTab = $k;
 		}
 
+		$actions[] = '<a href="#" onclick="return doRemove(' . $info[$infoKey]['id'] . ')">' . Yii::t('files', 'delete') . '</a>';
 		foreach ($val as $v)
 		{
 //$v[0] = 'http://92.63.192.12:83/l/little_caesar/270/little_caesar.mp4';//ОТЛАДКА
@@ -198,7 +224,8 @@ exit;
 			$numF = '';
 			if (count($val) > 1)
 			{
-				$numF = 'файл ' . $num;
+			//	$numF = $subs[$info[$infoKey]['sub_id']] . ' ' . $num;
+				$numF = 'Фильм ' . $num;
 			}
 
 			if (empty($partnerInfo['sprintf_url']))
@@ -206,7 +233,7 @@ exit;
 				//$v[0] = Yii::app()->params['tushkan']['safelib_video'] . $v[0];
 				//$v[0] = CFileservers::getServerByZone() . $v[0];//ВАРИАНТ С ПРЯМЫМИ ССЫЛКАМИ
 				$v[0] = '/universe/download?fid=' . $v[1];//ПЕРЕДАЕМ ID ФАЙЛА. ССЫЛКА НА СКАЧИВАНИЕ БУДЕТ СФОРМИРОВАНА ФАЙЛОВЫМ СЕРВЕРОМ
-				$online = '<a href="#" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</a>';
+				$online = '<a href="#" onclick="$.address.value(\'/universe/tview/id/' . $info[$infoKey]['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</a>';
 				$download = '<a href="#" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</a>';
 			}
 			else
@@ -215,7 +242,7 @@ exit;
 				$pathInfo = pathinfo($v[0]);
 				$fn = str_replace('.' . $pathInfo['extension'], '', $pathInfo['basename']);
 				$v[0] = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], $k, $fn, 1);
-				$online = '<a href="#" onclick="$.address.value(\'/universe/tview/id/' . $info['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</a>';
+				$online = '<a href="#" onclick="$.address.value(\'/universe/tview/id/' . $info[$infoKey]['id'] . '/do/online/quality/' . $k . '/fid/' . $v[1] . '\'); return false;">смотреть онлайн ' . $numF . '</a>';
 				$v[0] = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], $k, $fn, 0);
 				$download = '<a href="#" onclick="return doRedirect(\'' . $v[0] . '\');">скачать ' . $numF . '</a>';
 			}
@@ -229,7 +256,7 @@ exit;
 				$aContent .= '<p id="autostart" rel="#video' . $fid . '"></p>';
 			}
 
-			if ($info['online_only'])
+			if ($info[$infoKey]['online_only'])
 				$actions[] = $online;
 			else
 			{
@@ -268,7 +295,7 @@ exit;
 ?>
 	<div class="span9 movie-text">
 <?php
-	foreach ($params as $param => $value)
+	foreach ($params[$infoKey] as $param => $value)
 	{
 		if (empty($value)) continue;
 		if ($param == Yii::app()->params['tushkan']['fsizePrmName'])

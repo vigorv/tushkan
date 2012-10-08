@@ -178,7 +178,7 @@ class AppController extends ControllerApp
                                 $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
                                 break;
                             case 1:
-                                $fn = pathinfo($res['fname'], PATHINFO_FILENAME).'mp4';
+                                $fn = pathinfo($res['fname'], PATHINFO_FILENAME).'.mp4';
                                 $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 1);
                                 break;
                             default:
@@ -223,7 +223,7 @@ class AppController extends ControllerApp
                             ->from('{{products}} p')
                             ->join('{{partners}} prt', 'prt.id = p.partner_id')
                             ->where('p.id = ' . $res['product_id'] . $zSql)->queryRow();
-                        $fn =  pathinfo($res['fname'], PATHINFO_FILENAME).'mp4';
+                        $fn =  pathinfo($res['fname'], PATHINFO_FILENAME).'.mp4';
                         switch ($res['partner_id']) {
                             case 2:
                                 $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];

@@ -25,7 +25,7 @@ class CAppHandler
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-            ->where('tf.user_id =' . $user_id . $type_str)
+            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str)
             ->limit($count, $offset)
             ->queryAll();
     }
@@ -42,7 +42,7 @@ class CAppHandler
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
-            ->where('tf.user_id =' . $user_id . $type_str)
+            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str)
             ->queryScalar();
     }
 
@@ -99,7 +99,7 @@ class CAppHandler
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-            ->where('tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
+            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
             ->limit($count, $offset)
             ->queryAll();
     }
@@ -117,7 +117,7 @@ class CAppHandler
         // Posters somewhere in the ass
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-            ->where('tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
+            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str.' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")')
             ->queryScalar();
     }
 
@@ -169,7 +169,7 @@ class CAppHandler
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1) AND tf.user_id = '.Yii::app()->user->id )
             ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
-            ->where('pt.partner_id is NULL AND pr.price is NULL AND pv.childs = "" AND p.active <= ' . $userPower . $searchCondition . $zSql)
+            ->where('pt.partner_id is NULL AND pr.price is NULL and pv.online_only = 0 AND pv.childs = "" AND p.active <= ' . $userPower . $searchCondition . $zSql)
             ->order('pv.id ASC')
             //->group('p.id')
             ->limit($count,$offset);
@@ -203,7 +203,7 @@ class CAppHandler
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->leftJoin('{{prices}} pr','pr.variant_id = pv.id and pr.variant_quality_id = 2')
-            ->where('pt.partner_id is NULL AND pr.price is NULL AND pv.childs = "" AND p.active <= ' . $userPower . $searchCondition . $zSql);
+            ->where('pt.partner_id is NULL AND pr.price is NULL and pv.online_only = 0 AND pv.childs = "" AND p.active <= ' . $userPower . $searchCondition . $zSql);
             //->group('p.id');
         return $cmd->queryScalar();
     }

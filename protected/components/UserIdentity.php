@@ -35,7 +35,8 @@ class UserIdentity extends CUserIdentity
 				$cmd->bindParam(':email', $this->email, PDO::PARAM_STR);
 				$userInfo = $cmd->queryRow();
 
-				if (($userInfo['email'] == $this->email) && ($userInfo['pwd'] == $this->transformPassword($userInfo)))
+				//if ((strtolower($userInfo['email']) == strtolower($this->email)) && ($userInfo['pwd'] == $this->transformPassword($userInfo)))
+				if ($userInfo['pwd'] == $this->transformPassword($userInfo))
 				{
 					$this->errorCode = self::ERROR_NONE;
 					$this->saveAuthInfo($userInfo);

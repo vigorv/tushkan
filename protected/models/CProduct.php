@@ -128,8 +128,9 @@ class CProduct extends CActiveRecord
         $types_str = '';
         if ($type_id)
             $types_str = ' AND pv.type_id =' . $type_id;
+        //ПРИ ДОБАВЛЕННЫХ НЕСКОЛЬКИХ ВАРИАНТАХ ПРОДУКТА, ПРОДУКТ СЧИТАЕМ ОДИН РАЗ
         $count = Yii::app()->db->createCommand()
-            ->select('count(tf.id)')
+            ->select('count(DISTINCT pv.product_id)')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'tf.variant_id=pv.id')
             ->where('variant_id > 0 AND user_id = ' . $userId . $types_str)
@@ -150,11 +151,14 @@ class CProduct extends CActiveRecord
         $types_str = '';
         if ($type_id)
             $types_str = ' AND pv.type_id =' . $type_id;
+
+        //ПРИ ДОБАВЛЕННЫХ НЕСКОЛЬКИХ ВАРИАНТАХ ПРОДУКТА, ПРОДУКТ ВСЕ РАВНО ВЫБИРАЕМ ОДИН РАЗ
         $tFiles = Yii::app()->db->createCommand()
             ->select('tf.id, tf.variant_id, tf.title')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'tf.variant_id=pv.id')
             ->where('variant_id > 0 AND user_id = ' . $userId . $types_str)
+            ->group('pv.product_id')
             ->limit($count, $offset)
             ->queryAll();
         $fParams = array();

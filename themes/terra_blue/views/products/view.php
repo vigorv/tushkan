@@ -362,12 +362,14 @@ exit;
 		//ВЫВОД ПАРАМЕТРОВ
 		foreach ($variantsParams as $vk => $vps)
 		{
+			$poster = '';
 			if (!empty($vps['poster']))
 			{
-				$poster = $vps['poster'];
+				$poster = Utils::validatePoster($vps['poster']);
 				unset($vps['poster']);
 			}
-			else
+
+			if (empty($poster))
 			{
 				$poster = '/images/films/noposter.jpg';
 			}

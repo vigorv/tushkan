@@ -41,6 +41,33 @@ class Utils
         "v" => array('Ultra', 'High', 'Medium', 'Low')
     );
 
+    public static function validatePoster($poster)
+    {
+    	$result = '';
+		$posterInfo = pathinfo($poster);
+		if (!empty($posterInfo['extension']))
+		{
+			$host = 'data2.videoxq.com';
+			$posterInfo = parse_url($poster);
+
+			if (empty($posterInfo['host']))
+			{
+				$result = 'http://' . $host . $poster;
+			}
+			else
+			{
+				$result = $poster;
+				if (strpos($posterInfo['host'], 'videoxq.com') !== false)
+				{
+					$result = 'http://' . $host . $posterInfo['path'];
+				}
+			}
+
+		}
+
+    	return $result;
+    }
+
     /**
      * парсинг выражения записи периода времени
      *

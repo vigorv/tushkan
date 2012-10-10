@@ -85,7 +85,7 @@ $nav_active=array(
 					if (!empty($params)) {
 						echo '<div class="chess"><a href="/universe/tview/' . $f['id'] . '">';
 						if (!empty($params['poster'])) {
-							$poster = $params['poster'];
+							$poster = Utils::validatePoster($params['poster']);
 							unset($params['poster']);
 						} else {
 							$poster = '/images/films/noposter.jpg';

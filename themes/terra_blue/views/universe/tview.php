@@ -75,7 +75,8 @@ if (!empty($info))
 			{
 				$posterInfo = pathinfo($pv['poster']);
 				if (!empty($posterInfo['extension']))
-					$poster = $pv['poster'];
+					$poster = Utils::validatePoster($pv['poster']);
+
 				unset($params[$pk]['poster']);
 			}
 		}

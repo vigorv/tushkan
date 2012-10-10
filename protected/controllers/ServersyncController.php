@@ -530,6 +530,7 @@ class ServersyncController extends ControllerSync
                     $product->active = 0;
                     $product->partner_id = $queue->partner_id;
                     $product->title = $info['title'];
+                    $product->created = date("Y-m-d H:i:s");
                     switch ($queue->partner_id) {
                         case 5:
                         case 6:

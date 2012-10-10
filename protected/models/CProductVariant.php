@@ -199,4 +199,7 @@ class CProductVariant extends CActiveRecord {
         return $paramValue->save();
     }
 
+    public static function getPrice($id){
+
+    }
 }

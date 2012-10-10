@@ -38,7 +38,9 @@ if (!empty($pst)) {
 <? foreach ($pst as $item):?>
 <?
     if (empty($item['poster']))
-        $item['poster'] = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
+        $item['poster'] = '/images/films/noposter.jpg';
+    else
+    	$item['poster'] = Utils::validatePoster($item['poster']);
 ?>
 
 

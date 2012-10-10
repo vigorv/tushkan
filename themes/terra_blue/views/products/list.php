@@ -37,9 +37,9 @@
 		foreach ($infos as $info)
 		{
 			if (!empty($info['10']))
-				$poster = $info['10'];
+				$poster = Utils::validatePoster($info['10']);
 			else
-				$poster = Yii::app()->params['tushkan']['postersURL'] . '/noposter.jpg';
+				$poster = '/images/films/noposter.jpg';
 
 			$prms = array();
 			if (!empty($info['12']))

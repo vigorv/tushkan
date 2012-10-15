@@ -522,7 +522,7 @@ class ServersyncController extends ControllerSync
                 //echo "<pre>";
                 //echo $id;
                 // echo $queue->info;
-               // var_dump($rdata);
+                // var_dump($rdata);
                 if ($queue) {
                     $info = unserialize($queue->info);
                     // var_dump($rdata);
@@ -706,9 +706,56 @@ class ServersyncController extends ControllerSync
         } else echo "NO DATA";
     }
 
+    /*
 
-    public
-    function actionCreateVariantData()
+        public function actionTadd($user_id, $id)
+        {
+
+
+            $variant_id = $id;
+            if (CTypedfiles::DidUserHavePartnerVariant($user_id, $variant_id)) {
+                CProductVariant::getPrice($variant_id);
+
+            } else {
+                $product  = CProduct::getProductByVariantId($variant_id);
+                if ($product) {
+                    $typedfile = new CTypedfiles();
+                    $typedfile -> variant_id = $variant_id;
+                    $typedfile -> user_id = $user_id;
+                    $typedfile -> title = $product['title'];
+                    $typedfile -> collection_id =0;
+                    $typedfile -> variant_quality_id = $variant_quality_id;
+                    if($typedfile->save()){
+                        $result = $typedfile->id;
+                    }
+                }
+            }
+        }
+    */
+    public function actionCheckReady()
+    {
+        $answer = array();
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
+                if ($rdata['variants']) {
+                    foreach ($rdata['variants'] as $variant_id) {
+                        if (!$variant = CProductVariant::model()->find('id=:id', array(':id' => $variant_id))) {
+                            $answer['wait'] = 1;
+                            echo base64_encode(serialize($answer));
+                            Yii::app()->end();
+                        }
+                    }
+                    $answer['wait'] = 0;
+                    echo base64_encode(serialize($answer));
+                    Yii::app()->end();
+                }
+            }
+        }
+    }
+
+    public function actionCreateVariantData()
     {
         $answer = array();
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {

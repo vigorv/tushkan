@@ -370,6 +370,7 @@ class UniverseController extends Controller {
 		$this->layout = '/layouts/ajax';
 		$orders = new COrder();
 		if (!empty($this->userInfo) && !empty($id)) {
+            // TO DO : Check {{product_prices}}
 			$cmd = Yii::app()->db->createCommand()
 					->select('pv.id, pv.product_id, pv.online_only, ptp.title, ppv.value, oi.price_id, oi.rent_id')
 					->from('{{product_variants}} pv')

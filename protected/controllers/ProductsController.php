@@ -352,9 +352,13 @@ class ProductsController extends Controller
 					{
 						//ВЫБИРАЕМ ВАРИАНТЫ УКАЗАННЫХ ПРОДУКТОВ
 						$variantsToUnite = Yii::app()->db->createCommand()
-							->select('*')
-							->from('{{product_variants}}')
-							->where('product_id IN (' . implode(',', $ids) . ')')
+							->select('pv.*, p.original_id AS poriginal_id')
+							->from('{{product_variants}} pv')
+							->join('{{products}} p', 'p.id=pv.product_id')
+							->where('pv.product_id IN (' . implode(',', $ids) . ')')
+//->getText();
+//echo $variantsToUnite;
+//exit;
 							->queryAll();
 						//ИЩЕМ СРЕДИ НИХ РОДИТЕЛЬСКИТЙ ВАРИАНТ
 						//НАПОМИНАНИЕ: если вариант является потомком другого, то поле childs = "", по умолчанию childs = ",,"
@@ -375,6 +379,7 @@ class ProductsController extends Controller
 								//СОЗДАЕМ РОДИТЕЛЬСКИЙ ВАРИАНТ
 								$parentVariant = $variantsToUnite[0]; //РОДИТЕЛЬСКИЙ ВАРИАНТ ДЕЛАЕМ ПО ШАБЛОНУ ПЕРВОГО ВАРИАНТА
 								unset($parentVariant['id']);
+								unset($parentVariant['poriginal_id']);
 								$parentVariant['childs'] = ',,';
 /*
 echo '<pre>';
@@ -405,7 +410,14 @@ exit;
 								}
 
 								$childIds[] = $vu['id'];
-								$sql = 'UPDATE {{product_variants}} SET childs = "", product_id = ' . $productId . ' WHERE id = ' . $vu['id'];
+								$originalIdSql = '';
+
+								//ЕСЛИ У ДОБАВЛЯЕМОГО ВАРИАНТА НЕТ ОРИГ ИД ВАРИАНТА, БЕРЕМ ОРИГ ИД ПРОДУКТА ЭТОГО ВАРИАНТА
+								if (empty($vu['original_id']) && !empty($vu['poriginal_id']))
+									$originalIdSql = ', original_id=' . $vu['poriginal_id'];
+								$sql = 'UPDATE {{product_variants}} SET childs = "", product_id = ' . $productId . $originalIdSql . ' WHERE id = ' . $vu['id'];
+//echo $sql;
+//exit;
 								Yii::app()->db->createCommand($sql)->execute();
 							}
 

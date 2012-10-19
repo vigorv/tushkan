@@ -475,8 +475,11 @@ exit;
 
 		$filterCondition = array();
 		$filterInfo = Utils::getFilterInfo();
-		$filterInfo['active'] = Yii::app()->user->UserPower;
-		$filterCondition['active'] = 'p.active <= :active';
+		//$filterInfo['active'] = Yii::app()->user->UserPower;
+		if (!empty($filterInfo['active']))
+		{
+			$filterCondition['active'] = 'p.active = :active';
+		}
 		if (!empty($filterInfo['search']))
 		{
 			$filterCondition['search'] = 'p.title LIKE :title';
@@ -503,7 +506,11 @@ exit;
 		{
 			$cmd->where(implode(' AND ', $filterCondition));
 
-			$cmd->bindParam(':active', $filterInfo['active'], PDO::PARAM_INT);
+			if (!empty($filterInfo['active']))
+			{
+				$cmd->bindParam(':active', $filterInfo['active']['value'], PDO::PARAM_INT);
+			}
+
 			if (!empty($filterInfo['search']))
 			{
 				$searchValue = '%' . $filterInfo['search']['value'] . '%';
@@ -557,7 +564,11 @@ exit;
 			$cmd->limit($paginationParams['limit']);
 			$cmd->offset($paginationParams['offset']);
 
-			$cmd->bindParam(':active', $filterInfo['active'], PDO::PARAM_INT);
+			if (!empty($filterInfo['active']))
+			{
+				$cmd->bindParam(':active', $filterInfo['active']['value'], PDO::PARAM_INT);
+			}
+
 			if (!empty($filterInfo['search']))
 			{
 				$searchValue = '%' . $filterInfo['search']['value'] . '%';

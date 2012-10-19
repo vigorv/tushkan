@@ -44,25 +44,25 @@ class Utils
     public static function validatePoster($poster)
     {
     	$result = '';
+    	if (empty($poster)) return $result;
+
 		$posterInfo = pathinfo($poster);
+		$urlInfo = parse_url($poster);
 		if (!empty($posterInfo['extension']))
 		{
 			$host = 'data2.videoxq.com';
-			$posterInfo = parse_url($poster);
 
-			if (empty($posterInfo['host']))
+			if (empty($urlInfo['host']))
 			{
 				$result = 'http://' . $host . $poster;
+				return $result;
 			}
-			else
-			{
-				$result = $poster;
-				if (strpos($posterInfo['host'], 'videoxq.com') !== false)
-				{
-					$result = 'http://' . $host . $posterInfo['path'];
-				}
-			}
+		}
 
+		$result = $poster;
+		if (strpos($urlInfo['host'], 'videoxq.com') !== false)
+		{
+			$result = 'http://' . $host . $urlInfo['path'];
 		}
 
     	return $result;

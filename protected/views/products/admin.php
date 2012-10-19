@@ -1,7 +1,9 @@
 <div>
 <a href="<?php echo $this->createUrl('/products/form');?>"><?php echo Yii::t('products', 'Add product');?></a>
+<!--
 |
 <a href="<?php echo $this->createUrl('/products');?>"><?php echo Yii::t('products', 'Upload products list');?></a>
+-->
 </div>
 <?php
 	$flashes = Yii::app()->user->getFlashes();

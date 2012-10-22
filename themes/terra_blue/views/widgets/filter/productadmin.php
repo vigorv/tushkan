@@ -55,6 +55,21 @@
 		echo '<br />' . $sel;
 	}
 
+	$active = Utils::formatFilterParam('active');
+	$aLst = Utils::getActiveStates();
+	$sel = '<select name="' . $active['uname'] . '">';
+	foreach($aLst as $k => $v)
+	{
+		$selected = '';
+		if (!empty($aLst['value']) && ($k == $active['value']))
+		{
+			$selected = 'selected';
+		}
+		$sel .= '<option ' . $selected . ' value="' . $k . '">' . $v . '</option>';
+	}
+	$sel .= '</select>';
+	echo ' &nbsp; ' . $sel;
+
 	echo '<br /><input type="submit" class="btn" value="' . Yii::t('common', 'filter') . '" />';
 
 	echo $formEnd;

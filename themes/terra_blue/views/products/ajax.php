@@ -140,8 +140,8 @@ switch ($subAction)
 		    <a href="" class="btn" data-dismiss="modal"><?php echo Yii::t('common', 'Cancel'); ?></a>
 		    <br />
 <?php
+			$this->endWidget();
 		}
-$this->endWidget();
 ?>
 	</div>
 <?php

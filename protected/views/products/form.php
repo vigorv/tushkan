@@ -175,7 +175,7 @@
     	}
     ?>
     </div>
-	<a href="" onclick="return newVariant();">Новый вариант</a>
+	<!-- <a href="" onclick="return newVariant();">Новый вариант</a> -->
 	<div id="inboxlistdiv">
 		<a href="" onclick="return getInboxList();">Выбрать файлы</a>
 	</div>

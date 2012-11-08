@@ -127,7 +127,7 @@ class AppController extends ControllerApp
                     'hash' => $device->hash));
                 return;
             } else {
-                echo json_encode(array('cmd' => 'Login', 'error' => self::ERROR_LOGIN_USER_NOT_EXISTS, 'error_msg' => Yii::t('app', 'Unknown user')));
+                echo json_encode(array('cmd' => 'Login', 'error' => self::ERROR_USER_NOT_EXISTS, 'error_msg' => Yii::t('app', 'Unknown user')));
                 Yii::app()->end();
             }
             echo json_encode(array('LoginData' => $username . ' ' . $password));
@@ -773,6 +773,7 @@ class AppController extends ControllerApp
             $msg = '';
             if ($user_id) {
                 $user = CUser::model()->findByPk($user_id);
+                /* @var CUser $user */
                 if ($user) {
                     if ($hash == CUser::makeHash($user['pwd'], $user['salt'])) {
                         $user->confirmed = 1;

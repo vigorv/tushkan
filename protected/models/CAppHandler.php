@@ -46,7 +46,6 @@ class CAppHandler
             ->queryScalar();
     }
 
-
     public static function getVtrItemA($item_id = 0, $user_id = 0, $preset = 2)
     {
         switch ($preset){
@@ -280,7 +279,7 @@ class CAppHandler
     }
 
 
-    public static function getUserObjects($user_id ,$type_id, $page =1, $count = 10){
+    public static function findUserObjects($user_id ,$type_id = -1, $search='', $page =1, $count = 10){
         $offset = ($page - 1) * $count;
         if ($type_id >= 0) {
             $type_str = ' AND uo.type_id=' . $type_id;
@@ -297,11 +296,11 @@ class CAppHandler
             ->queryAll();
     }
 
-    public static function countUserObjects($user_id, $type_id = -1)
+    public static function countFoundUserObjects($user_id, $type_id = -1, $search='')
     {
 
         if ($type_id >= 0) {
-            $type_str = ' AND pv.type_id=' . $type_id;
+            $type_str = ' AND uo.type_id=' . $type_id;
         } else
             $type_str = '';
         return Yii::app()->db->createCommand()

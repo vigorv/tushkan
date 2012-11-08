@@ -223,4 +223,39 @@ class CUserfiles extends CActiveRecord {
             ->queryScalar();
     }
 
+
+
+    public static function findObjects($search = '', $user_id = 0, $page = 1, $per_page = 10)
+    {
+        $offset = ($page - 1) * $per_page;
+        return Yii::app()->db->createCommand()
+            ->select('*')
+            ->from('{{userfiles}}')
+            ->where('user_id = :user_id', array(':user_id' => $user_id))
+            ->offset($offset)
+            ->limit($per_page)
+            ->queryAll();
+    }
+
+    public static function countFoundObjects($search = '', $user_id = 0)
+    {
+        return Yii::app()->db->createCommand()
+            ->select('Count(*)')
+            ->from('{{userfiles}}')
+            ->where('user_id = :user_id', array(':user_id' => $user_id))
+            ->queryScalar();
+    }
+
+
+    public static function getUserObject($item_id,$user_id)
+    {
+        return Yii::app()->db->createCommand()
+            ->select('*')
+            ->from('{{userfiles}}')
+            ->where('user_id = :user_id AND id=:item_id', array(':user_id' => $user_id,':item_id'=>$item_id))
+            ->limit(1)
+            ->queryAll();
+    }
+
+
 }

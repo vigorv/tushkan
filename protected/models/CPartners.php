@@ -80,6 +80,19 @@ class CPartners extends CActiveRecord {
         return $partners;
     }
 
+
+    public static function getPartnerListA($userPower)
+    {
+        return Yii::app()->db->createCommand()
+            ->select('p.title,p.id')
+            ->from('{{partners}} p')
+            ->leftJoin('{{partners_tariffs}} pt','pt.partner_id = p.id')
+            ->where('pt.partner_id is NULL && p.active <='.$userPower)
+            ->queryAll();
+    }
+
+
+
     public static function countPartnerProductForUser($partner_id = 0, $zone=0){
        // $userPower = Yii::app()->user->getState('dmUserPower');
     	$userPower = Yii::app()->user->UserPower;

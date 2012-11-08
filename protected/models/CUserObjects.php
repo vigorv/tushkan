@@ -84,6 +84,42 @@ class CUserObjects extends CActiveRecord
 		return $items;
     }
 
+    public static function findObjects($search,$user_id, $type_id= -1,  $page = 1, $per_page = 10){
+        $offset = ($page - 1) * $per_page;
+        if ($type_id >= 0) {
+            $type_str = ' AND uo.type_id=' . $type_id;
+        } else
+            $type_str = '';
+        return Yii::app()->db->createCommand()
+            ->select('uo.title,uo.id')
+            ->from('{{userobjects}} uo')
+            ->where('uo.user_id =' . $user_id . ' AND uo.title LIKE "%' . $search . '%"' . $type_str)
+            ->limit($per_page, $offset)
+            ->queryAll();
+    }
+    public static function countFoundObjects($search,$user_id, $type_id= -1){
+        if ($type_id >= 0) {
+            $type_str = ' AND uo.type_id=' . $type_id;
+        } else
+            $type_str = '';
+        return Yii::app()->db->createCommand()
+            ->select('Count(uo.id)')
+            ->from('{{userobjects}} uo')
+            ->where('uo.user_id =' . $user_id . ' AND uo.title LIKE "%' . $search . '%"' . $type_str)
+            ->queryAll();
+    }
+
+    public function getUserObject($object_id,$user_id){
+        return Yii::app()->db->createCommand()
+            ->select('uo.title, uo.id, ')
+            ->from('{{userobjects}} uo')
+            ->join('{{userfiles}} uf', 'uo.id = uf.object_id')
+            ->where('uo.user_id =' . $user_id . ' AND uo.id =  ' . $object_id )->limit(1)->queryAll();
+    }
+
+
+    /* Deprecated: */
+
     public static function getObjectsLike($user_id, $like, $page = 1, $per_page = 10, $type_id = -1)
     {
         $offset = ($page - 1) * $per_page;

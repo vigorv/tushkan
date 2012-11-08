@@ -9,7 +9,7 @@ $yii = dirname(__FILE__) . '/../framework/yii.php';
 define('DEVELOP_LOCATION', (file_exists(dirname(__FILE__) . '/protected/config/develop') ? 'dev' : 'stable'));
 
 
-if (isset($_COOKIE['DEBUG']) && ($_COOKIE['DEBUG'] == 'kolpman')) {
+if ((isset($_COOKIE['DEBUG']) && ($_COOKIE['DEBUG'] == 'kolpman')) || (file_exists(dirname(__FILE__) . '/protected/config/develop'))) {
 // remove the following lines when in production mode
     defined('YII_DEBUG') or define('YII_DEBUG', true);
 // specify how many levels of call stack should be shown in each log message

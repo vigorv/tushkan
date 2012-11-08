@@ -20,7 +20,7 @@ return array(
 	'actors'				=> 'Актеры',
 	'description'			=> 'Описание',
 	'genres'				=> 'Жанры',
-	'title_en'				=> 'Оригинальное название',
+	'title_en'				=> 'В оригинале',
 	'usertitle'				=> 'Название',
 	'tags'					=> 'Теги',
 

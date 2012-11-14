@@ -1071,13 +1071,14 @@ class UniverseController extends Controller {
         		->join('{{variant_qualities}} vq', 'vq.id = pf.variant_quality_id')
         		->where('pf.id = ' . $file_id)
         		->queryScalar();
+            isset($_GET['start'])?$start='start='.(int)$_GET['start']: $start='';
             if ($variant_id)
             	$allowed_download = CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id, $variant_id);
             if (!empty($allowed_download)){
                 $sign = CUser::getDownloadSign($file_id . Yii::app()->user->id);
                 $server = CFileservers::getServerByZone();
                 if ($server){
-					$this->redirect($server . '/files/partnerdownload?fid=' . $file_id. '&user_id=' . Yii::app()->user->id .'&key='.$sign);
+					$this->redirect($server . '/files/partnerdownload?fid=' . $file_id. '&user_id=' . Yii::app()->user->id .'&key='.$sign.'&'.$start);
                 }
             exit();
             } else {

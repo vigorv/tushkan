@@ -12,7 +12,7 @@ if ((isset($_COOKIE['DEBUG']) && ($_COOKIE['DEBUG'] == 'kolpman')) || (file_exis
     defined('YII_DEBUG') or define('YII_DEBUG', true);
 // specify how many levels of call stack should be shown in each log message
     defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
-    if (isset($_COOKIE['DEBUG_CONFIG'])){
+    if (isset($_COOKIE['DEBUG_CONFIG']) || file_exists(dirname(__FILE__) . '/protected/config/develop')) {
         $config = dirname(__FILE__) . '/protected/config/dev/main.php';
     }
 }

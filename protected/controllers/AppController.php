@@ -167,11 +167,10 @@ class AppController extends ControllerApp
                 $user = new CUser('add');
                 $user->email = $email;
                 $user->salt  = Utils::generateString(3);
-                $user->pwd = md5($this->password . $user->salt );
+                $user->pwd = md5($password . $user->salt );
                 $user->group_id = USERGROUP_USER;
                 $user->register_ip = Yii::app()->request->getUserHostAddress();
                 if ($user->save()) {
-                    $this->sendConfirmMail($user);
                     $result = array('error' => self::ERROR_NONE);
                 } else
                     $result = array('error' => self::ERROR_REGISTER_SAVE_FAILED);

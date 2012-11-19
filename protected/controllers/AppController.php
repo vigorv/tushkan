@@ -263,9 +263,9 @@ class AppController extends ControllerApp
                     break;
                 case self::SECTION_PARTNER_CATALOG:
 
-                    $data = CProduct::getProductFullInfoById($item_id);
-                    if (!empty($data))
-                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
+                    $item = CProduct::getProductFullInfoById($item_id);
+                    if (!empty($item))
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $item);
                     else
                         $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
                     echo json_encode($result);
@@ -274,9 +274,9 @@ class AppController extends ControllerApp
                     break;
                 case self::SECTION_UNIVERSE_CATALOG_PARTNER:
 
-                    $item = CUserProduct::getUserProduct($item_id, Yii::app()->user->id);
-                    if (!empty($item)) {
-                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $item);
+                    $data = CUserProduct::getUserProduct($item_id, Yii::app()->user->id);
+                    if (!empty($data)) {
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
                     } else
                         $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
                     echo json_encode($result);

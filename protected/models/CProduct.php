@@ -344,7 +344,7 @@ class CProduct extends CActiveRecord
             ->select("p.title as title,p.partner_id as partner_id , pd.description")
             ->from('{{products}} p')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = p.id')
-            ->where('p.id = :product_id' . $zSql, array(':product_id' => $product_id))->queryArray();
+            ->where('p.id = :product_id' . $zSql, array(':product_id' => $product_id))->queryAll();
         if (!empty($products)) {
             $product = $products[0];
             if ($product)

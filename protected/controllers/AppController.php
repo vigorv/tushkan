@@ -49,7 +49,7 @@ class AppController extends ControllerApp
             $this->search = trim(filter_var($_REQUEST['search'], FILTER_SANITIZE_STRING));
 
         switch (strtolower($action->id)) {
-            case 'register':
+            case 'registerme':
             case 'login':
             case 'error':
             case 'registercheck':

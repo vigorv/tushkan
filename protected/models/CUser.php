@@ -12,7 +12,7 @@
  * @property $sess_id;
  * @property $free_limit
  * @property $confirmed
- *
+ * @property $register_ip
  */
 class CUser extends CActiveRecord
 {

@@ -16,6 +16,7 @@ class AppController extends ControllerApp
     const ERROR_USER_NOT_EXISTS = 1;
     const ERROR_INPUT_DATA_FAILED = 2;
     const ERROR_REGISTER_EMAIL_EXISTS = 3;
+    const ERROR_REGISTER_SAVE_FAILED = 8;
     const ERROR_USER_NEED_LOGIN = 4;
     const ERROR_UNKNOWN_ITEM = 5;
     const ERROR_UNKNOWN_CATEGORY = 6;
@@ -33,6 +34,9 @@ class AppController extends ControllerApp
     const SECTION_UNIVERSE_CATALOG_TYPED = 4;
     const SECTION_UNIVERSE_CATALOG_QUEUED = 5;
     const SECTION_UNIVERSE_CATALOG_UNTYPED = 6;
+
+    const USERGROUP_USER=2;
+
 
     public function beforeAction($action)
     {
@@ -151,16 +155,26 @@ class AppController extends ControllerApp
         // }
     }
 
-    public function actionRegisterCheck()
+    public function actionRegisterMe()
     {
-        if (isset($_REQUEST['email'])) {
+        if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
             // 1. Check UserData
             $email = filter_var($_REQUEST['email']);
             $password = filter_var($_REQUEST['password']);
             $user = CUser::model()->find('email= :email', array(':email' => $email));
             /* @var CUser $user */
             if (!$user) {
-                $result = array('error' => self::ERROR_NONE);
+                $user = new CUser('add');
+                $user->email = $email;
+                $user->salt  = Utils::generateString(3);
+                $user->pwd = md5($this->password . $user->salt );
+                $user->group_id = USERGROUP_USER;
+                $user->register_ip = Yii::app()->request->getUserHostAddress();
+                if ($user->save()) {
+                    $this->sendConfirmMail($user);
+                    $result = array('error' => self::ERROR_NONE);
+                } else
+                    $result = array('error' => self::ERROR_REGISTER_SAVE_FAILED);
             } else
                 $result = array('error' => self::ERROR_REGISTER_EMAIL_EXISTS);
         } else

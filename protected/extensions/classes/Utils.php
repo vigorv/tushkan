@@ -739,7 +739,17 @@ class Utils
         $url .= '/' . implode('/', $params);
         return $url;
     }
+
+    public static function generateString($length=10){
+
+        $chars = array_merge(range(0,9), range('a','z'), range('A','Z'));
+        shuffle($chars);
+        return implode(array_slice($chars, 0, $length));
+    }
+
 }
+
+
 
 /**
 РЕГУЛЯРНОЕ ВЫРАЖЕНИЕ ВАЛИДАЦИИ ИМЕНИ ПАРАМЕТРА СОРТИРОВКИ В АДРЕСНОЙ СТРОКЕ

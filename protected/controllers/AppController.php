@@ -276,7 +276,7 @@ class AppController extends ControllerApp
 
                     $item = CUserProduct::getUserProduct($item_id, Yii::app()->user->id);
                     if (!empty($item)) {
-                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $item[0]);
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $item);
                     } else
                         $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
                     echo json_encode($result);

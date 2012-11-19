@@ -177,9 +177,9 @@ class AppController extends ControllerApp
                     } else
                         $result = array('error' => self::ERROR_REGISTER_SAVE_FAILED);
                     } else
-                     $result = array('error' => self::ERROR_BAD_EMAIL);
+                     $result = array('error' => self::ERROR_REGISTER_EMAIL_EXISTS);
                 } else
-                    $result = array('error' => self::ERROR_REGISTER_EMAIL_EXISTS);
+                    $result = array('error' => self::ERROR_BAD_EMAIL);
             } else
                 $result = array('error' => self::ERROR_INPUT_DATA_FAILED);
             echo json_encode($result);

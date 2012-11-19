@@ -265,7 +265,7 @@ class AppController extends ControllerApp
 
                     $data = CProduct::getProductFullInfo($item_id);
                     if (!empty($data))
-                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data);
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
                     else
                         $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
                     echo json_encode($result);

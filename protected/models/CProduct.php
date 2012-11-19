@@ -348,7 +348,7 @@ class CProduct extends CActiveRecord
         $product = Yii::app()->db->createCommand()
             ->select ("p.title as title,p.partner_id as partner_id")
             ->from ('{{products}} p')
-            ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
+            ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = p.id')
             ->where('p.id = :product_id'.$zSql , array(':product_id'=>$product_id))->queryColumn();
 
         $product['variants'] =  Yii::app()->db->createCommand()

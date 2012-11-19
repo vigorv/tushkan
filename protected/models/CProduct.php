@@ -340,26 +340,30 @@ class CProduct extends CActiveRecord
             $zSql = ' AND p.flag_zone = 0';
         }
 
-        $product = Yii::app()->db->createCommand()
+        $products = Yii::app()->db->createCommand()
             ->select("p.title as title,p.partner_id as partner_id , pd.description")
             ->from('{{products}} p')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = p.id')
-            ->where('p.id = :product_id' . $zSql, array(':product_id' => $product_id))->queryColumn();
-        if ($product)
-            $product['variants'] = Yii::app()->db->createCommand()
-                ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, ppv.value as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,pf.fname as fname, COALESCE(tf.id,0) as cloud_id')
-                ->from('{{product_variants}} pv')
-                ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
-                ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year
-                ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
-                ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
-                ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-                ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
-                ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = ' . Yii::app()->user->id)
-                ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
-                ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
-                ->queryAll();
-        return $product;
+            ->where('p.id = :product_id' . $zSql, array(':product_id' => $product_id))->queryArray();
+        if (!empty($products)) {
+            $product = $products[0];
+            if ($product)
+                $product['variants'] = Yii::app()->db->createCommand()
+                    ->select('pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, ppv.value as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,pf.fname as fname, COALESCE(tf.id,0) as cloud_id')
+                    ->from('{{product_variants}} pv')
+                    ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
+                    ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year
+                    ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
+                    ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
+                    ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
+                    ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
+                    ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = ' . Yii::app()->user->id)
+                    ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
+                    ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
+                    ->queryAll();
+            return $product;
+        }
+        return nil;
     }
 
 }

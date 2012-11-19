@@ -213,8 +213,8 @@ class AppController extends ControllerApp
                     break;
                 case self::SECTION_UNIVERSE_CATALOG_PARTNER:
 
-                    $list = CAppHandler::findUserProducts($this->search, Yii::app()->user->id, $category, $this->page, $this->per_page);
-                    $total_count = CAppHandler::countFoundProducts($this->search, Yii::app()->user->id, self::CONTENT_TYPE_VIDEO);
+                    $list = CUserProduct::findUserProducts($this->search, Yii::app()->user->id, $category, $this->page, $this->per_page);
+                    $total_count = CUserProduct::countFoundProducts($this->search, Yii::app()->user->id, $category);
                     $count = count($list);
                     $result = array('cmd' => "ItemList", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $this->search);
                     echo json_encode($result);
@@ -223,7 +223,7 @@ class AppController extends ControllerApp
                 case self::SECTION_UNIVERSE_CATALOG_TYPED:
 
                     $list = CUserObjects::findObjects($this->search, Yii::app()->user->id, $category, $this->page, $this->per_page);
-                    $total_count = CUserObjects::countFoundObjects($this->search, Yii::app()->user->id, self::CONTENT_TYPE_VIDEO);
+                    $total_count = CUserObjects::countFoundObjects($this->search, Yii::app()->user->id, $category);
                     $count = count($list);
                     $result = array('cmd' => "UserLibraryList", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $this->search);
                     echo json_encode($result);

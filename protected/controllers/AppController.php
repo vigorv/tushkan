@@ -178,15 +178,15 @@ class AppController extends ControllerApp
 
     /* API 3.0 */
 
-    public function getCategoryList(){
+    public function actiongetCategoryList(){
 
     }
 
-    public function getSectionList(){
+    public function actiongetSectionList(){
 
     }
 
-    public function getCatalogList(){
+    public function actiongetCatalogList(){
         if (isset($_REQUEST['section']) && isset($_REQUEST['category'])){
             $section = (int) $_REQUEST['section'];
             $category = (int) $_REQUEST['category'];
@@ -251,7 +251,7 @@ class AppController extends ControllerApp
         }
     }
 
-    public function getCatalogData(){
+    public function actiongetCatalogData(){
         if (isset($_REQUEST['section']) && isset($_REQUEST['category']) && isset($_REQUEST['item_id'])){
             $section = (int) $_REQUEST['section'];
             $category = (int) $_REQUEST['category'];

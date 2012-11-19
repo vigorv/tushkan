@@ -208,6 +208,15 @@ class AppController extends ControllerApp
 
         }
 
+        public function actionGetSubscriptionListApple(){
+            $subscribes = Yii::app()->db->createCommand()
+                ->select("*")
+                ->from("{{tariffs}}")
+                ->where("apple_product_id is not NULL and active = 1")
+                ->queryAll();
+            var_dump($subscribes);
+        }
+
         public
         function actiongetCatalogList()
         {
@@ -342,6 +351,58 @@ class AppController extends ControllerApp
             }
         }
 
+
+    public function actiongetCatalogDataLink()
+    {
+        if (isset($_REQUEST['section']) && isset($_REQUEST['category']) && isset($_REQUEST['item_id'])) {
+            $section = (int)$_REQUEST['section'];
+            $category = (int)$_REQUEST['category'];
+            $item_id = $_REQUEST['item_id'];
+
+            switch ($section) {
+                case self::SECTION_PARTNERS:
+                    // NONE
+                    break;
+                case self::SECTION_PARTNER_CATALOG:
+                    // NONE
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_PARTNER:
+                    // TODO: filelink
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_TYPED:
+/*
+                    $data = CUserObjects::getUserObject($item_id, Yii::app()->user->id);
+                    if (!empty($data)) {
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
+                    } else
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+*/
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_QUEUED:
+/*
+                    $data = CConvertQueue::getUserObject($item_id, Yii::app()->user->id);
+                    if (!empty($data)) {
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
+                    } else
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+*/
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_UNTYPED:
+/*
+                    $data = CConvertQueue::getUserObject($item_id, Yii::app()->user->id);
+                    if (!empty($data)) {
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
+                    } else
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+
+                    break;
+                    */
+            }
+        }
+    }
 
         /* API 2.0 */
 
@@ -900,6 +961,7 @@ class AppController extends ControllerApp
         {
 
         }
+
 
 
         public

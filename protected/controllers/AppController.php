@@ -27,6 +27,13 @@ class AppController extends ControllerApp
     const CONTENT_TYPE_DOCS = 4;
     const CONTENT_TYPE_PICTURES = 5;
 
+    const SECTION_PARTNERS = 1;
+    const SECTION_PARTNER_CATALOG = 2;
+    const SECTION_UNIVERSE_CATALOG_PARTNER = 3;
+    const SECTION_UNIVERSE_CATALOG_TYPED = 4;
+    const SECTION_UNIVERSE_CATALOG_QUEUED = 5;
+    const SECTION_UNIVERSE_CATALOG_UNTYPED = 6;
+
     public function beforeAction($action)
     {
         parent::beforeAction($action);
@@ -168,6 +175,153 @@ class AppController extends ControllerApp
         }
         echo json_encode(array('error' => self::ERROR_NONE, "msg" => "Bye"));
     }
+
+    /* API 3.0 */
+
+    public function getCategoryList(){
+
+    }
+
+    public function getSectionList(){
+
+    }
+
+    public function getCatalogList(){
+        if (isset($_REQUEST['section']) && isset($_REQUEST['category'])){
+            $section = (int) $_REQUEST['section'];
+            $category = (int) $_REQUEST['category'];
+            switch ($section){
+                case self::SECTION_PARTNERS:
+
+                    $userPower = Yii::app()->user->UserPower;
+                    $list = CPartners::getPartnerListA($userPower);
+                    $count = count($list);
+                    $total_count = $count;
+                    foreach ($list as $item) {
+                        $item['image'] = '';
+                    }
+                    echo json_encode(array('cmd' => "PartnerList", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count));
+
+                    break;
+                case self::SECTION_PARTNER_CATALOG:
+                    isset($_REQUEST['partner_id'])? $partner_id = (int) $_REQUEST['partner_id'] : $partner_id =0;
+                    $list = CProduct::getPartnerProductsForUser($this->search, $partner_id, $this->page, $this->per_page);
+                    $count = count($list);
+                    $total_count = CProduct::CountPartnerProductsForUser($this->search, $partner_id);
+                    echo json_encode(array('cmd' => "PartnerProducts", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $this->search));
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_PARTNER:
+
+                    $list = CAppHandler::findUserProducts($this->search, Yii::app()->user->id, $category, $this->page, $this->per_page);
+                    $total_count = CAppHandler::countFoundProducts($this->search, Yii::app()->user->id, self::CONTENT_TYPE_VIDEO);
+                    $count = count($list);
+                    $result = array('cmd' => "ItemList", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $this->search);
+                    echo json_encode($result);
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_TYPED:
+
+                    $list = CUserObjects::findObjects($this->search, Yii::app()->user->id, $category, $this->page, $this->per_page);
+                    $total_count = CUserObjects::countFoundObjects($this->search, Yii::app()->user->id, self::CONTENT_TYPE_VIDEO);
+                    $count = count($list);
+                    $result = array('cmd' => "UserLibraryList", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $this->search);
+                    echo json_encode($result);
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_QUEUED:
+
+                    $list = CConvertQueue::findObjects($this->search, Yii::app()->user->id, $this->page, $this->per_page);
+                    $total_count = CConvertQueue::countFoundObjects($this->search, Yii::app()->user->id);
+                    $count = count($list);
+                    $result = array('cmd' => "UserQueueList", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $this->search);
+                    echo json_encode($result);
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_UNTYPED:
+
+                    $list = CUserfiles  ::findObjects($this->search, Yii::app()->user->id, $this->page, $this->per_page);
+                    $total_count = CConvertQueue::countFoundObjects($this->search, Yii::app()->user->id);
+                    $count = count($list);
+                    $result = array('cmd' => "UserLibraryList", 'error' => self::ERROR_NONE, 'Data' => $list, 'count' => $count, 'total_count' => $total_count, 'search' => $this->search);
+                    echo json_encode($result);
+
+                    break;
+            }
+        }
+    }
+
+    public function getCatalogData(){
+        if (isset($_REQUEST['section']) && isset($_REQUEST['category']) && isset($_REQUEST['item_id'])){
+            $section = (int) $_REQUEST['section'];
+            $category = (int) $_REQUEST['category'];
+            $item_id = $_REQUEST['item_id'];
+
+            switch ($section){
+                case self::SECTION_PARTNERS:
+
+                    break;
+                case self::SECTION_PARTNER_CATALOG:
+
+                    $data = CProduct::getProductFullInfo($item_id);
+                    if (!empty($data))
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data);
+                    else
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_PARTNER:
+
+                    $item = CUserProduct::getUserProduct($item_id, Yii::app()->user->id);
+                    if (!empty($item)) {
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $item[0]);
+                    } else
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_TYPED:
+
+                    $data = CUserObjects::getUserObject($item_id, Yii::app()->user->id);
+                    if (!empty($data)) {
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
+                    } else
+                        $result = array('cmd' => "ItemData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_QUEUED:
+
+                    $data = CConvertQueue::getUserObject($item_id, Yii::app()->user->id);
+                    if (!empty($data)) {
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
+                    } else
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+
+                    break;
+                case self::SECTION_UNIVERSE_CATALOG_UNTYPED:
+
+                    $data = CConvertQueue::getUserObject($item_id, Yii::app()->user->id);
+                    if (!empty($data)) {
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
+                    } else
+                        $result = array('cmd' => "UserQueueData", 'error' => self::ERROR_UNKNOWN_ITEM, 'error_msg' => 'Unknown item');
+                    echo json_encode($result);
+
+                    break;
+            }
+        }
+    }
+
+
+
+
+
+
+
 
     /* API 2.0 */
 

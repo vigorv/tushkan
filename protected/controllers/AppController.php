@@ -263,7 +263,7 @@ class AppController extends ControllerApp
                     break;
                 case self::SECTION_PARTNER_CATALOG:
 
-                    $data = CProduct::getProductFullInfo($item_id);
+                    $data = CProduct::getProductFullInfoById($item_id);
                     if (!empty($data))
                         $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);
                     else

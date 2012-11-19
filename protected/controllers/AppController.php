@@ -159,7 +159,7 @@ class AppController extends ControllerApp
     {
         if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
             // 1. Check UserData
-            $email = filter_var($_REQUEST['email']);
+            $email = filter_var($_REQUEST['email'],FILTER_VALIDATE_EMAIL);
             $password = filter_var($_REQUEST['password']);
             $user = CUser::model()->find('email= :email', array(':email' => $email));
             /* @var CUser $user */

@@ -23,6 +23,8 @@ class AppController extends ControllerApp
     const ERROR_UNKNOWN_PARTNER = 7;
     const ERROR_BAD_EMAIL = 9;
 
+
+    // WARN: THESE CONST SHOULD ONLY ADDED
     const CONTENT_TYPE_VIDEO = 1;
     const CONTENT_TYPE_AUDIO = 2;
     const CONTENT_TYPE_GAMES = 3;
@@ -210,11 +212,11 @@ class AppController extends ControllerApp
 
         public function actionGetSubscriptionListApple(){
             $subscribes = Yii::app()->db->createCommand()
-                ->select("*")
+                ->select("id,title,price,size_limit,device_cnt,period,apple_product_id,is_archive")
                 ->from("{{tariffs}}")
                 ->where("apple_product_id is not NULL and active = 1")
                 ->queryAll();
-            var_dump($subscribes);
+            echo json_encode(array('cmd'=>"SubsctionsApple","error" => self::ERROR_NONE, 'Data'=>$subscribes ));
         }
 
         public

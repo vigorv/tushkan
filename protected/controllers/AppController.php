@@ -210,6 +210,13 @@ class AppController extends ControllerApp
 
         }
 
+
+        public function actiongetTopList($text='') {
+            $search = filter_var($text, FILTER_SANITIZE_STRING);
+            $pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,0,Yii::app()->params['product_top_count']*5);
+            echo json_encode(array('cmd'=>"TopList","error"=> self::ERROR_NONE, "Data" =>$pst));
+        }
+
         public function actionGetSubscriptionListApple(){
             $subscribes = Yii::app()->db->createCommand()
                 ->select("id,title,price,size_limit,device_cnt,period,apple_product_id,is_archive")
@@ -1087,7 +1094,6 @@ class AppController extends ControllerApp
                 } else
                     $this->render('/app/messages', array('msg' => "Unknown user"));
             }
-
         }
 
 

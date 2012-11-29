@@ -211,10 +211,9 @@ class AppController extends ControllerApp
         }
 
 
-        public function actiongetTopList($text='') {
-            $search = filter_var($text, FILTER_SANITIZE_STRING);
-            $pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,$this->offset,$this->per_page);
-            echo json_encode(array('cmd'=>"TopList","error"=> self::ERROR_NONE, "Data" =>$pst));
+        public function actiongetTopList() {
+            $list = CProduct::getPartnerProductsForUser($this->search, 0, $this->page, $this->per_page);
+            echo json_encode(array('cmd'=>"TopList","error"=> self::ERROR_NONE, "Data" =>$list));
         }
 
         public function actionGetSubscriptionListApple(){

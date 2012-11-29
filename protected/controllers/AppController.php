@@ -213,7 +213,7 @@ class AppController extends ControllerApp
 
         public function actiongetTopList($text='') {
             $search = filter_var($text, FILTER_SANITIZE_STRING);
-            $pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,0,Yii::app()->params['product_top_count']*5);
+            $pst = CProduct::model()->getProductList(array(10), Yii::app()->user->userPower, $search,$this->offset,$this->per_page);
             echo json_encode(array('cmd'=>"TopList","error"=> self::ERROR_NONE, "Data" =>$pst));
         }
 
@@ -327,7 +327,6 @@ class AppController extends ControllerApp
 
                         break;
                     case self::SECTION_UNIVERSE_CATALOG_TYPED:
-
                         $data = CUserObjects::getUserObject($item_id, Yii::app()->user->id);
                         if (!empty($data)) {
                             $result = array('cmd' => "ItemData", 'error' => self::ERROR_NONE, 'Data' => $data[0]);

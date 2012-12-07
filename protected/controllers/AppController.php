@@ -212,7 +212,13 @@ class AppController extends ControllerApp
 
 
         public function actiongetTopList() {
-            $list = CProduct::getPartnerProductsForUser($this->search, 0, $this->page, $this->per_page);
+            $count = 10;
+            if(isset($_REQUEST['count'])){
+               if($_REQUEST['count']>=25){
+                    $count=25;
+               }
+            }
+            $list = CProduct::getPartnerProductsForUser($this->search, 0, $this->page, $count);
             echo json_encode(array('cmd'=>"TopList","error"=> self::ERROR_NONE, "Data" =>$list));
         }
 

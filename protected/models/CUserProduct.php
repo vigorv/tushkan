@@ -116,7 +116,7 @@ class CUserProduct extends CActiveRecord
         $zFlag = Yii::app()->user->UserInZone;
         $zSql = '';
         if (!$zFlag) {
-            $zSql = ' AND p.flag_zone = 0';
+          //  $zSql = ' AND p.flag_zone = 0';
         }
 
         if ($res = $list->read()) {

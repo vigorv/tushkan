@@ -131,12 +131,12 @@ class CUserProduct extends CActiveRecord
                     case 2:
                         $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
                         break;
-                    case 1:
-                        $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
-                        break;
-                    default:
+                    case 0:
                         echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown partner'));
                         Yii::app()->end();
+                    default:
+                        $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
+                        break;
                 }
 
                 return $link;

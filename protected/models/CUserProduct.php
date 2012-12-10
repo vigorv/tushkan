@@ -128,15 +128,17 @@ class CUserProduct extends CActiveRecord
                     ->where('p.id = ' . $res['product_id'] . $zSql)->queryRow();
                 $fn = pathinfo($res['fname'], PATHINFO_FILENAME) . '.mp4';
                 switch ($res['partner_id']) {
-                    case 2:
-                        $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
+                    default:
+                        if (!empty($partnerInfo['sprintf_url'])){
+                            $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
+                        } else{
+                            $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
+                        }
                         break;
                     case 0:
                         echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown partner'));
                         Yii::app()->end();
-                    default:
-                        $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
-                        break;
+
                 }
 
                 return $link;

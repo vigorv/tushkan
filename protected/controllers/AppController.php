@@ -259,7 +259,6 @@ class AppController extends ControllerApp
 
                         break;
                     case self::SECTION_UNIVERSE_CATALOG_PARTNER:
-
                         $list = CUserProduct::findUserProducts($this->search, Yii::app()->user->id, $category, $this->page, $this->per_page);
                         $total_count = CUserProduct::countFoundProducts($this->search, Yii::app()->user->id, $category);
                         $count = count($list);
@@ -371,6 +370,7 @@ class AppController extends ControllerApp
             $section = (int)$_REQUEST['section'];
             $category = (int)$_REQUEST['category'];
             $item_id = $_REQUEST['item_id'];
+            $quality_id = $_REQUEST['quality_id'];
 
             switch ($section) {
                 case self::SECTION_PARTNERS:
@@ -380,7 +380,12 @@ class AppController extends ControllerApp
                     // NONE
                     break;
                 case self::SECTION_UNIVERSE_CATALOG_PARTNER:
-                    // TODO: filelink
+                    $data = CUserProduct::getPartnerFileLinkForUser($item_id,$quality_id);
+                    if (!empty($data)){
+                        $result = array('cmd'=>"CatalogDataLink",'error'=> self::ERROR_NONE,'Data'=>$data);
+                    } else
+                        $result = array ('cmd'=>"CatalogDataLink",'error'=> self::ERROR_UNKNOWN_ITEM,'error_msg'=>"Unknown item");
+                        echo json_encode($result);
                     break;
                 case self::SECTION_UNIVERSE_CATALOG_TYPED:
 /*

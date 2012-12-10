@@ -1072,7 +1072,7 @@ class UniverseController extends Controller
                 ->queryAll();
             if (!$data) return;
             $variant_id = $data[0]['variant_id'];
-            if ($data[0]['sprintr_url'] && strlen($data[0]['sprintr_url'])) {
+            if ($data[0]['sprintf_url'] && strlen($data[0]['sprintf_url'])) {
                 $fn = pathinfo($data[0]['fname'], PATHINFO_FILENAME) . '.mp4';
                 $this->redirect(sprintf($data[0]['sprintf_url'], $data[0]['original_id'], 'low', $fn, 0));
             }

@@ -1065,7 +1065,7 @@ class UniverseController extends Controller
                 ->from('{{product_files}} pf')
                 ->join('{{variant_qualities}} vq', 'vq.id = pf.variant_quality_id')
                 ->join('{{product_variants}} pv', 'pv.id = vq.variant_id')
-                ->join('{[products}} p', 'p.id = pv.product_id')
+                ->join('{{products}} p', 'p.id = pv.product_id')
                 ->join('{{partners}} pa', 'pa.id = p.partner_id')
                 ->where('pf.id = ' . $file_id)
                 ->limit(1)

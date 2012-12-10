@@ -111,8 +111,8 @@ class CUserProduct extends CActiveRecord
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{products}} p', ' p.id = pv.product_id')
             ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
-            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = ' . $preset)
-            ->where('tf.user_id =' . Yii::app()->user->id . ' AND tf.id =  ' . $item_id)->limit(1)->query();
+            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id >= ' . $preset)
+            ->where('tf.user_id =' . Yii::app()->user->id . ' AND tf.id =  ' . $item_id)->order('pf.preset_id')->limit(1)->query();
         $zFlag = Yii::app()->user->UserInZone;
         $zSql = '';
         if (!$zFlag) {

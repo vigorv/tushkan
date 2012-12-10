@@ -385,7 +385,7 @@ class AppController extends ControllerApp
                         $result = array('cmd'=>"CatalogDataLink",'error'=> self::ERROR_NONE,'Data'=>$data);
                     } else
                         $result = array ('cmd'=>"CatalogDataLink",'error'=> self::ERROR_UNKNOWN_ITEM,'error_msg'=>"Unknown item");
-                        echo json_encode($result);
+                    echo json_encode($result);
                     break;
                 case self::SECTION_UNIVERSE_CATALOG_TYPED:
 /*

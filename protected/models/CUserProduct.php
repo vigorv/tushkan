@@ -65,7 +65,7 @@ class CUserProduct extends CActiveRecord
 
     public static function getUserProduct($user_product_id = 0, $user_id = 0)
     {
-        return Yii::app()->db->createCommand()
+        $data = Yii::app()->db->createCommand()
             ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as image,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,  pd.description')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
@@ -78,6 +78,13 @@ class CUserProduct extends CActiveRecord
         //   ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
             ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $user_product_id)->limit(1)->queryAll();
+        $data[0]['files']= Yii::app()->db->createCommand()
+            ->select('pf.fname as fname,pf.id as fid , pf.preset_id as preset_id')
+            ->from('{{variant_qualities}} vq')
+            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id')
+            ->where('vq.variant_id = '. $data[0]['variant_id'])
+            ->queryAll();
+        return $data;
     }
 
 
@@ -102,7 +109,7 @@ class CUserProduct extends CActiveRecord
             ->where('pf.id =:file_id', array('file_id' => $file_id))
             ->queryAll();
     }
-
+/*
     public static function getPartnerFileLinkForUser($item_id, $preset)
     {
         $list = Yii::app()->db->createCommand()
@@ -132,7 +139,8 @@ class CUserProduct extends CActiveRecord
                         if (!empty($partnerInfo['sprintf_url'])){
                             $link = sprintf($partnerInfo['sprintf_url'], $partnerInfo['original_id'], 'low', $fn, 0);
                         } else{
-                            $link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
+                            //$link = Yii::app()->params['tushkan']['safelib_video'] . $res['fname'][0] . '/' . $res['fname'];
+                            $link =Yii::app()->createAbsoluteUrl('/files/download?vid=' . 'variant_id');
                         }
                         break;
                     case 0:
@@ -146,5 +154,5 @@ class CUserProduct extends CActiveRecord
         }
         return NULL;
     }
-
+*/
 }

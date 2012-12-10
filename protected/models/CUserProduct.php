@@ -138,8 +138,8 @@ class CUserProduct extends CActiveRecord
                         echo json_encode(array('cmd' => "FilmData", 'error' => 1, 'error_msg' => 'unknown partner'));
                         Yii::app()->end();
                 }
-                $data = array('id' => $res['id'], 'link' => $link);
-                return $data;
+
+                return $link;
             }
         }
         return NULL;

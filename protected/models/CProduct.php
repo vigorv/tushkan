@@ -360,8 +360,8 @@ class CProduct extends CActiveRecord
                     ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
                  /*   ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
                     ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = ' . Yii::app()->user->id)
-                    ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')
-                    ->where('pv.product_id = :product_id', array(':product_id' => $product_id))*/
+                    ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')*/
+                    ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
                     ->limit(100)
                     ->queryAll();
                 foreach ($product['variants'] as $variant){

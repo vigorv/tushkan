@@ -364,7 +364,7 @@ class CProduct extends CActiveRecord
                     ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
                     ->limit(100)
                     ->queryAll();
-                foreach ($product['variants'] as $variant){
+                foreach ($product['variants'] as &$variant){
                     $variant['items'] = Yii::app()->db->createCommand()
                         ->select('vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid')
                         ->from ('{{variant_qualities}} vq')

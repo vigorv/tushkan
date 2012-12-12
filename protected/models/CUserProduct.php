@@ -61,7 +61,7 @@ class CUserProduct extends CActiveRecord
             $search_str =' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")';
         }
         return Yii::app()->db->cache(50)->createCommand()
-            ->select('count(tf.id)as count')
+            ->select('count(DISTINCT(pv.product_id)) as count')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
@@ -69,7 +69,6 @@ class CUserProduct extends CActiveRecord
          //   ->leftjoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
             ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str .$search_str)
-            ->group('pv.product_id')
             ->queryScalar();
     }
 

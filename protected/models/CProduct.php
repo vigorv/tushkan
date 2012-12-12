@@ -263,7 +263,7 @@ class CProduct extends CActiveRecord
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year
             ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
-            ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1) AND tf.user_id = ' . Yii::app()->user->id)
+            //->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1) AND tf.user_id = ' . Yii::app()->user->id)
             ->leftJoin('{{prices}} pr', 'pr.variant_id = pv.id and pr.variant_quality_id = 2')
             ->where('pt.partner_id is NULL AND pr.price is NULL and pv.online_only = 0 AND pv.childs = "" AND p.active <= ' . $userPower . $searchCondition . $zSql)
             ->order('pv.id ASC')
@@ -380,5 +380,29 @@ class CProduct extends CActiveRecord
         }
         return nil;
     }
+
+    public static function addProductToUser($variant_id=0,$quality_id = 0 ){
+        $found_id = Yii::app()->db->createCommand()
+            ->select('id')->from('{{typedfiles}}')
+            ->where('variant_id = :variant_id AND user_id = :user_id AND variant_quality_id = :quality_id',array(':variant_id'=>$variant_id,':user_id'=>Yii::app()->user->id,':quality_id' => $quality_id))->limit(1)->queryScalar();
+        if(!$found_id){
+            $variant = Yii::app()->db->createCommand()
+                ->select("pv.title, COALESCE(pr.price,0) as price")
+                ->from('{{product_variants}} pv')
+                ->leftjoin('{{prices}} pr','pr.variant_id = :variant_id and pr.variant_quality_id = :quality_id',array(':variant_id'=>$variant_id,':quality_id'=>$quality_id))
+                ->where('pv.id = :variant_id and pv.online_only = 0',array(':variant_id'=>$variant_id))->queryRow();
+            if ($variant && !$variant['price']){
+                $rows = Yii::app()->db->createCommand()
+                    ->insert('{{typedfiles}}',array('variant_id'=>$variant_id,'user_id'=>Yii::app()->user->id,'title'=>$variant['title'],'variant_quality_id'=>$quality_id));
+                if ($rows)
+                    return  Yii::app()->db->getLastInsertID();
+                return -3;
+            }
+            return -2;
+        } else
+            return $found_id;
+        return 0;
+    }
+
 
 }

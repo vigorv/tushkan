@@ -78,7 +78,7 @@ class CUserProduct extends CActiveRecord
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
         //   ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
-            ->leftJoin('{{typedfiles}} tf2',' tf.variant.id = tf2.variant_id AND tf.user_id = tf2.user_id')
+            ->leftJoin('{{typedfiles}} tf2',' tf.variant_id = tf2.variant_id AND tf.user_id = tf2.user_id')
             ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $user_product_id)
             ->order('tf2.variant_quality_id DESC')->limit(1)->queryAll();
         $data[0]['files']= Yii::app()->db->createCommand()

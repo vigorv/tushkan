@@ -34,13 +34,17 @@ class CUserProduct extends CActiveRecord
             $type_str = ' AND pv.type_id=' . $type_id;
         } else
             $type_str = '';
+        $search_str ='';
+        if (strlen($search)){
+            $search_str =' AND (tf.title LIKE "%:search%" OR ppvT.value LIKE "%:search%")';
+        }
         return Yii::app()->db->createCommand()
             ->select('tf.title,tf.id, ppv.value as image,pv.id as variant_id, COALESCE(ppvT.value,"-")  as original_title')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->leftjoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str . ' AND (tf.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")')
+            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str . $search_str,array(':search'=>$search))
             ->group('pv.product_id')
             ->limit($count, $offset)
             ->queryAll();
@@ -53,8 +57,8 @@ class CUserProduct extends CActiveRecord
         } else
             $type_str = '';
         $search_str ='';
-        if (strlen(trim($search))){
-            $search_str =' AND (tf.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")';
+        if (strlen($search)){
+            $search_str =' AND (tf.title LIKE "%:search%" OR ppvT.value LIKE "%:search%")';
         }
         return Yii::app()->db->cache(50)->createCommand()
             ->select('count(tf.id)as count')
@@ -62,9 +66,9 @@ class CUserProduct extends CActiveRecord
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
         //        ->join('{{product_pictures}} pp','pp.product_id = pv.product_id AND pp.tp = "poster" ')
         // Posters somewhere in the ass
-            ->leftjoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
+         //   ->leftjoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
            // ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str .$search_str )
+            ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str .$search_str,array(':search'=>$search))
             ->group('pv.product_id')
             ->queryScalar();
     }

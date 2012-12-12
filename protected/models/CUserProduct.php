@@ -66,7 +66,7 @@ class CUserProduct extends CActiveRecord
     public static function getUserProduct($user_product_id = 0, $user_id = 0)
     {
         $data = Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as image,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,  pd.description')
+            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as image,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,  pd.description, tf.variant_quality_id')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{products}} p', ' p.id = pv.product_id')
@@ -77,11 +77,12 @@ class CUserProduct extends CActiveRecord
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
         //   ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
-            ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $user_product_id)->limit(1)->queryAll();
+            ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $user_product_id)
+            ->order('tf.variant_quality_id DESC')->limit(1)->queryAll();
         $data[0]['files']= Yii::app()->db->createCommand()
             ->select('pf.fname as fname,pf.id as fid , pf.preset_id as preset_id')
             ->from('{{variant_qualities}} vq')
-            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id')
+            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id <= :preset_id',array(':preset_id'=>$data['tf.preset_id']))
             ->where('vq.variant_id = '. $data[0]['variant_id'])
             ->queryAll();
         return $data;

@@ -41,6 +41,7 @@ class CUserProduct extends CActiveRecord
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
             ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str . ' AND (tf.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")')
+            ->group('variant_id')
             ->limit($count, $offset)
             ->queryAll();
     }
@@ -66,7 +67,7 @@ class CUserProduct extends CActiveRecord
     public static function getUserProduct($user_product_id = 0, $user_id = 0)
     {
         $data = Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as image,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,  pd.description, tf.variant_quality_id')
+            ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as image,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,  pd.description, COALESCE(tf2.variant_quality_id,0) as variant_quality_id')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->join('{{products}} p', ' p.id = pv.product_id')
@@ -77,8 +78,9 @@ class CUserProduct extends CActiveRecord
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
         //   ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
+            ->leftJoin('{{typedfiles}} tf2',' tf.variant.id = tf2.variant_id AND tf.user_id = tf2.user_id')
             ->where('tf.user_id =' . $user_id . ' AND tf.id =  ' . $user_product_id)
-            ->order('tf.variant_quality_id DESC')->limit(1)->queryAll();
+            ->order('tf2.variant_quality_id DESC')->limit(1)->queryAll();
         $data[0]['files']= Yii::app()->db->createCommand()
             ->select('pf.fname as fname,pf.id as fid , pf.preset_id as preset_id')
             ->from('{{variant_qualities}} vq')

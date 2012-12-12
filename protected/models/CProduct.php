@@ -254,7 +254,7 @@ class CProduct extends CActiveRecord
 
         $userPower = Yii::app()->user->UserPower;
         $cmd = Yii::app()->db->createCommand()
-            ->select('p.id, p.title AS title,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(ppvT.value,"-")  as original_title,COALESCE(ppvY.value,"-")  as year,COALESCE(ppvC.value,"-")  as country, COALESCE(tf.id,0) as cloud_id')
+            ->select('p.id, p.title AS title,pv.title as pvtitle, prt.id AS prtid, prt.title AS prttitle, pv.id AS variant_id, ppv.value as image, COALESCE(ppvT.value,"-")  as original_title,COALESCE(ppvY.value,"-")  as year,COALESCE(ppvC.value,"-")  as country')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<=' . $userPower . $partnerCondition)
             ->leftJoin('{{partners_tariffs}} pt', 'pt.partner_id = prt.id')

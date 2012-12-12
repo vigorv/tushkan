@@ -384,7 +384,7 @@ class CProduct extends CActiveRecord
     public static function addProductToUser($variant_id=0,$quality_id = 0 ){
         $found_id = Yii::app()->db->createCommand()
             ->select('id')->from('{{typedfiles}}')
-            ->where('variant_id = :variant_id AND user_id = :user_id AND variant_quality_id = :quality_id',array(':variant_id'=>$variant_id,':user_id'=>Yii::app()->user->id,':quality_id' => $quality_id))->limit(1)->queryScalar();
+            ->where('variant_id = :variant_id AND user_id = :user_id AND variant_quality_id >= :quality_id',array(':variant_id'=>$variant_id,':user_id'=>Yii::app()->user->id,':quality_id' => $quality_id))->limit(1)->queryScalar();
         if(!$found_id){
             $variant = Yii::app()->db->createCommand()
                 ->select("pv.title, COALESCE(pr.price,0) as price")

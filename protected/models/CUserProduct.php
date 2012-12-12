@@ -41,7 +41,7 @@ class CUserProduct extends CActiveRecord
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
             ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str . ' AND (tf.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")')
-            ->group('variant_id')
+            ->group('variant_id,pv.product_id')
             ->limit($count, $offset)
             ->queryAll();
     }
@@ -61,6 +61,7 @@ class CUserProduct extends CActiveRecord
             ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
             ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str . ' AND (tf.title LIKE "%' . $search . '%" OR ppvT.value LIKE "%' . $search . '%")')
+            ->group('variant_id,pv.product_id')
             ->queryScalar();
     }
 

@@ -82,7 +82,7 @@ class CUserProduct extends CActiveRecord
         $data[0]['files']= Yii::app()->db->createCommand()
             ->select('pf.fname as fname,pf.id as fid , pf.preset_id as preset_id')
             ->from('{{variant_qualities}} vq')
-            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id <= :preset_id',array(':preset_id'=>$data['tf.preset_id']))
+            ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id <= :preset_id',array(':preset_id'=>$data['variant_quality_id']))
             ->where('vq.variant_id = '. $data[0]['variant_id'])
             ->queryAll();
         return $data;

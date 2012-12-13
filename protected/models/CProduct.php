@@ -267,7 +267,7 @@ class CProduct extends CActiveRecord
             ->leftJoin('{{prices}} pr', 'pr.variant_id = pv.id and pr.variant_quality_id = 2')
             ->where('pt.partner_id is NULL AND pr.price is NULL and pv.online_only = 0 AND pv.childs = "" AND p.active <= ' . $userPower . $searchCondition . $zSql)
             ->order('pv.id ASC')
-        //->group('p.id')
+            ->group('p.id')
             ->limit($count, $offset);
         return $cmd->queryAll();
     }
@@ -291,7 +291,7 @@ class CProduct extends CActiveRecord
 
         $userPower = Yii::app()->user->UserPower;
         $cmd = Yii::app()->db->createCommand()
-            ->select('Count(p.id)')
+            ->select('count(DISTINCT(p.id)) as count')
             ->from('{{products}} p')
             ->join('{{partners}} prt', 'p.partner_id=prt.id AND prt.active<=' . $userPower . $partnerCondition)
             ->leftJoin('{{partners_tariffs}} pt', 'pt.partner_id = prt.id')
@@ -300,7 +300,6 @@ class CProduct extends CActiveRecord
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')
             ->leftJoin('{{prices}} pr', 'pr.variant_id = pv.id and pr.variant_quality_id = 2')
             ->where('pt.partner_id is NULL AND pr.price is NULL and pv.online_only = 0 AND pv.childs = "" AND p.active <= ' . $userPower . $searchCondition . $zSql);
-        //->group('p.id');
         return $cmd->queryScalar();
     }
 
@@ -313,8 +312,6 @@ class CProduct extends CActiveRecord
             $zSql = ' AND p.flag_zone = 0';
         }
         return Yii::app()->db->createCommand()
-        //->select('pv.product_id')
-        //->select('*')
             ->select('p.title as title, pv.title as pvtitle, pv.product_id as product_id,pv.id as variant_id, p.partner_id as partner_id, ppv.value as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,pf.fname as fname, pd.description,COALESCE(tf.id,0) as cloud_id')
             ->from('{{product_variants}} pv')
             ->join('{{products}} p', 'product_id = p.id')
@@ -323,8 +320,6 @@ class CProduct extends CActiveRecord
             ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
             ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
-        //links in the ass
-        // 10 - poster
             ->leftJoin('{{variant_qualities}} vq', ' vq.variant_id = pv.id')
             ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = pv.product_id')
             ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = ' . Yii::app()->user->id)

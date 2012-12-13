@@ -346,7 +346,7 @@ class CProduct extends CActiveRecord
             $product = $products[0];
             if ($product){
                 $product['variants'] = Yii::app()->db->createCommand()
-                    ->select('pv.title as pvtitle, pv.id as variant_id, ppv.value as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title')
+                    ->select('pv.title as pvtitle, pv.id as variant_id, COALESCE(ppv.value,"-") as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title')
                     ->from('{{product_variants}} pv')
                     ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
                     ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year

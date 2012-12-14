@@ -71,8 +71,10 @@ class AppController extends ControllerApp
 
     public function afterAction($action)
     {
-        if (defined('YII_DEBUG') && YII_DEBUG)
+        if (defined('YII_DEBUG') && YII_DEBUG){
+            $this->layout='custom';
             $this->render('/admin/none');
+        }
         parent::afterAction($action);
     }
 

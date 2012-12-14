@@ -75,6 +75,72 @@ class CUserProduct extends CActiveRecord
     public static function getUserProduct($user_product_id = 0, $user_id = 0)
     {
         $data = Yii::app()->db->createCommand()
+            ->select('pv.id, pv.product_id, pv.parent_variant_id')
+            ->from ('{{typedfiles}} tf')
+            ->join ('{{product_variants}} pv', 'pv.id = tf.variant_id')
+            ->where('tf.user_id = '. $user_id. ' AND tf.id = '.$user_product_id)
+            ->limit(1)
+            ->queryAll();
+        if (empty($data)) return array();
+        $variant_id = $data[0]['id'];
+        $product_id = $data[0]['product_id'];
+
+        $products = Yii::app()->db->createCommand()
+            ->select("p.title as title,p.partner_id as partner_id , pd.description,p.id as product_id")
+            ->from('{{products}} p')
+            ->leftJoin('{{product_descriptions}} pd', 'pd.product_id = p.id')
+            ->where('p.id = :product_id' , array(':product_id' => $product_id))->limit(1)->queryAll();
+        if (!empty($products)) {
+            $product = &$products[0];
+            if ($product){
+                $variants = Yii::app()->db->createCommand()
+                    ->select('pv.title as pvtitle, pv.id as variant_id,pv.parent_variant_id as parent_variant_id, COALESCE(ppv.value,"-") as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid')
+                    ->from('{{product_variants}} pv')
+                    ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
+                    ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year
+                    ->leftJoin('{{product_param_values}} ppvC', 'pv.id=ppvC.variant_id AND ppvC.param_id = 14')//country
+                    ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
+                    ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
+                    ->leftJoin('{{variant_qualities}} vq', 'vq.variant_id = pv.id')
+                    ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = vq.variant_id and tf.variant_quality_id = vq.preset_id and tf.user_id =:user_id',array(':user_id'=>$user_id))
+                    ->leftjoin('{{product_files}} pf','pf.variant_quality_id = vq.id')
+                    ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
+                    ->order('parent_variant_id')
+                    ->queryAll();
+                //var_dump($variants);
+               function CreateVariantTree(&$tree,$source,$parent_id=0){
+                    foreach ($source as $item){
+                        if($item['parent_variant_id'] == $parent_id){
+                            CreateVariantTree($item,$source,$item['variant_id']);
+                            if (!isset($tree['variants'])) $tree['variants']=array();
+                            $tree['variants'][] = $item;
+                        }
+                    }
+                }
+                CreateVariantTree($product,$variants);
+
+                return $products;
+                }
+        }
+        return array();
+/*
+                foreach ($product['variants'] as &$variant){
+                    $variant['items'] = Yii::app()->db->createCommand()
+                        ->select('vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid')
+                        ->from ('{{variant_qualities}} vq')
+                        ->leftjoin('{{typedfiles}} tf', 'tf.variant_id =vq.variant_id and tf.variant_quality_id = vq.preset_id AND tf.user_id = ' . Yii::app()->user->id) // TO DO: WHY tf.variant_quality_id not same as pf.variant_quality_id??
+                        ->join('{{product_files}} pf','pf.variant_quality_id = vq.id')
+                        ->where('vq.variant_id = :variant_id', array(':variant_id'=>$variant['variant_id']))
+                        ->limit(10)
+                        ->queryAll();
+
+                }
+            }
+
+
+
+
+        $data = Yii::app()->db->createCommand()
             ->select('tf.title,tf.id, pv.id as variant_id, pv.product_id as product_id,p.partner_id as partner_id, ppv.value as image,COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,  pd.description, COALESCE(tf2.variant_quality_id,0) as variant_quality_id')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
@@ -95,8 +161,10 @@ class CUserProduct extends CActiveRecord
             ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id <= :preset_id',array(':preset_id'=>$data[0]['variant_quality_id']))
             ->where('vq.variant_id = '. $data[0]['variant_id'])
             ->queryAll();
+
         return $data;
-    }
+*/
+}
 
 
     public static function DidUserHavePartnerVariant($user_id, $partner_variant_id)

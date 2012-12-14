@@ -93,6 +93,7 @@ class CUserProduct extends CActiveRecord
         if (!empty($products)) {
             $product = &$products[0];
             if ($product){
+                $product['id'] = $user_product_id;
                 $variants = Yii::app()->db->createCommand()
                     ->select('pv.title as pvtitle, pv.id as variant_id,pv.parent_variant_id as parent_variant_id, COALESCE(ppv.value,"-") as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid')
                     ->from('{{product_variants}} pv')
@@ -122,6 +123,7 @@ class CUserProduct extends CActiveRecord
                 return $products;
                 }
         }
+
         return array();
 /*
                 foreach ($product['variants'] as &$variant){

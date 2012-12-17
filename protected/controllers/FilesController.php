@@ -137,10 +137,14 @@ class FilesController extends Controller {
                 $server = CFileservers::getDownloadServerForUserFile($variant_id);
                 $sign = CUser::getDownloadSign($variant_id.$this->user_id);
                 if ($server){
+
+                    isset($_GET['start']) ? $start = 'start=' . (int)$_GET['start'] : $start = '';
+
                     if ($server['alias'] == '')
-                        $this->redirect('http://' .$server['ip'].':'.$server['port'].'/files/download?vid=' . $variant_id. '&user_id=' . $this->user_id .'&key='.$sign);
+                        $this->redirect('http://' .$server['ip'].':'.$server['port'].'/files/download?vid=' . $variant_id. '&user_id=' . $this->user_id .'&key='.$sign.'&' . $start);
                     else
-                        $this->redirect('http://' .$server['alias'].':'.$server['port'].'/files/download?vid=' . $variant_id . '&user_id=' . $this->user_id .'&key='.$sign);
+                        $this->redirect('http://' .$server['alias'].':'.$server['port'].'/files/download?vid=' . $variant_id . '&user_id=' . $this->user_id .'&key='.$sign.'&' . $start);
+
                 }
             exit();
             } else {

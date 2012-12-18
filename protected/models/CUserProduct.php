@@ -39,11 +39,12 @@ class CUserProduct extends CActiveRecord
             $search_str =' AND (tf.title LIKE "%'.$search.'%" OR ppvT.value LIKE "%'.$search.'%")';
         }
         return Yii::app()->db->createCommand()
-            ->select('tf.title,tf.id, ppv.value as image,pv.id as variant_id, COALESCE(ppvT.value,"-")  as original_title')
+            ->select('tf.title,tf.id, ppv.value as image,pv.id as variant_id, COALESCE(ppvT.value,"-")  as original_title, COALESCE(ppvG.value,"-")  as genre')
             ->from('{{typedfiles}} tf')
             ->join('{{product_variants}} pv', 'pv.id = tf.variant_id')
             ->leftjoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10')
             ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
+            ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
             ->where('pv.online_only = 0  and tf.user_id =' . $user_id . $type_str . $search_str)
             ->group('pv.product_id')
             ->limit($count, $offset)
@@ -94,6 +95,7 @@ class CUserProduct extends CActiveRecord
             $product = &$products[0];
             if ($product){
                 $product['id'] = $user_product_id;
+              //  $product['variant_id'] =$variant_id
                 $variants = Yii::app()->db->createCommand()
                     ->select('pv.title as pvtitle, pv.id as variant_id,pv.parent_variant_id as parent_variant_id, COALESCE(ppv.value,"-") as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid')
                     ->from('{{product_variants}} pv')
@@ -106,7 +108,7 @@ class CUserProduct extends CActiveRecord
                     ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = vq.variant_id and tf.variant_quality_id = vq.preset_id and tf.user_id =:user_id',array(':user_id'=>$user_id))
                     ->leftjoin('{{product_files}} pf','pf.variant_quality_id = vq.id')
                     ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
-                    ->order('parent_variant_id')
+                    ->order('parent_variant_id,preset_id')
                     ->queryAll();
                 //var_dump($variants);
                function CreateVariantTree(&$tree,$source,$parent_id=0){

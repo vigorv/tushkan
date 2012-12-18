@@ -358,11 +358,12 @@ class CProduct extends CActiveRecord
                     ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = pv.id and tf.variant_quality_id = (select max(tf.variant_quality_id) from {{typedfiles}} tf WHERE tf.variant_id = pv.id Limit 1)  AND tf.user_id = ' . Yii::app()->user->id)
                     ->join('{{product_files}} pf', 'pf.variant_quality_id = vq.id and pf.preset_id = 2')*/
                     ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
+                    ->order('original_id')
                     ->limit(100)
                     ->queryAll();
                 foreach ($product['variants'] as &$variant){
                     $variant['items'] = Yii::app()->db->createCommand()
-                        ->select('vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid')
+                        ->select('vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid, pf.fname as fname')
                         ->from ('{{variant_qualities}} vq')
                         ->leftjoin('{{typedfiles}} tf', 'tf.variant_id =vq.variant_id and tf.variant_quality_id = vq.preset_id AND tf.user_id = ' . Yii::app()->user->id) // TO DO: WHY tf.variant_quality_id not same as pf.variant_quality_id??
                         ->join('{{product_files}} pf','pf.variant_quality_id = vq.id')

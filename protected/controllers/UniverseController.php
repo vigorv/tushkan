@@ -441,6 +441,15 @@ class UniverseController extends Controller
                         ->where('pv.id = :id');
                     $cmd->bindParam(':id', $id, PDO::PARAM_INT);
                     $productInfo = $cmd->queryRow();
+
+                    $variant_quality = Yii::app()->db->createCommand()
+                        ->select('preset_id')
+                        ->from('{{variant_qualities}}')
+                        ->where('variant_id = :variant_id ',array(':variant_id'=>$id))
+                        ->order('preset_id')
+                        ->limit(1)
+                        ->queryAll();
+
                     if (!empty($productInfo)) {
                         $title = $productInfo['title'];
 
@@ -453,7 +462,10 @@ class UniverseController extends Controller
                         $cmd = Yii::app()->db->createCommand($sql);
                         $cmd->bindParam(':id', $id, PDO::PARAM_INT);
                         $cmd->bindParam(':title', $title, PDO::PARAM_STR);
-                        $cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_STR);
+                        if ($_POST['qvid'] == 0){
+                            $cmd->bindParam(':qvid', $variant_quality[0]['preset_id'], PDO::PARAM_STR);
+                        } else
+                         $cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_STR);
                         $cmd->execute();
                         $result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
                     }

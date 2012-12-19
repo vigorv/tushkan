@@ -222,8 +222,11 @@ class AppController extends ControllerApp
                 $count = 25;
             }
         }
-        $list = CProduct::getPartnerProductsForUser($this->search, 0, $this->page, $count);
-        echo json_encode(array('cmd' => "TopList", "error" => self::ERROR_NONE, "Data" => $list));
+        $list = CProduct::getTopProducts($this->search, 0, $this->page, $count);
+        if ($list)
+            echo json_encode(array('cmd' => "TopList", "error" => self::ERROR_NONE, "Data" => $list));
+        else
+            echo json_encode(array('cmd' => "TopList", 'error' => self::ERROR_UNKNOWN_ITEM, "error_msg" => 'Unknown item'));
     }
 
     public function actionGetSubscriptionListApple()

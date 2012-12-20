@@ -105,7 +105,7 @@ class CUserProduct extends CActiveRecord
                     ->leftJoin('{{product_param_values}} ppvG', 'pv.id=ppvG.variant_id AND ppvG.param_id = 18')//genre
                     ->leftJoin('{{product_param_values}} ppvT', 'pv.id=ppvT.variant_id AND ppvT.param_id = 12')//original_title
                     ->leftJoin('{{variant_qualities}} vq', 'vq.variant_id = pv.id')
-                    ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = vq.variant_id and tf.variant_quality_id = vq.preset_id and tf.user_id =:user_id',array(':user_id'=>$user_id))
+                    ->leftJoin('{{typedfiles}} tf', 'tf.variant_id = vq.variant_id and tf.variant_quality_id = COALESCE(vq.preset_id,0) and tf.user_id =:user_id',array(':user_id'=>$user_id))
                     ->leftjoin('{{product_files}} pf','pf.variant_quality_id = vq.id')
                     ->where('pv.product_id = :product_id', array(':product_id' => $product_id))
                     ->order('parent_variant_id,preset_id')

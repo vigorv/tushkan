@@ -452,10 +452,10 @@ class CProduct extends CActiveRecord
                     $variant['items'] = Yii::app()->db->createCommand()
                         ->select('COALESCE(vq.preset_id,0) as preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid, pf.fname as fname')
                         ->from ('{{variant_qualities}} vq')
-                        ->leftjoin('{{typedfiles}} tf', 'tf.variant_id =vq.variant_id and tf.variant_quality_id = COALESCE(vq.preset_id,0) AND tf.user_id = ' . Yii::app()->user->id) // TO DO: WHY tf.variant_quality_id not same as pf.variant_quality_id??
+                        ->leftjoin('{{typedfiles}} tf', 'tf.variant_id =:variant_id and tf.variant_quality_id = COALESCE(vq.preset_id,0) AND tf.user_id = ' . Yii::app()->user->id) // TO DO: WHY tf.variant_quality_id not same as pf.variant_quality_id??
                         ->join('{{product_files}} pf','pf.variant_quality_id = vq.id')
                         ->where('vq.variant_id = :variant_id', array(':variant_id'=>$variant['variant_id']))
-                        ->limit(10)
+                        ->limit(16)
                         ->queryAll();
 
                 }

@@ -1098,7 +1098,7 @@ class UniverseController extends Controller
                     if (defined('YII_DEBUG') && YII_DEBUG){
                         $this->layout='custom';
                         $this->render('/admin/none');
-                        echo "$server . '/files/partnerdownload?fid=' . $file_id . '&user_id=' . Yii::app()->user->id . '&key=' . $sign . '&' . $start";
+                        echo $server . '/files/partnerdownload?fid=' . $file_id . '&user_id=' . Yii::app()->user->id . '&key=' . $sign . '&' . $start;
                     } else
                     $this->redirect($server . '/files/partnerdownload?fid=' . $file_id . '&user_id=' . Yii::app()->user->id . '&key=' . $sign . '&' . $start);
                 }

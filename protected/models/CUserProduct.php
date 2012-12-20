@@ -97,7 +97,7 @@ class CUserProduct extends CActiveRecord
                 $product['id'] = $user_product_id;
               //  $product['variant_id'] =$variant_id
                 $variants = Yii::app()->db->createCommand()
-                    ->select('pv.title as pvtitle, pv.id as variant_id,pv.parent_variant_id as parent_variant_id, COALESCE(ppv.value,"http://safelib.com/images/films/noposter.jpg") as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,vq.preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid,pf.fname as fname')
+                    ->select('pv.title as pvtitle, pv.id as variant_id,pv.parent_variant_id as parent_variant_id, COALESCE(ppv.value,"http://safelib.com/images/films/noposter.jpg") as image, COALESCE(ppvY.value,0) as year,  COALESCE(ppvC.value,"-") as  country, COALESCE(ppvG.value,"-")  as genre, COALESCE(ppvT.value,"-")  as original_title,COALESCE(vq.preset_id,0) as preset_id,COALESCE(tf.id,0) as cloud_id,pf.id as fid,pf.fname as fname')
                     ->from('{{product_variants}} pv')
                     ->leftJoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id AND ppv.param_id = 10') //poster
                     ->leftJoin('{{product_param_values}} ppvY', 'pv.id=ppvY.variant_id AND ppvY.param_id = 13')//year

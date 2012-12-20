@@ -465,7 +465,7 @@ class UniverseController extends Controller
                         if ($_POST['qvid'] == 0){
                             $cmd->bindParam(':qvid', $variant_quality[0]['preset_id'], PDO::PARAM_STR);
                         } else
-                         $cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_STR);
+                        $cmd->bindParam(':qvid', $_POST['qvid'], PDO::PARAM_STR);
                         $cmd->execute();
                         $result = Yii::app()->db->getLastInsertID('{{typedfiles}}');
                     }
@@ -1095,6 +1095,11 @@ class UniverseController extends Controller
                 $sign = CUser::getDownloadSign($file_id . Yii::app()->user->id);
                 $server = CFileservers::getServerByZone();
                 if ($server) {
+                    if (defined('YII_DEBUG') && YII_DEBUG){
+                        $this->layout='custom';
+                        $this->render('/admin/none');
+                        echo "$server . '/files/partnerdownload?fid=' . $file_id . '&user_id=' . Yii::app()->user->id . '&key=' . $sign . '&' . $start";
+                    } else
                     $this->redirect($server . '/files/partnerdownload?fid=' . $file_id . '&user_id=' . Yii::app()->user->id . '&key=' . $sign . '&' . $start);
                 }
                 exit();

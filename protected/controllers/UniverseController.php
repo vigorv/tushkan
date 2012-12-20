@@ -1086,19 +1086,31 @@ class UniverseController extends Controller
             $variant_id = $data[0]['variant_id'];
             if ($data[0]['sprintf_url'] && strlen($data[0]['sprintf_url'])) {
                 $fn = pathinfo($data[0]['fname'], PATHINFO_FILENAME) . '.mp4';
+
+                if (defined('YII_DEBUG') && YII_DEBUG){
+                  $this->layout='custom';
+                  echo sprintf($data[0]['sprintf_url'], $data[0]['original_id'], 'low', $fn, 0);
+                  $this->render('/admin/none');
+                  return;
+                }
+
                 $this->redirect(sprintf($data[0]['sprintf_url'], $data[0]['original_id'], 'low', $fn, 0));
             }
             isset($_GET['start']) ? $start = 'start=' . (int)$_GET['start'] : $start = '';
             if ($variant_id)
                 $allowed_download = CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id, $variant_id);
+            if (defined('YII_DEBUG') && YII_DEBUG){
+                var_dump($variant_id);
+                var_dump($allowed_download);
+            }
             if (!empty($allowed_download)) {
                 $sign = CUser::getDownloadSign($file_id . Yii::app()->user->id);
                 $server = CFileservers::getServerByZone();
                 if ($server) {
                     if (defined('YII_DEBUG') && YII_DEBUG){
                         $this->layout='custom';
-                        $this->render('/admin/none');
                         echo $server . '/files/partnerdownload?fid=' . $file_id . '&user_id=' . Yii::app()->user->id . '&key=' . $sign . '&' . $start;
+                        $this->render('/admin/none');
                     } else
                     $this->redirect($server . '/files/partnerdownload?fid=' . $file_id . '&user_id=' . Yii::app()->user->id . '&key=' . $sign . '&' . $start);
                 }

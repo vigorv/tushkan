@@ -36,13 +36,15 @@ class CTypedfiles extends CActiveRecord{
     }
 
     public static function GetPartnerFileData($file_id){
+        // TO DO: return file check
+
         return Yii::app()->db->createCommand()
             ->select('p.partner_id as partner_id,pf.fname as fname')
             ->from('{{product_files}} pf')
             ->join('{{variant_qualities}} vq','vq.id = pf.variant_quality_id')
             ->join('{{product_variants}} pv', 'pv.id = vq.variant_id')
             ->join('{{products}} p', 'pv.product_id = p.id')
-            ->join('{{typedfiles}} tf', 'tf.variant_id = pv.id')
+            ->leftjoin('{{typedfiles}} tf', 'tf.variant_id = pv.id')
             ->where('pf.id =:file_id',array('file_id'=>$file_id))
             ->queryAll();
     }

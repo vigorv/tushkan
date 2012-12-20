@@ -1097,13 +1097,15 @@ class UniverseController extends Controller
                 $this->redirect(sprintf($data[0]['sprintf_url'], $data[0]['original_id'], 'low', $fn, 0));
             }
             isset($_GET['start']) ? $start = 'start=' . (int)$_GET['start'] : $start = '';
+
+            // TO DO: CHECK DOWNLOADS FOR PRICE AND ETC
             if ($variant_id)
                 $allowed_download = CTypedfiles::DidUserHavePartnerVariant(Yii::app()->user->id, $variant_id);
             if (defined('YII_DEBUG') && YII_DEBUG){
                 var_dump($variant_id);
                 var_dump($allowed_download);
             }
-            if (!empty($allowed_download)) {
+            if (TRUE){//(!empty($allowed_download)) {
                 $sign = CUser::getDownloadSign($file_id . Yii::app()->user->id);
                 $server = CFileservers::getServerByZone();
                 if ($server) {

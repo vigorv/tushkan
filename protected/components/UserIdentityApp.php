@@ -49,6 +49,22 @@ class UserIdentityApp extends CUserIdentity {
                     ->where('id = :id',array(':id'=>$record->group_id))
                     ->queryScalar();
 
+            $zones = Yii::app()->user->UserZones;
+            if (empty($zones))
+            {
+                $zones = CZones::getActiveZones($_SERVER['REMOTE_ADDR']);
+                Yii::app()->user->UserZones = $zones;
+                if (!empty($zones) && count($zones) > 1)
+                {
+                    Yii::app()->user->UserInZone = 1;
+                }
+                else
+                {
+                    Yii::app()->user->UserInZone = 0;
+                }
+            }
+
+
             Yii::app()->user->UserPower = $userPower;
             $this->email = $record->email;
         }

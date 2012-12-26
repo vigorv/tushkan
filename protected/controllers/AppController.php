@@ -58,6 +58,7 @@ class AppController extends ControllerApp
             case 'error':
             case 'registercheck':
             case 'resetpassword':
+            case 'GetSubscriptionListApple':
                 break;
             default:
                 if (!Yii::app()->user->id) {

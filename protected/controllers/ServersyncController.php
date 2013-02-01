@@ -471,6 +471,9 @@ class ServersyncController extends ControllerSync
         echo base64_encode(serialize($answer));
     }
 
+    /**
+     * Compressor complete function
+     */
 
     public function actionCompletePartners()
     {
@@ -519,17 +522,13 @@ class ServersyncController extends ControllerSync
                 $id = (int)$rdata['id'];
                 /** @var CConvertQueue $queue  */
                 $queue = CConvertQueue::model()->find('id=:id', array(':id' => $id));
-                //echo "<pre>";
-                //echo $id;
-                // echo $queue->info;
-                // var_dump($rdata);
                 if ($queue) {
-                    $info = unserialize($queue->info);
+                    //$info = unserialize(base64_decode($queue->info));
                     // var_dump($rdata);
                     $product = new CProduct();
                     $product->active = 0;
-                    $product->partner_id = $queue->partner_id;
-                    $product->title = $info['title'];
+                    $product->partner_id = $rdata['partner_id'];
+                    $product->title = $rdata['title'];
                     $product->created = date("Y-m-d H:i:s");
                     switch ($queue->partner_id) {
                         case 5:
@@ -546,13 +545,13 @@ class ServersyncController extends ControllerSync
                             $product_variant = new CProductVariant();
                             $product_variant->product_id = $product->id;
                             $product_variant->type_id = 1; // VIDEO
-                            $product_variant->title = $info['title'];
+                            $product_variant->title = $rdata['variants']['title'];
                             $product_variant->original_id = $queue->original_variant_id;
                             if ($product_variant->save()) {
                                 $product_variant->setParamValue(10, $rdata['variants']['poster']);
-                                $product_variant->setParamValue(13, $info['movie']['year']);
-                                $product_variant->setParamValue(12, $info['movie']['original_title']);
-                                $product_variant->setParamValue(14, $info['movie']['country']);
+                                $product_variant->setParamValue(13, $rdata['variants']['year']);
+                                $product_variant->setParamValue(12, $rdata['variants']['original_title']);
+                                $product_variant->setParamValue(14, $rdata['variants']['country']);
                                 foreach ($quality_files as $preset => $file) {
                                     $product_variant_quality = new CProductVariantQualities();
                                     $product_variant_quality->preset_id = $qualityStrings[$preset];

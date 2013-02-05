@@ -39,7 +39,7 @@ class CTypedfiles extends CActiveRecord{
         // TO DO: return file check
 
         return Yii::app()->db->createCommand()
-            ->select('p.partner_id as partner_id,pf.fname as fname,pv.id as variant_id')
+            ->select('p.partner_id as partner_id,pf.fname as fname,pv.original_id as original_variant_id')
             ->from('{{product_files}} pf')
             ->join('{{variant_qualities}} vq','vq.id = pf.variant_quality_id')
             ->join('{{product_variants}} pv', 'pv.id = vq.variant_id')

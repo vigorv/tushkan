@@ -324,6 +324,7 @@ class ServersyncController extends ControllerSync
                                 $answer['partner_id'] = $data[0]['partner_id'];
                                 $answer['fname'] = $data[0]['fname'];
                                 $answer['original_variant_id'] = $data[0]['original_variant_id'];
+                                $answer['preset_id'] = $data[0]['preset_id'];
                                 //} else{
                                 //    $answer['error'] = 1;
                                 //    $answer['error_msg'] = "File not found";

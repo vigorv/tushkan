@@ -323,6 +323,7 @@ class ServersyncController extends ControllerSync
                                 /// $answer['folder'] = $locations->folder;
                                 $answer['partner_id'] = $data[0]['partner_id'];
                                 $answer['fname'] = $data[0]['fname'];
+                                $answer['fid'] = $file_id;
                                 //} else{
                                 //    $answer['error'] = 1;
                                 //    $answer['error_msg'] = "File not found";

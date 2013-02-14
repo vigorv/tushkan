@@ -192,7 +192,7 @@ class ProductsController extends Controller
 				->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $userPower . $zSql);
 			$count = $cmd->queryScalar();
 			$paginationParams = Utils::preparePagination('/products/partner/id/' . $id, $count);
-
+            DebugEcho($count);
 			if ($count)
 			{
 				$cmd = Yii::app()->db->createCommand()
@@ -201,6 +201,7 @@ class ProductsController extends Controller
 					->where('p.partner_id = ' . $pInfo['id'] . ' AND p.active <= ' . $userPower . $zSql)
 					->limit($paginationParams['limit'], $paginationParams['offset']);
 				$pst = $cmd->queryAll();
+
 				if (!empty($pst))
 				{
 					$pst = implode(',', Utils::arrayToKeyValues($pst, 'id', 'id'));
@@ -244,6 +245,9 @@ class ProductsController extends Controller
     	{
     		$zSql = ' AND flag_zone = 0';
     	}
+        DebugEcho($zSql);
+
+
 
 		$cmd = Yii::app()->db->createCommand()
 			->select('id, title, partner_id')
@@ -251,6 +255,7 @@ class ProductsController extends Controller
 			->where('id = :id AND active <= ' . $userPower . $zSql);
 		$cmd->bindParam(':id', $id, PDO::PARAM_INT);
 		$productInfo = $cmd->queryRow();
+        DebugEcho($productInfo);
 		if (!empty($productInfo))
 		{
 			$partnerId = $productInfo['partner_id'];
@@ -266,9 +271,9 @@ class ProductsController extends Controller
 			$info = Yii::app()->db->createCommand()
 				->select('pv.id, pv.online_only, ptp.title, ppv.value, pv.sub_id, vs.title AS vtitle, pr.id AS price_id, pr.price AS pprice, r.id AS rent_id, r.price AS rprice')
 				->from('{{product_variants}} pv')
-		        ->join('{{variant_subs}} vs', 'pv.sub_id=vs.id')
-		        ->join('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
-		        ->join('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
+		        ->leftjoin('{{variant_subs}} vs', 'pv.sub_id=vs.id')
+		        ->leftjoin('{{product_param_values}} ppv', 'pv.id=ppv.variant_id')
+		        ->leftjoin('{{product_type_params}} ptp', 'ptp.id=ppv.param_id')
 		        ->leftJoin('{{prices}} pr', 'pr.variant_id=pv.id')
 		        ->leftJoin('{{rents}} r', 'r.variant_id=pv.id')
 				->where('pv.product_id = ' . $productInfo['id'] . ' AND pv.active <= ' . $userPower . ' AND ptp.active <= ' . $userPower)

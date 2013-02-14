@@ -240,15 +240,18 @@ class ServersyncController extends ControllerSync
             $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
             if ($check_data == $_REQUEST['sdata']) {
                 $rdata = unserialize(base64_decode($_REQUEST['fdata']));
-                if ($rdata) {
+                if ($rdata && isset($rdata['product_id']) && isset($rdata['user_id'])) {
+                    $product_id = (int)$rdata['product_id'];
+                    $user_id = (int)$rdata['user_id'];
+                    $variants = CProductVariant::model()->findAll('product_id = :product_id',array(':product_id'=>$product_id));
+                    foreach ($variants as $variant)
+                        if($res = CProduct::addProductToUser($variant->id,_VIDEO_MEDIUM_,$user_id)){
+                            $answer = array('cmd' => "AddItemFromPartner", 'error' => self::ERROR_NONE, 'cloud_id' => $res);
+                        } else {
+                            $answer = array('cmd' => "AddItemFromPartner", 'error' => self::ERROR_ADD_FAILED);
+                            break;
+                        }
 
-
-                    /*
-                                        if ($res = CProduct::addProductToUserByOriginal($rdata['original_id'], $rdata['original_variant_id'],$rdata['user_id'])) {
-                                            $answer = array('cmd' => "AddItemFromPartner", 'error' => self::ERROR_NONE, 'cloud_id' => $res);
-                                        } else
-                                           $answer = array('cmd' => "AddItemFromPartner", 'error' => self::ERROR_ADD_FAILED);
-                    */
                 }
             }
             echo base64_encode(serialize($answer));

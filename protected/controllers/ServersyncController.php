@@ -233,8 +233,31 @@ class ServersyncController extends ControllerSync
     }
     */
 
+    public function actionAddProductToUser()
+    {
+        $answer = array();
+        if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
+            $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
+            if ($check_data == $_REQUEST['sdata']) {
+                $rdata = unserialize(base64_decode($_REQUEST['fdata']));
+                if ($rdata) {
 
-    public function actionFiledata()
+
+                    /*
+                                        if ($res = CProduct::addProductToUserByOriginal($rdata['original_id'], $rdata['original_variant_id'],$rdata['user_id'])) {
+                                            $answer = array('cmd' => "AddItemFromPartner", 'error' => self::ERROR_NONE, 'cloud_id' => $res);
+                                        } else
+                                           $answer = array('cmd' => "AddItemFromPartner", 'error' => self::ERROR_ADD_FAILED);
+                    */
+                }
+            }
+            echo base64_encode(serialize($answer));
+        }
+    }
+
+
+    public
+    function actionFiledata()
     {
         $answer = array();
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
@@ -294,7 +317,8 @@ class ServersyncController extends ControllerSync
     }
 
 
-    public function actionPartnerFiledata()
+    public
+    function actionPartnerFiledata()
     {
         $answer = array();
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
@@ -370,7 +394,8 @@ class ServersyncController extends ControllerSync
      *
      */
 
-    public function actionUpload()
+    public
+    function actionUpload()
     {
         $answer = array();
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
@@ -477,7 +502,8 @@ class ServersyncController extends ControllerSync
      * Compressor complete function
      */
 
-    public function actionCompletePartners()
+    public
+    function actionCompletePartners()
     {
         function makeDataAds($fileName)
         {
@@ -522,33 +548,35 @@ class ServersyncController extends ControllerSync
             if ($check_data == $_REQUEST['sdata']) {
                 $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
                 $id = (int)$rdata['id'];
-                /** @var CConvertQueue $queue  */
+                /** @var CConvertQueue $queue */
                 $queue = CConvertQueue::model()->find('id=:id', array(':id' => $id));
+                $data = array();
                 if ($queue) {
-                    //$info = unserialize(base64_decode($queue->info));
-                    // var_dump($rdata);
-                    $product = new CProduct();
-                    $product->active = 0;
-                    $product->partner_id = $rdata['partner_id'];
-                    $product->title = $rdata['title'];
-                    $product->created = date("Y-m-d H:i:s");
-                    switch ($queue->partner_id) {
-                        case 5:
-                        case 6:
-                            $product->flag_zone = 1;
-                            break;
-                        default:
-                            echo "Bad Partner " . $queue->partner_id;
-                            return;
-                    }
-                    $product->original_id = $queue->original_id;
-                    if ($product->save()) {
+                        $product = new CProduct();
+                        $product->active = 0;
+                        $product->partner_id = $rdata['partner_id'];
+                        $product->title = $rdata['title'];
+                        $product->created = date("Y-m-d H:i:s");
+                        switch ($queue->partner_id) {
+                            case 5:
+                            case 6:
+                                $product->flag_zone = 1;
+                                break;
+                            default:
+                                echo "Bad Partner " . $queue->partner_id;
+                                return;
+                        }
+                        $product->original_id = $queue->original_id;
+                        $data[] = $product;
+
+                    if ($product->save) {
                         foreach ($rdata['variants']['files'] as $quality_files) {
                             $product_variant = new CProductVariant();
                             $product_variant->product_id = $product->id;
                             $product_variant->type_id = 1; // VIDEO
                             $product_variant->title = $rdata['variants']['title'];
                             $product_variant->original_id = $queue->original_variant_id;
+                            $data[] = $product_variant;
                             if ($product_variant->save()) {
                                 $product_variant->setParamValue(10, $rdata['variants']['poster']);
                                 $product_variant->setParamValue(13, $rdata['variants']['year']);
@@ -558,6 +586,7 @@ class ServersyncController extends ControllerSync
                                     $product_variant_quality = new CProductVariantQualities();
                                     $product_variant_quality->preset_id = $qualityStrings[$preset];
                                     $product_variant_quality->variant_id = $product_variant->id;
+                                    $data[] = $product_variant_quality;
                                     if ($product_variant_quality->save()) {
                                         $product_files = new CProductFiles();
                                         $product_files->size = $file['size'];
@@ -565,19 +594,24 @@ class ServersyncController extends ControllerSync
                                         $product_files->md5 = $file['md5'];
                                         $product_files->preset_id = $qualityStrings[$preset];
                                         $product_files->variant_quality_id = $product_variant_quality->id;
+                                        $data[] = $product_files;
                                         if ($product_files->save()) {
-                                            $saved_files[] = "Y";
-                                        } else
-                                            $saved_files[] = "N";
-                                        $answer['saved_files'] = $saved_files;
+                                            $answer['error'] = 0;
+                                        } else {
+                                            $answer['error'] = 1;
+                                            $answer['error_msg'] = 'Error: save variant_quality';
+                                            break;
+                                        }
                                     } else {
                                         $answer['error'] = 1;
                                         $answer['error_msg'] = 'Error: save variant_quality';
+                                        break;
                                     }
                                 }
                             } else {
                                 $answer['error'] = 1;
                                 $answer['error_msg'] = 'Error: save product_variant';
+                                break;
                             }
                         }
                     } else {
@@ -587,6 +621,12 @@ class ServersyncController extends ControllerSync
                 } else {
                     $answer['error'] = 1;
                     $answer['error_msg'] = 'Error: unknown task';
+                }
+                if($answer['error']==0){
+                    $queue -> product_id = $product->id;
+                } else {
+                    foreach ($data as $record)
+                        $record -> delete();
                 }
                 echo base64_encode(serialize($answer));
             } else echo "BAD DATA";
@@ -733,7 +773,8 @@ class ServersyncController extends ControllerSync
             }
         }
     */
-    public function actionCheckReady()
+    public
+    function actionCheckReady()
     {
         $answer = array();
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {
@@ -756,7 +797,8 @@ class ServersyncController extends ControllerSync
         }
     }
 
-    public function actionCreateVariantData()
+    public
+    function actionCreateVariantData()
     {
         $answer = array();
         if (isset($_REQUEST['fdata']) && isset($_REQUEST['sdata'])) {

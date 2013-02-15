@@ -785,7 +785,7 @@ class ServersyncController extends ControllerSync
                 $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
                 if ($rdata['original_variants']) {
                     foreach ($rdata['original_variants'] as $variant_id) {
-                        if (!$variant = CProductVariant::model()->find('original_variant_id=:id', array(':id' => $variant_id))) {
+                        if (!$variant = CProductVariant::model()->find('original_id=:original_id', array(':original_id' => $variant_id))) {
                             $answer['wait'] = 1;
                             echo base64_encode(serialize($answer));
                             Yii::app()->end();

@@ -251,7 +251,6 @@ class ServersyncController extends ControllerSync
                             $answer = array('cmd' => "AddItemFromPartner", 'error' => self::ERROR_ADD_FAILED);
                             break;
                         }
-
                 }
             }
             echo base64_encode(serialize($answer));
@@ -784,9 +783,9 @@ class ServersyncController extends ControllerSync
             $check_data = sha1($_REQUEST['fdata'] . Yii::app()->params['converter_skey']);
             if ($check_data == $_REQUEST['sdata']) {
                 $rdata = @unserialize(base64_decode($_REQUEST['fdata']));
-                if ($rdata['variants']) {
-                    foreach ($rdata['variants'] as $variant_id) {
-                        if (!$variant = CProductVariant::model()->find('id=:id', array(':id' => $variant_id))) {
+                if ($rdata['original_variants']) {
+                    foreach ($rdata['original_variants'] as $variant_id) {
+                        if (!$variant = CProductVariant::model()->find('original_variant_id=:id', array(':id' => $variant_id))) {
                             $answer['wait'] = 1;
                             echo base64_encode(serialize($answer));
                             Yii::app()->end();

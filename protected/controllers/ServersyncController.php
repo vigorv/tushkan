@@ -349,6 +349,7 @@ class ServersyncController extends ControllerSync
                                 /// $answer['folder'] = $locations->folder;
                                 $answer['partner_id'] = $data[0]['partner_id'];
                                 $answer['fname'] = $data[0]['fname'];
+                                $answer['original_id'] = $data[0]['original_id'];
                                 $answer['original_variant_id'] = $data[0]['original_variant_id'];
                                 $answer['preset_id'] = $data[0]['preset_id'];
                                 //} else{
@@ -571,7 +572,7 @@ class ServersyncController extends ControllerSync
                         $product->original_id = $queue->original_id;
                         $data[] = $product;
 
-                    if ($product->save) {
+                    if ($product->save()) {
                         foreach ($rdata['variants']['files'] as $quality_files) {
                             $product_variant = new CProductVariant();
                             $product_variant->product_id = $product->id;
